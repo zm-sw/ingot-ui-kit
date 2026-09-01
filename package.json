@@ -9,7 +9,9 @@
   },
   "type": "module",
   "exports": {
-    ".": "./src/ingot/index.ts"
+    ".": "./src/ingot/index.ts",
+    "./tailwind-preset": "./src/ingot/tailwind-preset.ts",
+    "./tokens.css": "./src/ingot/tokens.css"
   },
   "files": [
     "src/ingot"
