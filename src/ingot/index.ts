@@ -83,8 +83,15 @@ export {
   MAX_MODAL_LAYER,
 } from "./modalLayer";
 export { IngotConfirm, useConfirmVeto } from "./IngotConfirm";
-export { IngotTable, type IngotColumn } from "./IngotTable";
+export { IngotTable, type IngotColumn, type IngotSort } from "./IngotTable";
 export { IngotEmptyState } from "./IngotEmptyState";
+// --- list obrazovka kolem tabulky (KAN-654) --------------------------
+//
+// Závazné pořadí bloků: toolbar → (bulk bar) → tabulka → pager. Bulk bar
+// kreslí IngotTable (visí na jejím výběru), toolbar a pager jsou
+// samostatné — tabulka není jejich jediný konzument a stav drží volající.
+export { IngotToolbar } from "./IngotToolbar";
+export { IngotPagination } from "./IngotPagination";
 export { IngotField } from "./IngotField";
 export {
   IngotFieldInput,
