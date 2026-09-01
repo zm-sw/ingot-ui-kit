@@ -49,6 +49,7 @@ import {
   type IngotNavItem,
 } from "@/ingot";
 import { AccentSwatches } from "@/components/AccentSwatches";
+import { DocSegmented } from "@/components/DocSegmented";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
   DICTIONARY_MODES,
@@ -230,7 +231,7 @@ function DemoWithSource({
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border">
+    <div className="overflow-hidden rounded-md border border-border">
       <div className="flex items-end justify-between gap-3 bg-surface px-3">
         <IngotTabs
           items={[
@@ -275,6 +276,25 @@ interface DocSection {
   id: string;
   title: string;
   body: ReactNode;
+  /**
+   * Nadpis jako „cap“ z handoffu: mono verzálky s tečkovanou linkou za
+   * textem. Sekce stránky komponenty ho mají, průvodci ne — u nich je
+   * nadpis věta, ne štítek bloku.
+   */
+  cap?: boolean;
+}
+
+/** Nadpis sekce ve stylu cap — obsah pro ``IngotSection.title``. */
+function CapTitle({ children }: { children: ReactNode }): JSX.Element {
+  return (
+    <span className="flex items-center gap-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.07em] text-ink-4">
+      {children}
+      <span
+        aria-hidden="true"
+        className="flex-1 border-t border-dashed border-border"
+      />
+    </span>
+  );
 }
 
 /**
@@ -303,21 +323,25 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
     {
       id: "ukazka",
       title: pick(CHROME.demo, lang),
+      cap: true,
       body: <DemoWithSource page={page} lang={lang} />,
     },
     {
       id: "kdy",
       title: pick(CHROME.useWhen, lang),
+      cap: true,
       body: <IngotList items={pick(page.useWhen, lang)} />,
     },
     {
       id: "kdy-ne",
       title: pick(CHROME.avoidWhen, lang),
+      cap: true,
       body: <IngotList items={pick(page.avoidWhen, lang)} />,
     },
     {
       id: "vlastnosti",
       title: pick(CHROME.props, lang),
+      cap: true,
       body: (
         <div className="space-y-6">
           <PropsTable
@@ -335,11 +359,12 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
     {
       id: "pristupnost",
       title: pick(CHROME.a11y, lang),
+      cap: true,
       // Callout-warn: přístupnost je ta část, kterou opsané komponenty
       // ztrácejí nejdřív — proto varovná plocha, ne běžný výčet.
       body: (
         <div
-          className="rounded-lg border border-warn-border bg-warn-bg p-4"
+          className="rounded-md border border-warn-border bg-warn-bg p-4"
           data-testid="docs-a11y-callout"
         >
           <IngotList items={pick(page.a11y, lang)} />
@@ -349,6 +374,7 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
     {
       id: "preklady",
       title: pick(CHROME.i18n, lang),
+      cap: true,
       body: <IngotList items={pick(page.i18n, lang)} />,
     },
   ];
@@ -359,6 +385,7 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       sections.push({
         id: "limity",
         title: pick(CHROME.limits, lang),
+        cap: true,
         body: <IngotList items={limits} />,
       });
     }
@@ -468,18 +495,18 @@ function PagerFooter({
   const prev = index > 0 ? ALL_ENTRIES[index - 1] : null;
   const next = index < ALL_ENTRIES.length - 1 ? ALL_ENTRIES[index + 1] : null;
 
+  // Karty z handoffu: rámeček, mono štítek směru, hover se stínem.
+  const cardClass =
+    "flex min-w-[200px] max-w-[48%] flex-col gap-1 rounded-md border border-border bg-surface px-[18px] py-[14px] text-ink hover:border-border-strong hover:shadow-sm";
+
   return (
     <div className="flex justify-between gap-4 border-t border-border pt-6">
       {prev ? (
-        <a
-          className="min-w-0 text-left"
-          href={hrefOf(prev)}
-          data-testid="docs-prev"
-        >
-          <span className="block text-xs text-ink-3">
+        <a className={cardClass} href={hrefOf(prev)} data-testid="docs-prev">
+          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
             {pick(CHROME.prevPage, lang)}
           </span>
-          <span className="block truncate text-sm font-medium text-ink-2 hover:text-ink">
+          <span className="truncate text-sm font-medium">
             {titleOf(prev, lang)}
           </span>
         </a>
@@ -488,14 +515,14 @@ function PagerFooter({
       )}
       {next ? (
         <a
-          className="min-w-0 text-right"
+          className={`${cardClass} ml-auto items-end text-right`}
           href={hrefOf(next)}
           data-testid="docs-next"
         >
-          <span className="block text-xs text-ink-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
             {pick(CHROME.nextPage, lang)}
           </span>
-          <span className="block truncate text-sm font-medium text-ink-2 hover:text-ink">
+          <span className="truncate text-sm font-medium">
             {titleOf(next, lang)}
           </span>
         </a>
@@ -585,129 +612,132 @@ export function DocsApp(): JSX.Element {
   const sections = sectionsOf(page, lang);
   const options = languages.options;
 
+  const separator = (
+    <span aria-hidden="true" className="hidden h-5 w-px bg-border sm:block" />
+  );
+
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
-      <div className="w-48 shrink-0 space-y-6">
-        <p className="text-sm font-semibold text-ink">Ingot UI Kit</p>
-        <IngotSideNav
-          label={pick(CHROME.guides, lang)}
-          items={navItems(GUIDE_ENTRIES, page, lang)}
+    <div className="min-h-screen">
+      {/* Horní lišta z handoffu: brand + verze vlevo, akcent / motiv /
+          jazyk / slovník vpravo. Sticky, aby přepínače neutekly se
+          scrollem dlouhé stránky. */}
+      <header className="sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border bg-bg px-6 py-3">
+        <span className="text-sm font-semibold tracking-tight text-ink">
+          Ingot
+        </span>
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+          v0.1 · Forgmatic
+        </span>
+        <span className="flex-1" aria-hidden="true" />
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+          {pick(CHROME.accent, lang)}
+        </span>
+        <AccentSwatches
+          value={accent}
+          onChange={(next) => {
+            setAccent(next);
+            writeStoredAccent(next);
+          }}
+          groupLabel={pick(CHROME.accent, lang)}
+          optionLabel={(choice) =>
+            `${pick(CHROME.accent, lang)} ${pick(
+              CHROME[ACCENT_LABELS[choice]],
+              lang,
+            )}`
+          }
         />
-        <IngotSideNav
-          label={pick(CHROME.components, lang)}
-          items={navItems(COMPONENT_ENTRIES, page, lang)}
+        {separator}
+        <DocSegmented
+          options={THEME_CHOICES.map((choice) => ({
+            value: choice,
+            label:
+              choice === "light"
+                ? pick(CHROME.themeLight, lang)
+                : choice === "dark"
+                  ? pick(CHROME.themeDark, lang)
+                  : pick(CHROME.themeSystem, lang),
+          }))}
+          value={theme}
+          onChange={(next) => {
+            setTheme(next as ThemeChoice);
+            writeStoredTheme(next as ThemeChoice);
+          }}
+          label={pick(CHROME.theme, lang)}
+          testId="docs-theme"
         />
-
-        <div className="space-y-3 border-t border-border pt-4">
-          {/* Jediný jazyk = přepínat není co. Ovládací prvek s jednou
-              volbou jen zabírá místo a slibuje volbu, která neexistuje. */}
-          {options.length > 1 && (
-            <label className="block text-xs text-ink-3">
-              <span className="mb-1 block">{pick(CHROME.language, lang)}</span>
-              <select
-                className="w-full rounded border border-border-strong bg-surface px-2 py-1 text-sm text-ink"
-                value={lang}
-                onChange={(event) => {
-                  const next = event.target.value as DocLang;
-                  setLang(next);
-                  writeStoredLang(next);
-                }}
-                data-testid="docs-lang"
-              >
-                {options.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-
-          <label className="block text-xs text-ink-3">
-            <span className="mb-1 block">{pick(CHROME.theme, lang)}</span>
-            <select
-              className="w-full rounded border border-border-strong bg-surface px-2 py-1 text-sm text-ink"
-              value={theme}
-              onChange={(event) => {
-                const next = event.target.value as ThemeChoice;
-                setTheme(next);
-                writeStoredTheme(next);
-              }}
-              data-testid="docs-theme"
-            >
-              {THEME_CHOICES.map((choice) => (
-                <option key={choice} value={choice}>
-                  {choice === "light"
-                    ? pick(CHROME.themeLight, lang)
-                    : choice === "dark"
-                      ? pick(CHROME.themeDark, lang)
-                      : pick(CHROME.themeSystem, lang)}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
-              (ui_dictionary) — doc web přihlášení nemá, takže volba žije
-              jen v prohlížeči, stejně jako motiv a akcent. */}
-          <label className="block text-xs text-ink-3">
-            <span className="mb-1 block">{pick(CHROME.dictionary, lang)}</span>
-            <select
-              className="w-full rounded border border-border-strong bg-surface px-2 py-1 text-sm text-ink"
-              value={dictionary}
-              onChange={(event) =>
-                setDictionaryMode(event.target.value as DictionaryMode)
-              }
-              data-testid="docs-dictionary"
-            >
-              {DICTIONARY_MODES.map((mode) => (
-                <option key={mode} value={mode}>
-                  {mode === "simple"
-                    ? pick(CHROME.dictionarySimple, lang)
-                    : mode === "expert"
-                      ? pick(CHROME.dictionaryExpert, lang)
-                      : pick(CHROME.dictionaryBoth, lang)}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="block text-xs text-ink-3">
-            <span className="mb-1 block">{pick(CHROME.accent, lang)}</span>
-            <AccentSwatches
-              value={accent}
+        {/* Jediný jazyk = přepínat není co. Ovládací prvek s jednou
+            volbou jen zabírá místo a slibuje volbu, která neexistuje. */}
+        {options.length > 1 && (
+          <>
+            {separator}
+            <DocSegmented
+              options={options.map((option) => ({
+                value: option.code,
+                label: option.code.toUpperCase(),
+              }))}
+              value={lang}
               onChange={(next) => {
-                setAccent(next);
-                writeStoredAccent(next);
+                setLang(next as DocLang);
+                writeStoredLang(next as DocLang);
               }}
-              groupLabel={pick(CHROME.accent, lang)}
-              optionLabel={(choice) =>
-                `${pick(CHROME.accent, lang)} ${pick(
-                  CHROME[ACCENT_LABELS[choice]],
-                  lang,
-                )}`
-              }
+              label={pick(CHROME.language, lang)}
+              testId="docs-lang"
             />
-          </div>
-        </div>
-      </div>
+          </>
+        )}
+        {separator}
+        {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
+            (ui_dictionary) — doc web přihlášení nemá, takže volba žije
+            jen v prohlížeči, stejně jako motiv a akcent. */}
+        <DocSegmented
+          options={DICTIONARY_MODES.map((mode) => ({
+            value: mode,
+            label:
+              mode === "simple"
+                ? pick(CHROME.dictionarySimple, lang)
+                : mode === "expert"
+                  ? pick(CHROME.dictionaryExpert, lang)
+                  : pick(CHROME.dictionaryBoth, lang),
+          }))}
+          value={dictionary}
+          onChange={(next) => setDictionaryMode(next as DictionaryMode)}
+          label={pick(CHROME.dictionary, lang)}
+          testId="docs-dictionary"
+        />
+      </header>
 
-      <main className="min-w-0 flex-1 space-y-8">
+      <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
+        {/* Menu na zvednuté ploše — aktivní položka pak může být bílá
+            s ink linkou, přesně jak to kreslí handoff. */}
+        <div className="w-52 shrink-0 space-y-6 self-start rounded-md border border-border bg-surface-2 p-4">
+          <IngotSideNav
+            label={pick(CHROME.guides, lang)}
+            items={navItems(GUIDE_ENTRIES, page, lang)}
+          />
+          <IngotSideNav
+            label={pick(CHROME.components, lang)}
+            items={navItems(COMPONENT_ENTRIES, page, lang)}
+          />
+        </div>
+
+        <main className="min-w-0 flex-1 space-y-8">
         <IngotPageHeader
           title={titleOf(page, lang)}
           description={summaryOf(page, lang)}
           titleAdornment={
             page.kind === "component" ? (
               <span className="flex items-center gap-2">
+                {/* Tóny podle handoffu: stav neutrální (beta varovný),
+                    verze akcentová. */}
                 <IngotBadge
-                  tone={page.doc.status === "stable" ? "ok" : "warn"}
+                  tone={page.doc.status === "stable" ? "neutral" : "warn"}
                   testId="docs-status"
                 >
                   {page.doc.status === "stable"
                     ? pick(CHROME.statusStable, lang)
                     : pick(CHROME.statusBeta, lang)}
                 </IngotBadge>
-                <IngotBadge testId="docs-version">
+                <IngotBadge tone="accent" testId="docs-version">
                   {`v${page.doc.version}`}
                 </IngotBadge>
               </span>
@@ -715,32 +745,46 @@ export function DocsApp(): JSX.Element {
           }
         />
 
-        {sections.map((section) => (
-          <IngotSection key={section.id} id={section.id} title={section.title}>
-            {section.body}
-          </IngotSection>
-        ))}
-
-        <PagerFooter page={page} lang={lang} />
-      </main>
-
-      <aside aria-label={pick(CHROME.onThisPage, lang)} className="w-44 shrink-0">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-3">
-          {pick(CHROME.onThisPage, lang)}
-        </p>
-        <IngotList
-          variant="plain"
-          items={sections.map((section) => (
-            <a
+          {sections.map((section) => (
+            <IngotSection
               key={section.id}
-              className="text-ink-2 hover:text-ink"
-              href={`#${section.id}`}
+              id={section.id}
+              title={
+                section.cap ? (
+                  <CapTitle>{section.title}</CapTitle>
+                ) : (
+                  section.title
+                )
+              }
             >
-              {section.title}
-            </a>
+              {section.body}
+            </IngotSection>
           ))}
-        />
-      </aside>
+
+          <PagerFooter page={page} lang={lang} />
+        </main>
+
+        <aside
+          aria-label={pick(CHROME.onThisPage, lang)}
+          className="w-44 shrink-0 self-start border-l border-border pl-4"
+        >
+          <p className="mb-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
+            {pick(CHROME.onThisPage, lang)}
+          </p>
+          <IngotList
+            variant="plain"
+            items={sections.map((section) => (
+              <a
+                key={section.id}
+                className="text-[12.5px] text-ink-3 hover:text-ink"
+                href={`#${section.id}`}
+              >
+                {section.title}
+              </a>
+            ))}
+          />
+        </aside>
+      </div>
     </div>
   );
 }

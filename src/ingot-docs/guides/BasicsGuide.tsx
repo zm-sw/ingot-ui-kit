@@ -268,11 +268,13 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 const SPACE_STEPS = [4, 8, 12, 16, 24, 32] as const;
+// Hodnoty odpovídají rádiusové škále kitu — utilita vlevo kreslí box,
+// takže číslo vedle ní nemůže lhát, aniž by to bylo vidět.
 const RADIUS_STEPS = [
-  { className: "rounded-sm", px: 2 },
-  { className: "rounded", px: 4 },
-  { className: "rounded-md", px: 6 },
-  { className: "rounded-lg", px: 8 },
+  { className: "rounded-sm", px: 4 },
+  { className: "rounded", px: 6 },
+  { className: "rounded-md", px: 10 },
+  { className: "rounded-lg", px: 14 },
 ] as const;
 
 function SpacesAndRadii({ lang }: { lang: DocLang }): JSX.Element {

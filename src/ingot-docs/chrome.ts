@@ -92,7 +92,7 @@ export const CHROME: ChromeStrings = {
   theme: { cs: "Motiv", en: "Theme" },
   themeLight: { cs: "Světlý", en: "Light" },
   themeDark: { cs: "Tmavý", en: "Dark" },
-  themeSystem: { cs: "Podle systému", en: "System" },
+  themeSystem: { cs: "Systém", en: "System" },
   accent: { cs: "Akcent", en: "Accent" },
   dictionary: { cs: "Slovník", en: "Dictionary" },
   dictionarySimple: { cs: "Jednoduše", en: "Simple" },
