@@ -78,6 +78,7 @@ export { IngotForm } from "./IngotForm";
 export { IngotModal } from "./IngotModal";
 export { IngotDrawer } from "./IngotDrawer";
 export { IngotToast, toast, type IngotToastOptions } from "./IngotToast";
+export { IngotTabs, type IngotTabItem } from "./IngotTabs";
 export {
   useModalLayer,
   MENU_LAYER,
