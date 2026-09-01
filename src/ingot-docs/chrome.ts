@@ -36,6 +36,12 @@ export interface ChromeStrings {
   themeDark: Localized<string>;
   themeSystem: Localized<string>;
   accent: Localized<string>;
+  /** Přepínač slovníku Jednoduše/Expert — viz ``dictionary.ts``. Ploché
+   *  klíče místo mapy ze stejného důvodu jako ``themeLight``. */
+  dictionary: Localized<string>;
+  dictionarySimple: Localized<string>;
+  dictionaryExpert: Localized<string>;
+  dictionaryBoth: Localized<string>;
   /** Jména rodin. Plochá pole (ne mapa) ze stejného důvodu jako
    *  ``themeLight``/``themeDark``: chybějící překlad tak shodí typecheck
    *  na konkrétním jménu, ne až na tvaru mapy. */
@@ -73,6 +79,10 @@ export const CHROME: ChromeStrings = {
   themeDark: { cs: "Tmavý", en: "Dark" },
   themeSystem: { cs: "Podle systému", en: "System" },
   accent: { cs: "Akcent", en: "Accent" },
+  dictionary: { cs: "Slovník", en: "Dictionary" },
+  dictionarySimple: { cs: "Jednoduše", en: "Simple" },
+  dictionaryExpert: { cs: "Expert", en: "Expert" },
+  dictionaryBoth: { cs: "Obojí", en: "Both" },
   accentBlue: { cs: "modrý", en: "blue" },
   accentEmerald: { cs: "smaragdový", en: "emerald" },
   accentOrange: { cs: "oranžový", en: "orange" },

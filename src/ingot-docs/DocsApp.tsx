@@ -49,6 +49,12 @@ import {
 import { AccentSwatches } from "@/components/AccentSwatches";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
+  DICTIONARY_MODES,
+  setDictionaryMode,
+  useDictionaryMode,
+  type DictionaryMode,
+} from "@/ingot-docs/dictionary";
+import {
   initialLang,
   writeStoredLang,
   type DocLang,
@@ -423,6 +429,7 @@ export function DocsApp(): JSX.Element {
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
+  const dictionary = useDictionaryMode();
 
   useEffect(() => {
     const onHashChange = () => {
@@ -520,6 +527,31 @@ export function DocsApp(): JSX.Element {
                     : choice === "dark"
                       ? pick(CHROME.themeDark, lang)
                       : pick(CHROME.themeSystem, lang)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
+              (ui_dictionary) — doc web přihlášení nemá, takže volba žije
+              jen v prohlížeči, stejně jako motiv a akcent. */}
+          <label className="block text-xs text-ink-3">
+            <span className="mb-1 block">{pick(CHROME.dictionary, lang)}</span>
+            <select
+              className="w-full rounded border border-border-strong bg-surface px-2 py-1 text-sm text-ink"
+              value={dictionary}
+              onChange={(event) =>
+                setDictionaryMode(event.target.value as DictionaryMode)
+              }
+              data-testid="docs-dictionary"
+            >
+              {DICTIONARY_MODES.map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode === "simple"
+                    ? pick(CHROME.dictionarySimple, lang)
+                    : mode === "expert"
+                      ? pick(CHROME.dictionaryExpert, lang)
+                      : pick(CHROME.dictionaryBoth, lang)}
                 </option>
               ))}
             </select>

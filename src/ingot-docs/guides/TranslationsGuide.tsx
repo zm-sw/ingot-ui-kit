@@ -1,4 +1,5 @@
 import { IngotCode, IngotList } from "@/ingot";
+import { DictionaryTermsDemo } from "@/ingot-docs/DictionaryTermsDemo";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
@@ -180,6 +181,145 @@ export const TranslationsGuide: IngotGuidePage = {
                   <IngotCode>loadingLabel</IngotCode> — the “loading”
                   announcement. Optional in the type, but once loading can
                   happen the announcement is empty without it.
+                </>,
+              ]}
+            />
+          </div>
+        ),
+      },
+    },
+    // Slovník Jednoduše/Expert (KAN-662). Rozhodnutí o formě režimu
+    // „Obojí“ (závorka, ne tooltip) je zapsané TADY, protože tohle je
+    // stránka, kterou si otevře ten, kdo bude termíny přidávat.
+    {
+      id: "slovnik",
+      title: {
+        cs: "Slovník: Jednoduše / Expert",
+        en: "Dictionary: Simple / Expert",
+      },
+      body: {
+        cs: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Odborné termíny mají dvě podoby: jednoduchý opis pro čtenáře,
+              který obor teprve poznává, a expertní termín pro toho, kdo v
+              něm žije. Kterou podobu uvidí, si volí uživatel — režimy jsou{" "}
+              <strong>Jednoduše</strong>, <strong>Expert</strong> a výchozí{" "}
+              <strong>Obojí</strong>.
+            </p>
+            <p>
+              Režim „Obojí“ ukazuje expertní termín a jednoduchý opis{" "}
+              <strong>v závorce za ním</strong> — ne v tooltipu. Tooltip
+              nefunguje na dotykové obrazovce, odečítač obrazovky ho bez
+              extra práce nepřečte a text mimo stránku nenajde ani
+              vyhledávání. Závorka je delší, ale vidí ji každý.
+            </p>
+            <p>
+              Vyzkoušej: přepni volbu <strong>Slovník</strong> vlevo dole a
+              sleduj, jak se termíny níže překreslí.
+            </p>
+            <DictionaryTermsDemo lang="cs" />
+          </div>
+        ),
+        en: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Technical terms come in two forms: a plain description for a
+              reader still learning the domain, and the expert term for the
+              one who lives in it. Which form appears is the user’s choice —
+              the modes are <strong>Simple</strong>, <strong>Expert</strong>{" "}
+              and the default <strong>Both</strong>.
+            </p>
+            <p>
+              The “Both” mode shows the expert term with the plain
+              description <strong>in parentheses after it</strong> — not in a
+              tooltip. Tooltips do not work on touch screens, screen readers
+              skip them without extra wiring, and in-page search cannot find
+              text that is not in the page. The parenthesis is longer, but
+              everyone sees it.
+            </p>
+            <p>
+              Try it: flip the <strong>Dictionary</strong> control in the
+              bottom left and watch the terms below re-render.
+            </p>
+            <DictionaryTermsDemo lang="en" />
+          </div>
+        ),
+      },
+    },
+    {
+      id: "jak-pridat-termin",
+      title: {
+        cs: "Jak přidat termín",
+        en: "How to add a term",
+      },
+      body: {
+        cs: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Termíny bydlí v jednom registru vedle ostatních jazykových
+              pomůcek doc webu. Každý termín je dvojice variant, obě už
+              přeložené do všech jazyků, které doc web nese.
+            </p>
+            <IngotList
+              variant="ordered"
+              items={[
+                <>
+                  Přidej klíč do registru termínů: <IngotCode>expert</IngotCode>{" "}
+                  povinně, <IngotCode>simple</IngotCode> jen pokud má termín
+                  opravdový jednoduchý opis — ne jen synonymum.
+                </>,
+                <>
+                  Typ registru vynucuje všechny jazyky: varianta, které
+                  překlad chybí, neprojde kontrolou typů. Jazyk se nedá
+                  slíbit, aniž by se napsal.
+                </>,
+                <>
+                  V obsahu volej výběr přes{" "}
+                  <IngotCode>termLabel(klíč, režim, jazyk)</IngotCode> — nikdy
+                  nevpisuj jednu z variant natvrdo. Tím by se text odpojil od
+                  volby uživatele.
+                </>,
+                <>
+                  Termín bez <IngotCode>simple</IngotCode> varianty se ve
+                  všech režimech ukazuje expertně — chybějící opis nikdy
+                  neskončí jako prázdný text.
+                </>,
+              ]}
+            />
+          </div>
+        ),
+        en: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Terms live in one registry next to the doc web’s other language
+              helpers. Each term is a pair of variants, both already
+              translated into every language the doc web carries.
+            </p>
+            <IngotList
+              variant="ordered"
+              items={[
+                <>
+                  Add the key to the term registry:{" "}
+                  <IngotCode>expert</IngotCode> is required,{" "}
+                  <IngotCode>simple</IngotCode> only when the term has a real
+                  plain description — not just a synonym.
+                </>,
+                <>
+                  The registry’s type enforces every language: a variant
+                  missing a translation fails the type check. A language
+                  cannot be promised without being written.
+                </>,
+                <>
+                  In content, select via{" "}
+                  <IngotCode>termLabel(key, mode, language)</IngotCode> —
+                  never hard-code one of the variants. That would disconnect
+                  the text from the user’s choice.
+                </>,
+                <>
+                  A term without a <IngotCode>simple</IngotCode> variant shows
+                  its expert form in every mode — a missing description never
+                  ends up as empty text.
                 </>,
               ]}
             />
