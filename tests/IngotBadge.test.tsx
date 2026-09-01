@@ -35,7 +35,7 @@ const TONES: readonly IngotBadgeTone[] = [
 ];
 
 const GLOBALS = readFileSync(
-  path.resolve(__dirname, "../src/styles/globals.css"),
+  path.resolve(__dirname, "../src/ingot/tokens.css"),
   "utf-8",
 );
 
