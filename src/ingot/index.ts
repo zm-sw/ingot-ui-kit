@@ -76,6 +76,7 @@ export {
 } from "./IngotBadge";
 export { IngotForm } from "./IngotForm";
 export { IngotModal } from "./IngotModal";
+export { IngotDrawer } from "./IngotDrawer";
 export {
   useModalLayer,
   MENU_LAYER,

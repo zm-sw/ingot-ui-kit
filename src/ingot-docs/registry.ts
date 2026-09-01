@@ -15,6 +15,7 @@ import { CardDoc } from "@/ingot-docs/pages/CardDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
+import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
 import { IngotEmptyStateDoc } from "@/ingot-docs/pages/IngotEmptyStateDoc";
 import { IngotFieldDoc } from "@/ingot-docs/pages/IngotFieldDoc";
 import { IngotFieldInputDoc } from "@/ingot-docs/pages/IngotFieldInputDoc";
@@ -68,6 +69,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotFieldInputDoc,
   IngotFieldDoc,
   IngotModalDoc,
+  IngotDrawerDoc,
   IngotConfirmDoc,
   // Bloky list obrazovky v pořadí, ve kterém stojí na stránce (KAN-654):
   // filtr bar → tabulka (s bulk barem) → prázdný stav → pager.
