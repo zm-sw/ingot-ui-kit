@@ -9,6 +9,7 @@
  */
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
+import { PublicPagesGuide } from "@/ingot-docs/guides/PublicPagesGuide";
 import { TranslationsGuide } from "@/ingot-docs/guides/TranslationsGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
@@ -52,6 +53,10 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   IntroGuide,
   BasicsGuide,
   TranslationsGuide,
+  // Marketingové bloky veřejného webu (KAN-664) — bloky nejsou export
+  // ``@/ingot`` (v adminu nemají konzumenta), proto průvodce, ne
+  // komponentní stránka.
+  PublicPagesGuide,
 ];
 
 export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
