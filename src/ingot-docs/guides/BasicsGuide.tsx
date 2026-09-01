@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
@@ -47,6 +49,269 @@ function TokenDot({ token }: { token: string }): JSX.Element {
       className="inline-block h-4 w-4 rounded-full border border-border-strong align-middle"
       style={{ background: `var(${token})` }}
     />
+  );
+}
+
+/**
+ * Hodnota tokenu odečtená za běhu přes ``getComputedStyle`` — swatche
+ * tedy ukazují TO, co paleta právě drží, ne opsaný seznam hexů, který
+ * by se rozešel s první úpravou odstínu.
+ *
+ * Efekt schválně bez pole závislostí: přepnutí motivu hodnotu tokenu
+ * změní, ale žádnou závislost komponenty ne — po každém překreslení se
+ * proto odečte znovu (``setState`` se stejným řetězcem nic nepřekreslí).
+ */
+function TokenValue({ token }: { token: string }): JSX.Element {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    if (!ref.current) return;
+    setValue(getComputedStyle(ref.current).getPropertyValue(token).trim());
+  });
+  return (
+    <span ref={ref} className="font-mono text-xs text-ink-3">
+      {value || "—"}
+    </span>
+  );
+}
+
+interface TokenRow {
+  token: string;
+  note: Localized<string>;
+}
+
+function tokenColumns(lang: DocLang): readonly IngotColumn<TokenRow>[] {
+  return [
+    {
+      key: "swatch",
+      header: "",
+      cell: (row) => <TokenDot token={row.token} />,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      key: "token",
+      header: "Token",
+      cell: (row) => <IngotCode>{row.token}</IngotCode>,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      key: "value",
+      header: lang === "cs" ? "Hodnota" : "Value",
+      cell: (row) => <TokenValue token={row.token} />,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      key: "note",
+      header: lang === "cs" ? "K čemu" : "What for",
+      cell: (row) => row.note[lang],
+    },
+  ];
+}
+
+const NEUTRAL_TOKENS: readonly TokenRow[] = [
+  {
+    token: "--bg",
+    note: { cs: "Plocha stránky.", en: "The page surface." },
+  },
+  {
+    token: "--surface",
+    note: { cs: "Karty a vstupy.", en: "Cards and inputs." },
+  },
+  {
+    token: "--surface-2",
+    note: {
+      cs: "Zvednutá plocha — hlavičky tabulek, stage ukázek.",
+      en: "A raised surface — table headers, demo stages.",
+    },
+  },
+  {
+    token: "--border",
+    note: { cs: "Běžný obrys.", en: "The ordinary outline." },
+  },
+  {
+    token: "--border-strong",
+    note: {
+      cs: "Obrys ovládacích prvků.",
+      en: "The outline of controls.",
+    },
+  },
+  {
+    token: "--ink",
+    note: { cs: "Hlavní text.", en: "Primary text." },
+  },
+  {
+    token: "--ink-2",
+    note: { cs: "Běžný text odstavců.", en: "Ordinary paragraph text." },
+  },
+  {
+    token: "--ink-3",
+    note: { cs: "Popisky a doprovodný text.", en: "Labels and helper text." },
+  },
+];
+
+const STATE_TOKENS: readonly TokenRow[] = [
+  {
+    token: "--ok",
+    note: { cs: "Kladný stav — hotovo, schváleno.", en: "Positive — done, approved." },
+  },
+  {
+    token: "--warn",
+    note: { cs: "Varování — vyžaduje pozornost.", en: "Warning — needs attention." },
+  },
+  {
+    token: "--danger",
+    note: { cs: "Chyba a nevratné akce.", en: "Errors and irreversible actions." },
+  },
+];
+
+function TokenSwatches({ lang }: { lang: DocLang }): JSX.Element {
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {lang === "cs"
+          ? "Hodnoty ve sloupci se čtou za běhu z právě platné palety — přepnutí motivu vlevo je přepíše. Obrazovka proto vždycky sahá po jménu tokenu, nikdy po hodnotě."
+          : "The values in the column are read at runtime from the palette currently in effect — switching the theme on the left rewrites them. A screen therefore always reaches for the token name, never the value."}
+      </p>
+      <div className="overflow-x-auto">
+        <IngotTable
+          columns={tokenColumns(lang)}
+          rows={NEUTRAL_TOKENS}
+          rowKey={(row) => row.token}
+          caption={lang === "cs" ? "Neutrální tokeny" : "Neutral tokens"}
+          className="min-w-[34rem]"
+          testId="docs-neutral-swatches"
+        />
+      </div>
+      <div className="overflow-x-auto">
+        <IngotTable
+          columns={tokenColumns(lang)}
+          rows={STATE_TOKENS}
+          rowKey={(row) => row.token}
+          caption={lang === "cs" ? "Stavové tokeny" : "State tokens"}
+          className="min-w-[34rem]"
+          testId="docs-state-swatches"
+        />
+      </div>
+    </div>
+  );
+}
+
+interface TypeRow {
+  className: string;
+  note: Localized<string>;
+}
+
+const TYPE_SCALE: readonly TypeRow[] = [
+  {
+    className: "text-2xl font-semibold tracking-tight text-ink",
+    note: { cs: "Nadpis stránky.", en: "The page title." },
+  },
+  {
+    className: "text-lg font-semibold text-ink",
+    note: { cs: "Nadpis sekce.", en: "A section heading." },
+  },
+  {
+    className: "text-sm text-ink-2",
+    note: { cs: "Běžný text.", en: "Ordinary text." },
+  },
+  {
+    className: "text-xs text-ink-3",
+    note: { cs: "Popisky a doprovodný text.", en: "Labels and helper text." },
+  },
+  {
+    className: "font-mono text-xs",
+    note: { cs: "Kód a technické hodnoty.", en: "Code and technical values." },
+  },
+];
+
+function typeColumns(lang: DocLang): readonly IngotColumn<TypeRow>[] {
+  return [
+    {
+      key: "sample",
+      header: lang === "cs" ? "Ukázka" : "Sample",
+      cell: (row) => <span className={row.className}>Aa Bb Cc 123</span>,
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      key: "class",
+      header: lang === "cs" ? "Třídy" : "Classes",
+      cell: (row) => <IngotCode>{row.className}</IngotCode>,
+    },
+    {
+      key: "note",
+      header: lang === "cs" ? "K čemu" : "What for",
+      cell: (row) => row.note[lang],
+    },
+  ];
+}
+
+function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {lang === "cs"
+          ? "Škála má čtyři stupně a mono pro kód. Velikost se nevybírá od oka: každý stupeň má svou roli a ukázka vlevo je vysázená přesně těmi třídami, které řádek jmenuje."
+          : "The scale has four steps plus mono for code. Sizes are not picked by eye: each step has a role, and the sample on the left is set in exactly the classes the row names."}
+      </p>
+      <div className="overflow-x-auto">
+        <IngotTable
+          columns={typeColumns(lang)}
+          rows={TYPE_SCALE}
+          rowKey={(row) => row.className}
+          caption={lang === "cs" ? "Typografická škála" : "Type scale"}
+          className="min-w-[34rem]"
+          testId="docs-type-scale"
+        />
+      </div>
+    </div>
+  );
+}
+
+const SPACE_STEPS = [4, 8, 12, 16, 24, 32] as const;
+const RADIUS_STEPS = [
+  { className: "rounded-sm", px: 2 },
+  { className: "rounded", px: 4 },
+  { className: "rounded-md", px: 6 },
+  { className: "rounded-lg", px: 8 },
+] as const;
+
+function SpacesAndRadii({ lang }: { lang: DocLang }): JSX.Element {
+  return (
+    <div className="space-y-4 text-sm text-ink-2">
+      <p>
+        {lang === "cs"
+          ? "Mezery jdou po čtyřech pixelech. Menší krok se nezavádí — dvě sousední hodnoty, které od oka nerozeznáš, nejsou dvě hodnoty."
+          : "Spacing runs in four-pixel steps. No smaller step exists — two adjacent values you cannot tell apart by eye are not two values."}
+      </p>
+      <div className="space-y-1.5" data-testid="docs-spaces">
+        {SPACE_STEPS.map((px) => (
+          <div key={px} className="flex items-center gap-3">
+            <IngotCode>{`${px}px`}</IngotCode>
+            <span
+              aria-hidden="true"
+              className="inline-block h-3 rounded-sm bg-accent"
+              style={{ width: `${px * 3}px` }}
+            />
+          </div>
+        ))}
+      </div>
+      <p>
+        {lang === "cs"
+          ? "Rádius roste s velikostí prvku: drobné štítky mají nejmenší, karty a rámečky největší. Kruh je vyhrazený pro avatary a puntíky."
+          : "Radius grows with the element: small badges take the smallest, cards and frames the largest. The circle is reserved for avatars and dots."}
+      </p>
+      <div className="flex flex-wrap items-end gap-4" data-testid="docs-radii">
+        {RADIUS_STEPS.map((step) => (
+          <div key={step.className} className="space-y-1 text-center">
+            <span
+              aria-hidden="true"
+              className={`block h-12 w-16 border border-border-strong bg-surface-2 ${step.className}`}
+            />
+            <IngotCode>{`${step.className} · ${step.px}px`}</IngotCode>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -202,6 +467,30 @@ export const BasicsGuide: IngotGuidePage = {
       body: {
         cs: <AccentFamilies lang="cs" />,
         en: <AccentFamilies lang="en" />,
+      },
+    },
+    {
+      id: "sw-neutral",
+      title: { cs: "Neutrální a stavové barvy", en: "Neutral and state colours" },
+      body: {
+        cs: <TokenSwatches lang="cs" />,
+        en: <TokenSwatches lang="en" />,
+      },
+    },
+    {
+      id: "typografie",
+      title: { cs: "Typografická škála", en: "Type scale" },
+      body: {
+        cs: <TypeScale lang="cs" />,
+        en: <TypeScale lang="en" />,
+      },
+    },
+    {
+      id: "spaces",
+      title: { cs: "Prostor a rádiusy", en: "Space and radii" },
+      body: {
+        cs: <SpacesAndRadii lang="cs" />,
+        en: <SpacesAndRadii lang="en" />,
       },
     },
   ],

@@ -94,6 +94,17 @@ export interface IngotDocPage {
    * nesoulad shodí gate, takže menu a guard nemůžou rozejít.
    */
   name: string;
+  /**
+   * Stav primitiva — badge vedle nadpisu (KAN-663). ``stable`` znamená
+   * „API se nemění bez ohlášení“, ``beta`` „ještě se hledá tvar“.
+   * Povinné schválně: stránka bez stavu by tiše slibovala stabilitu.
+   */
+  status: "stable" | "beta";
+  /**
+   * Verze primitiva — druhý badge vedle nadpisu. Nepřekládá se, je to
+   * číslo. Povinné ze stejného důvodu jako ``status``.
+   */
+  version: string;
   /** Jedna věta do menu i nad ukázku. */
   summary: Localized<string>;
   /** Živá ukázka. MUSÍ renderovat skutečnou komponentu z ``@/ingot``. */

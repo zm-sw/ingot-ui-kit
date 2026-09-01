@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotToolbarDoc: IngotDocPage = {
   name: "IngotToolbar",
+  status: "beta",
+  version: "0.1",
   summary: {
     cs: "Filtr bar nad seznamem. Drží mezery, zalamování a pravý konec; čím se filtruje, dodává volající.",
     en: "A filter bar above a list. It owns spacing, wrapping and the right end; what filters, the caller supplies.",

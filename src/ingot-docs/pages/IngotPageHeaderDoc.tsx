@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotPageHeaderDoc: IngotDocPage = {
   name: "IngotPageHeader",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Hlavička obrazovky: nadpis, věta pod ním, akce vpravo. Typografický spec má jedno místo a nenese s sebou router.",
     en: "The screen header: a title, a sentence under it, actions on the right. One home for the type spec, and it drags no router along.",

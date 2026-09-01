@@ -10,6 +10,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // Rendered text to říct nesmí (interní jména), proto jen tady.
 export const IngotPageHintDoc: IngotDocPage = {
   name: "IngotPageHint",
+  status: "beta",
+  version: "0.1",
   summary: {
     cs: "Nápověda stránky se žárovkou: klik jednorázově zvýrazní prvky, kterých se nápověda týká.",
     en: "A page hint with a bulb: a click highlights the elements the hint talks about, once.",

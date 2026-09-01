@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotPaginationDoc: IngotDocPage = {
   name: "IngotPagination",
+  status: "beta",
+  version: "0.1",
   summary: {
     cs: "Stránkování pod tabulkou. Řízené volajícím — s tabulkou se nepře o to, kdo drží stav stránky.",
     en: "Pagination under a table. Controlled by the caller — it never fights the table over who owns the page state.",

@@ -7,10 +7,15 @@
  * se nikdo neproklikne. Přidáváš primitivum? Přidej sem jeho ``…Doc``
  * a guard tě pustí — bez toho spadne gate, a to je smysl KAN-581.
  */
+import { A11yGuide } from "@/ingot-docs/guides/A11yGuide";
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
+import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
+import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
 import { PublicPagesGuide } from "@/ingot-docs/guides/PublicPagesGuide";
+import { ShellGuide } from "@/ingot-docs/guides/ShellGuide";
 import { TranslationsGuide } from "@/ingot-docs/guides/TranslationsGuide";
+import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
@@ -50,8 +55,15 @@ import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
  * První položka je zároveň **výchozí obrazovka** doc webu.
  */
 export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
+  // Pořadí je čtenářské: od „co to je“ přes stavební kameny a pravidla
+  // ke speciálům. Prev/next patička z něj dělá souvislou četbu.
   IntroGuide,
   BasicsGuide,
+  IconsGuide,
+  ShellGuide,
+  UsageGuide,
+  FormatsGuide,
+  A11yGuide,
   TranslationsGuide,
   // Marketingové bloky veřejného webu (KAN-664) — bloky nejsou export
   // ``@/ingot`` (v adminu nemají konzumenta), proto průvodce, ne

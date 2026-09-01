@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotModalDoc: IngotDocPage = {
   name: "IngotModal",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Skořápka dialogu s a11y laťkou: focus trap, ESC, scroll lock, aria-modal a návrat fokusu na spouštěč.",
     en: "Dialog shell with the accessibility floor built in: focus trap, ESC, scroll lock, aria-modal and focus returned to the trigger.",

@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotTableDoc: IngotDocPage = {
   name: "IngotTable",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Tabulka se sloupci jako daty. Drží scope na záhlaví, jeden zdroj pravdy pro colSpan a řádkové akce neschovává za hover.",
     en: "A table whose columns are data. It keeps scope on the headers, one source of truth for colSpan, and never hides row actions behind hover.",
