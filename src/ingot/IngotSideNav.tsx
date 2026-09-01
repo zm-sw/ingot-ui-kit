@@ -41,7 +41,7 @@ export function IngotSideNav({
 }): JSX.Element {
   return (
     <nav aria-label={label} data-testid={testId}>
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-3">
+      <p className="mb-2 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
         {label}
       </p>
       <ul className="space-y-1">
@@ -52,8 +52,8 @@ export function IngotSideNav({
               aria-current={item.current ? "page" : undefined}
               className={
                 item.current
-                  ? "block rounded bg-accent-bg px-2 py-1 text-sm text-accent-ink"
-                  : "block rounded px-2 py-1 text-sm text-ink-2 hover:bg-surface-2"
+                  ? "block rounded bg-surface px-2 py-1 text-sm font-medium text-ink shadow-[inset_2px_0_0_var(--ink)]"
+                  : "block rounded px-2 py-1 text-sm text-ink-2 hover:bg-surface-3 hover:text-ink"
               }
               data-testid={item.testId}
             >

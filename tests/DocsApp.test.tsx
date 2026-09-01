@@ -388,12 +388,12 @@ describe("DocsApp", () => {
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
 
-    const picker = await screen.findByTestId("docs-lang");
+    const enButton = await screen.findByTestId("docs-lang-en");
     expect(
       screen.getByRole("heading", { level: 2, name: CHROME.demo.cs }),
     ).toBeInTheDocument();
 
-    await user.selectOptions(picker, "en");
+    await user.click(enButton);
 
     // Skořápka i obsah stránky — ne jen jedno z toho.
     expect(
@@ -438,8 +438,8 @@ describe("DocsApp", () => {
 
     const picker = await screen.findByTestId("docs-lang");
     const values = within(picker)
-      .getAllByRole("option")
-      .map((option) => (option as HTMLOptionElement).value);
+      .getAllByRole("radio")
+      .map((button) => button.textContent?.toLowerCase());
     expect(values).toEqual(["cs", "en"]);
     expect(values).not.toContain("de");
     for (const value of values) {
@@ -456,8 +456,8 @@ describe("DocsApp", () => {
 
     const picker = await screen.findByTestId("docs-lang");
     const values = within(picker)
-      .getAllByRole("option")
-      .map((option) => (option as HTMLOptionElement).value);
+      .getAllByRole("radio")
+      .map((button) => button.textContent?.toLowerCase());
     expect(values).toEqual([...DOC_LANGS]);
   });
 
@@ -467,14 +467,13 @@ describe("DocsApp", () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
-    const picker = screen.getByTestId("docs-theme");
     expect(document.documentElement).not.toHaveClass("dark");
 
-    await user.selectOptions(picker, "dark");
+    await user.click(screen.getByTestId("docs-theme-dark"));
     expect(document.documentElement).toHaveClass("dark");
     expect(window.localStorage.getItem(THEME_KEY)).toBe("dark");
 
-    await user.selectOptions(picker, "light");
+    await user.click(screen.getByTestId("docs-theme-light"));
     expect(document.documentElement).not.toHaveClass("dark");
     expect(window.localStorage.getItem(THEME_KEY)).toBe("light");
   });
@@ -483,7 +482,10 @@ describe("DocsApp", () => {
     window.localStorage.setItem(THEME_KEY, "dark");
     render(<DocsApp />);
     expect(document.documentElement).toHaveClass("dark");
-    expect(screen.getByTestId("docs-theme")).toHaveValue("dark");
+    expect(screen.getByTestId("docs-theme-dark")).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
   });
 
   // --- akcent (KAN-648) -----------------------------------------------
@@ -523,7 +525,7 @@ describe("DocsApp", () => {
     render(<DocsApp />);
 
     await user.click(screen.getByTestId("accent-swatch-violet"));
-    await user.selectOptions(screen.getByTestId("docs-theme"), "dark");
+    await user.click(screen.getByTestId("docs-theme-dark"));
 
     // Rodina se nemění, mění se jen to, který její blok kaskáda vybere.
     // Kdyby motiv akcent přepisoval (prototypové ``applyTheme`` volalo
