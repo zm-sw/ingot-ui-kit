@@ -326,3 +326,41 @@
   --accent-border: #475569;
 }
 
+/* ============================================================
+ * Zvýraznění cílů nápovědy (KAN-659) — ingot.css sekce 12.
+ *
+ * Jediné chování-CSS v tomhle souboru, schválně: ``IngotPageHint``
+ * přidává třídu ``.is-hinted`` prvkům VOLAJÍCÍHO (``targets`` /
+ * ``data-hint-target``), takže pravidlo musí doputovat ke každému
+ * konzumentovi kitu — a tenhle soubor je jediný stylesheet, který
+ * balíček exportuje (@forgmatic/ingot/tokens.css). Vlastní soubor by
+ * znamenal druhý povinný import, na který se zapomíná.
+ *
+ * Trvání 2.4 s musí sedět s ``INGOT_HINT_DURATION_MS`` v
+ * ``IngotPageHint.tsx`` — komponenta třídu po téže době zase odebere.
+ * Pod ``prefers-reduced-motion`` se probliknutí vypne a po dobu cyklu
+ * zůstane statický rámeček; stejný idiom drží ``.help-highlight``
+ * doc webu.
+ * ============================================================ */
+.is-hinted {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+  animation: ingot-hint-pulse 2.4s ease-out;
+}
+@keyframes ingot-hint-pulse {
+  0% {
+    outline-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+  100% {
+    outline-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-hinted {
+    animation: none;
+  }
+}
+

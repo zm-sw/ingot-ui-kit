@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotSideNavDoc: IngotDocPage = {
   name: "IngotSideNav",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Pojmenovaná skupina odkazů, jeden z nich aktivní. Popisek navigace a aria-current drží primitivum, ne domluva.",
     en: "A named group of links with one of them active. The primitive owns the navigation label and aria-current — not an agreement to remember them.",

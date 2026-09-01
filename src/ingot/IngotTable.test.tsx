@@ -13,10 +13,10 @@
  * callers who never asked for it is a regression on all of them at once.
  */
 
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { IngotTable, type IngotColumn } from "./IngotTable";
+import { IngotTable, type IngotColumn, type IngotSort } from "./IngotTable";
 
 interface Row {
   id: string;
@@ -67,6 +67,180 @@ describe("IngotTable rowClassName", () => {
     renderTable();
 
     expect(screen.getByTestId("row-a").className).toBe("border-b border-border");
+  });
+});
+
+describe("IngotTable výběr řádků (KAN-654)", () => {
+  const selectionProps = (
+    selected: ReadonlySet<string>,
+    onChange: (keys: ReadonlySet<string>) => void,
+  ) => ({
+    selectedKeys: selected,
+    onSelectedKeysChange: onChange,
+    selectAllLabel: "Vybrat vše",
+    selectRowLabel: (row: Row) => `Vybrat ${row.label}`,
+  });
+
+  it("bez výběrových props se nic nemění — kořenem zůstává <table>", () => {
+    const { container } = renderTable();
+
+    expect(container.firstElementChild!.tagName).toBe("TABLE");
+    expect(screen.queryByRole("checkbox")).toBeNull();
+  });
+
+  it("checkbox řádku hlásí novou množinu a řádek nese aria-selected", () => {
+    const onChange = vi.fn();
+    renderTable(selectionProps(new Set(["a"]), onChange));
+
+    expect(screen.getByTestId("row-a")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("row-b")).toHaveAttribute("aria-selected", "false");
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat Bravo" }));
+    expect(onChange).toHaveBeenCalledWith(new Set(["a", "b"]));
+  });
+
+  it("„vybrat vše“ vybere vykreslené řádky a podruhé výběr zruší", () => {
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <IngotTable
+        columns={COLUMNS}
+        rows={ROWS}
+        rowKey={(row) => row.id}
+        {...selectionProps(new Set(), onChange)}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat vše" }));
+    expect(onChange).toHaveBeenCalledWith(new Set(["a", "b"]));
+
+    rerender(
+      <IngotTable
+        columns={COLUMNS}
+        rows={ROWS}
+        rowKey={(row) => row.id}
+        {...selectionProps(new Set(["a", "b"]), onChange)}
+      />,
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat vše" }));
+    expect(onChange).toHaveBeenLastCalledWith(new Set());
+  });
+
+  it("checkbox v hlavičce je s částečným výběrem indeterminate", () => {
+    renderTable(selectionProps(new Set(["a"]), () => {}));
+
+    const all = screen.getByRole("checkbox", { name: "Vybrat vše" });
+    expect((all as HTMLInputElement).indeterminate).toBe(true);
+    expect((all as HTMLInputElement).checked).toBe(false);
+  });
+
+  it("bulkbar se ukáže jen s neprázdným výběrem", () => {
+    const { rerender } = render(
+      <IngotTable
+        columns={COLUMNS}
+        rows={ROWS}
+        rowKey={(row) => row.id}
+        bulkbar={<span>2 vybrané</span>}
+        {...{
+          selectedKeys: new Set<string>(),
+          onSelectedKeysChange: () => {},
+        }}
+      />,
+    );
+    expect(screen.queryByText("2 vybrané")).toBeNull();
+
+    rerender(
+      <IngotTable
+        columns={COLUMNS}
+        rows={ROWS}
+        rowKey={(row) => row.id}
+        bulkbar={<span>2 vybrané</span>}
+        {...{
+          selectedKeys: new Set(["a", "b"]),
+          onSelectedKeysChange: () => {},
+        }}
+      />,
+    );
+    expect(screen.getByText("2 vybrané")).toBeInTheDocument();
+  });
+
+  it("výběrový sloupec zvedne colSpan prázdného řádku", () => {
+    renderTable({
+      rows: [],
+      empty: <span>Nic tu není</span>,
+      selectedKeys: new Set<string>(),
+      onSelectedKeysChange: () => {},
+    });
+
+    expect(screen.getByText("Nic tu není").closest("td")).toHaveAttribute(
+      "colSpan",
+      "2",
+    );
+  });
+});
+
+describe("IngotTable řazení (KAN-654)", () => {
+  const sortableColumns: readonly IngotColumn<Row>[] = [
+    { key: "label", header: "Label", cell: (row) => row.label, sortable: true },
+    { key: "id", header: "Id", cell: (row) => row.id },
+  ];
+
+  it("bez onSortChange zůstává hlavička obyčejná — tlačítko, které nic nedělá, je horší než žádné", () => {
+    renderTable({ columns: sortableColumns });
+
+    expect(screen.queryByRole("button", { name: /Label/ })).toBeNull();
+  });
+
+  it("aktivní hlavička nese aria-sort a klik převrací směr", () => {
+    const onSortChange = vi.fn();
+    const sort: IngotSort = { key: "label", dir: "asc" };
+    renderTable({ columns: sortableColumns, sort, onSortChange });
+
+    const th = screen.getByRole("columnheader", { name: /Label/ });
+    expect(th).toHaveAttribute("aria-sort", "ascending");
+
+    fireEvent.click(screen.getByRole("button", { name: /Label/ }));
+    expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "desc" });
+  });
+
+  it("klik na neaktivní řaditelnou hlavičku začíná vzestupně", () => {
+    const onSortChange = vi.fn();
+    renderTable({
+      columns: sortableColumns,
+      sort: { key: "id", dir: "desc" } as IngotSort,
+      onSortChange,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Label/ }));
+    expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "asc" });
+  });
+
+  it("neřaditelná hlavička aria-sort nenese", () => {
+    renderTable({
+      columns: sortableColumns,
+      sort: { key: "label", dir: "asc" } as IngotSort,
+      onSortChange: () => {},
+    });
+
+    expect(
+      screen.getByRole("columnheader", { name: "Id" }),
+    ).not.toHaveAttribute("aria-sort");
+  });
+});
+
+describe("IngotTable density (KAN-654)", () => {
+  it("výchozí hustota drží padding z první verze", () => {
+    renderTable();
+
+    const cell = screen.getByTestId("row-a").querySelector("td")!;
+    expect(cell.className).toContain("px-3 py-2");
+  });
+
+  it("compact stáhne padding buňky na 8px", () => {
+    renderTable({ density: "compact" });
+
+    const cell = screen.getByTestId("row-a").querySelector("td")!;
+    expect(cell.className).toContain("p-2");
+    expect(cell.className).not.toContain("px-3");
   });
 });
 

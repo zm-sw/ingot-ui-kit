@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotConfirmDoc: IngotDocPage = {
   name: "IngotConfirm",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Potvrzovací dialog nad IngotModal. Spočítaný dopad smí přes useConfirmVeto potvrzení odvolat.",
     en: "Confirmation dialog built on IngotModal. The computed impact may withdraw the confirmation through useConfirmVeto.",

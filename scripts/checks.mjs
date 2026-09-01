@@ -131,6 +131,20 @@ function guardIngotDocPages() {
     if (!src.includes(`name: "${name}"`)) {
       fail(guard, [`${pageRel} does not declare name: "${name}".`]);
     }
+    // status/version feed the badges next to the page title; a page
+    // without them would silently promise stability it never declared.
+    if (!/status:\s*"(?:stable|beta)"/.test(src)) {
+      fail(guard, [
+        `${pageRel} does not declare status: "stable" | "beta".`,
+        "Every component page carries a status badge next to its title.",
+      ]);
+    }
+    if (!/version:\s*"[^"]+"/.test(src)) {
+      fail(guard, [
+        `${pageRel} does not declare a non-empty version.`,
+        "Every component page carries a version badge next to its title.",
+      ]);
+    }
     const demoPath = join(DOCS_DIR, "demos", `${name}Demo.tsx`);
     const demoRel = rel(demoPath);
     if (!existsSync(demoPath)) {

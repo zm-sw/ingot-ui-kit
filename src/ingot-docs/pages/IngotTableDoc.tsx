@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotTableDoc: IngotDocPage = {
   name: "IngotTable",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Tabulka se sloupci jako daty. Drží scope na záhlaví, jeden zdroj pravdy pro colSpan a řádkové akce neschovává za hover.",
     en: "A table whose columns are data. It keeps scope on the headers, one source of truth for colSpan, and never hides row actions behind hover.",
@@ -168,6 +170,78 @@ export const IngotTableDoc: IngotDocPage = {
       },
     },
     {
+      name: "density",
+      type: '"default" | "compact"',
+      required: false,
+      note: {
+        cs: "compact stáhne padding buňky na 8px — když se řádky na obrazovku počítají.",
+        en: "compact tightens cell padding to 8px — for screens where rows per screen matter.",
+      },
+    },
+    {
+      name: "sort",
+      type: "IngotSort",
+      required: false,
+      note: {
+        cs: "Aktuální řazení {key, dir}. Tabulka data neřadí — pořadí určuje pole rows.",
+        en: "The current sort {key, dir}. The table never sorts — the order is whatever rows holds.",
+      },
+    },
+    {
+      name: "onSortChange",
+      type: "(sort: IngotSort) => void",
+      required: false,
+      note: {
+        cs: "Klik na řaditelnou hlavičku: neaktivní → asc, asc ↔ desc.",
+        en: "Click on a sortable header: inactive → asc, asc ↔ desc.",
+      },
+    },
+    {
+      name: "selectedKeys",
+      type: "ReadonlySet<string>",
+      required: false,
+      note: {
+        cs: "Klíče vybraných řádků (rowKey). Spolu s onSelectedKeysChange zapne checkbox sloupec.",
+        en: "Keys of the selected rows (rowKey). Together with onSelectedKeysChange it enables the checkbox column.",
+      },
+    },
+    {
+      name: "onSelectedKeysChange",
+      type: "(keys: ReadonlySet<string>) => void",
+      required: false,
+      note: {
+        cs: "Nová množina po každé změně výběru — řádek i vybrat/zrušit vše.",
+        en: "The new set after every selection change — a row as well as select/clear all.",
+      },
+    },
+    {
+      name: "selectAllLabel",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Přeložený popisek checkboxu „vybrat vše“ v hlavičce.",
+        en: 'Translated label of the "select all" checkbox in the header.',
+      },
+    },
+    {
+      name: "selectRowLabel",
+      type: "(row: Row) => string",
+      required: false,
+      note: {
+        cs: "Přeložený popisek checkboxu řádku („Vybrat {název}“).",
+        en: 'Translated label of a row checkbox ("Select {name}").',
+      },
+    },
+    {
+      name: "bulkbar",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Pruh hromadných akcí nad tabulkou; ukáže se jen s neprázdným výběrem.",
+        en: "The bulk-action bar above the table; shown only while the selection is non-empty.",
+      },
+    },
+    {
       name: "rowClassName",
       type: "(row: Row) => string | undefined",
       required: false,
@@ -266,6 +340,15 @@ export const IngotTableDoc: IngotDocPage = {
             en: "Width and wrapping must sit on the <td>, not on a wrapper inside it.",
           },
         },
+        {
+          name: "sortable",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Hlavička se stane tlačítkem. Bez sort + onSortChange na tabulce se ignoruje.",
+            en: "The header becomes a button. Ignored without sort + onSortChange on the table.",
+          },
+        },
       ],
     },
   ],
@@ -296,6 +379,16 @@ export const IngotTableDoc: IngotDocPage = {
         <IngotCode>caption</IngotCode> se vykresluje mimo obraz: čte ho odečítač, aniž
         by nad tabulkou přibyl nadpis, který návrh nepočítal.
       </>,
+      <>
+        Seřazený sloupec nese <IngotCode>aria-sort</IngotCode> a řaditelná
+        hlavička je tlačítko — klávesnice řadí stejně jako myš. Šipka
+        v hlavičce je jen dekor; stav čte odečítač z atributu.
+      </>,
+      <>
+        Vybraný řádek nese <IngotCode>aria-selected</IngotCode> a checkbox
+        v hlavičce umí i částečný stav (indeterminate), když je vybraná jen
+        část řádků.
+      </>,
     ],
     en: [
       <>
@@ -325,6 +418,17 @@ export const IngotTableDoc: IngotDocPage = {
         without adding a heading above the table that the design did not plan
         for.
       </>,
+      <>
+        The sorted column carries <IngotCode>aria-sort</IngotCode> and a sortable
+        header is a button — the keyboard sorts the same way the mouse does.
+        The arrow in the header is decoration; a screen reader reads the
+        state from the attribute.
+      </>,
+      <>
+        A selected row carries <IngotCode>aria-selected</IngotCode> and the header
+        checkbox knows the partial (indeterminate) state for when only some
+        rows are selected.
+      </>,
     ],
   },
   i18n: {
@@ -342,6 +446,12 @@ export const IngotTableDoc: IngotDocPage = {
         Obsah prázdného stavu překládá volající u{" "}
         <IngotCode>IngotEmptyState</IngotCode>, ne tabulka.
       </>,
+      <>
+        <IngotCode>selectAllLabel</IngotCode> a <IngotCode>selectRowLabel</IngotCode>{" "}
+        pojmenují checkboxy pro odečítač; obsah <IngotCode>bulkbar</IngotCode>{" "}
+        („3 vybrané“ a tlačítka) skládá volající — jen on umí počet
+        vyskloňovat.
+      </>,
     ],
     en: [
       <>
@@ -357,22 +467,25 @@ export const IngotTableDoc: IngotDocPage = {
         The empty state's text is translated by the caller at{" "}
         <IngotCode>IngotEmptyState</IngotCode>, not by the table.
       </>,
+      <>
+        <IngotCode>selectAllLabel</IngotCode> and <IngotCode>selectRowLabel</IngotCode>{" "}
+        name the checkboxes for screen readers; the <IngotCode>bulkbar</IngotCode>{" "}
+        content ("3 selected" plus buttons) is composed by the caller — only
+        the caller can pluralise the count.
+      </>,
     ],
   },
   limits: {
     cs: [
       <>
-        <strong>Řazení.</strong> Sloupec se nedá kliknutím přeřadit; pořadí
-        určuje pole <IngotCode>rows</IngotCode>.
+        <strong>Řazení dat.</strong> Tabulka kreslí jen stav: pořadí určuje
+        pole <IngotCode>rows</IngotCode> a řadí volající nebo server. Klientský
+        fallback by nad stránkovanými daty tiše lhal o celku.
       </>,
       <>
-        <strong>Hromadný výběr.</strong> Žádné zaškrtávátko v řádku ani
-        toolbar nad tabulkou.
-      </>,
-      <>
-        <strong>Stránkování.</strong> Schválně není ani samostatné
-        primitivum: navržené odděleně od tabulky by se s ní pralo o to, kdo
-        drží stav.
+        <strong>Stránkování.</strong> Není prop tabulky — je to samostatné{" "}
+        <IngotCode>IngotPagination</IngotCode> a stav stránky drží volající,
+        stejně jako výběr a řazení.
       </>,
       <>
         <strong>Virtualizace.</strong> Vykreslí se všechny řádky, které
@@ -383,24 +496,22 @@ export const IngotTableDoc: IngotDocPage = {
         dialogu nebo na detail.
       </>,
       <>
-        Každá z nich přibude, až si o ni řekne konkrétní obrazovka. Schopnost
-        bez konzumenta je nezapojený slib — a u tabulky, na které visí
-        desítky obrazovek, se špatný návrh bere zpátky nejdráž.
+        Zbylé schopnosti přibudou, až si o ně řekne konkrétní obrazovka.
+        Schopnost bez konzumenta je nezapojený slib — a u tabulky, na které
+        visí desítky obrazovek, se špatný návrh bere zpátky nejdráž.
       </>,
     ],
     en: [
       <>
-        <strong>Sorting.</strong> A column cannot be reordered by clicking;
-        the order is whatever <IngotCode>rows</IngotCode> holds.
+        <strong>Sorting the data.</strong> The table only draws the state: the
+        order is whatever <IngotCode>rows</IngotCode> holds and the caller or
+        the server sorts. A client-side fallback would quietly lie about the
+        whole over paginated data.
       </>,
       <>
-        <strong>Bulk selection.</strong> No per-row checkbox and no toolbar
-        above the table.
-      </>,
-      <>
-        <strong>Pagination.</strong> Deliberately not even a separate
-        primitive: designed apart from the table it would fight it over who
-        owns the state.
+        <strong>Pagination.</strong> Not a table prop — it is the separate{" "}
+        <IngotCode>IngotPagination</IngotCode>, and the caller owns the page
+        state, just like selection and sorting.
       </>,
       <>
         <strong>Virtualisation.</strong> Every row it is given is rendered.
@@ -410,10 +521,10 @@ export const IngotTableDoc: IngotDocPage = {
         a dialog or on a detail screen.
       </>,
       <>
-        Each of these arrives once a concrete screen asks for it. A capability
-        with no consumer is an unconnected promise — and on a table that
-        dozens of screens hang off, a bad design is the most expensive one to
-        take back.
+        The remaining capabilities arrive once a concrete screen asks for
+        them. A capability with no consumer is an unconnected promise — and on
+        a table that dozens of screens hang off, a bad design is the most
+        expensive one to take back.
       </>,
     ],
   },

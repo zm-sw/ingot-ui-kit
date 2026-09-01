@@ -28,14 +28,29 @@ export interface ChromeStrings {
   propRequired: Localized<string>;
   propNote: Localized<string>;
   yes: Localized<string>;
-  showCode: Localized<string>;
-  hideCode: Localized<string>;
+  /** Badge stavu vedle nadpisu stránky komponenty. */
+  statusStable: Localized<string>;
+  statusBeta: Localized<string>;
+  /** Taby nad ukázkou + tlačítko kopírování jejího zdroje. */
+  previewTab: Localized<string>;
+  codeTab: Localized<string>;
+  copyCode: Localized<string>;
+  copiedCode: Localized<string>;
+  /** Patička prev/next mezi stránkami. */
+  prevPage: Localized<string>;
+  nextPage: Localized<string>;
   language: Localized<string>;
   theme: Localized<string>;
   themeLight: Localized<string>;
   themeDark: Localized<string>;
   themeSystem: Localized<string>;
   accent: Localized<string>;
+  /** Přepínač slovníku Jednoduše/Expert — viz ``dictionary.ts``. Ploché
+   *  klíče místo mapy ze stejného důvodu jako ``themeLight``. */
+  dictionary: Localized<string>;
+  dictionarySimple: Localized<string>;
+  dictionaryExpert: Localized<string>;
+  dictionaryBoth: Localized<string>;
   /** Jména rodin. Plochá pole (ne mapa) ze stejného důvodu jako
    *  ``themeLight``/``themeDark``: chybějící překlad tak shodí typecheck
    *  na konkrétním jménu, ne až na tvaru mapy. */
@@ -65,14 +80,24 @@ export const CHROME: ChromeStrings = {
   propRequired: { cs: "Povinné", en: "Required" },
   propNote: { cs: "K čemu", en: "What for" },
   yes: { cs: "ano", en: "yes" },
-  showCode: { cs: "Ukaž kód", en: "Show code" },
-  hideCode: { cs: "Skrýt kód", en: "Hide code" },
+  statusStable: { cs: "stabilní", en: "stable" },
+  statusBeta: { cs: "beta", en: "beta" },
+  previewTab: { cs: "Náhled", en: "Preview" },
+  codeTab: { cs: "Kód", en: "Code" },
+  copyCode: { cs: "Kopírovat", en: "Copy" },
+  copiedCode: { cs: "Zkopírováno", en: "Copied" },
+  prevPage: { cs: "Předchozí", en: "Previous" },
+  nextPage: { cs: "Další", en: "Next" },
   language: { cs: "Jazyk", en: "Language" },
   theme: { cs: "Motiv", en: "Theme" },
   themeLight: { cs: "Světlý", en: "Light" },
   themeDark: { cs: "Tmavý", en: "Dark" },
   themeSystem: { cs: "Podle systému", en: "System" },
   accent: { cs: "Akcent", en: "Accent" },
+  dictionary: { cs: "Slovník", en: "Dictionary" },
+  dictionarySimple: { cs: "Jednoduše", en: "Simple" },
+  dictionaryExpert: { cs: "Expert", en: "Expert" },
+  dictionaryBoth: { cs: "Obojí", en: "Both" },
   accentBlue: { cs: "modrý", en: "blue" },
   accentEmerald: { cs: "smaragdový", en: "emerald" },
   accentOrange: { cs: "oranžový", en: "orange" },

@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotSectionDoc: IngotDocPage = {
   name: "IngotSection",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Sekce obrazovky: nadpis správné úrovně a kotva, která sedí na sekci, ne na nadpisu.",
     en: "A screen section: a heading at the right level and an anchor that sits on the section, not on the heading.",

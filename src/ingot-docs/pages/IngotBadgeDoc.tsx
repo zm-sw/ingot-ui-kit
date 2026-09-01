@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotBadgeDoc: IngotDocPage = {
   name: "IngotBadge",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Stavový štítek: stav entity jedním slovem, mono a verzálkami. Pojmenovává stav, ne akci.",
     en: "A status badge: the state of an entity in one word, mono and upper-case. It names a state, not an action.",

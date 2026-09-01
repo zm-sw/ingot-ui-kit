@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotFieldDoc: IngotDocPage = {
   name: "IngotField",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Popsané textové pole: popisek, nápověda, chyba, jednotka. Pro ruční formuláře, které pole nemají odkud odvodit.",
     en: "A labelled text field: label, hint, error, unit. For hand-written forms whose fields cannot be derived from anything.",

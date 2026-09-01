@@ -1,16 +1,15 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  type JSX,
-  type ReactNode,
-} from "react";
+import { useCallback, useId, useRef, type JSX, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { ModalDepthProvider } from "./ModalDepthContext";
 import { IngotIcon } from "./IngotIcon";
 import { useModalLayer } from "./modalLayer";
+import {
+  trapOverlayTab,
+  useOverlayFocusReturn,
+  useOverlayInitialFocus,
+  useOverlayScrollLock,
+} from "./overlayChrome";
 
 /**
  * Sdílená skořápka dialogu — druhé primitivum Ingotu (KAN-580).
@@ -46,26 +45,9 @@ import { useModalLayer } from "./modalLayer";
  * volající.
  */
 
-/** Co smí dostat fokus. `tabindex="-1"` je programový cíl, ne zastávka Tabu. */
-const FOCUSABLE = [
-  "a[href]",
-  "area[href]",
-  "button:not([disabled])",
-  "input:not([disabled]):not([type='hidden'])",
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  "[tabindex]:not([tabindex='-1'])",
-].join(",");
-
-/**
- * Kolik dialogů je právě otevřených a jaký byl `overflow` před prvním z nich.
- *
- * Modul, ne stav komponenty: vnořený dialog nesmí při zavření odemknout
- * scroll, pod kterým pořád stojí ten vnější. Původní hodnota se schovává při
- * přechodu 0 → 1, aby ji druhý dialog nepřepsal už uzamčeným `"hidden"`.
- */
-let openDialogs = 0;
-let bodyOverflowBeforeLock = "";
+// Trap/scroll lock/návrat fokusu bydlí v ``overlayChrome.ts`` — od KAN-655
+// je sdílí s ``IngotDrawer``, aby čítač zámku scrollu platil přes oba typy
+// překryvů najednou.
 
 export function IngotModal({
   title,
@@ -120,40 +102,9 @@ export function IngotModal({
   const layer = useModalLayer();
   const subtitleId = `${titleId}-sub`;
 
-  // Spouštěč se čte při mountu — po zavření se na něj fokus vrací. Bez toho
-  // spadne fokus na <body> a čtečka i klávesnice začínají od začátku stránky.
-  const openerRef = useRef<Element | null>(null);
-  if (openerRef.current === null && typeof document !== "undefined") {
-    openerRef.current = document.activeElement;
-  }
-
-  useEffect(() => {
-    const opener = openerRef.current;
-    return () => {
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (openDialogs === 0) {
-      bodyOverflowBeforeLock = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-    }
-    openDialogs += 1;
-    return () => {
-      openDialogs -= 1;
-      if (openDialogs === 0) document.body.style.overflow = bodyOverflowBeforeLock;
-    };
-  }, []);
-
-  // Fokus do dialogu hned po otevření. Když uvnitř nic fokusovatelného není
-  // (čistě informační dialog), vezme ho panel sám — má ``tabIndex={-1}``.
-  useEffect(() => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    const first = panel.querySelector<HTMLElement>(FOCUSABLE);
-    (first ?? panel).focus();
-  }, []);
+  useOverlayFocusReturn();
+  useOverlayScrollLock();
+  useOverlayInitialFocus(panelRef);
 
   const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -162,25 +113,7 @@ export function IngotModal({
         onClose();
         return;
       }
-      if (event.key !== "Tab") return;
-      const panel = panelRef.current;
-      if (!panel) return;
-      const stops = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
-      if (stops.length === 0) {
-        // Není kam cyklit — Tab by fokus vynesl z dialogu ven.
-        event.preventDefault();
-        return;
-      }
-      const first = stops[0];
-      const last = stops[stops.length - 1];
-      const active = document.activeElement;
-      if (event.shiftKey && (active === first || active === panel)) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && active === last) {
-        event.preventDefault();
-        first.focus();
-      }
+      trapOverlayTab(event, panelRef.current);
     },
     [onClose],
   );

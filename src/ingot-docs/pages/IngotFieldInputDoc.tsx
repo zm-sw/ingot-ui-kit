@@ -5,6 +5,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 
 export const IngotFieldInputDoc: IngotDocPage = {
   name: "IngotFieldInput",
+  status: "stable",
+  version: "0.1",
   summary: {
     cs: "Jedno pole podle svého kind. Nezná žádnou doménu — množinu voleb i překlady dodává volající.",
     en: "A single field driven by its kind. It knows no domain — the option set and the translations both come from the caller.",

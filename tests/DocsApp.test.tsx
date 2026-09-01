@@ -119,6 +119,10 @@ describe("DocsApp", () => {
       // Record<DocLang, …> vynutí, že KLÍČ je. Že za ním něco je, ne —
       // a prázdná sekce je přesně ta polovina pravdy, kvůli které se
       // v tomhle repu smazaly hlavičky specifikací.
+      // Statusy a verze živí badge vedle nadpisu — stránka bez nich by
+      // tiše slibovala stabilitu, kterou nikdo nevyhlásil.
+      expect(["stable", "beta"]).toContain(page.status);
+      expect(page.version.trim().length).toBeGreaterThan(0);
       for (const lang of DOC_LANGS) {
         expect(page.summary[lang].trim().length).toBeGreaterThan(0);
         expect(page.useWhen[lang].length).toBeGreaterThan(0);
@@ -261,25 +265,94 @@ describe("DocsApp", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("odkryje zdroj ukázky až po kliknutí a hlásí to přes aria-expanded", async () => {
+  it("ukazuje náhled a zdroj přepíná taby Náhled/Kód", async () => {
     const user = userEvent.setup();
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
 
+    // Výchozí pohled je náhled na stagi; zdroj se nevykresluje.
+    expect(screen.getByTestId("docs-demo-stage")).toBeInTheDocument();
     expect(screen.queryByTestId("docs-source")).not.toBeInTheDocument();
 
-    const toggle = screen.getByRole("button", { name: CHROME.showCode.cs });
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    const codeTab = screen.getByRole("tab", { name: CHROME.codeTab.cs });
+    expect(codeTab).toHaveAttribute("aria-selected", "false");
 
-    await user.click(toggle);
+    await user.click(codeTab);
 
-    const source = screen.getByTestId("docs-source");
-    expect(source).toBeInTheDocument();
-    expect(toggle).toHaveAttribute("aria-expanded", "true");
-    expect(toggle.getAttribute("aria-controls")).toBe(source.getAttribute("id"));
+    expect(codeTab).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("docs-source")).toBeInTheDocument();
+    expect(screen.queryByTestId("docs-demo-stage")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: CHROME.hideCode.cs }));
+    await user.click(screen.getByRole("tab", { name: CHROME.previewTab.cs }));
+    expect(screen.getByTestId("docs-demo-stage")).toBeInTheDocument();
     expect(screen.queryByTestId("docs-source")).not.toBeInTheDocument();
+  });
+
+  it("zkopíruje zdroj ukázky do schránky tlačítkem Kopírovat", async () => {
+    const user = userEvent.setup();
+    window.location.hash = "#/IngotEmptyState";
+    render(<DocsApp />);
+
+    await user.click(screen.getByTestId("docs-copy"));
+
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
+    expect(await window.navigator.clipboard.readText()).toBe(
+      page!.demoSource,
+    );
+    // Potvrzení se ukáže v popisku tlačítka a po chvíli zase zmizí.
+    expect(screen.getByTestId("docs-copy")).toHaveTextContent(
+      CHROME.copiedCode.cs,
+    );
+  });
+
+  it("ukazuje vedle nadpisu badge stavu a verze", () => {
+    window.location.hash = "#/IngotEmptyState";
+    render(<DocsApp />);
+
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
+    const statusLabel =
+      page!.status === "stable" ? CHROME.statusStable.cs : CHROME.statusBeta.cs;
+    expect(screen.getByTestId("docs-status")).toHaveTextContent(statusLabel);
+    expect(screen.getByTestId("docs-version")).toHaveTextContent(
+      `v${page!.version}`,
+    );
+  });
+
+  it("průvodce badge stavu ani verze nemá", () => {
+    window.location.hash = "#/uvod";
+    render(<DocsApp />);
+    expect(screen.queryByTestId("docs-status")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("docs-version")).not.toBeInTheDocument();
+  });
+
+  // --- prev/next patička ----------------------------------------------
+
+  it("první stránka nemá Předchozí a poslední nemá Další", () => {
+    window.location.hash = `#/${INGOT_GUIDE_PAGES[0].slug}`;
+    const { unmount } = render(<DocsApp />);
+    expect(screen.queryByTestId("docs-prev")).not.toBeInTheDocument();
+    expect(screen.getByTestId("docs-next")).toBeInTheDocument();
+    unmount();
+
+    const last = INGOT_DOC_PAGES[INGOT_DOC_PAGES.length - 1];
+    window.location.hash = `#/${last.name}`;
+    render(<DocsApp />);
+    expect(screen.getByTestId("docs-prev")).toBeInTheDocument();
+    expect(screen.queryByTestId("docs-next")).not.toBeInTheDocument();
+  });
+
+  it("patička vede z posledního průvodce na první komponentu", () => {
+    const lastGuide = INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 1];
+    window.location.hash = `#/${lastGuide.slug}`;
+    render(<DocsApp />);
+
+    const next = screen.getByTestId("docs-next");
+    expect(next).toHaveAttribute("href", `#/${INGOT_DOC_PAGES[0].name}`);
+    const prev = screen.getByTestId("docs-prev");
+    expect(prev).toHaveAttribute(
+      "href",
+      `#/${INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 2].slug}`,
+    );
   });
 
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
@@ -327,7 +400,7 @@ describe("DocsApp", () => {
       screen.getByRole("heading", { level: 2, name: CHROME.demo.en }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: CHROME.showCode.en }),
+      screen.getByRole("tab", { name: CHROME.codeTab.en }),
     ).toBeInTheDocument();
 
     const emptyState = INGOT_DOC_PAGES.find(

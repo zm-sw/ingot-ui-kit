@@ -36,18 +36,26 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import {
   Button,
-  Card,
+  IngotBadge,
   IngotCode,
+  IngotIcon,
   IngotList,
   IngotPageHeader,
   IngotSection,
   IngotSideNav,
   IngotTable,
+  IngotTabs,
   type IngotColumn,
   type IngotNavItem,
 } from "@/ingot";
 import { AccentSwatches } from "@/components/AccentSwatches";
 import { CHROME } from "@/ingot-docs/chrome";
+import {
+  DICTIONARY_MODES,
+  setDictionaryMode,
+  useDictionaryMode,
+  type DictionaryMode,
+} from "@/ingot-docs/dictionary";
 import {
   initialLang,
   writeStoredLang,
@@ -94,15 +102,22 @@ function propColumns(lang: DocLang): readonly IngotColumn<IngotPropRow>[] {
       cellClassName: "whitespace-nowrap",
     },
     {
+      // Typ jako badge, ne holý text — sloupec je orientační štítek,
+      // ne náhrada za zdrojový soubor.
       key: "type",
       header: pick(CHROME.propType, lang),
-      cell: (row) => <IngotCode>{row.type}</IngotCode>,
+      cell: (row) => <IngotBadge>{row.type}</IngotBadge>,
       cellClassName: "max-w-xs",
     },
     {
       key: "required",
       header: pick(CHROME.propRequired, lang),
-      cell: (row) => (row.required ? pick(CHROME.yes, lang) : "—"),
+      cell: (row) =>
+        row.required ? (
+          <IngotBadge tone="ok">{pick(CHROME.yes, lang)}</IngotBadge>
+        ) : (
+          "—"
+        ),
       cellClassName: "whitespace-nowrap",
     },
     {
@@ -172,7 +187,8 @@ function ExtraProps({
 }
 
 /**
- * Živá ukázka + přepínač, který pod ní odkryje její zdroj (KAN-626).
+ * Živá ukázka v rámečku s barem: taby Náhled/Kód + tlačítko Kopírovat
+ * (KAN-626, vizuál KAN-663).
  *
  * Tabulka vlastností říká, CO která vlastnost dělá; kód říká, JAK se to
  * poskládá — a u `IngotTable` (sloupce jako data) nebo `IngotConfirm`
@@ -183,6 +199,9 @@ function ExtraProps({
  * `page.demoSource` je ``?raw`` import TÉHOŽ modulu, ze kterého pochází
  * `page.Demo` — viz `IngotDocPage.demoSource`. Výpis proto není kopie,
  * kterou by šlo zapomenout přepsat.
+ *
+ * Stage náhledu sedí na ``--surface-2`` a centruje obsah — samotný
+ * rámeček by na bílé ploše stránky splynul.
  */
 function DemoWithSource({
   page,
@@ -191,30 +210,60 @@ function DemoWithSource({
   page: IngotDocPage;
   lang: DocLang;
 }): JSX.Element {
-  const [open, setOpen] = useState(false);
-  const panelId = `demo-source-${page.name}`;
+  const [view, setView] = useState<"preview" | "code">("preview");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setOpen(false);
+    setView("preview");
+    setCopied(false);
   }, [page.name]);
 
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(page.demoSource);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Schránka nemusí být (http, zakázaná oprávnění) — tlačítko pak
+      // prostě nepotvrdí a čtenář si kód vybere z tabu Kód ručně.
+    }
+  };
+
   return (
-    <div className="space-y-2">
-      <Card>
-        <page.Demo />
-      </Card>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        data-testid="docs-source-toggle"
-      >
-        {open ? pick(CHROME.hideCode, lang) : pick(CHROME.showCode, lang)}
-      </Button>
-      {open && (
-        <IngotCode block id={panelId} testId="docs-source">
+    <div className="overflow-hidden rounded-lg border border-border">
+      <div className="flex items-end justify-between gap-3 bg-surface px-3">
+        <IngotTabs
+          items={[
+            { key: "preview", label: pick(CHROME.previewTab, lang) },
+            { key: "code", label: pick(CHROME.codeTab, lang) },
+          ]}
+          value={view}
+          onChange={(key) => setView(key as "preview" | "code")}
+          label={pick(CHROME.demo, lang)}
+          testId="docs-demo-tabs"
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          leadingIcon={<IngotIcon name="copy" />}
+          onClick={copy}
+          className="mb-1"
+          data-testid="docs-copy"
+        >
+          {copied ? pick(CHROME.copiedCode, lang) : pick(CHROME.copyCode, lang)}
+        </Button>
+      </div>
+      {view === "preview" ? (
+        <div
+          className="grid place-items-center bg-surface-2 p-8"
+          data-testid="docs-demo-stage"
+        >
+          <div className="min-w-0 max-w-full">
+            <page.Demo />
+          </div>
+        </div>
+      ) : (
+        <IngotCode block testId="docs-source">
           {page.demoSource}
         </IngotCode>
       )}
@@ -286,7 +335,16 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
     {
       id: "pristupnost",
       title: pick(CHROME.a11y, lang),
-      body: <IngotList items={pick(page.a11y, lang)} />,
+      // Callout-warn: přístupnost je ta část, kterou opsané komponenty
+      // ztrácejí nejdřív — proto varovná plocha, ne běžný výčet.
+      body: (
+        <div
+          className="rounded-lg border border-warn-border bg-warn-bg p-4"
+          data-testid="docs-a11y-callout"
+        >
+          <IngotList items={pick(page.a11y, lang)} />
+        </div>
+      ),
     },
     {
       id: "preklady",
@@ -385,6 +443,69 @@ const COMPONENT_ENTRIES: readonly ActivePage[] = INGOT_DOC_PAGES.map((doc) => ({
   doc,
 }));
 
+/**
+ * Pořadí pro prev/next patičku: průvodci → komponenty, přesně jak jdou
+ * v levém menu. Jedna posloupnost schválně — čtenář, který projde
+ * posledního průvodce, má „Další“ pokračovat na první komponentu, ne
+ * skončit ve slepé uličce.
+ */
+const ALL_ENTRIES: readonly ActivePage[] = [
+  ...GUIDE_ENTRIES,
+  ...COMPONENT_ENTRIES,
+];
+
+/** Patička prev/next — mezi průvodci, komponentami i přes hranici obou. */
+function PagerFooter({
+  page,
+  lang,
+}: {
+  page: ActivePage;
+  lang: DocLang;
+}): JSX.Element | null {
+  const href = hrefOf(page);
+  const index = ALL_ENTRIES.findIndex((entry) => hrefOf(entry) === href);
+  if (index < 0) return null;
+  const prev = index > 0 ? ALL_ENTRIES[index - 1] : null;
+  const next = index < ALL_ENTRIES.length - 1 ? ALL_ENTRIES[index + 1] : null;
+
+  return (
+    <div className="flex justify-between gap-4 border-t border-border pt-6">
+      {prev ? (
+        <a
+          className="min-w-0 text-left"
+          href={hrefOf(prev)}
+          data-testid="docs-prev"
+        >
+          <span className="block text-xs text-ink-3">
+            {pick(CHROME.prevPage, lang)}
+          </span>
+          <span className="block truncate text-sm font-medium text-ink-2 hover:text-ink">
+            {titleOf(prev, lang)}
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a
+          className="min-w-0 text-right"
+          href={hrefOf(next)}
+          data-testid="docs-next"
+        >
+          <span className="block text-xs text-ink-3">
+            {pick(CHROME.nextPage, lang)}
+          </span>
+          <span className="block truncate text-sm font-medium text-ink-2 hover:text-ink">
+            {titleOf(next, lang)}
+          </span>
+        </a>
+      ) : (
+        <span />
+      )}
+    </div>
+  );
+}
+
 const THEME_CHOICES: readonly ThemeChoice[] = ["system", "light", "dark"];
 
 /**
@@ -423,6 +544,7 @@ export function DocsApp(): JSX.Element {
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
+  const dictionary = useDictionaryMode();
 
   useEffect(() => {
     const onHashChange = () => {
@@ -525,6 +647,31 @@ export function DocsApp(): JSX.Element {
             </select>
           </label>
 
+          {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
+              (ui_dictionary) — doc web přihlášení nemá, takže volba žije
+              jen v prohlížeči, stejně jako motiv a akcent. */}
+          <label className="block text-xs text-ink-3">
+            <span className="mb-1 block">{pick(CHROME.dictionary, lang)}</span>
+            <select
+              className="w-full rounded border border-border-strong bg-surface px-2 py-1 text-sm text-ink"
+              value={dictionary}
+              onChange={(event) =>
+                setDictionaryMode(event.target.value as DictionaryMode)
+              }
+              data-testid="docs-dictionary"
+            >
+              {DICTIONARY_MODES.map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode === "simple"
+                    ? pick(CHROME.dictionarySimple, lang)
+                    : mode === "expert"
+                      ? pick(CHROME.dictionaryExpert, lang)
+                      : pick(CHROME.dictionaryBoth, lang)}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <div className="block text-xs text-ink-3">
             <span className="mb-1 block">{pick(CHROME.accent, lang)}</span>
             <AccentSwatches
@@ -549,6 +696,23 @@ export function DocsApp(): JSX.Element {
         <IngotPageHeader
           title={titleOf(page, lang)}
           description={summaryOf(page, lang)}
+          titleAdornment={
+            page.kind === "component" ? (
+              <span className="flex items-center gap-2">
+                <IngotBadge
+                  tone={page.doc.status === "stable" ? "ok" : "warn"}
+                  testId="docs-status"
+                >
+                  {page.doc.status === "stable"
+                    ? pick(CHROME.statusStable, lang)
+                    : pick(CHROME.statusBeta, lang)}
+                </IngotBadge>
+                <IngotBadge testId="docs-version">
+                  {`v${page.doc.version}`}
+                </IngotBadge>
+              </span>
+            ) : undefined
+          }
         />
 
         {sections.map((section) => (
@@ -556,6 +720,8 @@ export function DocsApp(): JSX.Element {
             {section.body}
           </IngotSection>
         ))}
+
+        <PagerFooter page={page} lang={lang} />
       </main>
 
       <aside aria-label={pick(CHROME.onThisPage, lang)} className="w-44 shrink-0">
