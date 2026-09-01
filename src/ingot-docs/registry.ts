@@ -25,6 +25,7 @@ import { IngotListDoc } from "@/ingot-docs/pages/IngotListDoc";
 import { IngotModalDoc } from "@/ingot-docs/pages/IngotModalDoc";
 import { IngotOpIconDoc } from "@/ingot-docs/pages/IngotOpIconDoc";
 import { IngotPageHeaderDoc } from "@/ingot-docs/pages/IngotPageHeaderDoc";
+import { IngotPageHintDoc } from "@/ingot-docs/pages/IngotPageHintDoc";
 import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
@@ -75,6 +76,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotDrawerDoc,
   IngotConfirmDoc,
   IngotToastDoc,
+  IngotPageHintDoc,
   // Bloky list obrazovky v pořadí, ve kterém stojí na stránce (KAN-654):
   // filtr bar → tabulka (s bulk barem) → prázdný stav → pager.
   IngotToolbarDoc,
