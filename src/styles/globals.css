@@ -1,0 +1,651 @@
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-sans/700.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  --bg: #f1f0ed;
+  --surface: #ffffff;
+  --surface-2: #f4f3f0;
+  /* surface-3 — slightly darker than surface-2; used for active
+   * pressed states (top-bar group highlight, drawer hover) where
+   * surface-2 would blend into adjacent inputs. From the Forgmatic
+   * Admin v2 reference (project-steel/Admin v2.html). */
+  --surface-3: #e6e4df;
+  --border: #ddd9d3;
+  --border-strong: #c4bfb8;
+
+  --ink: #0c0a09;
+  --ink-2: #3f3b37;
+  /* ``ink-3`` and ``ink-4`` darkened from the original
+   * stone-500/400 (``#78716c``/``#a8a29e``) because axe-core
+   * flagged the ``how-it-works`` page for failing WCAG 2 AA
+   * 4.5:1 contrast — small mono labels in the step illustrations
+   * sat at ~4.39 against the ``#f5f5f4`` surface.
+   *
+   * 🚨 **Tady se od Ingot handoffu (v0.1) ODCHYLUJEME, změřeně.**
+   * Handoff chce ``--ink-3:#6d6862`` a ``--ink-4:#9a948d``; nad novým
+   * ``--surface-3:#e6e4df`` to dává **4.34:1**, resp. **2.36:1**. Obojí
+   * je pod AA a obojí má v repu klidový (ne hover) výskyt s malým
+   * písmem: ``AdminItemDetail.tsx`` (pilulka ``bg-surface-3
+   * text-ink-3``) a ``DateRangeFilter.tsx`` (9.5px ``text-ink-4``
+   * na ``bg-surface-3``). ``ink-4`` je proto jen dorovnané o setinu
+   * proti ztmavenému ``surface-3`` (4.47 → 4.60), ``ink-3`` zůstává.
+   * Handoff ``ink-4`` je prakticky původní stone-400, kterou axe
+   * jednou už shodila — viz odstavec výš. (KAN-647) */
+  --ink-3: #57534e;
+  --ink-4: #696460;
+  /* ``ink-5`` is the muted neutral used for inactive dots, decorative
+   * separators and "off" state indicators — lighter than ``ink-4``
+   * (which still has to clear WCAG AA against body text). Used by the
+   * email-template editor (per-language override dots) and the same
+   * pattern from the project-steel Sablony reference. */
+  --ink-5: #d6d3d1;
+
+  --accent: #2563eb;
+  --accent-ink: #1d4ed8;
+  --accent-bg: #eff6ff;
+  --accent-border: #bfdbfe;
+
+  --ok: #047454;
+  --ok-bg: #eaf7ee;
+  --ok-border: #a7dfba;
+
+  --warn: #b05109;
+  --warn-bg: #fffbeb;
+  --warn-border: #fde68a;
+
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+
+  /* ``custom`` is the "tenant override" accent — used on the email-
+   * template editor to mark customised vs platform-default copy.
+   * Distinct hue from ``accent`` so the override badge can sit next
+   * to the primary CTA palette without confusion. */
+  --custom: #6d28d9;
+  --custom-bg: #f5f3ff;
+  --custom-border: #ddd6fe;
+
+  /* ``plan`` is the "locked behind a higher tier" tone. Unlike every
+   * other tone above, it is INVERTED: the badge is a filled purple
+   * slab and the token named after it is the near-white TEXT that
+   * sits on top, not a saturated colour to be read on a tint. It is
+   * a filled badge on purpose — an upsell has to out-shout the chips
+   * around it, which a tint cannot do. Contrast on its own ``-bg``
+   * is ~8.1:1 light and ~5.0:1 dark, so it clears WCAG AA in both. */
+  --plan: #faf5ff;
+  --plan-bg: #6b21a8;
+  --plan-border: #7e22ce;
+
+  --shadow-sm: 0 1px 2px rgba(12, 10, 9, 0.05);
+  --shadow-md: 0 6px 18px -6px rgba(12, 10, 9, 0.12),
+    0 1px 2px rgba(12, 10, 9, 0.05);
+  --shadow-lg: 0 14px 40px -10px rgba(12, 10, 9, 0.18),
+    0 2px 6px rgba(12, 10, 9, 0.05);
+
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* Motion — jediné trvání a jediná křivka pro celý kit, aby se
+   * přechody nerozjely komponentu od komponenty (Ingot handoff v0.1). */
+  --ease: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --dur: 0.22s;
+
+  /* Spacing scale — 4/8/12/16/24/32/48/72. Tailwind má tytéž kroky
+   * jako utility (``p-1``…``p-18``); tyhle proměnné jsou pro místa,
+   * kde se píše holé CSS (keyframes, ``calc()``, inline styly). */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 72px;
+}
+
+/* ============================================================
+ * Dark theme — the SAME token names re-declared. Applied by the
+ * ``.dark`` class that ThemeProvider puts on <html>; dark mode is
+ * offered on every shell (admin, tenant storefront AND marketing —
+ * see ``themeEnabled`` in ThemeProvider.tsx).
+ *
+ * Design intent: a stone-based dark neutral scale (bg → surface →
+ * surface-2 …) with text inverted along the same ramp, and status
+ * hues brightened just enough to read on dark tints. ``:root.dark``
+ * (specificity 0,2,0) wins over the plain ``:root`` above.
+ *
+ * Od KAN-647 je ramp převzatý z Ingot handoffu v0.1: hluboká plocha
+ * (``--bg:#0b0a09``) a naopak ZVEDNUTÉ karty (``--surface:#2e2b27``,
+ * ``surface-2:#3e3934``). Dřív to bylo obráceně — plocha lifted na
+ * ``#1d1a17``, karty jen o chlup výš — kvůli obavě, že near-black +
+ * near-white dá „harsh" ~18:1 na body textu. Ta obava tímhle rampem
+ * NEZANIKÁ, jen se přesouvá tam, kde nevadí: 19.6:1 platí pro holou
+ * plochu, ale text drtivě sedí na kartách, a tam ramp dává 14:1 /
+ * 11:1 — tedy tam, kde byl i dřív (13.9 / 12.5).
+ *
+ * Contrast is enforced by the axe e2e sweeps: ``a11y.spec.ts`` and
+ * ``a11y-admin.spec.ts`` scan every covered page in BOTH themes, so
+ * a ramp tweak that drops below WCAG AA fails CI the same way the
+ * light palette does. Mind the dual-role tokens: ``--accent`` /
+ * ``--danger`` / ``--warn`` are brightened here to stay readable AS
+ * TEXT on dark surfaces, which makes white text on top of them fail
+ * AA — pair them with ``dark:text-bg`` when used as backgrounds
+ * (see ui/Button.tsx). ``--accent``/``--danger``/``--custom`` jsou
+ * proti minulému stavu o chlup světlejší právě proto, že se zvedly
+ * karty pod nimi: na ``--surface`` padaly na 4.17/4.16/5.18 a AA drží
+ * až 4.56/4.57/5.64.
+ *
+ * 🚨 **Stavové tokeny ``--ok``/``--warn``/``--danger`` handoff v0.1
+ * NEPŘEBÍRAJÍ.** Handoff z nich v tmavém dělá pastely (``#93e5b8``,
+ * ``#f9d28c``, ``#ffb8b0``) a spoléhá na svá per-komponentní pravidla,
+ * kde je barva TEXTEM na tintu a tlačítko se invertuje na ``var(--ink)``.
+ * Tady se ale pořád používají jako VÝPLŇ pod bílým textem na 49 místech
+ * ve 44 souborech, které ``dark:text-bg`` nemají (``ui/Button.tsx`` ho
+ * má, ``AccountMenu``, ``DeleteProcessDialog``, ``AdminNesting`` ne) —
+ * bílá na ``#ffb8b0`` je 1.65:1. Pastely tedy smí přijít až s těmi
+ * komponentními pravidly, což je mimo rozsah tokenového tiketu.
+ * ============================================================ */
+:root.dark {
+  color-scheme: dark;
+
+  --bg: #0b0a09;
+  --surface: #2e2b27;
+  --surface-2: #3e3934;
+  --surface-3: #4e473f;
+  --border: #665d53;
+  --border-strong: #877c6f;
+
+  --ink: #fffefd;
+  --ink-2: #eeeae3;
+  --ink-3: #cbc3b7;
+  /* ink-4 is tuned against surface-2 — the lightest surface muted text
+   * commonly sits on. The handoff's ``#a1988c`` lands 4.01:1 there
+   * (the dark surfaces got LIGHTER with this ramp), so it is raised to
+   * 4.58:1; ink-5 is decorative (off-state dots) and stays. */
+  --ink-4: #aba398;
+  --ink-5: #605c57;
+
+  /* The ``-bg`` tints are deliberately deep (near-black with a hue
+   * cast) rather than mid-tone: the saturated token is used as the
+   * TEXT colour on its own tint (e.g. ``text-danger`` on
+   * ``bg-danger-bg`` badges), and a lighter tint dropped small-text
+   * contrast below WCAG AA 4.5:1 (axe-core flagged danger + accent).
+   * These values clear 4.5:1 for the token text at 11px. */
+  /* ``accent``/``danger`` double as text colours (text-accent /
+   * text-danger) on the neutral surfaces; the lifted surface ramp
+   * would have pushed their small-text contrast below the old
+   * palette's, so both are nudged one step brighter to compensate. */
+  --accent: #5192f7;
+  --accent-ink: #bfdbfe;
+  --accent-bg: #0f1b30;
+  --accent-border: #1e3a8a;
+
+  --ok: #22c55e;
+  --ok-bg: #0a2013;
+  --ok-border: #166534;
+
+  --warn: #f59e0b;
+  --warn-bg: #2a1e07;
+  --warn-border: #92400e;
+
+  --danger: #f36464;
+  --danger-bg: #2a1010;
+  --danger-border: #991b1b;
+
+  --custom: #ae94fa;
+  --custom-bg: #1e1533;
+  --custom-border: #6d28d9;
+
+  /* The filled purple lifts on the dark canvas the same way the rest
+   * of the ramp does; the text token stays near-white in both themes
+   * because the slab stays a saturated purple in both. */
+  --plan: #faf5ff;
+  --plan-bg: #9333ea;
+  --plan-border: #a855f7;
+
+  /* Shadows read as depth only against light surfaces; on a dark
+   * canvas they need heavier, near-black alpha to register at all. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 18px 44px -12px rgba(0, 0, 0, 0.85),
+    0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================
+ * Akcentové rodiny (KAN-648) — pět rodin po čtyřech tokenech.
+ *
+ * ``blue`` je výchozí a ŽÁDNÝ blok tady nemá: jeho hodnoty jsou ty
+ * v ``:root`` / ``:root.dark`` výš. To je schválně — kdyby je rodina
+ * opisovala, existovaly by dvě definice téhož a jedna z nich by se
+ * dřív nebo později rozešla. ``data-accent="blue"`` (i chybějící
+ * atribut, i atribut s nesmyslem) proto propadne na výchozí čtveřici.
+ *
+ * Přepínají se ATRIBUTEM na <html>, ne ``style.setProperty``: motiv
+ * mění tytéž čtyři proměnné, takže hodnota nasazená za běhu by po
+ * přepnutí motivu přebila i jeho tmavou variantu a rodina by v tmavém
+ * zůstala svítit ve světlých hodnotách. S kaskádou se akcent po
+ * přepnutí motivu přepočítá sám a nic dopočítávat nemusíme.
+ *
+ * Specificita: světlý blok je ``:root:not(.dark)[data-accent=…]``
+ * (0,3,0) a tmavý ``:root.dark[data-accent=…]`` (0,3,0). Prosté
+ * ``:root[data-accent=…]`` by bylo (0,2,0) — tedy shodné s
+ * ``:root.dark``, které stojí VÝŠ v souboru, takže by v tmavém motivu
+ * rozhodlo pořadí a světlá rodina by přebila tmavou.
+ *
+ * Každá rodina má dva selektory: atribut na ``<html>`` (tak se rodina
+ * nasazuje globálně) a atribut na LIBOVOLNÉM potomku (tak si ho vezme
+ * jediný prvek). Druhý selektor není pohodlí — stojí na něm ukázka
+ * rodin na doc webu a přepínač akcentu: jejich puntíky nesou
+ * ``data-accent`` a kreslí se ``var(--accent)``, takže barvu, kterou
+ * slibují, berou z TÉTO tabulky. Kdyby ji měly napsanou u sebe,
+ * existovala by druhá pravda o barvě rodiny a ta by se rozešla.
+ *
+ * 🚨 Hodnoty se drží handoffu, se dvěma doloženými výjimkami. Světlý
+ * ``emerald`` (#059669) a ``orange`` (#ea580c) z handoffu dávají jako
+ * TEXT na ``--surface`` jen 3,77:1 resp. 3,56:1, a ``--accent`` je
+ * v tomhle repu i textová barva (``text-accent``, focus outline). Obě
+ * rodiny jsou proto o krok tmavší (700 místo 600, ``-ink`` 800 místo
+ * 700) — táž oprava, jakou už dostaly ``--ink-3``/``--ink-4``. Tón
+ * zůstává, kontrast se vrací nad laťku výchozí modré.
+ *
+ * Laťku hlídá ``tests/accentContrast.test.ts``: žádná rodina nesmí být
+ * na žádné ploše horší než výchozí modrá.
+ * ============================================================ */
+:root:not(.dark)[data-accent="emerald"],
+:root:not(.dark) [data-accent="emerald"] {
+  --accent: #047857;
+  --accent-ink: #065f46;
+  --accent-bg: #ecfdf5;
+  --accent-border: #a7f3d0;
+}
+
+:root:not(.dark)[data-accent="orange"],
+:root:not(.dark) [data-accent="orange"] {
+  --accent: #c2410c;
+  --accent-ink: #9a3412;
+  --accent-bg: #fff7ed;
+  --accent-border: #fed7aa;
+}
+
+:root:not(.dark)[data-accent="violet"],
+:root:not(.dark) [data-accent="violet"] {
+  --accent: #7c3aed;
+  --accent-ink: #6d28d9;
+  --accent-bg: #f5f3ff;
+  --accent-border: #ddd6fe;
+}
+
+:root:not(.dark)[data-accent="slate"],
+:root:not(.dark) [data-accent="slate"] {
+  --accent: #0f172a;
+  --accent-ink: #020617;
+  --accent-bg: #f1f5f9;
+  --accent-border: #cbd5e1;
+}
+
+/* Tmavé čtveřice drží týž recept, jakým vznikla tmavá modrá výš:
+ * ``--accent`` je světlejší stupeň téhož tónu (čte se jako text na
+ * tmavé ploše), ``--accent-ink`` je světlý odstín rodiny (text na
+ * vlastním tintu), ``--accent-bg`` je hluboká plocha s nádechem tónu
+ * a ``--accent-border`` sytý střed. ``slate`` se v tmavém motivu
+ * obrací — černý akcent by na tmavé ploše nebyl vidět vůbec. */
+:root.dark[data-accent="emerald"],
+:root.dark [data-accent="emerald"] {
+  --accent: #10b981;
+  --accent-ink: #a7f3d0;
+  --accent-bg: #072019;
+  --accent-border: #065f46;
+}
+
+:root.dark[data-accent="orange"],
+:root.dark [data-accent="orange"] {
+  --accent: #f97316;
+  --accent-ink: #fed7aa;
+  --accent-bg: #2a1608;
+  --accent-border: #9a3412;
+}
+
+:root.dark[data-accent="violet"],
+:root.dark [data-accent="violet"] {
+  --accent: #ae94fa;
+  --accent-ink: #ddd6fe;
+  --accent-bg: #1e1533;
+  --accent-border: #6d28d9;
+}
+
+:root.dark[data-accent="slate"],
+:root.dark [data-accent="slate"] {
+  --accent: #cbd5e1;
+  --accent-ink: #f1f5f9;
+  --accent-bg: #1c1f24;
+  --accent-border: #475569;
+}
+
+/* ============================================================
+ * React Flow (@xyflow/react) dark theming. The library exposes
+ * ``--xy-*`` custom properties on the ``.react-flow`` container; we
+ * repoint them at our tokens under ``.dark`` so the graph chrome —
+ * controls, minimap, edges, handles, default node surfaces,
+ * attribution and the dot grid — flips with the rest of the admin.
+ * Custom node components (which set their own bg/text classes) are
+ * themed by the ordinary token sweep, not these vars.
+ * ============================================================ */
+:root.dark .react-flow {
+  --xy-background-color-default: var(--bg);
+  --xy-background-pattern-dots-color-default: rgba(250, 250, 249, 0.1);
+  --xy-background-pattern-lines-color-default: rgba(250, 250, 249, 0.08);
+  --xy-background-pattern-cross-color-default: rgba(250, 250, 249, 0.1);
+
+  --xy-node-background-color-default: var(--surface);
+  --xy-node-border-default: 1px solid var(--border);
+  --xy-node-color-default: var(--ink);
+  --xy-node-group-background-color-default: rgba(255, 255, 255, 0.04);
+  --xy-node-boxshadow-hover-default: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --xy-node-boxshadow-selected-default: 0 0 0 2px var(--accent);
+
+  --xy-edge-stroke-default: var(--border-strong);
+  --xy-edge-stroke-selected-default: var(--accent);
+  --xy-edge-label-background-color-default: var(--surface);
+  --xy-edge-label-color-default: var(--ink-2);
+  --xy-connectionline-stroke-default: var(--border-strong);
+
+  --xy-handle-background-color-default: var(--surface);
+  --xy-handle-border-color-default: var(--border-strong);
+
+  --xy-controls-button-background-color-default: var(--surface);
+  --xy-controls-button-background-color-hover-default: var(--surface-2);
+  --xy-controls-button-color-default: var(--ink-2);
+  --xy-controls-button-color-hover-default: var(--ink);
+  --xy-controls-button-border-color-default: var(--border);
+  --xy-controls-box-shadow-default: var(--shadow-md);
+
+  --xy-minimap-background-color-default: var(--surface-2);
+  --xy-minimap-mask-background-color-default: rgba(12, 10, 9, 0.55);
+  --xy-minimap-node-background-color-default: var(--ink-4);
+  --xy-minimap-node-stroke-color-default: var(--border-strong);
+
+  --xy-attribution-background-color-default: rgba(28, 25, 23, 0.7);
+  --xy-selection-background-color-default: rgba(59, 130, 246, 0.08);
+  --xy-selection-border-default: 1px dotted var(--accent);
+  --xy-resize-background-color-default: var(--accent);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Nech místo pod přilepenou spodní lištou (``GuideDock``), když se
+     na něco skáče — kotvou, Tab navigací nebo ``scrollIntoView``.
+     Bez toho cíl přistane přesně pod dokem: prohlížeč ho považuje za
+     viditelný, ale klik i fokusový prstenec padnou na lištu. Odsazení
+     v ``AdminLayout`` řeší klidový stav, tohle ten skok. */
+  scroll-padding-bottom: 7rem;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Tabular numerals everywhere — keeps prices, IČO, dimensions,
+   * counts perfectly aligned without per-component .num / .mono
+   * sprinkles. The mono helper still flips font-family to Geist
+   * Mono for the technical-context contexts. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+ * Subtle scrollbar — admin pages have long sidebars, drawers
+ * and tables; the default Chrome/Edge scrollbar overpowers the
+ * Forgmatic neutral palette. Mirrors the Admin v2 reference.
+ * ============================================================ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-4);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+}
+
+/* Subtle 24×24 grid background used on hero sections + dark CTA blocks.
+ * The radial-gradient mask fades the lines toward the edges so the
+ * grid feels like a paper-texture rather than a hard overlay. */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(120, 113, 108, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120, 113, 108, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.grid-bg-dense {
+  background-image:
+    linear-gradient(to right, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Soft fade so the grid never reaches the section edges hard. Must be
+ * applied to a layer that contains *only* the grid (e.g. the absolute
+ * background <div> inside <PageHero>) — putting `.grid-fade` on a
+ * container with foreground content fades that content too. */
+.grid-fade {
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+          mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* Dark variant for the FinalCTA block — white grid lines on ink bg. */
+.grid-bg-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Step illustration animations — sourced from the design's
+ * `JakFunguje.html` keyframes so the homepage / how-it-works
+ * step rows show live motion instead of static SVGs. */
+@keyframes laser-move {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -80;
+  }
+}
+.beam-path {
+  stroke-dasharray: 4 4;
+  animation: laser-move 3s linear infinite;
+}
+
+/* „Kde prodáváte" — the wire of a route that is already carrying
+ * orders. Dashes drift toward the inbox so the picture says which
+ * routes are live, not only which are drawn solid. Same idiom as
+ * ``.beam-path`` above. */
+@keyframes sales-wire-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+.sales-wire-live {
+  stroke-dasharray: 6 4;
+  animation: sales-wire-flow 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sales-wire-live {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+
+@keyframes spark {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+.spark {
+  animation: spark 0.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes tool-head {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(40px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.tool-head {
+  animation: tool-head 3s ease-in-out infinite;
+}
+
+/* Brushed-steel texture used as a background on a couple of
+ * illustrations — repeating vertical stripes overlaid on a soft
+ * metallic gradient. */
+.brushed-steel {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.5) 0 1px,
+      transparent 1px 3px
+    ),
+    linear-gradient(135deg, #e5e5e4 0%, #c7c7c5 50%, #e5e5e4 100%);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+ * Animation utilities used by the admin shell — drawer slide-in,
+ * modal/palette fade-up, "live" pulse dot on status badges.
+ * Copied from the Forgmatic Admin v2 reference so PR 6 can drop
+ * these class names directly without inlining keyframes.
+ * ============================================================ */
+@keyframes forgmatic-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fadein {
+  animation: forgmatic-fadein 0.4s ease-out both;
+}
+
+@keyframes forgmatic-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.pulse {
+  animation: forgmatic-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes forgmatic-drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.drawer-in {
+  animation: forgmatic-drawer-in 0.25s ease-out both;
+}
+
+/* Backdrop dim used behind drawers, modals, command palette. */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 10, 9, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 50;
+}
+
+/* Horizontal-scroll container that hides its own scrollbar.
+ * Used by sub-nav tab strip on tablet — the row of tabs becomes
+ * scrollable when there are more tabs than fit, but the visible
+ * scrollbar would chop off the bottom border of active tabs. */
+.scrollx {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scrollx::-webkit-scrollbar {
+  display: none;
+}
+
+/* Inline-help deep-link highlight: applied briefly by <HelpProvider> when a
+ * ``?help=<anchor>`` link scrolls a region into view. A pulsing accent ring
+ * that fades out; under reduced-motion it's a plain static ring (no pulse). */
+.help-highlight {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+  animation: help-highlight-pulse 2.4s ease-out;
+}
+@keyframes help-highlight-pulse {
+  0% {
+    outline-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+  100% {
+    outline-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-highlight {
+    animation: none;
+  }
+}

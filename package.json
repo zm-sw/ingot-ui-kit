@@ -1,0 +1,50 @@
+{
+  "name": "@forgmatic/ingot",
+  "version": "0.1.0",
+  "description": "Ingot UI Kit — the Forgmatic admin design system. Source-distributed React + Tailwind primitives, plus the public doc web (ingot.forgmatic.com).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zm-sw/ingot-ui-kit.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/ingot/index.ts"
+  },
+  "files": [
+    "src/ingot"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "node scripts/checks.mjs"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@fontsource/geist-mono": "^5.3.0",
+    "@fontsource/geist-sans": "^5.3.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.6.5",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.5.4",
+    "jsdom": "^24.1.0",
+    "postcss": "^8.5.26",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.2",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.6"
+  }
+}

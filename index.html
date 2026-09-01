@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c0a09" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Ingot UI Kit</title>
+    <!-- Doc web nemá tenanta, takže ani brandovací middleware — titulek je
+         statický. Anti-flash skript je týž jako u hlavního entry: dark mode
+         drží `.dark` na <html> a bez něj by studený load blikl light→dark. -->
+    <script src="/theme-init.js"></script>
+  </head>
+  <body class="min-h-screen bg-bg text-ink antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/ingot-docs/main.tsx"></script>
+  </body>
+</html>

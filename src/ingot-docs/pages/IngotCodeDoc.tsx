@@ -1,0 +1,148 @@
+import { IngotCode } from "@/ingot";
+import { Demo } from "@/ingot-docs/demos/IngotCodeDemo";
+import demoSource from "@/ingot-docs/demos/IngotCodeDemo?raw";
+import type { IngotDocPage } from "@/ingot-docs/types";
+
+export const IngotCodeDoc: IngotDocPage = {
+  name: "IngotCode",
+  summary: {
+    cs: "Kód v textu, nebo výpis přes celou šířku. Výpis se umí posunout do strany — což je ta jediná věc, na které ruční výpisy padají.",
+    en: "Code inside a sentence, or a listing across the full width. The listing scrolls sideways — the one thing hand-rolled listings get wrong.",
+  },
+  Demo,
+  demoSource,
+  useWhen: {
+    cs: [
+      <>
+        Ve větě je jméno vlastnosti, klíč, cesta k modulu nebo hodnota, kterou
+        uživatel opravdu napíše. Odlišit ji od prózy má význam: čtenář pozná,
+        co má opsat doslova.
+      </>,
+      <>
+        Ukazuješ víc řádků kódu — <IngotCode>block</IngotCode>.
+      </>,
+    ],
+    en: [
+      <>
+        A sentence contains a property name, a key, a module path or a value
+        the user will really type. Setting it apart from prose carries
+        meaning: the reader can tell what to copy verbatim.
+      </>,
+      <>
+        You are showing several lines of code — <IngotCode>block</IngotCode>.
+      </>,
+    ],
+  },
+  avoidWhen: {
+    cs: [
+      <>
+        Chceš jen jiné písmo nebo zvýraznění. Na důraz je{" "}
+        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> říká „tohle je
+        kód", a když to kód není, je to lež o významu.
+      </>,
+      <>
+        Je to identifikátor z našich vnitřností, který uživatel nikdy
+        neuvidí ani nenapíše — název sloupce, klíč tabulky. Takový text do
+        rozhraní pro zákazníka nepatří vůbec, ani v kódovém písmu.
+      </>,
+    ],
+    en: [
+      <>
+        You only want a different typeface or emphasis. For emphasis there is{" "}
+        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> says "this is
+        code", and when it is not, that is a lie about meaning.
+      </>,
+      <>
+        It is an internal identifier the user will never see or type — a
+        column name, a table key. That text does not belong in a
+        customer-facing interface at all, monospace or otherwise.
+      </>,
+    ],
+  },
+  props: [
+    {
+      name: "children",
+      type: "ReactNode",
+      required: true,
+      note: {
+        cs: "Kód. Nepřekládá se.",
+        en: "The code. Not translated.",
+      },
+    },
+    {
+      name: "block",
+      type: "boolean",
+      required: false,
+      note: {
+        cs: "Výpis přes celou šířku místo kódu uvnitř věty.",
+        en: "A full-width listing instead of code inside a sentence.",
+      },
+    },
+    {
+      name: "testId",
+      type: "string",
+      required: false,
+      note: { cs: "data-testid prvku.", en: "data-testid of the element." },
+    },
+  ],
+  a11y: {
+    cs: [
+      <>
+        <IngotCode>block</IngotCode> má <IngotCode>overflow-x-auto</IngotCode>, a je to ta
+        podstatná vlastnost: kód se nezalamuje, takže bez posunu buď přeteče
+        mimo stránku, nebo ho někdo „opraví" zalomením a rozbije odsazení,
+        podle kterého se v něm čte.
+      </>,
+      <>
+        Vykresluje se skutečný <IngotCode>&lt;code&gt;</IngotCode>, u výpisu uvnitř{" "}
+        <IngotCode>&lt;pre&gt;</IngotCode>. Odečítač podle toho pozná, že text nemá
+        číst jako větu.
+      </>,
+      <>
+        Bílé znaky uvnitř <IngotCode>&lt;pre&gt;</IngotCode> zůstávají — odsazení je
+        u kódu obsah, ne formátování.
+      </>,
+    ],
+    en: [
+      <>
+        <IngotCode>block</IngotCode> carries <IngotCode>overflow-x-auto</IngotCode>, and that is
+        the substantive part: code does not wrap, so without scrolling it
+        either overflows the page or someone "fixes" it by wrapping and
+        destroys the indentation the code is read by.
+      </>,
+      <>
+        It renders a real <IngotCode>&lt;code&gt;</IngotCode>, inside a{" "}
+        <IngotCode>&lt;pre&gt;</IngotCode> for a listing. That is how a screen reader
+        knows not to read the text as a sentence.
+      </>,
+      <>
+        Whitespace inside <IngotCode>&lt;pre&gt;</IngotCode> is preserved — in code,
+        indentation is content, not formatting.
+      </>,
+    ],
+  },
+  i18n: {
+    cs: [
+      <>
+        Obsah se <strong>nepřekládá</strong>. Přeložený identifikátor přestane
+        fungovat a čtenář to zjistí, až ho zkusí použít.
+      </>,
+      <>
+        Věta kolem kódu se překládá normálně — proto je{" "}
+        <IngotCode>IngotCode</IngotCode> vložka do textu, ne obal celého odstavce.
+      </>,
+    ],
+    en: [
+      <>
+        The content is <strong>not</strong> translated. A translated
+        identifier stops working, and the reader finds out when they try to
+        use it.
+      </>,
+      <>
+        The sentence around the code is translated as usual — which is why{" "}
+        <IngotCode>IngotCode</IngotCode> is an inline insert, not a wrapper around the
+        whole paragraph.
+      </>,
+    ],
+  },
+};
