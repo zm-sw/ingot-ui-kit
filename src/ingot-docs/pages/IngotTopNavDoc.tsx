@@ -10,11 +10,13 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // 2.2 (parita s nasazenou administrací pro konverzi shellu): sekce umí
 // být odkaz (href — jediná obrazovka) nebo zamčená (locked), panel se
 // kotví pod svou sekcí přes renderMenu, přibyl menuButton pro mobilní
-// hamburger a klik mimo lištu zavírá.
+// hamburger a klik mimo lištu zavírá. 2.3: rám řádku (contentClassName)
+// patří shellu, sekce jsou pojmenovaná <nav> (sectionsLabel) s
+// responsivní třídou (sectionsClassName) a slotem sectionsEnd.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  version: "2.2",
+  version: "2.3",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -151,6 +153,42 @@ export const IngotTopNavDoc: IngotDocPage = {
       note: {
         cs: "Tlačítko mobilního menu — kreslí se úplně vlevo, před brandem.",
         en: "The mobile menu button — drawn leftmost, before the brand.",
+      },
+    },
+    {
+      name: "contentClassName",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Třída vnitřního řádku — sem patří rám shellu (mx-auto max-w, výška, odsazení). Ohraničení a plocha lišty zůstávají na kitu.",
+        en: "The inner row's class — the shell's frame goes here (mx-auto max-w, height, padding). The bar's border and surface stay with the kit.",
+      },
+    },
+    {
+      name: "sectionsLabel",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Přeložený aria-label bloku sekcí — z lišty dělá pojmenovanou navigaci.",
+        en: "A translated aria-label for the sections block — makes the bar a named navigation.",
+      },
+    },
+    {
+      name: "sectionsClassName",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Třída obalu sekcí — typicky responsivní schování na mobilu (hidden lg:flex), kde navigaci nese hamburger.",
+        en: "The sections wrapper's class — typically responsive hiding on mobile (hidden lg:flex), where the hamburger carries navigation.",
+      },
+    },
+    {
+      name: "sectionsEnd",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Za poslední sekcí, uvnitř navigace — např. „Odemknout vše“ day-1 režimu.",
+        en: "After the last section, inside the navigation — e.g. a day-one “Unlock all”.",
       },
     },
     {
