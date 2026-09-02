@@ -1,4 +1,10 @@
-import { useEffect, useRef, type JSX, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  type JSX,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
@@ -12,17 +18,25 @@ import { IngotIcon } from "./IngotIcon";
  * ukousnutý vlevo je sloupec, který v tabulce chybí. ``IngotSideNav``
  * zůstává pro dokumentaci a jiné rejstříky, ne pro rám aplikace.
  *
- * Sekce je **tlačítko, ne odkaz**: rozbaluje mega menu (``IngotMegaMenu``),
- * takže nikam sama nevede. Odkazy jsou až položky uvnitř toho menu — a
- * proto je otevřená sekce označená ``aria-expanded``, ne ``aria-current``.
+ * Sekce s víc obrazovkami je **tlačítko, ne odkaz**: rozbaluje mega menu
+ * (``IngotMegaMenu``), takže nikam sama nevede — a proto nese
+ * ``aria-expanded``, ne ``aria-current``. Sekce s JEDINOU obrazovkou je
+ * naopak rovnou odkaz (``href``): menu s jednou položkou je krok navíc.
+ * Zamčená sekce (``locked``) je ztlumené tlačítko se zámkem a klik volá
+ * vysvětlení, ne navigaci.
  *
  * **Sekce se otevírá najetím i klikem** (rozhodnutí vlastníka
  * 2026-09-02, bod 02 — chování nasazené administrace). Klik jen otevírá,
  * nezavírá: ukazovátko projde přes tlačítko dřív, než dopadne klik,
  * takže panel už je v tu chvíli hoverem otevřený a toggle by ho zase
  * zhasnul. Zavírá odjezd myší (se 120ms prodlevou, aby cesta z tlačítka
- * do panelu nezhasla), ``Escape`` a volající po prokliku položky.
- * Z klávesnice otevírá ``ArrowDown`` nebo ``Enter``.
+ * do panelu nezhasla), klik mimo lištu, ``Escape`` a volající po
+ * prokliku položky. Z klávesnice otevírá ``ArrowDown`` nebo ``Enter``.
+ *
+ * **Panel se kotví pod svou sekcí**, ne pod levým okrajem lišty:
+ * ``renderMenu(key)`` se vykreslí do relativního obalu otevřené sekce.
+ * S hover-otevíráním je to nutnost — panel u levého okraje by nutil
+ * kurzor přejet přes triggery ostatních sekcí a cestou je otvírat.
  *
  * Stav drží volající (``openSection`` + ``onOpenSection``/
  * ``onCloseSection``): jen on ví, jestli se menu zavírá po prokliku
@@ -38,6 +52,25 @@ export interface IngotTopNavSection {
   key: string;
   /** Popisek sekce, 1–3 slova. */
   label: string;
+  /**
+   * Sekce s jedinou obrazovkou: rovnou odkaz, žádné menu. SPA volající
+   * naviguje v ``onNavigate`` s ``preventDefault``; ``href`` zůstává
+   * kvůli střednímu kliku.
+   */
+  href?: string;
+  /** Klik na odkazovou sekci (``href``). */
+  onNavigate?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  /** Odkazová sekce je právě otevřená obrazovka — ``aria-current``. */
+  current?: boolean;
+  /**
+   * Zamčená sekce (modul, který si tenant nezapnul): ztlumené tlačítko
+   * se zámkem, klik volá ``onLockedClick`` místo menu či navigace.
+   */
+  locked?: boolean;
+  /** Klik na zamčenou sekci — typicky modal s vysvětlením. */
+  onLockedClick?: () => void;
+  /** Odznak za popiskem — počet čekající práce u odkazové sekce. */
+  badge?: ReactNode;
 }
 
 /** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
@@ -45,10 +78,12 @@ const CLOSE_DELAY_MS = 120;
 
 export function IngotTopNav({
   brand,
+  menuButton,
   sections = [],
   openSection = null,
   onOpenSection,
   onCloseSection,
+  renderMenu,
   actions,
   account,
   children,
@@ -56,22 +91,30 @@ export function IngotTopNav({
 }: {
   /** Značka vlevo. Odznak režimu (např. platformy) patří sem. */
   brand: ReactNode;
+  /** Tlačítko mobilního menu — kreslí se úplně vlevo, před brandem. */
+  menuButton?: ReactNode;
   /** Sekce aplikace. Vejít se musí všechny na 1280 px — lišta se nezalamuje. */
   sections?: readonly IngotTopNavSection[];
   /** Klíč právě rozbalené sekce, nebo ``null``. Řízené zvenčí. */
   openSection?: string | null;
   /** Otevři sekci — volá se z hoveru, kliku i klávesnice. */
   onOpenSection?: (key: string) => void;
-  /** Zavři otevřenou sekci — odjezd myší (po prodlevě) a ``Escape``. */
+  /** Zavři otevřenou sekci — odjezd myší (po prodlevě), klik vedle, ``Escape``. */
   onCloseSection?: () => void;
+  /**
+   * Menu otevřené sekce — typicky ``IngotMegaMenu``. Kreslí se do
+   * relativního obalu té sekce, takže panel stojí pod svým tlačítkem.
+   */
+  renderMenu?: (key: string) => ReactNode;
   /** Ikonové akce vpravo před účtem — zprávy, notifikace. */
   actions?: ReactNode;
   /** Účet úplně vpravo. Typicky ``IngotTopNavAccount``. */
   account?: ReactNode;
-  /** Mega menu rozbalené pod lištou. Pozicuje se vůči ní. */
+  /** Obsah pod lištou pozicovaný vůči ní (bannery, celolištové překryvy). */
   children?: ReactNode;
   testId?: string;
 }): JSX.Element {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | null>(null);
   const cancelClose = () => {
     if (closeTimer.current !== null) {
@@ -88,8 +131,21 @@ export function IngotTopNav({
   };
   useEffect(() => cancelClose, []);
 
+  // Klik mimo lištu zavírá. Posluchač visí jen při otevřené sekci.
+  useEffect(() => {
+    if (openSection === null) return;
+    function onDown(event: globalThis.MouseEvent) {
+      if (!wrapperRef.current?.contains(event.target as Node)) {
+        onCloseSection?.();
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [openSection, onCloseSection]);
+
   return (
     <div
+      ref={wrapperRef}
       className="relative"
       data-testid={testId}
       onMouseEnter={cancelClose}
@@ -104,38 +160,81 @@ export function IngotTopNav({
       }}
     >
       <div className="flex items-center gap-1 border-b border-border bg-surface px-4 py-2.5">
+        {menuButton}
         <div className="mr-3 flex items-center gap-2.5 text-base font-bold tracking-[-0.02em] text-ink">
           {brand}
         </div>
         {sections.map((section) => {
+          if (section.locked) {
+            return (
+              <button
+                key={section.key}
+                type="button"
+                onClick={section.onLockedClick}
+                className="inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                data-testid={
+                  testId ? `${testId}-section-${section.key}` : undefined
+                }
+              >
+                {section.label}
+                <IngotIcon name="lock" size={13} aria-hidden />
+              </button>
+            );
+          }
+          if (section.href !== undefined) {
+            return (
+              <a
+                key={section.key}
+                href={section.href}
+                onClick={section.onNavigate}
+                aria-current={section.current ? "page" : undefined}
+                className={cx(
+                  "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
+                  section.current
+                    ? "bg-surface-2 font-medium text-ink"
+                    : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                )}
+                data-testid={
+                  testId ? `${testId}-section-${section.key}` : undefined
+                }
+              >
+                {section.label}
+                {section.badge}
+              </a>
+            );
+          }
           const open = section.key === openSection;
           return (
-            <button
-              key={section.key}
-              type="button"
-              aria-expanded={open}
-              onClick={() => onOpenSection?.(section.key)}
-              onMouseEnter={() => {
-                cancelClose();
-                onOpenSection?.(section.key);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
+            <div key={section.key} className="relative">
+              <button
+                type="button"
+                aria-expanded={open}
+                onClick={() => onOpenSection?.(section.key)}
+                onMouseEnter={() => {
+                  cancelClose();
                   onOpenSection?.(section.key);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    onOpenSection?.(section.key);
+                  }
+                }}
+                className={cx(
+                  "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
+                  open
+                    ? "bg-surface-3 font-medium text-ink"
+                    : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                )}
+                data-testid={
+                  testId ? `${testId}-section-${section.key}` : undefined
                 }
-              }}
-              className={cx(
-                "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
-                open
-                  ? "bg-surface-3 font-medium text-ink"
-                  : "text-ink-2 hover:bg-surface-2 hover:text-ink",
-              )}
-              data-testid={testId ? `${testId}-section-${section.key}` : undefined}
-            >
-              {section.label}
-              <IngotIcon name="chevron-down" size={15} />
-            </button>
+              >
+                {section.label}
+                <IngotIcon name="chevron-down" size={15} />
+              </button>
+              {open && renderMenu?.(section.key)}
+            </div>
           );
         })}
         <div className="flex-1" />
