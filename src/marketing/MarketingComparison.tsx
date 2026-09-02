@@ -3,77 +3,112 @@ import type { JSX } from "react";
 import { IngotIcon, type IngotIconName } from "@/ingot";
 
 /**
- * Srovnání (KAN-664) — trojsloupcová mřížka z handoffu Veřejné stránky:
- * Úkol / Dnes / S Forgmaticem, třetí sloupec zvýrazněný. Buňky nesou
- * ikonu vedle textu.
+ * Srovnání (KAN-664) — ŘÁDKOVÁ tabulka z handoffu Veřejné stránky:
+ * hlavička Úkol / Dnes / S platformou na ``--surface-2``, pak jeden
+ * řádek na jeden úkol.
  *
- * Zvýraznění (``featured``) je jediný akcentový prvek sekce — rámeček
- * a tint akcentové rodiny. Zvýrazněný smí být nejvýš jeden sloupec;
- * dva zvýrazněné sloupce už nic nesrovnávají.
+ * 🪤 **Párování je vlastnost ŘÁDKU, ne sloupce.** Tři samostatné karty
+ * vedle sebe vypadají skoro stejně, jenže čtenář v nich musí spárovat
+ * n-tou odrážku s n-tou odrážkou vedle — a jakmile se jeden sloupec
+ * o položku posune, srovnání tiše lže. Proto komponenta bere řádky
+ * (``rows``), ne sloupce: dvojici „dnes / s platformou" k jednomu úkolu
+ * nejde napsat rozpojenou.
+ *
+ * Třetí sloupec je zvýrazněný (``--accent-bg`` / ``--accent-ink``) a je
+ * jediným akcentovým prvkem sekce. Na úzkém viewportu se tabulka roluje
+ * vodorovně — mřížka se nesmí složit, protože složená přestane srovnávat.
  */
 export interface MarketingComparisonCell {
   icon?: IngotIconName;
   text: string;
 }
 
-export interface MarketingComparisonColumn {
-  title: string;
-  cells: readonly MarketingComparisonCell[];
-  /** Zvýrazněný sloupec — akcentový rámeček. Nejvýš jeden. */
-  featured?: boolean;
+export interface MarketingComparisonRow {
+  /** Stabilní klíč řádku z dat (ne index — řádky se přeskládávají). */
+  id: string;
+  /** Úkol, který se srovnává — první sloupec. */
+  task: string;
+  /** Jak to vypadá dnes. */
+  before: MarketingComparisonCell;
+  /** Jak to vypadá s platformou — zvýrazněný sloupec. */
+  after: MarketingComparisonCell;
 }
 
-export function MarketingComparison({
-  columns,
-  testId,
+export interface MarketingComparisonHeaders {
+  task: string;
+  before: string;
+  after: string;
+}
+
+function Cell({
+  cell,
+  highlighted,
 }: {
-  columns: readonly MarketingComparisonColumn[];
-  testId?: string;
+  cell: MarketingComparisonCell;
+  highlighted?: boolean;
 }): JSX.Element {
   return (
     <div
-      className="grid gap-6 min-[1100px]:grid-cols-3"
-      data-testid={testId}
+      className={
+        highlighted
+          ? "flex items-center gap-2 border-l border-border bg-accent-bg px-[18px] py-[15px] text-[13.5px] text-ink-2"
+          : "flex items-center gap-2 border-l border-border px-[18px] py-[15px] text-[13.5px] text-ink-3"
+      }
     >
-      {columns.map((column) => (
-        <div
-          key={column.title}
-          className={
-            column.featured
-              ? "rounded-lg border border-accent-border bg-accent-bg p-6"
-              : "rounded-lg border border-border bg-surface p-6"
-          }
-        >
-          <h3
-            className={
-              column.featured
-                ? "text-[15px] font-semibold text-accent-ink"
-                : "text-[15px] font-semibold text-ink"
-            }
-          >
-            {column.title}
-          </h3>
-          <ul className="mt-4 list-none space-y-3 p-0">
-            {column.cells.map((cell) => (
-              <li
-                key={cell.text}
-                className={
-                  column.featured
-                    ? "flex items-start gap-2.5 text-[13px] leading-relaxed text-accent-ink"
-                    : "flex items-start gap-2.5 text-[13px] leading-relaxed text-ink-2"
-                }
-              >
-                {cell.icon !== undefined && (
-                  <span className="mt-0.5 shrink-0">
-                    <IngotIcon name={cell.icon} size={14} />
-                  </span>
-                )}
-                {cell.text}
-              </li>
-            ))}
-          </ul>
+      {cell.icon !== undefined && (
+        <span className="shrink-0">
+          <IngotIcon name={cell.icon} size={14} />
+        </span>
+      )}
+      {cell.text}
+    </div>
+  );
+}
+
+export function MarketingComparison({
+  headers,
+  rows,
+  testId,
+}: {
+  /** Záhlaví tří sloupců — obsah, dodaný přeložený. */
+  headers: MarketingComparisonHeaders;
+  rows: readonly MarketingComparisonRow[];
+  testId?: string;
+}): JSX.Element {
+  return (
+    <div className="overflow-hidden rounded-lg border border-border bg-surface">
+      {/* Vodorovný scroll, ne zlom do sloupce: řádek, který se rozpadne,
+          přestane být srovnáním. */}
+      <div className="overflow-x-auto">
+        <div className="min-w-[560px]" data-testid={testId}>
+          <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-border bg-surface-2 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-3">
+            <div className="px-[18px] py-[11px]">{headers.task}</div>
+            <div className="border-l border-border px-[18px] py-[11px]">
+              {headers.before}
+            </div>
+            <div className="border-l border-border bg-accent-bg px-[18px] py-[11px] font-semibold text-accent-ink">
+              {headers.after}
+            </div>
+          </div>
+          {rows.map((row, index) => (
+            <div
+              key={row.id}
+              className={
+                index < rows.length - 1
+                  ? "grid grid-cols-[1.1fr_1fr_1fr] border-b border-border"
+                  : "grid grid-cols-[1.1fr_1fr_1fr]"
+              }
+              data-testid={testId ? `${testId}-row-${row.id}` : undefined}
+            >
+              <div className="px-[18px] py-[15px] text-sm font-medium text-ink">
+                {row.task}
+              </div>
+              <Cell cell={row.before} />
+              <Cell cell={row.after} highlighted />
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 }

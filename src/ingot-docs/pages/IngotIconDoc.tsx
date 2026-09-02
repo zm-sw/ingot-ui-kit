@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotIconDoc: IngotDocPage = {
   name: "IngotIcon",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: "[data-icon]",
+  tokens: ["currentColor"],
   summary: {
     cs: "Ikony rozhraní — jedna sada, jedna technika. Kreslí se čárou v mřížce 24×24, barví se textem rodiče a škáluje se jedním číslem.",
     en: "Interface icons — one set, one technique. Line art on a 24×24 grid, inked by the parent's text colour, scaled by a single number.",

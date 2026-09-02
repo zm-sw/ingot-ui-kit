@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const ButtonDoc: IngotDocPage = {
   name: "Button",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: ".btn",
+  tokens: ["--bg", "--surface", "--surface-2", "--border-strong", "--ink", "--ink-2", "--ink-4", "--accent", "--accent-ink", "--ok", "--danger", "--r-md"],
   summary: {
     cs: "Tlačítko se šesti variantami. Varianta nese význam akce, ne barvu — a v tmavém režimu drží kontrast, který opsané třídy ztrácejí.",
     en: "The button, in six variants. A variant carries the meaning of the action, not a colour — and in dark mode it holds a contrast that copied classes lose.",

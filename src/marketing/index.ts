@@ -33,7 +33,8 @@ export {
 export {
   MarketingComparison,
   type MarketingComparisonCell,
-  type MarketingComparisonColumn,
+  type MarketingComparisonHeaders,
+  type MarketingComparisonRow,
 } from "./MarketingComparison";
 export { MarketingPricing, type MarketingPlan } from "./MarketingPricing";
 export { MarketingFaq, type MarketingFaqItem } from "./MarketingFaq";

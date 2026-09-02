@@ -39,16 +39,33 @@ const GLOBALS = readFileSync(
   "utf-8",
 );
 
-/** Hodnoty tokenů z jednoho `:root` bloku `globals.css`. */
+/**
+ * Hodnoty tokenů z jednoho `:root` bloku `globals.css`.
+ *
+ * 🪤 Token nemusí nést hex přímo. Výchozí akcentová rodina drží hodnoty
+ * ve `--blue-*` a `--accent-*` je jen odkazuje, aby je nemusel opisovat
+ * blok `[data-accent="blue"]` — jinak by existovaly dvě definice téže
+ * modré. Alias se proto dohledá; měří se pořád skutečná barva.
+ */
 function tokens(selector: string): Record<string, string> {
   const start = GLOBALS.indexOf(`${selector} {`);
   if (start === -1) throw new Error(`globals.css nemá blok ${selector}`);
   const body = GLOBALS.slice(start, GLOBALS.indexOf("\n}", start));
   const found: Record<string, string> = {};
+  const aliases: Record<string, string> = {};
   for (const [, name, value] of body.matchAll(
-    /(--[\w-]+):\s*(#[0-9a-fA-F]{3,8})\s*;/g,
+    /(--[\w-]+):\s*(#[0-9a-fA-F]{3,8}|var\(\s*--[\w-]+\s*\))\s*;/g,
   )) {
-    found[name] = value;
+    const alias = value.match(/^var\(\s*(--[\w-]+)\s*\)$/);
+    if (alias) aliases[name] = alias[1];
+    else found[name] = value;
+  }
+  for (const [name, target] of Object.entries(aliases)) {
+    const resolved = found[target];
+    if (resolved === undefined) {
+      throw new Error(`${selector}: ${name} odkazuje na ${target}, který blok nemá`);
+    }
+    found[name] = resolved;
   }
   return found;
 }

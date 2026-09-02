@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { IngotCode, IngotList } from "@/ingot";
+import { Button, IngotCode, IngotList } from "@/ingot";
 import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 import {
@@ -148,47 +148,49 @@ function ComparisonExample({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
       <MarketingComparison
-        columns={[
+        headers={{
+          task: cs ? "Úkol" : "Task",
+          before: cs ? "Dnes" : "Today",
+          after: cs ? "S platformou" : "With the platform",
+        }}
+        rows={[
           {
-            title: cs ? "Úkol" : "The task",
-            cells: [
-              { icon: "file", text: cs ? "Nacenit díl" : "Price a part" },
-              {
-                icon: "clock",
-                text: cs ? "Odpovědět tentýž den" : "Reply the same day",
-              },
-            ],
+            id: "quote",
+            task: cs ? "Ocenit poptávku" : "Price an inquiry",
+            before: {
+              icon: "clock",
+              text: cs ? "Dva až tři dny čekání" : "Two to three days of waiting",
+            },
+            after: {
+              icon: "check",
+              text: cs ? "Do minuty" : "Within a minute",
+            },
           },
           {
-            title: cs ? "Dnes" : "Today",
-            cells: [
-              {
-                icon: "alert",
-                text: cs
-                  ? "Tabulky a odhady po telefonu"
-                  : "Spreadsheets and phone estimates",
-              },
-              {
-                icon: "clock",
-                text: cs ? "Nabídka za dva dny" : "A quote in two days",
-              },
-            ],
+            id: "rate",
+            task: cs ? "Změna sazby stroje" : "Changing a machine rate",
+            before: {
+              icon: "alert",
+              text: cs ? "Ruční přepis v tabulce" : "Retyping it in a spreadsheet",
+            },
+            after: {
+              icon: "check",
+              text: cs
+                ? "Jedno pole, propíše se všude"
+                : "One field, applied everywhere",
+            },
           },
           {
-            title: cs ? "S Forgmaticem" : "With Forgmatic",
-            featured: true,
-            cells: [
-              {
-                icon: "check",
-                text: cs
-                  ? "Cena z geometrie a vašich sazeb"
-                  : "A price from geometry and your rates",
-              },
-              {
-                icon: "bolt",
-                text: cs ? "Nabídka za minuty" : "A quote in minutes",
-              },
-            ],
+            id: "margin",
+            task: cs ? "Přehled marží" : "Margin overview",
+            before: {
+              icon: "close",
+              text: cs ? "Až po fakturaci" : "Only after invoicing",
+            },
+            after: {
+              icon: "check",
+              text: cs ? "U každé nabídky" : "On every quote",
+            },
           },
         ]}
       />
@@ -198,8 +200,11 @@ function ComparisonExample({ lang }: { lang: DocLang }): JSX.Element {
 
 function PricingExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
+  const tryIt = cs ? "Vyzkoušet" : "Try it";
+  const talk = cs ? "Domluvit ukázku" : "Book a demo";
+  const contact = cs ? "Kontaktovat" : "Get in touch";
   return (
-    <div className="rounded-lg border border-border bg-bg p-6 pt-9">
+    <div className="rounded-lg border border-border bg-bg p-6">
       <MarketingPricing
         plans={[
           {
@@ -214,6 +219,11 @@ function PricingExample({ lang }: { lang: DocLang }): JSX.Element {
               cs ? "Jeden uživatel" : "One user",
               cs ? "Základní rozpad operací" : "Basic operation breakdown",
             ],
+            action: (
+              <Button variant="secondary" className="w-full">
+                {tryIt}
+              </Button>
+            ),
           },
           {
             id: "team",
@@ -229,7 +239,12 @@ function PricingExample({ lang }: { lang: DocLang }): JSX.Element {
               cs ? "Historie nabídek" : "Quote history",
             ],
             featured: true,
-            badge: cs ? "Nejoblíbenější" : "Most popular",
+            badge: cs ? "Nejčastější" : "Most popular",
+            action: (
+              <Button variant="primary" className="w-full">
+                {talk}
+              </Button>
+            ),
           },
           {
             id: "firm",
@@ -243,6 +258,11 @@ function PricingExample({ lang }: { lang: DocLang }): JSX.Element {
               cs ? "Neomezení uživatelé" : "Unlimited users",
               cs ? "Napojení na sklad" : "Inventory integration",
             ],
+            action: (
+              <Button variant="secondary" className="w-full">
+                {contact}
+              </Button>
+            ),
           },
         ]}
       />
@@ -321,13 +341,13 @@ function Principles({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 "Akcent smí být nejvýš na jednom prvku sekce.",
-                "Trojsloupcová mřížka je výchozí; pod 1100 px se skládá na jeden sloupec.",
+                "Trojsloupcová mřížka je výchozí a čtyři sloupce patří jen krokům procesu; pod 1100 px se mřížka skládá na jeden sloupec.",
                 "Tmavý blok smí být na stránce nejvýš dvakrát — závěrečné CTA a patička.",
                 "Texty i ceny jsou obsah: přicházejí z dat přes vlastnosti bloků, nikdy jako konstanty v kódu.",
               ]
             : [
                 "The accent may sit on at most one element of a section.",
-                "The three-column grid is the default; below 1100 px it stacks into one column.",
+                "The three-column grid is the default and four columns belong to process steps only; below 1100 px the grid stacks into one column.",
                 "A dark block may appear at most twice per page — the closing call to action and the footer.",
                 "Copy and prices are content: they arrive from data through the blocks' properties, never as constants in code.",
               ]
@@ -366,7 +386,9 @@ export const PublicPagesGuide: IngotGuidePage = {
             <p>
               Dvousloupec: štítek s nadpisem vlevo, uvozující odstavec vpravo.
               Akcent nese jen štítek. Pod hlavičkou trojice featur — ikona
-              18 px v akcentovém rámečku, titulek a malý text.
+              18 px v akcentovém rámečku, titulek a malý text. Trojice stojí
+              v jednom zaobleném rámu a panely dělí vlasová linka, ne mezera:
+              jsou to tři části jednoho celku, ne tři kartičky.
             </p>
             <SectionHeadExample lang="cs" />
           </div>
@@ -377,7 +399,9 @@ export const PublicPagesGuide: IngotGuidePage = {
               A two-column head: the label and heading on the left, the lede on
               the right. Only the label carries the accent. Below it a trio of
               features — an 18 px icon in an accent frame, a title and small
-              text.
+              text. The trio sits in one rounded frame with the panels split
+              by a hairline rather than a gap: three parts of one whole, not
+              three small cards.
             </p>
             <SectionHeadExample lang="en" />
           </div>
@@ -391,8 +415,11 @@ export const PublicPagesGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Tři karty s pořadovým číslem a šipkou k dalšímu kroku; poslední
-              karta šipku nemá. Číslo se počítá z pořadí — nedá se přeskočit.
+              Karty s pořadovým číslem a šipkou k dalšímu kroku; poslední
+              karta šipku nemá. Číslo je malá akcentová pilulka, ne velké
+              číslo — nejvyšší váhu v kartě má titulek kroku. Číslo se počítá
+              z pořadí, takže se nedá přeskočit. Trojsloupcová mřížka je
+              výchozí; čtyři sloupce patří jen krokům procesu.
             </p>
             <StepsExample lang="cs" />
           </div>
@@ -400,9 +427,12 @@ export const PublicPagesGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Three cards with an ordinal number and an arrow towards the next
-              step; the last card has no arrow. The number is derived from the
-              order — it cannot skip.
+              Cards with an ordinal number and an arrow towards the next step;
+              the last card has no arrow. The number is a small accent pill,
+              not a large numeral — the step's title carries the most weight
+              in the card. The number is derived from the order, so it cannot
+              skip. The three-column grid is the default; four columns belong
+              to process steps only.
             </p>
             <StepsExample lang="en" />
           </div>
@@ -416,8 +446,10 @@ export const PublicPagesGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Karty „pro koho to je" s tag pilulkami. Pilulky jsou neutrální —
-              akcent v sekci patří hlavičce.
+              Karty „pro koho to je" se štítky. Štítek je hranatý mono
+              malými písmeny — je to technický údaj o provozu, ne stav
+              entity. Štítky zůstávají neutrální; akcent v sekci patří
+              hlavičce.
             </p>
             <SegmentsExample lang="cs" />
           </div>
@@ -425,8 +457,10 @@ export const PublicPagesGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              "Who is it for" cards with tag pills. The pills stay neutral —
-              the section's accent belongs to its head.
+              "Who is it for" cards with tags. A tag is a square lowercase
+              mono label — a technical fact about a shop, not the status of
+              an entity. Tags stay neutral; the section's accent belongs to
+              its head.
             </p>
             <SegmentsExample lang="en" />
           </div>
@@ -440,9 +474,12 @@ export const PublicPagesGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Trojsloupcová mřížka úkol / dnes / s platformou; třetí sloupec je
-              zvýrazněný a je jediným akcentovým prvkem sekce. Buňky nesou
-              ikonu vedle textu.
+              Řádková tabulka úkol / dnes / s platformou. Řádek je ta
+              podstatná jednotka: páruje jeden úkol s oběma stavy, takže se
+              nedá napsat rozpojeně. Hlavička sedí na tlumené ploše, třetí
+              sloupec je zvýrazněný a je jediným akcentovým prvkem sekce. Na
+              úzké obrazovce se tabulka roluje do strany — složená mřížka už
+              nic nesrovnává.
             </p>
             <ComparisonExample lang="cs" />
           </div>
@@ -450,9 +487,12 @@ export const PublicPagesGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              A three-column grid of task / today / with the platform; the
-              third column is highlighted and is the section's only accented
-              element. Cells carry an icon next to the text.
+              A row table of task / today / with the platform. The row is the
+              unit that matters: it pairs one task with both states, so it
+              cannot be written apart. The header sits on the muted surface,
+              the third column is highlighted and is the section's only
+              accented element. On a narrow screen the table scrolls
+              sideways — a grid that stacks no longer compares anything.
             </p>
             <ComparisonExample lang="en" />
           </div>
@@ -466,8 +506,9 @@ export const PublicPagesGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Tři karty plánů, prostřední zvýrazněná s odznakem; odrážky
-              s fajfkou 14 px. Blok neumí vykreslit nic, co nedostane přes{" "}
+              Tři karty plánů, prostřední zvýrazněná obrysem a stínem; odznak
+              stojí v hlavičce karty vedle názvu plánu. Cena je mono, akce má
+              každá karta a všechny sedí na jedné patě. Blok neumí vykreslit nic, co nedostane přes{" "}
               <IngotCode>plans</IngotCode> — názvy, ceny i výčty vlastností
               jsou data plánů platformy, žádné částky v kódu. Ceny v ukázce
               jsou proto schválně vyiksované.
@@ -478,8 +519,10 @@ export const PublicPagesGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Three plan cards, the middle one highlighted with a badge;
-              bullets with a 14 px check. The block cannot render anything it
+              Three plan cards, the middle one highlighted with an outline and
+              a shadow; the badge sits in the card header next to the plan
+              name. The price is set in mono, every card carries an action and
+              all of them rest on one foot line. The block cannot render anything it
               does not receive through <IngotCode>plans</IngotCode> — names,
               prices and feature lists are the platform's plan data, no
               amounts in code. That is why the example prices are X-ed out on
@@ -523,7 +566,8 @@ export const PublicPagesGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Tmavý blok se dvěma velkými akcemi. Kreslí se prohozenými
+              Tmavý blok se dvěma velkými akcemi; hlavní je akcentová, aby
+              měl na tmavé ploše kam jít pohled. Kreslí se prohozenými
               neutrálními tokeny, takže v tmavém motivu se obrátí sám. Na
               stránce smí být tmavý blok nejvýš dvakrát — tohle CTA a patička.
             </p>
@@ -533,7 +577,9 @@ export const PublicPagesGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              A dark block with two large actions. It is drawn with the
+              A dark block with two large actions; the primary one is
+              accented so the eye has somewhere to land on the dark surface.
+              It is drawn with the
               neutral tokens swapped, so it inverts itself in the dark theme.
               A page may hold at most two dark blocks — this call to action
               and the footer.

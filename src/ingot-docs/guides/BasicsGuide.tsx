@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import { Card, IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
 
 /**
- * Stránka „Základy“ — barevné tokeny a akcentové rodiny.
+ * Stránka „Základy“ — tokeny, na kterých stojí všechno ostatní: barevná
+ * škála, typografický systém a mřížka prostoru.
  *
  * 🪤 **Ukázka rodin si barvy nedrží.** Každý řádek je obalený prvkem
  * s ``data-accent``, uvnitř kterého ``var(--accent)`` a spol. odpovídají
@@ -18,6 +19,10 @@ import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
  * Ze stejného důvodu se řádky generují z ``ACCENT_CHOICES``: rodina
  * přidaná do kitu se na stránce objeví sama, místo aby na ni někdo musel
  * vzpomenout.
+ *
+ * 🪤 Ukázka mezer kreslí ČTVERCE n×n, ne pruhy. Pruh o šířce násobku
+ * hodnoty vypadá líp, ale u popisku „4px“ pak stojí obrázek široký 12px —
+ * ukázka, která lže o čísle, které popisuje.
  *
  * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: čísla
  * technického dluhu, jména kontrol, klíče úkolů ani rozhodnutí s daty.
@@ -115,52 +120,104 @@ const NEUTRAL_TOKENS: readonly TokenRow[] = [
   },
   {
     token: "--surface",
-    note: { cs: "Karty a vstupy.", en: "Cards and inputs." },
+    note: { cs: "Karty, tabulky.", en: "Cards, tables." },
   },
   {
     token: "--surface-2",
-    note: {
-      cs: "Zvednutá plocha — hlavičky tabulek, stage ukázek.",
-      en: "A raised surface — table headers, demo stages.",
-    },
+    note: { cs: "Hlavičky, hover.", en: "Headers, hover." },
+  },
+  {
+    token: "--surface-3",
+    note: { cs: "Track, výplně.", en: "Tracks, fills." },
   },
   {
     token: "--border",
-    note: { cs: "Běžný obrys.", en: "The ordinary outline." },
+    note: { cs: "Výchozí linka.", en: "The default line." },
   },
   {
     token: "--border-strong",
-    note: {
-      cs: "Obrys ovládacích prvků.",
-      en: "The outline of controls.",
-    },
+    note: { cs: "Vstupy, aktivní.", en: "Inputs, active." },
   },
   {
     token: "--ink",
-    note: { cs: "Hlavní text.", en: "Primary text." },
+    note: { cs: "Text, primární tlačítko.", en: "Text, primary button." },
   },
   {
     token: "--ink-2",
-    note: { cs: "Běžný text odstavců.", en: "Ordinary paragraph text." },
+    note: { cs: "Běžný text.", en: "Body text." },
   },
   {
     token: "--ink-3",
-    note: { cs: "Popisky a doprovodný text.", en: "Labels and helper text." },
+    note: { cs: "Sekundární.", en: "Secondary." },
+  },
+  {
+    token: "--ink-4",
+    note: { cs: "Terciární, disabled.", en: "Tertiary, disabled." },
+  },
+];
+
+const ACCENT_TOKENS: readonly TokenRow[] = [
+  {
+    token: "--accent",
+    note: { cs: "Akce, focus.", en: "Actions, focus." },
+  },
+  {
+    token: "--accent-ink",
+    note: { cs: "Hover, odkazy.", en: "Hover, links." },
+  },
+  {
+    token: "--accent-bg",
+    note: { cs: "Výběr, callout.", en: "Selection, callout." },
+  },
+  {
+    token: "--accent-border",
+    note: { cs: "Linka akcentu.", en: "The accent line." },
   },
 ];
 
 const STATE_TOKENS: readonly TokenRow[] = [
   {
     token: "--ok",
-    note: { cs: "Kladný stav — hotovo, schváleno.", en: "Positive — done, approved." },
+    note: { cs: "Aktivní, hotovo.", en: "Active, done." },
+  },
+  {
+    token: "--ok-bg",
+    note: { cs: "Podklad.", en: "The tint underneath." },
   },
   {
     token: "--warn",
-    note: { cs: "Varování — vyžaduje pozornost.", en: "Warning — needs attention." },
+    note: { cs: "Čeká, limit.", en: "Pending, at the limit." },
+  },
+  {
+    token: "--warn-bg",
+    note: { cs: "Podklad.", en: "The tint underneath." },
   },
   {
     token: "--danger",
-    note: { cs: "Chyba a nevratné akce.", en: "Errors and irreversible actions." },
+    note: { cs: "Chyba, stop.", en: "Error, stop." },
+  },
+  {
+    token: "--danger-bg",
+    note: { cs: "Podklad.", en: "The tint underneath." },
+  },
+];
+
+const COLOUR_RULES: readonly Localized<string>[] = [
+  {
+    cs: "Neutrální škála nese většinu plochy — akcent i stav jsou v ní hosté.",
+    en: "The neutral scale carries most of the surface — accent and state are guests in it.",
+  },
+  {
+    cs: "V jednom pohledu se nikdy nemíchají dva akcenty.",
+    en: "Two accents are never mixed in one view.",
+  },
+  {
+    cs: "Stavové barvy jsou vyhrazené pro stav dat, ne pro dekoraci.",
+    en: "State colours are reserved for the state of the data, never for decoration.",
+  },
+  {
+    cs: "Barva nikdy nenese informaci sama — vždy spolu s textem nebo tvarem.",
+    en: "Colour never carries information on its own — always alongside text or a shape.",
   },
 ];
 
@@ -185,6 +242,16 @@ function TokenSwatches({ lang }: { lang: DocLang }): JSX.Element {
       <div className="overflow-x-auto">
         <IngotTable
           columns={tokenColumns(lang)}
+          rows={ACCENT_TOKENS}
+          rowKey={(row) => row.token}
+          caption={lang === "cs" ? "Akcentové tokeny" : "Accent tokens"}
+          className="min-w-[34rem]"
+          testId="docs-accent-swatches"
+        />
+      </div>
+      <div className="overflow-x-auto">
+        <IngotTable
+          columns={tokenColumns(lang)}
           rows={STATE_TOKENS}
           rowKey={(row) => row.token}
           caption={lang === "cs" ? "Stavové tokeny" : "State tokens"}
@@ -192,35 +259,83 @@ function TokenSwatches({ lang }: { lang: DocLang }): JSX.Element {
           testId="docs-state-swatches"
         />
       </div>
+      <p>
+        {lang === "cs"
+          ? "Každý stav má i podkladovou variantu. Bez ní nejde postavit odznak se stavovým tintem: sytý token je v něm textem a plocha pod ním musí být vlastní barva, ne oslabená verze té první."
+          : "Every state also has a tint variant. Without it a badge with a state tint cannot be built: the saturated token is the text in it, and the surface underneath has to be a colour of its own, not a weakened version of the first."}
+      </p>
+      <IngotList items={COLOUR_RULES.map((rule) => rule[lang])} />
     </div>
   );
 }
 
 interface TypeRow {
   className: string;
-  note: Localized<string>;
+  step: Localized<string>;
+  value: string;
+  sample: Localized<string>;
 }
 
 const TYPE_SCALE: readonly TypeRow[] = [
   {
-    className: "text-2xl font-semibold tracking-tight text-ink",
-    note: { cs: "Nadpis stránky.", en: "The page title." },
+    className: "text-h1 text-ink",
+    step: { cs: "Nadpis stránky", en: "Page title" },
+    value: "40 / 600",
+    sample: { cs: "Výrobní partneři", en: "Manufacturing partners" },
   },
   {
-    className: "text-lg font-semibold text-ink",
-    note: { cs: "Nadpis sekce.", en: "A section heading." },
+    className: "text-h2 text-ink",
+    step: { cs: "Nadpis sekce", en: "Section heading" },
+    value: "26 / 600",
+    sample: { cs: "Cenové vzorce", en: "Pricing formulas" },
   },
   {
-    className: "text-sm text-ink-2",
-    note: { cs: "Běžný text.", en: "Ordinary text." },
+    className: "text-h3 text-ink",
+    step: { cs: "Podnadpis", en: "Subheading" },
+    value: "18 / 600",
+    sample: { cs: "Parametry stroje", en: "Machine parameters" },
   },
   {
-    className: "text-xs text-ink-3",
-    note: { cs: "Popisky a doprovodný text.", en: "Labels and helper text." },
+    className: "text-lede text-ink-2",
+    step: { cs: "Perex", en: "Lede" },
+    value: "17",
+    sample: {
+      cs: "Nastavení, které se propíše do všech nabídek.",
+      en: "A setting that propagates into every quote.",
+    },
   },
   {
-    className: "font-mono text-xs",
-    note: { cs: "Kód a technické hodnoty.", en: "Code and technical values." },
+    className: "text-body text-ink-2",
+    step: { cs: "Běžný text", en: "Body text" },
+    value: "14,5",
+    sample: {
+      cs: "Základní text v panelech a popiscích polí.",
+      en: "The ordinary text in panels and field labels.",
+    },
+  },
+  {
+    className: "text-small text-ink-2",
+    step: { cs: "Drobný text", en: "Small text" },
+    value: "13",
+    sample: {
+      cs: "Sekundární informace, nápověda pod vstupem.",
+      en: "Secondary information, the hint under an input.",
+    },
+  },
+  {
+    className: "text-eyebrow uppercase text-ink-3",
+    step: { cs: "Popisek", en: "Eyebrow" },
+    value: "11 / 500",
+    sample: { cs: "Sekce · verzálky", en: "Section · uppercase" },
+  },
+  {
+    className: "font-mono tabular-nums text-body text-ink",
+    step: { cs: "Číslo", en: "Number" },
+    value: "mono",
+    sample: {
+      cs: "128 640 Kč · S235JR · 3,0 mm · 1 380 ks",
+      en: "128 640 CZK · S235JR · 3.0 mm · 1 380 pcs",
+    },
   },
 ];
 
@@ -229,18 +344,24 @@ function typeColumns(lang: DocLang): readonly IngotColumn<TypeRow>[] {
     {
       key: "sample",
       header: lang === "cs" ? "Ukázka" : "Sample",
-      cell: (row) => <span className={row.className}>Aa Bb Cc 123</span>,
+      cell: (row) => <span className={row.className}>{row.sample[lang]}</span>,
+    },
+    {
+      key: "step",
+      header: lang === "cs" ? "Stupeň" : "Step",
+      cell: (row) => row.step[lang],
+      cellClassName: "whitespace-nowrap",
+    },
+    {
+      key: "value",
+      header: lang === "cs" ? "Velikost / váha" : "Size / weight",
+      cell: (row) => <IngotCode>{row.value}</IngotCode>,
       cellClassName: "whitespace-nowrap",
     },
     {
       key: "class",
       header: lang === "cs" ? "Třídy" : "Classes",
       cell: (row) => <IngotCode>{row.className}</IngotCode>,
-    },
-    {
-      key: "note",
-      header: lang === "cs" ? "K čemu" : "What for",
-      cell: (row) => row.note[lang],
     },
   ];
 }
@@ -250,8 +371,13 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
     <div className="space-y-3 text-sm text-ink-2">
       <p>
         {lang === "cs"
-          ? "Škála má čtyři stupně a mono pro kód. Velikost se nevybírá od oka: každý stupeň má svou roli a ukázka vlevo je vysázená přesně těmi třídami, které řádek jmenuje."
-          : "The scale has four steps plus mono for code. Sizes are not picked by eye: each step has a role, and the sample on the left is set in exactly the classes the row names."}
+          ? "Škála má osm stupňů a každý má jméno i pevnou hodnotu — velikost se nevybírá od oka. Ukázka vlevo je vysázená přesně těmi třídami, které řádek jmenuje."
+          : "The scale has eight steps, each with a name and a fixed value — a size is never picked by eye. The sample on the left is set in exactly the classes the row names."}
+      </p>
+      <p>
+        {lang === "cs"
+          ? "Bezpatkové písmo nese řeč, mono nese fakta: čísla, kódy, rozměry a identifikátory. Tabulární číslice drží číslo pod číslem, takže se částky ve sloupci dají porovnat okem."
+          : "The sans face carries speech, mono carries facts: numbers, codes, dimensions and identifiers. Tabular figures keep digit above digit, so amounts in a column can be compared by eye."}
       </p>
       <div className="overflow-x-auto">
         <IngotTable
@@ -259,7 +385,7 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
           rows={TYPE_SCALE}
           rowKey={(row) => row.className}
           caption={lang === "cs" ? "Typografická škála" : "Type scale"}
-          className="min-w-[34rem]"
+          className="min-w-[38rem]"
           testId="docs-type-scale"
         />
       </div>
@@ -267,51 +393,139 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
-const SPACE_STEPS = [4, 8, 12, 16, 24, 32] as const;
-// Hodnoty odpovídají rádiusové škále kitu — utilita vlevo kreslí box,
-// takže číslo vedle ní nemůže lhát, aniž by to bylo vidět.
+// Mezery i rádiusy odpovídají škále kitu — obrázek vlevo kreslí právě tu
+// hodnotu, takže číslo vedle něj nemůže lhát, aniž by to bylo vidět.
+const SPACE_STEPS = [4, 8, 12, 16, 24, 32, 48] as const;
+
 const RADIUS_STEPS = [
-  { className: "rounded-sm", px: 4 },
-  { className: "rounded", px: 6 },
-  { className: "rounded-md", px: 10 },
-  { className: "rounded-lg", px: 14 },
+  { className: "rounded-sm", label: "4px" },
+  { className: "rounded", label: "6px" },
+  { className: "rounded-md", label: "10px" },
+  { className: "rounded-lg", label: "14px" },
+  { className: "rounded-full", label: "999px" },
 ] as const;
+
+const ELEVATIONS = [
+  {
+    token: "--shadow-sm",
+    use: {
+      cs: "Karty na pozadí a jejich hover.",
+      en: "Cards on the page and their hover.",
+    },
+  },
+  {
+    token: "--shadow-md",
+    use: {
+      cs: "Rozbalovací menu a modální okno.",
+      en: "Dropdown menus and the modal.",
+    },
+  },
+  {
+    token: "--shadow-lg",
+    use: {
+      cs: "Boční panel a toast.",
+      en: "The side panel and toasts.",
+    },
+  },
+] as const;
+
+interface LayerRow {
+  name: Localized<string>;
+  z: string;
+}
+
+const LAYERS: readonly LayerRow[] = [
+  { name: { cs: "Obsah", en: "Content" }, z: "0" },
+  { name: { cs: "Přilepený toolbar", en: "Sticky toolbar" }, z: "30" },
+  { name: { cs: "Hlavička", en: "Header" }, z: "40" },
+  { name: { cs: "Boční panel", en: "Side panel" }, z: "80" },
+  { name: { cs: "Modální okno", en: "Modal" }, z: "90" },
+  { name: { cs: "Toast", en: "Toast" }, z: "100" },
+];
+
+function layerColumns(lang: DocLang): readonly IngotColumn<LayerRow>[] {
+  return [
+    {
+      key: "name",
+      header: lang === "cs" ? "Vrstva" : "Layer",
+      cell: (row) => row.name[lang],
+    },
+    {
+      key: "z",
+      header: lang === "cs" ? "Hladina" : "Level",
+      cell: (row) => <IngotCode>{row.z}</IngotCode>,
+      align: "end",
+      cellClassName: "whitespace-nowrap",
+    },
+  ];
+}
 
 function SpacesAndRadii({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="space-y-4 text-sm text-ink-2">
       <p>
         {lang === "cs"
-          ? "Mezery jdou po čtyřech pixelech. Menší krok se nezavádí — dvě sousední hodnoty, které od oka nerozeznáš, nejsou dvě hodnoty."
-          : "Spacing runs in four-pixel steps. No smaller step exists — two adjacent values you cannot tell apart by eye are not two values."}
+          ? "Mezery jdou po čtyřech pixelech. Menší krok se nezavádí — dvě sousední hodnoty, které od oka nerozeznáš, nejsou dvě hodnoty. Čtverec vlevo má přesně tu velikost, kterou popisek jmenuje."
+          : "Spacing runs in four-pixel steps. No smaller step exists — two adjacent values you cannot tell apart by eye are not two values. The square below is exactly the size its label names."}
       </p>
-      <div className="space-y-1.5" data-testid="docs-spaces">
-        {SPACE_STEPS.map((px) => (
-          <div key={px} className="flex items-center gap-3">
-            <IngotCode>{`${px}px`}</IngotCode>
+      <div
+        className="flex flex-wrap items-end gap-4"
+        data-testid="docs-spaces"
+      >
+        {SPACE_STEPS.map((px, index) => (
+          <div key={px} className="space-y-1 text-center">
             <span
               aria-hidden="true"
-              className="inline-block h-3 rounded-sm bg-accent"
-              style={{ width: `${px * 3}px` }}
+              className="block rounded-sm bg-accent"
+              style={{ width: `${px}px`, height: `${px}px` }}
             />
+            <IngotCode>{`s-${index + 1} · ${px}px`}</IngotCode>
           </div>
         ))}
       </div>
       <p>
         {lang === "cs"
-          ? "Rádius roste s velikostí prvku: drobné štítky mají nejmenší, karty a rámečky největší. Kruh je vyhrazený pro avatary a puntíky."
-          : "Radius grows with the element: small badges take the smallest, cards and frames the largest. The circle is reserved for avatars and dots."}
+          ? "Rádius roste s velikostí prvku: drobné štítky mají nejmenší, karty a rámečky největší. Plný kruh je vyhrazený pro avatary a puntíky."
+          : "Radius grows with the element: small badges take the smallest, cards and frames the largest. The full circle is reserved for avatars and dots."}
       </p>
       <div className="flex flex-wrap items-end gap-4" data-testid="docs-radii">
         {RADIUS_STEPS.map((step) => (
           <div key={step.className} className="space-y-1 text-center">
             <span
               aria-hidden="true"
-              className={`block h-12 w-16 border border-border-strong bg-surface-2 ${step.className}`}
+              className={`block h-14 w-14 border border-border-strong bg-surface-2 ${step.className}`}
             />
-            <IngotCode>{`${step.className} · ${step.px}px`}</IngotCode>
+            <IngotCode>{`${step.className} · ${step.label}`}</IngotCode>
           </div>
         ))}
+      </div>
+      <p>
+        {lang === "cs"
+          ? "Stín říká, jak vysoko nad stránkou prvek leží. Tři stupně stačí: každý má své patro a mimo ně se nepoužívá."
+          : "A shadow says how high above the page an element sits. Three steps are enough: each has its floor and is not used outside it."}
+      </p>
+      <div className="grid gap-4 sm:grid-cols-3" data-testid="docs-elevation">
+        {ELEVATIONS.map((elevation) => (
+          <Card key={elevation.token} style={{ boxShadow: `var(${elevation.token})` }}>
+            <IngotCode>{elevation.token}</IngotCode>
+            <p className="mt-2 text-xs text-ink-3">{elevation.use[lang]}</p>
+          </Card>
+        ))}
+      </div>
+      <p>
+        {lang === "cs"
+          ? "Vrstvy mají pevné hladiny, aby se překryvy nepřebíjely případ od případu. Mezera mezi bloky obsahu je 24 px."
+          : "Layers sit at fixed levels so overlays do not outbid each other case by case. The gap between content blocks is 24 px."}
+      </p>
+      <div className="overflow-x-auto">
+        <IngotTable
+          columns={layerColumns(lang)}
+          rows={LAYERS}
+          rowKey={(row) => row.z}
+          caption={lang === "cs" ? "Vrstvy" : "Layers"}
+          className="min-w-[20rem]"
+          testId="docs-layers"
+        />
       </div>
     </div>
   );
@@ -385,8 +599,8 @@ export const BasicsGuide: IngotGuidePage = {
   group: "system",
   title: { cs: "Základy", en: "Basics" },
   summary: {
-    cs: "Barevné role, které si obrazovky berou přes proměnné, a pět akcentových rodin, mezi kterými se přepíná.",
-    en: "The colour roles screens take through variables, and the five accent families you can switch between.",
+    cs: "Tokeny, ze kterých je postavené všechno ostatní: barevná škála, typografický systém a mřížka prostoru.",
+    en: "The tokens everything else is built from: the colour scale, the type system and the grid of space.",
   },
   sections: [
     {
@@ -402,22 +616,21 @@ export const BasicsGuide: IngotGuidePage = {
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — samotná barva. Vyplněné
-                  tlačítko, ikona, aktivní stav; je to i barva textu, takže
-                  musí být čitelná na plochách.
+                  <IngotCode>--accent</IngotCode> — samotná barva. Akce,
+                  vyplněné tlačítko, ikona, focusový obrys; je to i barva
+                  textu, takže musí být čitelná na plochách.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — text na vlastním
-                  tintu. Tmavší než akcent, aby popisek na
-                  <IngotCode>--accent-bg</IngotCode> nezmizel.
+                  <IngotCode>--accent-ink</IngotCode> — tmavší stupeň
+                  akcentu. Hover akcí a barva odkazů.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — tint pod odznaky a
-                  zvýrazněné řádky. Nikdy ne text.
+                  <IngotCode>--accent-bg</IngotCode> — tint pod vybraným
+                  řádkem, odznakem a calloutem. Nikdy ne text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — obrys toho tintu.
-                  Dekorativní, nenese informaci sám o sobě.
+                  <IngotCode>--accent-border</IngotCode> — linka akcentu,
+                  obrys toho tintu. Dekorativní, nenese informaci sama o sobě.
                 </>,
               ]}
             />
@@ -436,22 +649,22 @@ export const BasicsGuide: IngotGuidePage = {
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — the colour itself. Filled
-                  buttons, icons, active states; it is also a text colour, so
-                  it has to stay readable on surfaces.
+                  <IngotCode>--accent</IngotCode> — the colour itself.
+                  Actions, filled buttons, icons, the focus ring; it is also a
+                  text colour, so it has to stay readable on surfaces.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — text on the accent's
-                  own tint. Darker than the accent so a label on{" "}
-                  <IngotCode>--accent-bg</IngotCode> does not disappear.
+                  <IngotCode>--accent-ink</IngotCode> — the darker step of
+                  the accent. Hover on actions, and the colour of links.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — the tint under badges
-                  and highlighted rows. Never text.
+                  <IngotCode>--accent-bg</IngotCode> — the tint under a
+                  selected row, a badge and a callout. Never text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — the outline of that
-                  tint. Decorative; it carries no information on its own.
+                  <IngotCode>--accent-border</IngotCode> — the accent line,
+                  the outline of that tint. Decorative; it carries no
+                  information on its own.
                 </>,
               ]}
             />
@@ -474,7 +687,10 @@ export const BasicsGuide: IngotGuidePage = {
     },
     {
       id: "sw-neutral",
-      title: { cs: "Neutrální a stavové barvy", en: "Neutral and state colours" },
+      title: {
+        cs: "Neutrální, akcentové a stavové barvy",
+        en: "Neutral, accent and state colours",
+      },
       body: {
         cs: <TokenSwatches lang="cs" />,
         en: <TokenSwatches lang="en" />,
@@ -490,7 +706,7 @@ export const BasicsGuide: IngotGuidePage = {
     },
     {
       id: "spaces",
-      title: { cs: "Prostor a rádiusy", en: "Space and radii" },
+      title: { cs: "Prostor, rádiusy, vrstvy", en: "Space, radii, layers" },
       body: {
         cs: <SpacesAndRadii lang="cs" />,
         en: <SpacesAndRadii lang="en" />,

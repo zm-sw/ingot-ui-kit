@@ -46,6 +46,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CHROME } from "@/ingot-docs/chrome";
 import { DocsApp } from "@/ingot-docs/DocsApp";
 import { DOC_LANGS, type DocLang } from "@/ingot-docs/lang";
+import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import { ACCENT_CHOICES } from "@/lib/accent";
 
@@ -95,7 +96,8 @@ describe("DocsApp", () => {
     // Komponenty jsou vnořené pod rozcestníkem ve skupině „Systém“.
     const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
     for (const page of INGOT_DOC_PAGES) {
-      expect(within(nav).getByText(page.name)).toBeInTheDocument();
+      // V menu stojí jméno bez prefixu; plné jméno drží adresa.
+      expect(within(nav).getByText(displayName(page.name))).toBeInTheDocument();
     }
   });
 
@@ -104,7 +106,7 @@ describe("DocsApp", () => {
     render(<DocsApp />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotEmptyState" }),
+      screen.getByRole("heading", { level: 1, name: "EmptyState" }),
     ).toBeInTheDocument();
     // Skutečný IngotEmptyState, ne text o něm: jeho vlastní testid.
     expect(screen.getByTestId("docs-empty")).toBeInTheDocument();
@@ -120,7 +122,11 @@ describe("DocsApp", () => {
       // Statusy a verze živí badge vedle nadpisu — stránka bez nich by
       // tiše slibovala stabilitu, kterou nikdo nevyhlásil.
       expect(["stable", "beta"]).toContain(page.status);
-      expect(page.version.trim().length).toBeGreaterThan(0);
+      expect(page.version).toMatch(/^\d+\.\d+$/);
+      // Selektor a tokeny jsou smlouva pro review: čím prvek jmenovat
+      // a co rozbije změna tokenu.
+      expect(page.tag.trim().length).toBeGreaterThan(0);
+      expect(page.tokens.length).toBeGreaterThan(0);
       for (const lang of DOC_LANGS) {
         expect(page.summary[lang].trim().length).toBeGreaterThan(0);
         expect(page.useWhen[lang].length).toBeGreaterThan(0);
@@ -164,6 +170,7 @@ describe("DocsApp", () => {
       CHROME.avoidWhen.cs,
       CHROME.props.cs,
       CHROME.a11y.cs,
+      CHROME.tokens.cs,
       CHROME.i18n.cs,
       // IngotTable je jediná stránka s nepovinnou sekcí `limits`.
       CHROME.limits.cs,
@@ -179,7 +186,7 @@ describe("DocsApp", () => {
       name: CHROME.onThisPage.cs,
     });
     const anchors = within(aside).getAllByRole("link");
-    expect(anchors).toHaveLength(7);
+    expect(anchors).toHaveLength(8);
     for (const anchor of anchors) {
       const id = anchor.getAttribute("href")?.slice(1);
       expect(id).toBeTruthy();
@@ -253,6 +260,15 @@ describe("DocsApp", () => {
     }
   });
 
+  it("řadí komponenty abecedně podle jména, které ukazuje", () => {
+    // Rejstřík o jedenatřiceti položkách se prochází podle abecedy.
+    // Podle ZOBRAZENÉHO jména: podle jména exportu by Button a Card
+    // skončily první, protože prefix nemají.
+    const shown = INGOT_DOC_PAGES.map((page) => displayName(page.name));
+    const sorted = [...shown].sort((a, b) => a.localeCompare(b, "en"));
+    expect(shown).toEqual(sorted);
+  });
+
   it("čísluje průvodce podle pořadí v registru, ne ručně", () => {
     render(<DocsApp />);
     INGOT_GUIDE_PAGES.forEach((guide, index) => {
@@ -324,6 +340,27 @@ describe("DocsApp", () => {
     );
   });
 
+  it("vypíše sekci Tokeny se seznamem tokenů komponenty", () => {
+    window.location.hash = "#/IngotBadge";
+    render(<DocsApp />);
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: CHROME.tokens.cs }),
+    ).toBeInTheDocument();
+    const list = screen.getByTestId("docs-tokens");
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotBadge");
+    for (const token of page!.tokens) {
+      expect(within(list).getByText(token)).toBeInTheDocument();
+    }
+  });
+
+  it("ukazuje vedle nadpisu selektor prvku", () => {
+    window.location.hash = "#/IngotBadge";
+    render(<DocsApp />);
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotBadge");
+    expect(screen.getByTestId("docs-tag")).toHaveTextContent(page!.tag);
+  });
+
   it("ukazuje vedle nadpisu badge stavu a verze", () => {
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
@@ -389,14 +426,14 @@ describe("DocsApp", () => {
     window.location.hash = "#/IngotModal";
     render(<DocsApp />);
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotModal" }),
+      screen.getByRole("heading", { level: 1, name: "Modal" }),
     ).toBeInTheDocument();
 
     window.location.hash = "#ukazka";
     window.dispatchEvent(new HashChangeEvent("hashchange"));
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotModal" }),
+      screen.getByRole("heading", { level: 1, name: "Modal" }),
     ).toBeInTheDocument();
   });
 

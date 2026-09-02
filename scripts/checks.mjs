@@ -64,6 +64,21 @@ function rel(path) {
 const COMPONENT_RE = /^Ingot[A-Z]\w*$/;
 const DOCUMENTED_UNPREFIXED = new Set(["Button", "Card"]);
 
+/**
+ * Parts that only exist inside another primitive, mapped to their parent.
+ *
+ * A row of the account menu is not a component someone reaches for on its
+ * own — it is documented on the parent's page, the way CardTitle is. The
+ * map is explicit rather than a name-prefix rule so that adding a part
+ * stays a decision: "IngotTableRow" would otherwise silently excuse
+ * itself from having a page just by being named after IngotTable.
+ */
+const SUBCOMPONENTS = new Map([
+  ["IngotTopNavAccount", "IngotTopNav"],
+  ["IngotUserMenuSection", "IngotUserMenu"],
+  ["IngotUserMenuRow", "IngotUserMenu"],
+]);
+
 function exportedComponents() {
   const src = stripComments(read(INGOT_INDEX));
   const names = new Set();
@@ -99,6 +114,18 @@ function guardIngotDocPages() {
   const registrySrc = stripComments(read(REGISTRY));
   const exported = exportedComponents();
   const documented = documentedComponents(registrySrc);
+
+  // A part documented on its parent's page still has to HAVE a parent —
+  // otherwise the map is just a list of things excused from the rule.
+  for (const [part, parent] of SUBCOMPONENTS) {
+    if (exported.has(part) && !exported.has(parent)) {
+      fail(guard, [
+        `${part} is registered as a part of ${parent}, which the barrel does not export.`,
+        "Either export the parent or give the part its own doc page.",
+      ]);
+    }
+    exported.delete(part);
+  }
 
   const undocumented = [...exported].filter((n) => !documented.has(n)).sort();
   if (undocumented.length) {
@@ -139,10 +166,24 @@ function guardIngotDocPages() {
         "Every component page carries a status badge next to its title.",
       ]);
     }
-    if (!/version:\s*"[^"]+"/.test(src)) {
+    if (!/version:\s*"\d+\.\d+"/.test(src)) {
       fail(guard, [
-        `${pageRel} does not declare a non-empty version.`,
-        "Every component page carries a version badge next to its title.",
+        `${pageRel} does not declare a version of the form "MAJOR.MINOR".`,
+        "Every component page carries a version badge next to its title,",
+        "and changing the component means bumping it in the same commit.",
+      ]);
+    }
+    // tag + tokens are the review contract: the selector is the only name
+    // a designer can use for the element, and the token list says what a
+    // token change would break.
+    if (!/tag:\s*"[^"]+"/.test(src)) {
+      fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
+    }
+    const tokens = src.match(/tokens:\s*\[([^\]]*)\]/);
+    if (!tokens || !tokens[1].trim()) {
+      fail(guard, [
+        `${pageRel} does not declare the tokens it stands on.`,
+        "The token list is what tells review what a token change breaks.",
       ]);
     }
     const demoPath = join(DOCS_DIR, "demos", `${name}Demo.tsx`);

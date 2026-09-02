@@ -67,11 +67,13 @@ describe("MarketingPricing", () => {
             features: ["Pět uživatelů"],
             featured: true,
             badge: "Nejoblíbenější",
+            action: <a href="#team">Vyzkoušet</a>,
           },
         ]}
       />,
     );
     expect(screen.getByText("Team")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Vyzkoušet" })).toBeInTheDocument();
     expect(screen.getByText("1 234 Kč")).toBeInTheDocument();
     expect(screen.getByText("měsíčně")).toBeInTheDocument();
     expect(screen.getByText("Nejoblíbenější")).toBeInTheDocument();

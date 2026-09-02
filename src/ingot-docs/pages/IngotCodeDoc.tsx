@@ -6,7 +6,21 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotCodeDoc: IngotDocPage = {
   name: "IngotCode",
   status: "stable",
-  version: "0.1",
+  version: "1.1",
+  tag: ".code",
+  tokens: [
+    "--surface",
+    "--border",
+    "--font-mono",
+    "--r-sm",
+    "--code-comment",
+    "--code-keyword",
+    "--code-string",
+    "--code-tag",
+    "--code-attr",
+    "--code-number",
+    "--code-punct",
+  ],
   summary: {
     cs: "Kód v textu, nebo výpis přes celou šířku. Výpis se umí posunout do strany — což je ta jediná věc, na které ruční výpisy padají.",
     en: "Code inside a sentence, or a listing across the full width. The listing scrolls sideways — the one thing hand-rolled listings get wrong.",

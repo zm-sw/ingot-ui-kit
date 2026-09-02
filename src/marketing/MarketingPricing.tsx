@@ -6,6 +6,17 @@ import { IngotIcon } from "@/ingot";
  * Ceník (KAN-664) — tři ``.pricecard`` z handoffu Veřejné stránky,
  * prostřední ``.is-featured`` s odznakem; odrážky s fajfkou 14 px.
  *
+ * 🪤 **Zvýraznění je obrys ``--ink`` a stín, ne akcentový rámeček.**
+ * Akcent v sekci nese odznak; kdyby ho nesla i karta, sekce má dva
+ * akcentové prvky a čtenář neví, který z nich má číst jako důraz.
+ *
+ * 🪤 **Odznak sedí v hlavičce karty, ne absolutně přes horní hranu.**
+ * Absolutní odznak vyžaduje, aby mu volající nechal místo nad ceníkem
+ * (a když zapomene, uřízne se) — tichá vazba mezi kartou a jejím okolím.
+ *
+ * 🪤 **Akce je povinná a na patě karty.** Plán bez akce je slepá ulička,
+ * a nezarovnaná akce dělá ze tří karet tři různě vysoké schody.
+ *
  * 🚨 **Žádné částky v kódu.** Ceny v prototypu (4 900 Kč…) jsou
  * placeholder — reálný ceník jsou platformní data (zdroj plánů,
  * memory ``plans-json-column-read-mutate-write``; entitlementy epic
@@ -28,8 +39,11 @@ export interface MarketingPlan {
   featured?: boolean;
   /** Text odznaku zvýrazněné karty („Nejoblíbenější"…). */
   badge?: string;
-  /** CTA karty — typicky odkaz na registraci; dodává volající. */
-  action?: ReactNode;
+  /**
+   * CTA karty — typicky odkaz na registraci; dodává volající. Povinná:
+   * karta plánu, ze které se nedá pokračovat, je slepá ulička.
+   */
+  action: ReactNode;
 }
 
 export function MarketingPricing({
@@ -40,28 +54,27 @@ export function MarketingPricing({
   testId?: string;
 }): JSX.Element {
   return (
-    <div
-      className="grid items-start gap-6 min-[1100px]:grid-cols-3"
-      data-testid={testId}
-    >
+    <div className="grid gap-6 min-[1100px]:grid-cols-3" data-testid={testId}>
       {plans.map((plan) => (
         <div
           key={plan.id}
           className={
             plan.featured
-              ? "relative rounded-lg border border-accent-border bg-surface p-6 shadow-md"
-              : "rounded-lg border border-border bg-surface p-6"
+              ? "flex flex-col rounded-lg border border-ink bg-surface p-6 shadow-md"
+              : "flex flex-col rounded-lg border border-border bg-surface p-6"
           }
           data-testid={testId ? `${testId}-plan-${plan.id}` : undefined}
         >
-          {plan.featured && plan.badge !== undefined && (
-            <span className="absolute -top-3 left-6 rounded-full border border-accent-border bg-accent-bg px-2.5 py-0.5 text-xs font-medium text-accent-ink">
-              {plan.badge}
-            </span>
-          )}
-          <h3 className="text-[15px] font-semibold text-ink">{plan.name}</h3>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-[15px] font-semibold text-ink">{plan.name}</h3>
+            {plan.featured && plan.badge !== undefined && (
+              <span className="rounded-sm border border-ink bg-ink px-1.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wide text-surface">
+                {plan.badge}
+              </span>
+            )}
+          </div>
           <p className="mt-3 flex items-baseline gap-1.5">
-            <span className="text-3xl font-semibold tracking-tight text-ink">
+            <span className="font-mono text-[32px] font-semibold tracking-[-0.03em] text-ink">
               {plan.price}
             </span>
             {plan.period !== undefined && (
@@ -86,9 +99,9 @@ export function MarketingPricing({
               </li>
             ))}
           </ul>
-          {plan.action !== undefined && (
-            <div className="mt-6">{plan.action}</div>
-          )}
+          {/* ``mt-auto`` = paty karet sedí na jedné lince i s různě
+              dlouhými výčty vlastností. */}
+          <div className="mt-auto pt-6">{plan.action}</div>
         </div>
       ))}
     </div>

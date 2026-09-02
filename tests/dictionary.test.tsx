@@ -14,6 +14,7 @@
  *    ``setDictionaryMode`` odjinud — to je celý smysl společného modulu.
  */
 import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
@@ -113,6 +114,23 @@ describe("uložená volba", () => {
 describe("DictionaryTermsDemo", () => {
   beforeEach(() => {
     act(() => setDictionaryMode(DEFAULT_DICTIONARY_MODE));
+  });
+
+  it("nese vlastní přepínač — volba stojí u tabulky, kterou ovládá", async () => {
+    const user = userEvent.setup();
+    render(<DictionaryTermsDemo lang="cs" />);
+
+    // Do dorovnání seděl přepínač v horní liště vedle motivu a jazyka,
+    // tedy mezi volbami platnými pro celý web — a přitom ovládá jedinou
+    // tabulku. Tady je u ní, takže slib odpovídá dopadu.
+    await user.click(screen.getByTestId("docs-dictionary-simple"));
+    expect(screen.getByTestId("docs-dictionary-terms")).toHaveTextContent(
+      "Rozmístění dílů na plech",
+    );
+    expect(screen.getByTestId("docs-dictionary-expert")).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
   });
 
   it("překreslí termíny po přepnutí režimu odjinud", () => {

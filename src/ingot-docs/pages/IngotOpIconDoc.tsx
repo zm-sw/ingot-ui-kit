@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotOpIconDoc: IngotDocPage = {
   name: "IngotOpIcon",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: "[data-op-icon]",
+  tokens: ["currentColor"],
   summary: {
     cs: "Ikona výrobní operace. Kresbu bere z knihovny operací, barvu z kategorie procesu a klíč z databáze — sama si nevymýšlí nic.",
     en: "A manufacturing-operation icon. It takes the drawing from the operation library, the ink from the process category and the key from the database — it invents nothing.",

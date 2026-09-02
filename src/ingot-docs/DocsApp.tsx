@@ -52,12 +52,6 @@ import { AccentSwatches } from "@/components/AccentSwatches";
 import { DocSegmented } from "@/components/DocSegmented";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
-  DICTIONARY_MODES,
-  setDictionaryMode,
-  useDictionaryMode,
-  type DictionaryMode,
-} from "@/ingot-docs/dictionary";
-import {
   initialLang,
   writeStoredLang,
   type DocLang,
@@ -68,6 +62,7 @@ import {
   fetchDocLanguages,
   type DocLanguages,
 } from "@/ingot-docs/platformLanguages";
+import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import type {
   IngotDocPage,
@@ -373,6 +368,23 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       ),
     },
     {
+      // Tokeny stojí za přístupností a před překlady, jak je řadí návrh:
+      // obojí je to, co se při review komponenty kontroluje naposled.
+      id: "tokeny",
+      title: pick(CHROME.tokens, lang),
+      cap: true,
+      body: (
+        <div className="space-y-3">
+          <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
+          <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
+            {page.tokens.map((token) => (
+              <IngotCode key={token}>{token}</IngotCode>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
       id: "preklady",
       title: pick(CHROME.i18n, lang),
       cap: true,
@@ -421,7 +433,9 @@ function pageFromHash(hash: string): ActivePage | null {
 function titleOf(active: ActivePage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.title, lang)
-    : active.doc.name;
+    : // Na stránce bez prefixu; v adrese i ve výpisech kódu zůstává
+      // plné jméno exportu — viz ``naming.ts``.
+      displayName(active.doc.name);
 }
 
 function summaryOf(active: ActivePage, lang: DocLang): string {
@@ -618,7 +632,6 @@ export function DocsApp(): JSX.Element {
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
-  const dictionary = useDictionaryMode();
 
   useEffect(() => {
     const onHashChange = () => {
@@ -665,9 +678,9 @@ export function DocsApp(): JSX.Element {
 
   return (
     <div className="min-h-screen">
-      {/* Horní lišta z handoffu: brand + verze vlevo, akcent / motiv /
-          jazyk / slovník vpravo. Sticky, aby přepínače neutekly se
-          scrollem dlouhé stránky.
+      {/* Horní lišta z handoffu: značka a verze vlevo, akcent / motiv /
+          jazyk vpravo. Sticky, aby přepínače neutekly se scrollem dlouhé
+          stránky.
 
           ``docs-topbar`` (globals.css) drží sklo — průsvitná plocha
           s blurem, bílá ve světlém motivu a tmavá v tmavém. */}
@@ -755,25 +768,10 @@ export function DocsApp(): JSX.Element {
             />
           </>
         )}
-        {separator}
-        {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
-            (ui_dictionary) — doc web přihlášení nemá, takže volba žije
-            jen v prohlížeči, stejně jako motiv a akcent. */}
-        <DocSegmented
-          options={DICTIONARY_MODES.map((mode) => ({
-            value: mode,
-            label:
-              mode === "simple"
-                ? pick(CHROME.dictionarySimple, lang)
-                : mode === "expert"
-                  ? pick(CHROME.dictionaryExpert, lang)
-                  : pick(CHROME.dictionaryBoth, lang),
-          }))}
-          value={dictionary}
-          onChange={(next) => setDictionaryMode(next as DictionaryMode)}
-          label={pick(CHROME.dictionary, lang)}
-          testId="docs-dictionary"
-        />
+        {/* 🪤 Slovník Jednoduše/Expert tu SCHVÁLNĚ není. Ovládá jedinou
+            tabulku na stránce Překlady, takže vedle motivu, jazyka a
+            akcentu — voleb platných pro celý web — sliboval dopad, který
+            nemá. Přepínač proto stojí u té tabulky. */}
       </header>
 
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
@@ -810,6 +808,9 @@ export function DocsApp(): JSX.Element {
                 <IngotBadge tone="accent" testId="docs-version">
                   {`v${page.doc.version}`}
                 </IngotBadge>
+                {/* Selektor je jediné jméno, kterým se o prvku dá bavit
+                    s designérem — jméno exportu zná jen kód. */}
+                <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
               </span>
             ) : undefined
           }

@@ -44,10 +44,18 @@
    * pattern from the project-steel Sablony reference. */
   --ink-5: #d6d3d1;
 
-  --accent: #2563eb;
-  --accent-ink: #1d4ed8;
-  --accent-bg: #eff6ff;
-  --accent-border: #bfdbfe;
+  /* Výchozí rodina (blue). Hodnoty stojí ve ``--blue-*`` a ``--accent-*``
+     je jen odkazuje, aby na ně mohl ukázat i blok ``[data-accent="blue"]``
+     níž, aniž by je opsal podruhé — viz komentář u rodin. */
+  --blue-accent: #2563eb;
+  --blue-accent-ink: #1d4ed8;
+  --blue-accent-bg: #eff6ff;
+  --blue-accent-border: #bfdbfe;
+
+  --accent: var(--blue-accent);
+  --accent-ink: var(--blue-accent-ink);
+  --accent-bg: var(--blue-accent-bg);
+  --accent-border: var(--blue-accent-border);
 
   --ok: #047454;
   --ok-bg: #eaf7ee;
@@ -195,10 +203,15 @@
    * text-danger) on the neutral surfaces; the lifted surface ramp
    * would have pushed their small-text contrast below the old
    * palette's, so both are nudged one step brighter to compensate. */
-  --accent: #5192f7;
-  --accent-ink: #bfdbfe;
-  --accent-bg: #0f1b30;
-  --accent-border: #1e3a8a;
+  --blue-accent: #5192f7;
+  --blue-accent-ink: #bfdbfe;
+  --blue-accent-bg: #0f1b30;
+  --blue-accent-border: #1e3a8a;
+
+  --accent: var(--blue-accent);
+  --accent-ink: var(--blue-accent-ink);
+  --accent-bg: var(--blue-accent-bg);
+  --accent-border: var(--blue-accent-border);
 
   --ok: #22c55e;
   --ok-bg: #0a2013;
@@ -244,11 +257,18 @@
 /* ============================================================
  * Akcentové rodiny (KAN-648) — pět rodin po čtyřech tokenech.
  *
- * ``blue`` je výchozí a ŽÁDNÝ blok tady nemá: jeho hodnoty jsou ty
- * v ``:root`` / ``:root.dark`` výš. To je schválně — kdyby je rodina
- * opisovala, existovaly by dvě definice téhož a jedna z nich by se
- * dřív nebo později rozešla. ``data-accent="blue"`` (i chybějící
- * atribut, i atribut s nesmyslem) proto propadne na výchozí čtveřici.
+ * ``blue`` je výchozí a vlastní HODNOTY tady nemá: jsou ve ``--blue-*``
+ * v ``:root`` / ``:root.dark`` výš a tenhle blok je jen odkazuje. Kdyby
+ * je rodina opsala, existovaly by dvě definice téhož a jedna z nich by
+ * se dřív nebo později rozešla.
+ *
+ * 🪤 **Blok pro ``blue`` přesto být MUSÍ, a to kvůli tomu druhému,
+ * potomkovému selektoru.** Na ``<html>`` je „žádný atribut“ a „blue“
+ * totéž, protože se propadne na výchozí čtveřici v ``:root``. Uvnitř
+ * stránky ale prvek s ``data-accent="blue"`` žádnou výchozí hodnotu
+ * nedědí — dědí tu, kterou právě drží ``<html>``. Bez tohoto bloku se
+ * proto modrý puntík v přepínači obarvil podle PRÁVĚ VYBRANÉ rodiny,
+ * takže po přepnutí na oranžovou byly oranžové puntíky dva.
  *
  * Přepínají se ATRIBUTEM na <html>, ne ``style.setProperty``: motiv
  * mění tytéž čtyři proměnné, takže hodnota nasazená za běhu by po
@@ -281,6 +301,14 @@
  * Laťku hlídá ``tests/accentContrast.test.ts``: žádná rodina nesmí být
  * na žádné ploše horší než výchozí modrá.
  * ============================================================ */
+:root:not(.dark)[data-accent="blue"],
+:root:not(.dark) [data-accent="blue"] {
+  --accent: var(--blue-accent);
+  --accent-ink: var(--blue-accent-ink);
+  --accent-bg: var(--blue-accent-bg);
+  --accent-border: var(--blue-accent-border);
+}
+
 :root:not(.dark)[data-accent="emerald"],
 :root:not(.dark) [data-accent="emerald"] {
   --accent: #047857;
@@ -319,6 +347,14 @@
  * vlastním tintu), ``--accent-bg`` je hluboká plocha s nádechem tónu
  * a ``--accent-border`` sytý střed. ``slate`` se v tmavém motivu
  * obrací — černý akcent by na tmavé ploše nebyl vidět vůbec. */
+:root.dark[data-accent="blue"],
+:root.dark [data-accent="blue"] {
+  --accent: var(--blue-accent);
+  --accent-ink: var(--blue-accent-ink);
+  --accent-bg: var(--blue-accent-bg);
+  --accent-border: var(--blue-accent-border);
+}
+
 :root.dark[data-accent="emerald"],
 :root.dark [data-accent="emerald"] {
   --accent: #10b981;
