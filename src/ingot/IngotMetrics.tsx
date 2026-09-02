@@ -120,6 +120,7 @@ export function IngotMetrics({
           <span
             key={item.label}
             className="flex items-center gap-1.5 border-r border-border px-3.5 py-2 text-[13px] text-ink-3 last:border-r-0"
+            data-testid={item.testId}
           >
             <b
               className={cx(
@@ -147,6 +148,7 @@ export function IngotMetrics({
         <div
           key={item.label}
           className="flex items-start justify-between gap-3 border-r border-border px-[18px] py-3.5 last:border-r-0"
+          data-testid={item.testId}
         >
           <div className="min-w-0">
             <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
