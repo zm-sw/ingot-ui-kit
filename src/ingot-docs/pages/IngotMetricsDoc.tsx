@@ -7,8 +7,9 @@ export const IngotMetricsDoc: IngotDocPage = {
   name: "IngotMetrics",
   status: "beta",
   // 1.1: buňka stripu umí volitelnou křivku vývoje (trend) — rozhodnutí
-  // vlastníka 2026-09-02, bod 07. 1.2: testId na buňce.
-  version: "1.2",
+  // vlastníka 2026-09-02, bod 07. 1.2: testId na buňce. 1.3: okno bez
+  // pohybu se kreslí čárkovaně — plná čára by tvrdila stabilní hodnotu.
+  version: "1.3",
   tag: ".metricstrip",
   tokens: [
     "--surface",
