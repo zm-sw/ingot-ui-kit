@@ -77,6 +77,11 @@ export interface IngotTopNavSection {
   /** Odznak za popiskem — počet čekající práce u odkazové sekce. */
   badge?: ReactNode;
   /**
+   * Ztlumená ODKAZOVÁ sekce — naviguje normálně, jen je jemně
+   * odlišená (modul, jehož výlohou je stránka s bránou).
+   */
+  muted?: boolean;
+  /**
    * Vlastní kotva testu sekce. Bez ní se odvodí
    * ``{testId}-section-{key}`` z kotvy lišty; existující testy a e2e
    * ale často drží vlastní jména a konverze je nemá přejmenovávat.
@@ -227,7 +232,9 @@ export function IngotTopNav({
                   "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
                   section.current
                     ? "bg-surface-2 font-medium text-ink"
-                    : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                    : section.muted
+                      ? "text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                      : "text-ink-2 hover:bg-surface-2 hover:text-ink",
                 )}
                 data-testid={
                   section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)

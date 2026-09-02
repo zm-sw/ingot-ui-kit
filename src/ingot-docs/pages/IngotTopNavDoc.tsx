@@ -18,8 +18,8 @@ export const IngotTopNavDoc: IngotDocPage = {
   status: "beta",
   // 2.4: ``current`` zvýrazňuje i menu sekci (skupinu s aktivní routou).
   // 2.5: sekce může nést vlastní ``testId`` — konverze nepřejmenovává
-  // kotvy existujících testů a e2e.
-  version: "2.5",
+  // kotvy existujících testů a e2e. 2.6: ``muted`` na odkazové sekci.
+  version: "2.6",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -336,6 +336,15 @@ export const IngotTopNavDoc: IngotDocPage = {
           note: {
             cs: "Odznak za popiskem — počet čekající práce u odkazové sekce.",
             en: "A badge after the label — pending-work count on a link section.",
+          },
+        },
+        {
+          name: "muted",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Ztlumená odkazová sekce — naviguje normálně, jen je jemně odlišená (bránu kreslí cílová stránka).",
+            en: "A muted link section — navigates normally, just softly set apart (the gate is drawn by the target page).",
           },
         },
         {
