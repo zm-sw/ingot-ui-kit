@@ -138,3 +138,27 @@ export {
   type ProcessIconVariant,
   type ResolvedProcessIcon,
 } from "./processIconLibrary";
+
+// --- shell a patterny nastavení (dorovnání na handoff) ---------------
+// Rám aplikace: horní lišta místo bočního menu, mega menu sekce, menu
+// účtu a drobečky. Boční menu (``IngotSideNav``) zůstává pro rejstříky.
+export {
+  IngotTopNav,
+  IngotTopNavAccount,
+  type IngotTopNavSection,
+} from "./IngotTopNav";
+export {
+  IngotMegaMenu,
+  type IngotMegaMenuColumn,
+  type IngotMegaMenuItem,
+} from "./IngotMegaMenu";
+export {
+  IngotUserMenu,
+  IngotUserMenuRow,
+  IngotUserMenuSection,
+} from "./IngotUserMenu";
+export { IngotBreadcrumbs, type IngotCrumb } from "./IngotBreadcrumbs";
+export { IngotMetrics, type IngotMetric } from "./IngotMetrics";
+export { IngotStepCard } from "./IngotStepCard";
+export { IngotOptionCard } from "./IngotOptionCard";
+export { IngotRowActions, type IngotRowAction } from "./IngotRowActions";

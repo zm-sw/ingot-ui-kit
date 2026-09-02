@@ -20,6 +20,7 @@ import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
+import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
@@ -29,17 +30,24 @@ import { IngotFieldInputDoc } from "@/ingot-docs/pages/IngotFieldInputDoc";
 import { IngotFormDoc } from "@/ingot-docs/pages/IngotFormDoc";
 import { IngotIconDoc } from "@/ingot-docs/pages/IngotIconDoc";
 import { IngotListDoc } from "@/ingot-docs/pages/IngotListDoc";
+import { IngotMegaMenuDoc } from "@/ingot-docs/pages/IngotMegaMenuDoc";
+import { IngotMetricsDoc } from "@/ingot-docs/pages/IngotMetricsDoc";
 import { IngotModalDoc } from "@/ingot-docs/pages/IngotModalDoc";
 import { IngotOpIconDoc } from "@/ingot-docs/pages/IngotOpIconDoc";
+import { IngotOptionCardDoc } from "@/ingot-docs/pages/IngotOptionCardDoc";
 import { IngotPageHeaderDoc } from "@/ingot-docs/pages/IngotPageHeaderDoc";
 import { IngotPageHintDoc } from "@/ingot-docs/pages/IngotPageHintDoc";
 import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
+import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
+import { IngotStepCardDoc } from "@/ingot-docs/pages/IngotStepCardDoc";
 import { IngotTableDoc } from "@/ingot-docs/pages/IngotTableDoc";
 import { IngotTabsDoc } from "@/ingot-docs/pages/IngotTabsDoc";
 import { IngotToastDoc } from "@/ingot-docs/pages/IngotToastDoc";
 import { IngotToolbarDoc } from "@/ingot-docs/pages/IngotToolbarDoc";
+import { IngotTopNavDoc } from "@/ingot-docs/pages/IngotTopNavDoc";
+import { IngotUserMenuDoc } from "@/ingot-docs/pages/IngotUserMenuDoc";
 import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
 
 /**
@@ -97,6 +105,13 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotPageHeaderDoc,
   IngotSideNavDoc,
   IngotTabsDoc,
+  // Rám aplikace: lišta → menu sekce → menu účtu → drobečky → čísla
+  // v hlavičce. Pořadí je odshora dolů, jak je čtenář vidí na obrazovce.
+  IngotTopNavDoc,
+  IngotMegaMenuDoc,
+  IngotUserMenuDoc,
+  IngotBreadcrumbsDoc,
+  IngotMetricsDoc,
   IngotFormDoc,
   IngotFieldInputDoc,
   IngotFieldDoc,
@@ -109,6 +124,10 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   // filtr bar → tabulka (s bulk barem) → prázdný stav → pager.
   IngotToolbarDoc,
   IngotTableDoc,
+  IngotRowActionsDoc,
   IngotEmptyStateDoc,
   IngotPaginationDoc,
+  // Bloky konfiguračních obrazovek — krok nastavení a volba varianty.
+  IngotStepCardDoc,
+  IngotOptionCardDoc,
 ];

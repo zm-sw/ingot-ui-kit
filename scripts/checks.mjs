@@ -64,6 +64,21 @@ function rel(path) {
 const COMPONENT_RE = /^Ingot[A-Z]\w*$/;
 const DOCUMENTED_UNPREFIXED = new Set(["Button", "Card"]);
 
+/**
+ * Parts that only exist inside another primitive, mapped to their parent.
+ *
+ * A row of the account menu is not a component someone reaches for on its
+ * own — it is documented on the parent's page, the way CardTitle is. The
+ * map is explicit rather than a name-prefix rule so that adding a part
+ * stays a decision: "IngotTableRow" would otherwise silently excuse
+ * itself from having a page just by being named after IngotTable.
+ */
+const SUBCOMPONENTS = new Map([
+  ["IngotTopNavAccount", "IngotTopNav"],
+  ["IngotUserMenuSection", "IngotUserMenu"],
+  ["IngotUserMenuRow", "IngotUserMenu"],
+]);
+
 function exportedComponents() {
   const src = stripComments(read(INGOT_INDEX));
   const names = new Set();
@@ -99,6 +114,18 @@ function guardIngotDocPages() {
   const registrySrc = stripComments(read(REGISTRY));
   const exported = exportedComponents();
   const documented = documentedComponents(registrySrc);
+
+  // A part documented on its parent's page still has to HAVE a parent —
+  // otherwise the map is just a list of things excused from the rule.
+  for (const [part, parent] of SUBCOMPONENTS) {
+    if (exported.has(part) && !exported.has(parent)) {
+      fail(guard, [
+        `${part} is registered as a part of ${parent}, which the barrel does not export.`,
+        "Either export the parent or give the part its own doc page.",
+      ]);
+    }
+    exported.delete(part);
+  }
 
   const undocumented = [...exported].filter((n) => !documented.has(n)).sort();
   if (undocumented.length) {
