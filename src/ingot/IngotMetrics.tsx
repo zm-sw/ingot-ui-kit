@@ -49,8 +49,12 @@ export interface IngotMetric {
 }
 
 /**
- * Normalizovaná čára 72 × 24 se zvýrazněným koncem. Dvě stejné hodnoty
- * (nebo jediná) by daly dělení nulou — čára se pak kreslí vodorovně.
+ * Normalizovaná čára 72 × 24 se zvýrazněným koncem.
+ *
+ * Okno bez pohybu (všechny hodnoty stejné) se kreslí jako ČÁRKOVANÁ
+ * linka bez koncového bodu: plná vodorovná čára by tvrdila stabilní
+ * nenulovou hodnotu, čárkovaná říká „tady se nic nedělo". Převzato
+ * z platformního přehledu, kde to chránil test.
  */
 function Sparkline({ trend }: { trend: readonly number[] }): JSX.Element {
   const width = 72;
@@ -59,12 +63,31 @@ function Sparkline({ trend }: { trend: readonly number[] }): JSX.Element {
   const min = Math.min(...trend);
   const max = Math.max(...trend);
   const span = max - min;
+  if (span === 0) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        aria-hidden="true"
+        className="shrink-0 text-ink-4"
+      >
+        <line
+          x1={pad}
+          y1={height / 2}
+          x2={width - pad}
+          y2={height / 2}
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeDasharray="3 4"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
   const points = trend.map((value, index) => {
     const x = pad + (index * (width - 2 * pad)) / Math.max(trend.length - 1, 1);
-    const y =
-      span === 0
-        ? height / 2
-        : height - pad - ((value - min) * (height - 2 * pad)) / span;
+    const y = height - pad - ((value - min) * (height - 2 * pad)) / span;
     return [x, y] as const;
   });
   const last = points[points.length - 1]!;

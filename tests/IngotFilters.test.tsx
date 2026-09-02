@@ -159,4 +159,18 @@ describe("IngotMetrics — trend", () => {
     expect(sparklines).toHaveLength(1);
     expect(sparklines[0]).toHaveAttribute("aria-hidden", "true");
   });
+
+  it("okno bez pohybu je čárkovaná linka, ne plná čára", () => {
+    const { container } = render(
+      <IngotMetrics
+        items={[{ label: "Po termínu", value: 0, trend: [0, 0, 0, 0] }]}
+        label="Přehled"
+      />,
+    );
+
+    // Plná vodorovná čára by tvrdila stabilní nenulovou hodnotu;
+    // čárkovaná říká „tady se nic nedělo".
+    expect(container.querySelector("line[stroke-dasharray]")).not.toBeNull();
+    expect(container.querySelector("polyline")).toBeNull();
+  });
 });
