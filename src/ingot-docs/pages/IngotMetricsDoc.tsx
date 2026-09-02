@@ -7,8 +7,8 @@ export const IngotMetricsDoc: IngotDocPage = {
   name: "IngotMetrics",
   status: "beta",
   // 1.1: buňka stripu umí volitelnou křivku vývoje (trend) — rozhodnutí
-  // vlastníka 2026-09-02, bod 07.
-  version: "1.1",
+  // vlastníka 2026-09-02, bod 07. 1.2: testId na buňce.
+  version: "1.2",
   tag: ".metricstrip",
   tokens: [
     "--surface",
@@ -181,6 +181,15 @@ export const IngotMetricsDoc: IngotDocPage = {
           note: {
             cs: "Obarví hodnotu, když je to problém. Výchozí je neutral.",
             en: "Colours the value when it is a problem. The default is neutral.",
+          },
+        },
+        {
+          name: "testId",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Kotva testu na buňce — testy míří na konkrétní číslo, ne na celý pruh.",
+            en: "A test anchor on the cell — tests target a specific number, not the whole strip.",
           },
         },
         {

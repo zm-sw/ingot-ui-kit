@@ -44,6 +44,8 @@ export interface IngotMetric {
    * žádný obecný graf.)
    */
   trend?: readonly number[];
+  /** Kotva testu na buňce — testy míří na konkrétní číslo, ne na pruh. */
+  testId?: string;
 }
 
 /**
