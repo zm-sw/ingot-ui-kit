@@ -63,16 +63,6 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
             ]}
             openSection={open}
             onToggleSection={(key) => setOpen(open === key ? null : key)}
-            actions={
-              <Button
-                variant="ghost"
-                size="sm"
-                iconOnly
-                aria-label={cs ? "Hledat" : "Search"}
-              >
-                <IngotIcon name="search" size={15} />
-              </Button>
-            }
             account={
               <IngotTopNavAccount
                 initials="8S"
@@ -96,9 +86,11 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
                   provozu. Dva produkty, jeden rám.
                 </>,
                 <>
-                  Nejvýš šest sekcí. Lišta se nezalamuje, takže sedmá zmizí
-                  za okrajem — a víc sekcí obvykle znamená, že se dvě z nich
-                  dají spojit.
+                  Lišta se nezalamuje — co se nevejde, zmizí za okrajem.
+                  Měřítko není pevný počet, ale nejužší podporovaná šířka:
+                  všechny sekce se svými popisky se musí vejít na 1280 px.
+                  Administrace jich dnes nese osm; když se lišta láme,
+                  zkracuj popisky nebo spoj dvě sekce.
                 </>,
               ]
             : [
@@ -112,9 +104,11 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
                   sections, possibly a trial badge. Two products, one frame.
                 </>,
                 <>
-                  Six sections at most. The bar does not wrap, so the seventh
-                  falls off the edge — and more sections usually means two of
-                  them can be merged.
+                  The bar does not wrap — whatever does not fit falls off the
+                  edge. The measure is not a fixed count but the narrowest
+                  supported width: every section with its label must fit at
+                  1280&nbsp;px. The admin carries eight today; when the bar
+                  breaks, shorten labels or merge two sections.
                 </>,
               ]
         }

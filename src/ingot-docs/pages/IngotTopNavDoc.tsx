@@ -57,8 +57,10 @@ export const IngotTopNavDoc: IngotDocPage = {
         s jednou položkou, je krok navíc — udělej z ní odkaz.
       </>,
       <>
-        Víc než šest sekcí. Lišta se nezalamuje a sedmá sekce zmizí za
-        okrajem; víc sekcí znamená, že se dvě z nich dají spojit.
+        Sada sekcí, která se i s popisky nevejde na 1280 px. Lišta se
+        nezalamuje a co přeteče, zmizí za okrajem — měřítkem je nejužší
+        podporovaná šířka, ne pevný počet. Když se lišta láme, zkracuj
+        popisky nebo spoj dvě sekce.
       </>,
     ],
     en: [
@@ -72,8 +74,10 @@ export const IngotTopNavDoc: IngotDocPage = {
         item is a step too many — make it a link.
       </>,
       <>
-        More than six sections. The bar does not wrap and the seventh falls
-        off the edge; more sections means two of them can be merged.
+        A set of sections that will not fit at 1280 px with their labels.
+        The bar does not wrap and whatever overflows falls off the edge —
+        the measure is the narrowest supported width, not a fixed count.
+        When the bar breaks, shorten labels or merge two sections.
       </>,
     ],
   },
@@ -92,8 +96,8 @@ export const IngotTopNavDoc: IngotDocPage = {
       type: "readonly IngotTopNavSection[]",
       required: false,
       note: {
-        cs: "Sekce aplikace. Nejvýš šest — víc se do řádku nevejde čitelně.",
-        en: "The application's sections. Six at most — more do not fit the row legibly.",
+        cs: "Sekce aplikace. Všechny se svými popisky se musí vejít na 1280 px — lišta se nezalamuje.",
+        en: "The application's sections. All of them, labels included, must fit at 1280 px — the bar does not wrap.",
       },
     },
     {
@@ -119,8 +123,8 @@ export const IngotTopNavDoc: IngotDocPage = {
       type: "ReactNode",
       required: false,
       note: {
-        cs: "Ikonové akce vpravo před účtem — hledání, zprávy.",
-        en: "Icon actions on the right, before the account — search, messages.",
+        cs: "Ikonové akce vpravo před účtem — zprávy, notifikace.",
+        en: "Icon actions on the right, before the account — messages, notifications.",
       },
     },
     {

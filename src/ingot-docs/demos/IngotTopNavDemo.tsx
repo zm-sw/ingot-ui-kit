@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Button, IngotBadge, IngotIcon, IngotTopNav, IngotTopNavAccount } from "@/ingot";
+import { IngotBadge, IngotTopNav, IngotTopNavAccount } from "@/ingot";
 export function Demo(): JSX.Element {
   const [open, setOpen] = useState<string | null>(null);
   return (
@@ -19,11 +19,6 @@ export function Demo(): JSX.Element {
         ]}
         openSection={open}
         onToggleSection={(key) => setOpen(open === key ? null : key)}
-        actions={
-          <Button variant="ghost" size="sm" iconOnly aria-label="Hledat">
-            <IngotIcon name="search" size={15} />
-          </Button>
-        }
         account={<IngotTopNavAccount initials="8S" label="Menu účtu" />}
         testId="docs-topnav"
       />

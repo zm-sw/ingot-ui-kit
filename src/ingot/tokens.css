@@ -129,6 +129,19 @@
   --s-6: 32px;
   --s-7: 48px;
   --s-8: 72px;
+
+  /* Radius scale — r-xs/r-sm/r-md/r-lg z Ingot handoffu v0.1. Doc
+   * stránky tyhle tokeny vypisují od začátku, ale do 2026-09-02 je
+   * nikdo NEDEFINOVAL — Tailwind preset nesl hodnoty natvrdo a
+   * computed value tokenů byla prázdná (rozhodnutí vlastníka
+   * 2026-09-02, bod 09). Preset teď čte tyhle proměnné (s px
+   * fallbackem pro strom vykreslený bez tokens.css), takže změna
+   * rádiusu je změna JEDNOHO řádku tady. Nezávislé na tématu —
+   * ``.dark`` je nepředeklarovává. */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
 }
 
 /* ============================================================

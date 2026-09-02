@@ -43,13 +43,13 @@ export function IngotTopNav({
 }: {
   /** Značka vlevo. Odznak režimu (např. platformy) patří sem. */
   brand: ReactNode;
-  /** Sekce aplikace. Víc než šest se do lišty nevejde čitelně. */
+  /** Sekce aplikace. Vejít se musí všechny na 1280 px — lišta se nezalamuje. */
   sections?: readonly IngotTopNavSection[];
   /** Klíč právě rozbalené sekce, nebo ``null``. Řízené zvenčí. */
   openSection?: string | null;
   /** Klik na sekci. Dostane klíč i tehdy, když se sekce zavírá. */
   onToggleSection?: (key: string) => void;
-  /** Ikonové akce vpravo před účtem — hledání, zprávy. */
+  /** Ikonové akce vpravo před účtem — zprávy, notifikace. */
   actions?: ReactNode;
   /** Účet úplně vpravo. Typicky ``IngotTopNavAccount``. */
   account?: ReactNode;
