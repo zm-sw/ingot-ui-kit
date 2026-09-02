@@ -21,7 +21,10 @@ export const IngotCodeDoc: IngotDocPage = {
         co má opsat doslova.
       </>,
       <>
-        Ukazuješ víc řádků kódu — <IngotCode>block</IngotCode>.
+        Ukazuješ víc řádků kódu — <IngotCode>block</IngotCode>. Když je to
+        TSX, přidej <IngotCode>lang</IngotCode>: barva rozliší řetězec od
+        klíčového slova a atribut od značky, což je u delší ukázky rozdíl
+        mezi „přečtu" a „luštím".
       </>,
     ],
     en: [
@@ -32,6 +35,9 @@ export const IngotCodeDoc: IngotDocPage = {
       </>,
       <>
         You are showing several lines of code — <IngotCode>block</IngotCode>.
+        When it is TSX, add <IngotCode>lang</IngotCode>: colour tells a string
+        from a keyword and an attribute from a tag, which on a longer sample
+        is the difference between reading and decoding.
       </>,
     ],
   },
@@ -81,6 +87,15 @@ export const IngotCodeDoc: IngotDocPage = {
       },
     },
     {
+      name: "lang",
+      type: '"tsx"',
+      required: false,
+      note: {
+        cs: "Obarví syntaxi výpisu. Jen s block a jen když je obsah text — jinak se výpis vykreslí, jak přišel.",
+        en: "Colours the listing's syntax. Only with block, and only when the content is text — otherwise the listing renders as it came.",
+      },
+    },
+    {
       name: "testId",
       type: "string",
       required: false,
@@ -104,6 +119,13 @@ export const IngotCodeDoc: IngotDocPage = {
         Bílé znaky uvnitř <IngotCode>&lt;pre&gt;</IngotCode> zůstávají — odsazení je
         u kódu obsah, ne formátování.
       </>,
+      <>
+        Zvýraznění je jen barva navíc, nikdy jediný nositel významu:
+        obarvený výpis má týž text i pořadí jako neobarvený, takže
+        odečítač i kopírování dostanou totéž. Světlý a tmavý motiv mají
+        vlastní sadu barev a každá role drží kontrast 4,5:1 proti ploše
+        výpisu.
+      </>,
     ],
     en: [
       <>
@@ -120,6 +142,13 @@ export const IngotCodeDoc: IngotDocPage = {
       <>
         Whitespace inside <IngotCode>&lt;pre&gt;</IngotCode> is preserved — in code,
         indentation is content, not formatting.
+      </>,
+      <>
+        Highlighting is colour on top, never the only carrier of meaning: a
+        highlighted listing has the same text in the same order as a plain
+        one, so a screen reader and a copy both get the same thing. Light and
+        dark each have their own set of colours, and every role clears 4.5:1
+        against the listing's surface.
       </>,
     ],
   },

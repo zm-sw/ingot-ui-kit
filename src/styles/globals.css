@@ -330,3 +330,27 @@ body {
     animation: none;
   }
 }
+
+/* ============================================================
+ * Horní lišta doc webu — sklo.
+ *
+ * Průsvitná plocha + blur (a špetka saturate, aby obsah pod ní
+ * neztratil barvu). Kryje se `backdrop-filter`, ne poloprůhledná
+ * vrstva navíc: lišta je `sticky`, takže pod ní projíždí obsah
+ * stránky, a bez blur by prosvítal doslova.
+ *
+ * Sklo je v každém motivu své: bílé nad světlou plochou, tmavé
+ * (nadzvednuté z `--bg` k `--surface`) nad tmavou. Bílá lišta i
+ * v tmavém by znamenala přepisovat uvnitř ní celou neutrální paletu
+ * — jinak by na ní `text-ink` i pilulky přepínačů byly světlé na
+ * bílé. Barvy tokenů se tu proto nesahají vůbec.
+ * ============================================================ */
+.docs-topbar {
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+}
+
+:root.dark .docs-topbar {
+  background: rgba(46, 43, 39, 0.72);
+}

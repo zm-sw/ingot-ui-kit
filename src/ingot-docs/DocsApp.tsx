@@ -265,7 +265,7 @@ function DemoWithSource({
           </div>
         </div>
       ) : (
-        <IngotCode block testId="docs-source">
+        <IngotCode block lang="tsx" testId="docs-source">
           {page.demoSource}
         </IngotCode>
       )}
@@ -667,11 +667,34 @@ export function DocsApp(): JSX.Element {
     <div className="min-h-screen">
       {/* Horní lišta z handoffu: brand + verze vlevo, akcent / motiv /
           jazyk / slovník vpravo. Sticky, aby přepínače neutekly se
-          scrollem dlouhé stránky. */}
-      <header className="sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border bg-bg px-6 py-3">
-        <span className="text-sm font-semibold tracking-tight text-ink">
-          Ingot
-        </span>
+          scrollem dlouhé stránky.
+
+          ``docs-topbar`` (globals.css) drží sklo — průsvitná plocha
+          s blurem, bílá ve světlém motivu a tmavá v tmavém. */}
+      <header className="docs-topbar sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-6 py-3">
+        {/* Logo nese celý název („INGOT UI KIT"), takže textový brand
+            vedle něj by ho jen zopakoval — zbyla verze jako popisek.
+
+            Dvě varianty, ne filtr: wordmark je skoro černý a na tmavém
+            skle by zmizel, ale ``invert`` by s ním obrátil i modrou.
+            Tmavá varianta překlápí jen inkoust a ztlumený obrys, modrý
+            akcent zůstává modrý. Popisek mají obě: nevidomý ho uslyší
+            jednou, protože tu skrytou vyřadí ``display:none`` z
+            přístupnostního stromu. */}
+        <img
+          src="/ingot-logo.png"
+          alt="Ingot UI Kit"
+          className="h-7 w-auto dark:hidden"
+          width={356}
+          height={128}
+        />
+        <img
+          src="/ingot-logo-dark.png"
+          alt="Ingot UI Kit"
+          className="hidden h-7 w-auto dark:block"
+          width={356}
+          height={128}
+        />
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
           v0.1 · Forgmatic
         </span>

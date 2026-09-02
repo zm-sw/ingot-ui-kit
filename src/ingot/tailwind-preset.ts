@@ -78,6 +78,19 @@ export default {
           4: token("--ink-4"),
           5: token("--ink-5"),
         },
+        // Role zvýrazněné syntaxe. Nejsou to nové barvy palety, ale
+        // jména pro ``IngotCode`` — proto vlastní rodina a ne přetížení
+        // ``accent``/``ok``/``danger``, které v tmavém motivu slouží
+        // jinému účelu a hýbaly by se z jiných důvodů.
+        code: {
+          comment: token("--code-comment"),
+          keyword: token("--code-keyword"),
+          string: token("--code-string"),
+          tag: token("--code-tag"),
+          attr: token("--code-attr"),
+          number: token("--code-number"),
+          punct: token("--code-punct"),
+        },
         accent: {
           DEFAULT: token("--accent"),
           ink: token("--accent-ink"),

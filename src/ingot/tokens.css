@@ -80,6 +80,21 @@
   --plan-bg: #6b21a8;
   --plan-border: #7e22ce;
 
+  /* Zvýraznění syntaxe (``IngotCode block lang="tsx"``). Vlastní sada,
+   * ne převzaté téma: role si berou tóny, které paleta UŽ MÁ, takže
+   * výpis kódu vypadá jako zbytek kitu a ne jako vlepený editor.
+   * Světlá a tmavá se LIŠÍ hodnotami, ne rolemi — barva vyladěná na
+   * bílou je na tmavé ploše špinavá a naopak; párovaná témata jsou
+   * u zvýrazňovačů běžná praxe. Všech sedm drží nad ``--surface``
+   * (plocha výpisu) WCAG AA 4.5:1; hlídá to ``ingotCode.test.tsx``. */
+  --code-comment: #696460;
+  --code-keyword: #6d28d9;
+  --code-string: #047454;
+  --code-tag: #2563eb;
+  --code-attr: #b05109;
+  --code-number: #b91c1c;
+  --code-punct: #57534e;
+
   --shadow-sm: 0 1px 2px rgba(12, 10, 9, 0.05);
   --shadow-md: 0 6px 18px -6px rgba(12, 10, 9, 0.12),
     0 1px 2px rgba(12, 10, 9, 0.05);
@@ -196,6 +211,16 @@
   --danger: #f36464;
   --danger-bg: #2a1010;
   --danger-border: #991b1b;
+
+  /* Tytéž role o stupeň světlejší a méně syté — sytá tmavá barva
+   * ze světlé sady se na ``--surface`` (#2e2b27) neuvidí. */
+  --code-comment: #aba398;
+  --code-keyword: #c4aefc;
+  --code-string: #5ddb99;
+  --code-tag: #7ab0fa;
+  --code-attr: #f5b74a;
+  --code-number: #f79a9a;
+  --code-punct: #cbc3b7;
 
   --custom: #ae94fa;
   --custom-bg: #1e1533;

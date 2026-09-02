@@ -34,7 +34,7 @@ export const IngotTabsDoc: IngotDocPage = {
       <>
         Aktivní pohled má přežít obnovení stránky: <IngotCode>value</IngotCode> je
         řízené zvenčí, takže ho volající drží v URL. Vzor:
-        <IngotCode block>{URL_SNIPPET}</IngotCode>
+        <IngotCode block lang="tsx">{URL_SNIPPET}</IngotCode>
       </>,
       <>
         Nejvýš 6 pohledů s popisky na 1–2 slova. Víc pohledů nebo delší
@@ -50,7 +50,7 @@ export const IngotTabsDoc: IngotDocPage = {
         The active view should survive a page reload: <IngotCode>value</IngotCode>{" "}
         is controlled from outside, so the caller keeps it in the URL. The
         pattern:
-        <IngotCode block>{URL_SNIPPET}</IngotCode>
+        <IngotCode block lang="tsx">{URL_SNIPPET}</IngotCode>
       </>,
       <>
         At most 6 views with 1–2 word labels. More views or longer labels
