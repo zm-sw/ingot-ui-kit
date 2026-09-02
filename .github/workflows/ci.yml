@@ -23,3 +23,16 @@ jobs:
         run: npm test
       - name: Build doc web
         run: npx vite build
+
+  version-guard:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Component change requires a version bump
+        run: node scripts/version_guard.mjs origin/${{ github.base_ref }}

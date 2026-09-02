@@ -64,6 +64,24 @@ tokens (`--surface-2`, `t-h1`, `s-3`, `r-md`), not the utility classes
 that happen to implement them — a shared vocabulary between designer and
 developer is the point of the system.
 
+## Kit version vX.Y.Z is written by a machine
+
+`package.json` version and the doc-web footer are written by
+`scripts/release.mjs` (GitHub Actions, on every push to `main`). Never
+edit them by hand.
+
+- **Z** — anything that changed since the last tag (component patches,
+  tokens, docs, chrome).
+- **Y** — a new primitive, or a MAJOR bump of any component (read from
+  the doc-page registry, which is the machine-readable contract).
+- **X** — a kit-wide epoch. A machine cannot judge that, so it moves
+  ONLY when a commit subject starts with `release!:`.
+
+The PR check `version-guard` fails any PR that touches `src/ingot/`
+without moving a `version:` on a doc page — the release automation
+stands on those versions, so a version that does not move is a release
+that never ships.
+
 ## Before pushing
 
 ```bash

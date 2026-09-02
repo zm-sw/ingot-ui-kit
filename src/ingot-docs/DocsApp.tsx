@@ -64,6 +64,7 @@ import {
 } from "@/ingot-docs/platformLanguages";
 import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
+import pkg from "../../package.json";
 import type {
   IngotDocPage,
   IngotExtraPropGroup,
@@ -843,8 +844,10 @@ export function DocsApp(): JSX.Element {
           {/* Mini patička (pokyn vlastníka 2026-09-02): verze + pill
               odkaz na Forgmatic, oddělené čárou od obsahu. */}
           <footer className="flex items-center justify-between border-t border-border pt-4">
+            {/* Verze z package.json — píše ji release workflow, ručně
+                psané číslo tu lhalo od prvního release. */}
             <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-              Ingot UI Kit · v1.0
+              Ingot UI Kit · v{pkg.version}
             </span>
             <a
               href="https://forgmatic.com"
