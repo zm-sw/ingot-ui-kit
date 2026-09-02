@@ -68,6 +68,7 @@ import {
   fetchDocLanguages,
   type DocLanguages,
 } from "@/ingot-docs/platformLanguages";
+import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import type {
   IngotDocPage,
@@ -438,7 +439,9 @@ function pageFromHash(hash: string): ActivePage | null {
 function titleOf(active: ActivePage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.title, lang)
-    : active.doc.name;
+    : // Na stránce bez prefixu; v adrese i ve výpisech kódu zůstává
+      // plné jméno exportu — viz ``naming.ts``.
+      displayName(active.doc.name);
 }
 
 function summaryOf(active: ActivePage, lang: DocLang): string {

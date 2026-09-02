@@ -1,6 +1,7 @@
 import { IngotBadge, IngotCode, IngotList } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang } from "@/ingot-docs/lang";
+import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -31,7 +32,7 @@ function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
         >
           <span className="flex flex-wrap items-center gap-2">
             <span className="text-[15px] font-medium tracking-tight">
-              {page.name}
+              {displayName(page.name)}
             </span>
             <IngotBadge tone={page.status === "stable" ? "neutral" : "warn"}>
               {page.status === "stable"

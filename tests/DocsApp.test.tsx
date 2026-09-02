@@ -46,6 +46,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CHROME } from "@/ingot-docs/chrome";
 import { DocsApp } from "@/ingot-docs/DocsApp";
 import { DOC_LANGS, type DocLang } from "@/ingot-docs/lang";
+import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import { ACCENT_CHOICES } from "@/lib/accent";
 
@@ -95,7 +96,8 @@ describe("DocsApp", () => {
     // Komponenty jsou vnořené pod rozcestníkem ve skupině „Systém“.
     const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
     for (const page of INGOT_DOC_PAGES) {
-      expect(within(nav).getByText(page.name)).toBeInTheDocument();
+      // V menu stojí jméno bez prefixu; plné jméno drží adresa.
+      expect(within(nav).getByText(displayName(page.name))).toBeInTheDocument();
     }
   });
 
@@ -104,7 +106,7 @@ describe("DocsApp", () => {
     render(<DocsApp />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotEmptyState" }),
+      screen.getByRole("heading", { level: 1, name: "EmptyState" }),
     ).toBeInTheDocument();
     // Skutečný IngotEmptyState, ne text o něm: jeho vlastní testid.
     expect(screen.getByTestId("docs-empty")).toBeInTheDocument();
@@ -415,14 +417,14 @@ describe("DocsApp", () => {
     window.location.hash = "#/IngotModal";
     render(<DocsApp />);
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotModal" }),
+      screen.getByRole("heading", { level: 1, name: "Modal" }),
     ).toBeInTheDocument();
 
     window.location.hash = "#ukazka";
     window.dispatchEvent(new HashChangeEvent("hashchange"));
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "IngotModal" }),
+      screen.getByRole("heading", { level: 1, name: "Modal" }),
     ).toBeInTheDocument();
   });
 
