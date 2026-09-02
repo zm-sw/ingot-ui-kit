@@ -60,7 +60,12 @@ export interface IngotTopNavSection {
   href?: string;
   /** Klik na odkazovou sekci (``href``). */
   onNavigate?: (event: MouseEvent<HTMLAnchorElement>) => void;
-  /** Odkazová sekce je právě otevřená obrazovka — ``aria-current``. */
+  /**
+   * Sekce drží právě otevřenou obrazovku. U odkazové sekce nasadí
+   * ``aria-current``; u menu sekce jen zvýraznění (tlačítko nikam
+   * nevede, takže ``aria-current`` by lhalo — kde čtenář je, říká
+   * ``aria-current`` na položce uvnitř menu).
+   */
   current?: boolean;
   /**
    * Zamčená sekce (modul, který si tenant nezapnul): ztlumené tlačítko
@@ -248,7 +253,9 @@ export function IngotTopNav({
                   "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
                   open
                     ? "bg-surface-3 font-medium text-ink"
-                    : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                    : section.current
+                      ? "bg-surface-2 font-medium text-ink"
+                      : "text-ink-2 hover:bg-surface-2 hover:text-ink",
                 )}
                 data-testid={
                   testId ? `${testId}-section-${section.key}` : undefined
