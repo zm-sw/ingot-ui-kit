@@ -92,6 +92,8 @@ describe("DocsApp", () => {
   });
 
   it("vypíše do menu každé primitivum z registru", () => {
+    // Seznam komponent je vidět jen v jejich sekci — jinde je sbalený.
+    window.location.hash = "#/komponenty";
     render(<DocsApp />);
     // Komponenty jsou vnořené pod rozcestníkem ve skupině „Systém“.
     const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
@@ -241,6 +243,8 @@ describe("DocsApp", () => {
   });
 
   it("rozdělí menu do skupin a každého průvodce dá právě do jedné", () => {
+    // V sekci komponent je rejstřík rozbalený — plný počet odkazů.
+    window.location.hash = "#/komponenty";
     render(<DocsApp />);
 
     const navs = [
@@ -279,6 +283,7 @@ describe("DocsApp", () => {
   });
 
   it("vnoří komponenty pod rozcestník, ne vedle něj", () => {
+    window.location.hash = "#/komponenty";
     render(<DocsApp />);
 
     // Podseznam visí na položce rozcestníku — vnoření je struktura,
@@ -289,6 +294,24 @@ describe("DocsApp", () => {
     expect(within(sublist as HTMLElement).getAllByRole("link")).toHaveLength(
       INGOT_DOC_PAGES.length,
     );
+  });
+
+  it("mimo sekci komponent je rejstřík sbalený, na stránce komponenty rozbalený", () => {
+    // Pokyn vlastníka 2026-09-02: 31 rozbalených položek na každé
+    // stránce dělalo z menu rejstřík, ve kterém se ostatní skupiny
+    // hledaly rolováním.
+    window.location.hash = "#/preklady";
+    const first = render(<DocsApp />);
+    expect(
+      screen.getByTestId("docs-nav-komponenty").closest("li")?.querySelector("ul"),
+    ).toBeNull();
+    first.unmount();
+
+    window.location.hash = "#/IngotTable";
+    render(<DocsApp />);
+    expect(
+      screen.getByTestId("docs-nav-komponenty").closest("li")?.querySelector("ul"),
+    ).not.toBeNull();
   });
 
   it("žádný slug průvodce nekoliduje se jménem primitiva", () => {

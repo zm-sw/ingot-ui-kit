@@ -511,9 +511,16 @@ function guideGroups(
   lang: DocLang,
 ): readonly { group: IngotGuideGroup; items: readonly IngotNavItem[] }[] {
   const activeHref = hrefOf(active);
-  const componentItems = COMPONENT_ENTRIES.map((entry) =>
-    navItem(entry, activeHref, lang),
-  );
+  // Seznam komponent se vnořuje JEN když čtenář v sekci komponent stojí
+  // (rozcestník nebo stránka komponenty) — pokyn vlastníka 2026-09-02.
+  // Jednatřicet položek rozbalených na každé stránce dělalo z menu
+  // rejstřík, ve kterém se ostatní skupiny musely hledat rolováním.
+  const inComponents =
+    active.kind === "component" ||
+    (active.kind === "guide" && active.guide.slug === CATALOGUE_SLUG);
+  const componentItems = inComponents
+    ? COMPONENT_ENTRIES.map((entry) => navItem(entry, activeHref, lang))
+    : undefined;
 
   const groups: { group: IngotGuideGroup; items: IngotNavItem[] }[] = [];
   GUIDE_ENTRIES.forEach((entry, index) => {
@@ -708,9 +715,8 @@ export function DocsApp(): JSX.Element {
           width={356}
           height={128}
         />
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-          v1.0 · Forgmatic
-        </span>
+        {/* Verze a značka se přestěhovaly do mini patičky dole
+            (pokyn vlastníka 2026-09-02) — hlavička nese jen ovládání. */}
         <span className="flex-1" aria-hidden="true" />
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
           {pick(CHROME.accent, lang)}
@@ -833,6 +839,23 @@ export function DocsApp(): JSX.Element {
           ))}
 
           <PagerFooter page={page} lang={lang} />
+
+          {/* Mini patička (pokyn vlastníka 2026-09-02): verze + pill
+              odkaz na Forgmatic, oddělené čárou od obsahu. */}
+          <footer className="flex items-center justify-between border-t border-border pt-4">
+            <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+              Ingot UI Kit · v1.0
+            </span>
+            <a
+              href="https://forgmatic.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3 hover:border-border-strong hover:text-ink"
+              data-testid="docs-footer-forgmatic"
+            >
+              developed for Forgmatic
+            </a>
+          </footer>
         </main>
 
         <aside
