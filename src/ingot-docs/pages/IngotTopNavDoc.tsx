@@ -3,10 +3,14 @@ import { Demo } from "@/ingot-docs/demos/IngotTopNavDemo";
 import demoSource from "@/ingot-docs/demos/IngotTopNavDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 2.0 (rozhodnutí vlastníka 2026-09-02, body 02 a 04): sekce se otevírá
+// hoverem i klikem (klik jen otevírá; prodlevu zavření měří lišta),
+// ``onToggleSection`` nahradily ``onOpenSection``/``onCloseSection``
+// a limit „nejvýš šest sekcí" nahradilo měřítko 1280 px.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  version: "1.0",
+  version: "2.0",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -110,12 +114,21 @@ export const IngotTopNavDoc: IngotDocPage = {
       },
     },
     {
-      name: "onToggleSection",
+      name: "onOpenSection",
       type: "(key: string) => void",
       required: false,
       note: {
-        cs: "Klik na sekci. Přijde i při zavírání — komponenta si stav nedrží.",
-        en: "A click on a section. Fires on closing too — the component keeps no state.",
+        cs: "Otevři sekci. Volá se z najetí myší, kliku i klávesnice (ArrowDown, Enter). Klik nikdy nezavírá — hover otevřel panel dřív, než klik dopadl, a toggle by ho hned zhasnul.",
+        en: "Open a section. Called on hover, click and keyboard (ArrowDown, Enter). A click never closes — hover opened the panel before the click landed, and a toggle would put it right out.",
+      },
+    },
+    {
+      name: "onCloseSection",
+      type: "() => void",
+      required: false,
+      note: {
+        cs: "Zavři otevřenou sekci. Lišta ho volá po odjezdu myší (se 120ms prodlevou, aby cesta do panelu nezhasla) a na Escape; po prokliku položky ho volá volající.",
+        en: "Close the open section. The bar calls it after the pointer leaves (with a 120 ms delay so the path into the panel does not go dark) and on Escape; after a link click the caller calls it.",
       },
     },
     {

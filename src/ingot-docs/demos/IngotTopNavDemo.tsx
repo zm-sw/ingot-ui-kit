@@ -18,7 +18,8 @@ export function Demo(): JSX.Element {
           { key: "finance", label: "Finance" },
         ]}
         openSection={open}
-        onToggleSection={(key) => setOpen(open === key ? null : key)}
+        onOpenSection={setOpen}
+        onCloseSection={() => setOpen(null)}
         account={<IngotTopNavAccount initials="8S" label="Menu účtu" />}
         testId="docs-topnav"
       />

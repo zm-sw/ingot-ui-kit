@@ -62,7 +62,8 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
               { key: "finance", label: cs ? "Finance" : "Finance" },
             ]}
             openSection={open}
-            onToggleSection={(key) => setOpen(open === key ? null : key)}
+            onOpenSection={setOpen}
+            onCloseSection={() => setOpen(null)}
             account={
               <IngotTopNavAccount
                 initials="8S"
@@ -123,19 +124,22 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
     <div className="space-y-3 text-sm text-ink-2">
       <p>
         {cs
-          ? "Sekce se rozbaluje do tří sloupců odkazů a čtvrtého náhledového sloupce. Sekce, která se do tří sloupců nevejde, nejsou jedna sekce, ale dvě."
-          : "A section opens into three columns of links plus a fourth preview column. A section that does not fit three columns is not one section but two."}
+          ? "Sekce se rozbaluje do skupin odkazů — do sedmi položek jeden sloupec, nad sedm dva — a náhledového sloupce vpravo. Náhled popisuje položku, na které zrovna stojíš, myší i klávesnicí; dokud nestojíš na žádné, popisuje první."
+          : "A section opens into groups of links — one column up to seven items, two above that — plus a preview column on the right. The preview describes the item you are on, by mouse or by keyboard; until you are on one, it describes the first."}
       </p>
       <div className={STAGE}>
         <div className="relative min-h-[240px] min-w-[720px]">
           <IngotMegaMenu
-            columns={[
+            groups={[
               {
                 title: cs ? "Denní provoz" : "Daily operations",
                 items: [
                   {
                     href: "#/shell-a-patterny",
                     label: cs ? "Objednávky" : "Orders",
+                    description: cs
+                      ? "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu."
+                      : "What has come in and what waits for production to confirm it. Orders enter the plan from here.",
                     icon: <IngotIcon name="file" size={15} />,
                     count: 12,
                     current: true,
@@ -143,18 +147,11 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                   {
                     href: "#/shell-a-patterny",
                     label: cs ? "Poptávky" : "Enquiries",
+                    description: cs
+                      ? "Nacenění, která zákazník zatím nepotvrdil."
+                      : "Quotes the customer has not confirmed yet.",
                     icon: <IngotIcon name="chat" size={15} />,
                     count: 48,
-                  },
-                ],
-              },
-              {
-                title: cs ? "Platforma" : "Platform",
-                items: [
-                  {
-                    href: "#/shell-a-patterny",
-                    label: cs ? "Partneři" : "Partners",
-                    icon: <IngotIcon name="globe" size={15} />,
                   },
                 ],
               },
@@ -164,23 +161,14 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                   {
                     href: "#/shell-a-patterny",
                     label: cs ? "Materiály" : "Materials",
+                    description: cs
+                      ? "Skladové položky a jejich vlastnosti — tloušťky, jakosti, ceny."
+                      : "Stock items and their properties — thicknesses, grades, prices.",
                     icon: <IngotIcon name="grid" size={15} />,
                   },
                 ],
               },
             ]}
-            preview={
-              <div className="space-y-2">
-                <p className="font-mono text-[10.5px] uppercase tracking-[0.09em] text-ink-4">
-                  {cs ? "Objednávky" : "Orders"}
-                </p>
-                <p className="text-sm text-ink-2">
-                  {cs
-                    ? "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu."
-                    : "What has come in and what waits for production to confirm it. Orders enter the plan from here."}
-                </p>
-              </div>
-            }
             label={cs ? "Provoz" : "Operations"}
           />
         </div>
@@ -190,9 +178,10 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Náhled popisuje <strong>první</strong> položku sekce, ne
-                  poslední, na které byla myš. Náhled měnící se pod kurzorem
-                  je náhodný a pro ovládání klávesnicí nefunguje vůbec.
+                  Náhled sleduje položku pod kurzorem <strong>i pod
+                  fokusem</strong> — klávesnice není druhá kategorie. Popis
+                  navíc čte odečítač přímo z odkazu, takže náhledový sloupec
+                  je jen vizuální kopie.
                 </>,
                 <>
                   Otevřená sekce se v liště značí plochou{" "}
@@ -206,10 +195,10 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
               ]
             : [
                 <>
-                  The preview describes the <strong>first</strong> item of
-                  the section, not the last one the mouse touched. A preview
-                  that changes under the cursor is arbitrary, and for
-                  keyboard use it does not work at all.
+                  The preview follows the item under the cursor <strong>and
+                  under focus</strong> — the keyboard is not a second-class
+                  citizen. A screen reader hears the description from the
+                  link itself, so the preview column is a visual copy.
                 </>,
                 <>
                   An open section is marked with the{" "}
