@@ -64,6 +64,11 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Nech místo NAD cílem skoku, jinak přistane pod přilepenou horní
+     lištou: prohlížeč ho odroluje přesně na nulu, kde ho lišta zakryje,
+     takže „Co je na stránce" skočí na nadpis, který není vidět.
+     5rem = lišta (jedna řada, ~61px) a kousek vzduchu nad nadpisem. */
+  scroll-padding-top: 5rem;
   /* Nech místo pod přilepenou spodní lištou (``GuideDock``), když se
      na něco skáče — kotvou, Tab navigací nebo ``scrollIntoView``.
      Bez toho cíl přistane přesně pod dokem: prohlížeč ho považuje za

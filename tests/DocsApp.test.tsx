@@ -613,6 +613,58 @@ describe("DocsApp", () => {
     expect(document.documentElement.dataset.accent).toBe("violet");
   });
 
+  // Skořápka na úzkém výřezu (drawer s menu):
+  //
+  // 🪤 Šířku sloupců tady ověřit NEJDE — jsdom nepočítá layout, takže
+  // každý `getBoundingClientRect` vrátí nuly a test na „obsah je široký
+  // aspoň 360 px" by prošel i nad rozbitou stránkou. Co se ověřit dá a
+  // co při té regresi doopravdy chybělo, je CESTA: pod `md` je menu
+  // skryté a jediný přechod mezi stránkami vede přes tohle tlačítko.
+  // Kdyby zmizelo, doc web nemá na mobilu navigaci žádnou.
+  it("otevře menu v draweru a nabídne v něm celou navigaci", async () => {
+    const user = userEvent.setup();
+    render(<DocsApp />);
+
+    expect(screen.queryByTestId("docs-nav-drawer")).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId("docs-menu-open"));
+
+    const drawer = screen.getByTestId("docs-nav-drawer");
+    // Skupiny jsou tytéž jako ve sloupci — drawer je jiné místo, ne jiný
+    // seznam. Kdyby si držel vlastní, rozejdou se.
+    for (const group of [
+      CHROME.groupSystem.cs,
+      CHROME.groupApp.cs,
+      CHROME.groupRules.cs,
+    ]) {
+      expect(
+        within(drawer).getByRole("navigation", { name: group }),
+      ).toBeInTheDocument();
+    }
+    // Přepínače tam jsou taky: v liště je pod `md` schová `md:hidden`,
+    // takže bez nich by se motiv ani jazyk na mobilu přepnout nedaly.
+    expect(within(drawer).getByTestId("docs-drawer-theme")).toBeInTheDocument();
+  });
+
+  it("po výběru stránky se drawer zavře", async () => {
+    const user = userEvent.setup();
+    render(<DocsApp />);
+
+    await user.click(screen.getByTestId("docs-menu-open"));
+    const drawer = screen.getByTestId("docs-nav-drawer");
+
+    await user.click(within(drawer).getByTestId("docs-drawer-nav-zaklady"));
+
+    // Zůstat otevřený nad obsahem, který si čtenář právě vybral, je to
+    // jediné, co po kliknutí v menu nechce.
+    await waitFor(() => {
+      expect(screen.queryByTestId("docs-nav-drawer")).not.toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Základy" }),
+    ).toBeInTheDocument();
+  });
+
   it("stránka Základy ukáže všech pět rodin", () => {
     window.location.hash = "#/zaklady";
     render(<DocsApp />);

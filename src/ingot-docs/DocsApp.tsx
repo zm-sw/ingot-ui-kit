@@ -38,6 +38,7 @@ import {
   Button,
   IngotBadge,
   IngotCode,
+  IngotDrawer,
   IngotIcon,
   IngotList,
   IngotPageHeader,
@@ -252,11 +253,20 @@ function DemoWithSource({
         </Button>
       </div>
       {view === "preview" ? (
+        /* 🪤 Plocha ROLUJE, neořezává. Ukázka s vlastní pevnou šířkou
+           (``IngotMegaMenu`` má 26rem) se na úzký výřez nevejde a pod
+           ``overflow-hidden`` se prostě usekla — čtenář nevidí, že mu
+           kus chybí. To je horší než posuvník: mlčky lže o tom, jak
+           komponenta vypadá.
+
+           ``mx-auto w-fit`` zvládne obojí naráz: ukázka, která se
+           smrsknout umí, zůstane vystředěná; ta, která ne, roztáhne
+           obal a rozjede posuvník od levého kraje. */
         <div
-          className="grid place-items-center bg-surface-2 p-8"
+          className="overflow-x-auto bg-surface-2"
           data-testid="docs-demo-stage"
         >
-          <div className="min-w-0 max-w-full">
+          <div className="mx-auto w-fit p-4 md:p-8">
             <page.Demo />
           </div>
         </div>
@@ -463,6 +473,8 @@ function navItem(
   entry: ActivePage,
   activeHref: string,
   lang: DocLang,
+  /** Odlišuje sloupec (``docs-``) od draweru (``docs-drawer-``). */
+  idPrefix: string,
   extra?: Partial<IngotNavItem>,
 ): IngotNavItem {
   const href = hrefOf(entry);
@@ -470,7 +482,7 @@ function navItem(
     href,
     label: titleOf(entry, lang),
     current: href === activeHref,
-    testId: `docs-nav-${href.slice(2)}`,
+    testId: `${idPrefix}nav-${href.slice(2)}`,
     ...extra,
   };
 }
@@ -510,6 +522,14 @@ const GROUP_LABELS: Record<IngotGuideGroup, keyof typeof CHROME> = {
 function guideGroups(
   active: ActivePage,
   lang: DocLang,
+  /**
+   * Menu se kreslí dvakrát — ve sloupci (od ``md``) a v draweru (pod
+   * ``md``). Skrytý sloupec je ``display:none``, takže z přístupnostního
+   * stromu vypadne a odečítač slyší navigaci jen jednou; v DOM ale
+   * zůstane, a stejný testid dvakrát je past na dotaz, který čeká jeden
+   * prvek. Prefix je proto povinný, ne volitelný.
+   */
+  idPrefix: string,
 ): readonly { group: IngotGuideGroup; items: readonly IngotNavItem[] }[] {
   const activeHref = hrefOf(active);
   // Seznam komponent se vnořuje JEN když čtenář v sekci komponent stojí
@@ -520,7 +540,9 @@ function guideGroups(
     active.kind === "component" ||
     (active.kind === "guide" && active.guide.slug === CATALOGUE_SLUG);
   const componentItems = inComponents
-    ? COMPONENT_ENTRIES.map((entry) => navItem(entry, activeHref, lang))
+    ? COMPONENT_ENTRIES.map((entry) =>
+        navItem(entry, activeHref, lang, idPrefix),
+      )
     : undefined;
 
   const groups: { group: IngotGuideGroup; items: IngotNavItem[] }[] = [];
@@ -529,7 +551,7 @@ function guideGroups(
     const group = entry.guide.group;
     if (groups.at(-1)?.group !== group) groups.push({ group, items: [] });
     groups.at(-1)!.items.push(
-      navItem(entry, activeHref, lang, {
+      navItem(entry, activeHref, lang, idPrefix, {
         ordinal: String(index).padStart(2, "0"),
         children:
           entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
@@ -565,11 +587,16 @@ function PagerFooter({
   const next = index < ALL_ENTRIES.length - 1 ? ALL_ENTRIES[index + 1] : null;
 
   // Karty z handoffu: rámeček, mono štítek směru, hover se stínem.
+  //
+  // 🪤 ``min-w-0``, ne ``min-w-[200px]``. Dvě karty po 200 px s mezerou
+  // si vynutí 416 px, což byl na mobilu jediný zbylý zdroj vodorovného
+  // rolování CELÉHO dokumentu — širší než výřez znamená, že stránka
+  // ujíždí do stran i tam, kde je jinak všechno v pořádku.
   const cardClass =
-    "flex min-w-[200px] max-w-[48%] flex-col gap-1 rounded-md border border-border bg-surface px-[18px] py-[14px] text-ink hover:border-border-strong hover:shadow-sm";
+    "flex min-w-0 flex-1 flex-col gap-1 rounded-md border border-border bg-surface px-[18px] py-[14px] text-ink hover:border-border-strong hover:shadow-sm sm:max-w-[48%] sm:flex-none";
 
   return (
-    <div className="flex justify-between gap-4 border-t border-border pt-6">
+    <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between sm:gap-4">
       {prev ? (
         <a className={cardClass} href={hrefOf(prev)} data-testid="docs-prev">
           <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
@@ -580,11 +607,13 @@ function PagerFooter({
           </span>
         </a>
       ) : (
-        <span />
+        /* Vyrovnávací prvek drží „Další" u pravého kraje, když předchozí
+           stránka není. Pod sebou (mobil) by ale jen přidal mezeru. */
+        <span className="hidden sm:block" />
       )}
       {next ? (
         <a
-          className={`${cardClass} ml-auto items-end text-right`}
+          className={`${cardClass} sm:ml-auto sm:items-end sm:text-right`}
           href={hrefOf(next)}
           data-testid="docs-next"
         >
@@ -596,7 +625,7 @@ function PagerFooter({
           </span>
         </a>
       ) : (
-        <span />
+        <span className="hidden sm:block" />
       )}
     </div>
   );
@@ -640,6 +669,8 @@ export function DocsApp(): JSX.Element {
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
+  /** Drawer s menu a přepínači — jen pod ``md``, viz hlavička. */
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -680,9 +711,129 @@ export function DocsApp(): JSX.Element {
   const sections = sectionsOf(page, lang);
   const options = languages.options;
 
+  // Výběr stránky drawer zavírá. Zůstat otevřený nad obsahem, který si
+  // čtenář právě vybral, je to jediné, co po kliknutí v menu nechce.
+  useEffect(() => {
+    setNavOpen(false);
+  }, [page]);
+
+  // Otočení tabletu do šířky odkryje menu ve sloupci — drawer nad ním by
+  // pak zakrýval rozvržení, které navigaci už má.
+  //
+  // ``matchMedia`` nemusí existovat (jsdom, hodně starý prohlížeč) a
+  // Safari před 14 zná jen ``addListener``. Obojí se tu ošetřuje, protože
+  // kit je vzor: rozbít se nesmí ani tam, kde se na moderní API nedá
+  // spolehnout — bez nich se drawer prostě zavře ESC nebo křížkem.
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const query = window.matchMedia("(min-width: 768px)");
+    const onChange = () => {
+      if (query.matches) setNavOpen(false);
+    };
+    if (typeof query.addEventListener === "function") {
+      query.addEventListener("change", onChange);
+      return () => query.removeEventListener("change", onChange);
+    }
+    query.addListener(onChange);
+    return () => query.removeListener(onChange);
+  }, []);
+
   const separator = (
     <span aria-hidden="true" className="hidden h-5 w-px bg-border sm:block" />
   );
+
+  /**
+   * Motiv, jazyk a akcent. Stojí v liště (od ``md``) i v draweru (pod
+   * ``md``), kde se skládají pod sebe — v jedné řadě by se na 375 px
+   * zalomily do druhého řádku a přilepená lišta by ukusovala šestinu
+   * obrazovky.
+   *
+   * ``idPrefix`` odděluje testid obou vykreslení: stejný testid dvakrát
+   * v DOM je past na dotaz, který čeká jeden prvek.
+   */
+  const chromeControls = (stacked: boolean, idPrefix: string) => (
+    <div
+      className={
+        stacked
+          ? "flex flex-col items-start gap-4"
+          : "flex flex-wrap items-center gap-x-4 gap-y-2"
+      }
+    >
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+          {pick(CHROME.accent, lang)}
+        </span>
+        <AccentSwatches
+          value={accent}
+          onChange={(next) => {
+            setAccent(next);
+            writeStoredAccent(next);
+          }}
+          groupLabel={pick(CHROME.accent, lang)}
+          optionLabel={(choice) =>
+            `${pick(CHROME.accent, lang)} ${pick(
+              CHROME[ACCENT_LABELS[choice]],
+              lang,
+            )}`
+          }
+        />
+      </div>
+      {stacked ? null : separator}
+      <DocSegmented
+        options={THEME_CHOICES.map((choice) => ({
+          value: choice,
+          label:
+            choice === "light"
+              ? pick(CHROME.themeLight, lang)
+              : choice === "dark"
+                ? pick(CHROME.themeDark, lang)
+                : pick(CHROME.themeSystem, lang),
+        }))}
+        value={theme}
+        onChange={(next) => {
+          setTheme(next as ThemeChoice);
+          writeStoredTheme(next as ThemeChoice);
+        }}
+        label={pick(CHROME.theme, lang)}
+        testId={`${idPrefix}theme`}
+      />
+      {/* Jediný jazyk = přepínat není co. Ovládací prvek s jednou
+          volbou jen zabírá místo a slibuje volbu, která neexistuje. */}
+      {options.length > 1 && (
+        <>
+          {stacked ? null : separator}
+          <DocSegmented
+            options={options.map((option) => ({
+              value: option.code,
+              label: option.code.toUpperCase(),
+            }))}
+            value={lang}
+            onChange={(next) => {
+              setLang(next as DocLang);
+              writeStoredLang(next as DocLang);
+            }}
+            label={pick(CHROME.language, lang)}
+            testId={`${idPrefix}lang`}
+          />
+        </>
+      )}
+      {/* 🪤 Slovník Jednoduše/Expert tu SCHVÁLNĚ není. Ovládá jedinou
+          tabulku na stránce Překlady, takže vedle motivu, jazyka a
+          akcentu — voleb platných pro celý web — sliboval dopad, který
+          nemá. Přepínač proto stojí u té tabulky. */}
+    </div>
+  );
+
+  /** Skupiny levého menu. Kreslí se do sloupce i do draweru. */
+  const navGroups = (idPrefix: string) =>
+    guideGroups(page, lang, idPrefix).map(({ group, items }) => (
+      <IngotSideNav
+        key={group}
+        label={pick(CHROME[GROUP_LABELS[group]], lang)}
+        items={items}
+        testId={`${idPrefix}nav-group-${group}`}
+      />
+    ));
 
   return (
     <div className="min-h-screen">
@@ -692,7 +843,7 @@ export function DocsApp(): JSX.Element {
 
           ``docs-topbar`` (globals.css) drží sklo — průsvitná plocha
           s blurem, bílá ve světlém motivu a tmavá v tmavém. */}
-      <header className="docs-topbar sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-6 py-3">
+      <header className="docs-topbar sticky top-0 z-40 flex items-center gap-x-4 gap-y-2 border-b border-border px-4 py-3 md:px-6">
         {/* Logo nese celý název („INGOT UI KIT"), takže textový brand
             vedle něj by ho jen zopakoval — zbyla verze jako popisek.
 
@@ -719,80 +870,78 @@ export function DocsApp(): JSX.Element {
         {/* Verze a značka se přestěhovaly do mini patičky dole
             (pokyn vlastníka 2026-09-02) — hlavička nese jen ovládání. */}
         <span className="flex-1" aria-hidden="true" />
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-          {pick(CHROME.accent, lang)}
-        </span>
-        <AccentSwatches
-          value={accent}
-          onChange={(next) => {
-            setAccent(next);
-            writeStoredAccent(next);
-          }}
-          groupLabel={pick(CHROME.accent, lang)}
-          optionLabel={(choice) =>
-            `${pick(CHROME.accent, lang)} ${pick(
-              CHROME[ACCENT_LABELS[choice]],
-              lang,
-            )}`
-          }
-        />
-        {separator}
-        <DocSegmented
-          options={THEME_CHOICES.map((choice) => ({
-            value: choice,
-            label:
-              choice === "light"
-                ? pick(CHROME.themeLight, lang)
-                : choice === "dark"
-                  ? pick(CHROME.themeDark, lang)
-                  : pick(CHROME.themeSystem, lang),
-          }))}
-          value={theme}
-          onChange={(next) => {
-            setTheme(next as ThemeChoice);
-            writeStoredTheme(next as ThemeChoice);
-          }}
-          label={pick(CHROME.theme, lang)}
-          testId="docs-theme"
-        />
-        {/* Jediný jazyk = přepínat není co. Ovládací prvek s jednou
-            volbou jen zabírá místo a slibuje volbu, která neexistuje. */}
-        {options.length > 1 && (
-          <>
-            {separator}
-            <DocSegmented
-              options={options.map((option) => ({
-                value: option.code,
-                label: option.code.toUpperCase(),
-              }))}
-              value={lang}
-              onChange={(next) => {
-                setLang(next as DocLang);
-                writeStoredLang(next as DocLang);
-              }}
-              label={pick(CHROME.language, lang)}
-              testId="docs-lang"
-            />
-          </>
-        )}
-        {/* 🪤 Slovník Jednoduše/Expert tu SCHVÁLNĚ není. Ovládá jedinou
-            tabulku na stránce Překlady, takže vedle motivu, jazyka a
-            akcentu — voleb platných pro celý web — sliboval dopad, který
-            nemá. Přepínač proto stojí u té tabulky. */}
+
+        {/* Od ``md`` v liště, pod ``md`` v draweru. Pět akcentů, tři
+            motivy a dva jazyky vedle sebe potřebují přes 400 px; na
+            375px displeji se zalomily do druhé řady a přilepená lišta
+            pak ukusovala 98–125 px, tedy šestinu obrazovky. */}
+        <div className="hidden md:block">
+          {chromeControls(false, "docs-")}
+        </div>
+
+        {/* 🪤 Tlačítko je pod ``md`` JEDINÁ cesta mezi stránkami — levé
+            menu je tam skryté. Skrýt menu bez něj neznamená horší
+            navigaci, ale žádnou. */}
+        <Button
+          variant="secondary"
+          size="md"
+          iconOnly
+          aria-label={pick(CHROME.openMenu, lang)}
+          aria-expanded={navOpen}
+          onClick={() => setNavOpen(true)}
+          className="md:hidden"
+          data-testid="docs-menu-open"
+        >
+          <IngotIcon name="menu" />
+        </Button>
       </header>
 
+      {/* Menu i přepínače pod ``md``. Drawer je primitivum kitu, takže
+          past focusu, ESC, zámek rolování i portál nad stacking kontexty
+          přicházejí s ním — doc web tím sám sebe učí, místo aby si
+          postranní panel ručně skládal. */}
+      {navOpen && (
+        <IngotDrawer
+          side="left"
+          width={320}
+          title={pick(CHROME.menuTitle, lang)}
+          closeLabel={pick(CHROME.closeMenu, lang)}
+          onClose={() => setNavOpen(false)}
+          testId="docs-nav-drawer"
+          footer={chromeControls(true, "docs-drawer-")}
+        >
+          <div className="space-y-5">{navGroups("docs-drawer-")}</div>
+        </IngotDrawer>
+      )}
+
+      {/* 🪤 Sloupce se PŘIDÁVAJÍ, nezmenšují. Do KAN-XXX tu stály tři
+          natvrdo bez jediného breakpointu: menu 224 + rejstřík 176 +
+          dvě mezery 64 + odsazení 32 = 496 px pevné šířky, které padly
+          dřív než první znak. Prostřední sloupec je ``flex-1
+          min-w-0``, takže se místo přetečení poslušně smrskl na NULU
+          a vysázel text mimo sebe — na 390px displeji jedno slovo na
+          řádek přes obsah rejstříku.
+
+          Prahy nejsou od oka. Čtecí sloupec drží aspoň 360 px, aby řádek
+          nesl 45–75 znaků:
+          * ``md`` (768) — menu 224 + 64 chrome nechá obsahu 480 px.
+          * ``lg`` (1024) — a rejstřík 176 + 32 nechá pořád 528 px.
+          Pod ``md`` je menu v draweru a rejstřík se vypouští: na
+          jednosloupcové stránce je obsah stejně hned pod ním. */}
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
         {/* Menu stojí na ploše stránky, ne na kartě: kartou je až
-            aktivní položka, a dvě vrstvy nad sebou by ji zploštily. */}
-        <div className="w-56 shrink-0 space-y-5 self-start">
-          {guideGroups(page, lang).map(({ group, items }) => (
-            <IngotSideNav
-              key={group}
-              label={pick(CHROME[GROUP_LABELS[group]], lang)}
-              items={items}
-              testId={`docs-nav-group-${group}`}
-            />
-          ))}
+            aktivní položka, a dvě vrstvy nad sebou by ji zploštily.
+
+            ``sticky`` s vlastním rolováním: seznam komponent je delší
+            než výřez, takže bez něj se menu odroluje pryč a čtenář se
+            k jiné stránce dostane až zpátky nahoru. ``IngotPageLayout``
+            to tak dělá taky — doc web nemá popírat primitivum, které
+            o kus dál vyučuje. */}
+        {/* 🪤 ``self-start`` je pro ``sticky`` podmínka, ne kosmetika:
+            roztažená položka flexu je vysoká jako celý řádek, takže
+            nemá kam přilnout a ``sticky`` tiše nedělá nic. */}
+        <div className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-56 shrink-0 space-y-5 self-start overflow-y-auto md:block">
+          {navGroups("docs-")}
         </div>
 
         <main className="min-w-0 flex-1 space-y-8">
@@ -842,9 +991,12 @@ export function DocsApp(): JSX.Element {
           <PagerFooter page={page} lang={lang} />
         </main>
 
+        {/* Rejstřík je až třetí sloupec (od ``lg``). Pod ním by ukusoval
+            208 px z šířky, kterou potřebuje text — a na jednosloupcové
+            stránce stejně jen opakuje nadpisy, které jsou hned pod ním. */}
         <aside
           aria-label={pick(CHROME.onThisPage, lang)}
-          className="w-44 shrink-0 self-start border-l border-border pl-4"
+          className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-44 shrink-0 self-start overflow-y-auto border-l border-border pl-4 lg:block"
         >
           <p className="mb-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
             {pick(CHROME.onThisPage, lang)}
@@ -868,7 +1020,7 @@ export function DocsApp(): JSX.Element {
           šířku, nízká, kraje od sebe — verze vlevo u okraje, pill
           s logem Forgmaticu vpravo u okraje. Verzi píše release
           workflow do package.json; ručně psané číslo tu lhalo. */}
-      <footer className="flex items-center justify-between border-t border-border px-6 py-2.5">
+      <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-border px-4 py-2.5 md:px-6">
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
           Ingot UI Kit · v{pkg.version}
         </span>

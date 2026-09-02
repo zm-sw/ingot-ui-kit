@@ -53,6 +53,11 @@ export interface ChromeStrings {
   themeDark: Localized<string>;
   themeSystem: Localized<string>;
   accent: Localized<string>;
+  /** Tlačítko a nadpis draweru, do kterého se pod ``md`` stěhuje menu
+   *  i přepínače — na úzkém výřezu na ně v liště není místo. */
+  openMenu: Localized<string>;
+  closeMenu: Localized<string>;
+  menuTitle: Localized<string>;
   /** Přepínač slovníku Jednoduše/Expert — viz ``dictionary.ts``. Ploché
    *  klíče místo mapy ze stejného důvodu jako ``themeLight``. */
   dictionary: Localized<string>;
@@ -110,6 +115,9 @@ export const CHROME: ChromeStrings = {
   themeDark: { cs: "Tmavý", en: "Dark" },
   themeSystem: { cs: "Systém", en: "System" },
   accent: { cs: "Akcent", en: "Accent" },
+  openMenu: { cs: "Otevřít menu", en: "Open menu" },
+  closeMenu: { cs: "Zavřít menu", en: "Close menu" },
+  menuTitle: { cs: "Obsah", en: "Contents" },
   dictionary: { cs: "Slovník", en: "Dictionary" },
   dictionarySimple: { cs: "Jednoduše", en: "Simple" },
   dictionaryExpert: { cs: "Expert", en: "Expert" },

@@ -59,16 +59,28 @@ export function AccentSwatches({
             data-accent={choice}
             onClick={() => onChange(choice)}
             className={cx(
-              "h-[18px] w-[18px] rounded-full border-2 p-0 transition-colors disabled:opacity-60",
+              // 🪤 Terč je 28×28, tečka zůstává 18×18. Sáhnout se musí dát
+              // prstem (WCAG 2.2 AA, 2.5.8 chce aspoň 24×24), ale zvětšit
+              // kolečko by rozbilo lištu z handoffu — proto roste plocha
+              // kolem něj, ne ono samo. Tlačítko nic nekreslí; kreslí
+              // vnitřní ``span``.
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 disabled:opacity-60",
             )}
-            style={{
-              background: "var(--accent)",
-              // The active ring is the ink colour by design — a ring in the
-              // family's own colour is invisible against the dot it circles.
-              borderColor: active ? "var(--ink)" : "var(--border-strong)",
-            }}
             data-testid={`accent-swatch-${choice}`}
-          />
+          >
+            {/* ``data-accent`` sedí na tlačítku výš, takže ``var(--accent)``
+                se sem dědí — tečku pořád barví ten blok, který inzeruje. */}
+            <span
+              aria-hidden="true"
+              className="h-[18px] w-[18px] rounded-full border-2 transition-colors"
+              style={{
+                background: "var(--accent)",
+                // The active ring is the ink colour by design — a ring in the
+                // family's own colour is invisible against the dot it circles.
+                borderColor: active ? "var(--ink)" : "var(--border-strong)",
+              }}
+            />
+          </button>
         );
       })}
     </div>

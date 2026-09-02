@@ -177,6 +177,16 @@ const GLYPHS = {
       <line x1={3} y1={18} x2={3.01} y2={18} />
     </>
   ),
+  // 🪤 Odrážky ``list`` sem nestačí. Tlačítko, které otevírá navigaci,
+  // je na úzkém výřezu jediná cesta mezi obrazovkami, a čtenář ho hledá
+  // podle tvaru, který zná — tři plné linky, ne seznam s puntíky.
+  "menu": (
+    <>
+      <line x1={3} y1={6} x2={21} y2={6} />
+      <line x1={3} y1={12} x2={21} y2={12} />
+      <line x1={3} y1={18} x2={21} y2={18} />
+    </>
+  ),
   // --- hledání a pohled ---
   "search": (
     <>
