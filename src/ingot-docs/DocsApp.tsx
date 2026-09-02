@@ -265,7 +265,7 @@ function DemoWithSource({
           </div>
         </div>
       ) : (
-        <IngotCode block testId="docs-source">
+        <IngotCode block lang="tsx" testId="docs-source">
           {page.demoSource}
         </IngotCode>
       )}

@@ -74,7 +74,7 @@ export const IntroGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>Všechno se importuje z jednoho místa:</p>
-            <IngotCode block>{IMPORT_EXAMPLE}</IngotCode>
+            <IngotCode block lang="tsx">{IMPORT_EXAMPLE}</IngotCode>
             <p>
               <strong>Vždycky přes tenhle jeden vstup</strong>, nikdy hlubší
               cestou na konkrétní soubor. Co odsud vede ven, je veřejné
@@ -92,7 +92,7 @@ export const IntroGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>Everything is imported from one place:</p>
-            <IngotCode block>{IMPORT_EXAMPLE}</IngotCode>
+            <IngotCode block lang="tsx">{IMPORT_EXAMPLE}</IngotCode>
             <p>
               <strong>Always through this one entry point</strong>, never by a
               deeper path to a specific file. What comes out of it is the
