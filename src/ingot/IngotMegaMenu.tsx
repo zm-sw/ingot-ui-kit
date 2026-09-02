@@ -1,6 +1,7 @@
 import { useId, useState, type JSX, type MouseEvent, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotIcon } from "./IngotIcon";
 
 /**
  * Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo
@@ -45,6 +46,13 @@ export interface IngotMegaMenuItem {
    * ``href`` zůstává, aby fungoval střední klik a „otevřít v novém patře".
    */
   onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  /**
+   * Zamčená položka (např. modul, který si tenant zatím nezapnul).
+   * Kreslí se VIDITELNĚ, ztlumeně a se zámkem, ale není to odkaz —
+   * klik volá ``onLockedItemClick`` menu (typicky modal s vysvětlením).
+   * Náhled pro ni funguje dál: popis je marketing té obrazovky.
+   */
+  locked?: boolean;
 }
 
 export interface IngotMegaMenuGroup {
@@ -60,6 +68,7 @@ export function IngotMegaMenu({
   groups,
   art,
   label,
+  onLockedItemClick,
   testId,
 }: {
   /** Skupiny odkazů. Sloupce (1–2) si menu rozdělí samo podle počtu položek. */
@@ -68,6 +77,12 @@ export function IngotMegaMenu({
   art?: ReactNode;
   /** Přeložený ``aria-label`` menu. */
   label: string;
+  /**
+   * Klik na zamčenou položku (``locked``) — typicky otevře modal
+   * s vysvětlením, co modul umí a jak se zapíná. Bez callbacku se
+   * zamčená položka kreslí jen ztlumeně.
+   */
+  onLockedItemClick?: (item: IngotMegaMenuItem) => void;
   testId?: string;
 }): JSX.Element {
   const descId = useId();
@@ -101,6 +116,31 @@ export function IngotMegaMenu({
             <ul className="flex flex-col gap-0.5">
               {group.items.map((item) => {
                 const previewed = preview !== null && item.href === preview.href;
+                const describedBy =
+                  previewed && preview.description ? descId : undefined;
+                if (item.locked) {
+                  return (
+                    <li key={item.href}>
+                      <button
+                        type="button"
+                        onClick={() => onLockedItemClick?.(item)}
+                        onMouseEnter={() => setPreviewHref(item.href)}
+                        onFocus={() => setPreviewHref(item.href)}
+                        aria-describedby={describedBy}
+                        className="flex w-full items-center gap-2.5 rounded px-2 py-1.5 text-left text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                      >
+                        {item.icon}
+                        {item.label}
+                        <IngotIcon
+                          name="lock"
+                          size={13}
+                          className="ml-auto shrink-0"
+                          aria-hidden
+                        />
+                      </button>
+                    </li>
+                  );
+                }
                 return (
                   <li key={item.href}>
                     <a
@@ -109,9 +149,7 @@ export function IngotMegaMenu({
                       onMouseEnter={() => setPreviewHref(item.href)}
                       onFocus={() => setPreviewHref(item.href)}
                       aria-current={item.current ? "page" : undefined}
-                      aria-describedby={
-                        previewed && preview.description ? descId : undefined
-                      }
+                      aria-describedby={describedBy}
                       className={cx(
                         "flex items-center gap-2.5 rounded px-2 py-1.5 text-sm",
                         item.current

@@ -22,6 +22,11 @@ export const IngotModalDoc: IngotDocPage = {
         pokračovat.
       </>,
       <>
+        Delší editace záznamu — tam, kde je co vysvětlovat, dává dialog
+        místo i soustředění na jednu věc. Rychlá úprava pár polí vedle
+        seznamu zůstává v <IngotCode>IngotDrawer</IngotCode>.
+      </>,
+      <>
         Dialog není jen „potvrď / zruš“ — je v něm formulář, náhled nebo
         výběr.
       </>,
@@ -36,6 +41,11 @@ export const IngotModalDoc: IngotDocPage = {
       <>
         The content has to cover the screen and demand a decision before
         anything else can happen.
+      </>,
+      <>
+        A longer edit of a record — where there is explaining to do, the
+        dialog gives both room and focus. A quick edit of a few fields next
+        to a list stays in <IngotCode>IngotDrawer</IngotCode>.
       </>,
       <>
         The dialog is more than "confirm / cancel" — it holds a form, a

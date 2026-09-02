@@ -23,18 +23,21 @@ interface YesNoRow {
 }
 
 const YES_NO: readonly YesNoRow[] = [
+  // Otočeno 2026-09-02 rozhodnutím vlastníka: delší editace potřebuje
+  // místo na vysvětlení a plné soustředění na jednu věc — modal.
+  // Boční panel zůstává rychlé úpravě, kde se pracuje se seznamem za ní.
   {
     situation: {
       cs: "Delší editace záznamu",
       en: "A longer edit of a record",
     },
     no: {
-      cs: "Modální okno přes celý seznam",
-      en: "A modal covering the whole list",
+      cs: "Boční panel vmáčknutý vedle seznamu",
+      en: "A side drawer squeezed next to the list",
     },
     yes: {
-      cs: "Boční panel — kontext zůstane vidět",
-      en: "A side drawer — the context stays visible",
+      cs: "Modální okno — místo na vysvětlení a soustředění na jednu věc",
+      en: "A modal — room to explain and focus on the thing at hand",
     },
   },
   {

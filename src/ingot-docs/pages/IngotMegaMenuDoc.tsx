@@ -9,10 +9,13 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // odečítač čte popis z odkazu (aria-describedby) — kapitola Přístupnost
 // dřív tvrdila, že sledující náhled „pro klávesnici nefunguje vůbec",
 // což o implementaci s onFocus nebyla pravda.
+// 2.1: zamčené položky (locked + onLockedItemClick) — modul, který si
+// tenant nezapnul, je v menu vidět se zámkem a klik otevírá vysvětlení
+// místo navigace. Parita s nasazenou administrací.
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  version: "2.0",
+  version: "2.1",
   tag: ".megamenu",
   tokens: [
     "--surface",
@@ -146,6 +149,15 @@ export const IngotMegaMenuDoc: IngotDocPage = {
       },
     },
     {
+      name: "onLockedItemClick",
+      type: "(item) => void",
+      required: false,
+      note: {
+        cs: "Klik na zamčenou položku (locked) — typicky otevře modal s vysvětlením, co modul umí a jak se zapíná.",
+        en: "Click on a locked item — typically opens a modal explaining what the module does and how to enable it.",
+      },
+    },
+    {
       name: "testId",
       type: "string",
       required: false,
@@ -251,6 +263,15 @@ export const IngotMegaMenuDoc: IngotDocPage = {
           note: {
             cs: "Klik na odkaz — SPA tady volá router a preventDefault. href zůstává, aby fungoval střední klik a otevření v novém panelu.",
             en: "Click on the link — an SPA calls its router here with preventDefault. href stays, so middle-click and open-in-new-tab keep working.",
+          },
+        },
+        {
+          name: "locked",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Zamčená položka: viditelná, ztlumená, se zámkem — není to odkaz, klik volá onLockedItemClick. Náhled funguje dál.",
+            en: "A locked item: visible, dimmed, with a padlock — not a link; a click calls onLockedItemClick. The preview still works.",
           },
         },
       ],
