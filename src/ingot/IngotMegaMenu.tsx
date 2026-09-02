@@ -94,8 +94,12 @@ export function IngotMegaMenu({
   const twoColumns = flat.length > SINGLE_COLUMN_MAX;
 
   return (
+    // ``left-0`` vůči relativnímu obalu SVÉ sekce (IngotTopNav 2.2
+    // renderMenu) — panel stojí pod svým tlačítkem. Kotvení k levému
+    // okraji lišty by s hover-otevíráním nutilo kurzor přejíždět cizí
+    // triggery a cestou je otvírat.
     <div
-      className="absolute left-4 top-[calc(100%+6px)] z-[60] flex gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg"
+      className="absolute left-0 top-[calc(100%+6px)] z-[60] flex gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg"
       data-testid={testId}
     >
       <nav

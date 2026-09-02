@@ -7,10 +7,14 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // hoverem i klikem (klik jen otevírá; prodlevu zavření měří lišta),
 // ``onToggleSection`` nahradily ``onOpenSection``/``onCloseSection``
 // a limit „nejvýš šest sekcí" nahradilo měřítko 1280 px.
+// 2.2 (parita s nasazenou administrací pro konverzi shellu): sekce umí
+// být odkaz (href — jediná obrazovka) nebo zamčená (locked), panel se
+// kotví pod svou sekcí přes renderMenu, přibyl menuButton pro mobilní
+// hamburger a klik mimo lištu zavírá.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  version: "2.0",
+  version: "2.2",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -127,8 +131,26 @@ export const IngotTopNavDoc: IngotDocPage = {
       type: "() => void",
       required: false,
       note: {
-        cs: "Zavři otevřenou sekci. Lišta ho volá po odjezdu myší (se 120ms prodlevou, aby cesta do panelu nezhasla) a na Escape; po prokliku položky ho volá volající.",
-        en: "Close the open section. The bar calls it after the pointer leaves (with a 120 ms delay so the path into the panel does not go dark) and on Escape; after a link click the caller calls it.",
+        cs: "Zavři otevřenou sekci. Lišta ho volá po odjezdu myší (se 120ms prodlevou, aby cesta do panelu nezhasla), po kliku mimo lištu a na Escape; po prokliku položky ho volá volající.",
+        en: "Close the open section. The bar calls it after the pointer leaves (with a 120 ms delay so the path into the panel does not go dark), on a click outside the bar and on Escape; after a link click the caller calls it.",
+      },
+    },
+    {
+      name: "renderMenu",
+      type: "(key: string) => ReactNode",
+      required: false,
+      note: {
+        cs: "Menu otevřené sekce — typicky IngotMegaMenu. Kreslí se do relativního obalu té sekce, takže panel stojí pod svým tlačítkem.",
+        en: "The open section's menu — typically IngotMegaMenu. Rendered into that section's relative wrapper, so the panel stands under its button.",
+      },
+    },
+    {
+      name: "menuButton",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Tlačítko mobilního menu — kreslí se úplně vlevo, před brandem.",
+        en: "The mobile menu button — drawn leftmost, before the brand.",
       },
     },
     {
@@ -192,6 +214,87 @@ export const IngotTopNavDoc: IngotDocPage = {
           note: {
             cs: "Je menu účtu otevřené? Nasadí aria-expanded.",
             en: "Is the account menu open? Sets aria-expanded.",
+          },
+        },
+      ],
+    },
+    {
+      name: "IngotTopNavSection",
+      note: {
+        cs: "Jedna sekce lišty, předává se v sections. Tři tvary: menu (jen key+label), odkaz (href) a zamčená (locked).",
+        en: "One bar section, passed in sections. Three shapes: a menu (key+label only), a link (href) and a locked one (locked).",
+      },
+      props: [
+        {
+          name: "key",
+          type: "string",
+          required: true,
+          note: {
+            cs: "Klíč sekce — hodnota pro openSection/onOpenSection.",
+            en: "The section key — the value for openSection/onOpenSection.",
+          },
+        },
+        {
+          name: "label",
+          type: "string",
+          required: true,
+          note: {
+            cs: "Popisek sekce, 1–3 slova. Přeložený dodává volající.",
+            en: "The section label, 1–3 words. Arrives translated from the caller.",
+          },
+        },
+        {
+          name: "href",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Sekce s jedinou obrazovkou: rovnou odkaz, žádné menu. SPA naviguje v onNavigate s preventDefault; href zůstává kvůli střednímu kliku.",
+            en: "A single-screen section: a plain link, no menu. An SPA navigates in onNavigate with preventDefault; href stays for middle-click.",
+          },
+        },
+        {
+          name: "onNavigate",
+          type: "(event) => void",
+          required: false,
+          note: {
+            cs: "Klik na odkazovou sekci.",
+            en: "Click on a link section.",
+          },
+        },
+        {
+          name: "current",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Odkazová sekce je právě otevřená obrazovka — aria-current.",
+            en: "The link section is the open screen — aria-current.",
+          },
+        },
+        {
+          name: "locked",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Zamčená sekce: ztlumené tlačítko se zámkem, klik volá onLockedClick místo menu či navigace.",
+            en: "A locked section: a dimmed button with a padlock; a click calls onLockedClick instead of a menu or navigation.",
+          },
+        },
+        {
+          name: "onLockedClick",
+          type: "() => void",
+          required: false,
+          note: {
+            cs: "Klik na zamčenou sekci — typicky modal s vysvětlením.",
+            en: "Click on a locked section — typically an explaining modal.",
+          },
+        },
+        {
+          name: "badge",
+          type: "ReactNode",
+          required: false,
+          note: {
+            cs: "Odznak za popiskem — počet čekající práce u odkazové sekce.",
+            en: "A badge after the label — pending-work count on a link section.",
           },
         },
       ],

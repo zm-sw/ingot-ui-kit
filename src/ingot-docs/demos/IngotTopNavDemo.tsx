@@ -1,10 +1,16 @@
 import { useState } from "react";
 
-import { IngotBadge, IngotTopNav, IngotTopNavAccount } from "@/ingot";
+import {
+  IngotBadge,
+  IngotMegaMenu,
+  IngotTopNav,
+  IngotTopNavAccount,
+} from "@/ingot";
+
 export function Demo(): JSX.Element {
   const [open, setOpen] = useState<string | null>(null);
   return (
-    <div className="w-full min-w-0">
+    <div className="min-h-[300px] w-full min-w-0">
       <IngotTopNav
         brand={
           <>
@@ -14,12 +20,62 @@ export function Demo(): JSX.Element {
         sections={[
           { key: "provoz", label: "Provoz" },
           { key: "procesy", label: "Procesy a kapacity" },
-          { key: "sklad", label: "Sklad" },
-          { key: "finance", label: "Finance" },
+          { key: "sklad", label: "Sklad", href: "#/IngotTopNav", current: true },
+          { key: "finance", label: "Finance", href: "#/IngotTopNav" },
         ]}
         openSection={open}
         onOpenSection={setOpen}
         onCloseSection={() => setOpen(null)}
+        renderMenu={(key) =>
+          key === "provoz" ? (
+            <IngotMegaMenu
+              groups={[
+                {
+                  title: "Denní provoz",
+                  items: [
+                    {
+                      href: "#/IngotTopNav",
+                      label: "Objednávky",
+                      description:
+                        "Co je přijaté a co čeká na potvrzení výroby.",
+                      count: 12,
+                    },
+                    {
+                      href: "#/IngotTopNav",
+                      label: "Poptávky",
+                      description:
+                        "Nacenění, která zákazník zatím nepotvrdil.",
+                      count: 48,
+                    },
+                  ],
+                },
+              ]}
+              label="Provoz"
+            />
+          ) : (
+            <IngotMegaMenu
+              groups={[
+                {
+                  items: [
+                    {
+                      href: "#/IngotTopNav",
+                      label: "Operace",
+                      description:
+                        "Výrobní operace a jejich parametry.",
+                    },
+                    {
+                      href: "#/IngotTopNav",
+                      label: "Stroje",
+                      description:
+                        "Kapacity strojů a jejich směny.",
+                    },
+                  ],
+                },
+              ]}
+              label="Procesy a kapacity"
+            />
+          )
+        }
         account={<IngotTopNavAccount initials="8S" label="Menu účtu" />}
         testId="docs-topnav"
       />

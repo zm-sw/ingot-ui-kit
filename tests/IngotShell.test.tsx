@@ -116,6 +116,67 @@ describe("IngotTopNav", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("sekce s jedinou obrazovkou je odkaz, zamčená je tlačítko se zámkem", async () => {
+    const user = userEvent.setup();
+    const onLocked = vi.fn();
+    render(
+      <IngotTopNav
+        brand="Forgmatic"
+        sections={[
+          { key: "provoz", label: "Provoz" },
+          { key: "sklad", label: "Sklad", href: "/cs/admin/materials", current: true },
+          { key: "dilna", label: "Dílna", locked: true, onLockedClick: onLocked },
+        ]}
+      />,
+    );
+
+    const link = screen.getByRole("link", { name: "Sklad" });
+    expect(link).toHaveAttribute("href", "/cs/admin/materials");
+    expect(link).toHaveAttribute("aria-current", "page");
+    // Odkazová sekce nemá menu, takže ani aria-expanded.
+    expect(link).not.toHaveAttribute("aria-expanded");
+
+    await user.click(screen.getByRole("button", { name: "Dílna" }));
+    expect(onLocked).toHaveBeenCalledTimes(1);
+  });
+
+  it("renderMenu kreslí panel do obalu otevřené sekce", () => {
+    render(
+      <IngotTopNav
+        brand="Forgmatic"
+        sections={SECTIONS}
+        openSection="sklad"
+        renderMenu={(key) => <div data-testid={`panel-${key}`}>menu</div>}
+      />,
+    );
+
+    expect(screen.getByTestId("panel-sklad")).toBeInTheDocument();
+    expect(screen.queryByTestId("panel-provoz")).toBeNull();
+    // Panel je sourozenec svého tlačítka v témže relativním obalu.
+    expect(
+      screen.getByRole("button", { name: "Sklad" }).parentElement,
+    ).toContainElement(screen.getByTestId("panel-sklad"));
+  });
+
+  it("klik mimo lištu zavírá otevřenou sekci", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <div>
+        <IngotTopNav
+          brand="Forgmatic"
+          sections={SECTIONS}
+          openSection="provoz"
+          onCloseSection={onClose}
+        />
+        <button type="button">vedle</button>
+      </div>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "vedle" }));
+    expect(onClose).toHaveBeenCalled();
+  });
+
   it("Escape zavírá otevřenou sekci", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
