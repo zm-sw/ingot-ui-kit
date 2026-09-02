@@ -87,6 +87,10 @@ export function IngotTopNav({
   actions,
   account,
   children,
+  contentClassName,
+  sectionsLabel,
+  sectionsClassName,
+  sectionsEnd,
   testId,
 }: {
   /** Značka vlevo. Odznak režimu (např. platformy) patří sem. */
@@ -112,6 +116,21 @@ export function IngotTopNav({
   account?: ReactNode;
   /** Obsah pod lištou pozicovaný vůči ní (bannery, celolištové překryvy). */
   children?: ReactNode;
+  /**
+   * Třída vnitřního řádku — sem patří rám shellu (``mx-auto
+   * max-w-[1440px]``, výška, odsazení). Ohraničení a plocha lišty
+   * zůstávají na kitu, rám na shellu.
+   */
+  contentClassName?: string;
+  /** Přeložený ``aria-label`` bloku sekcí — z lišty dělá pojmenovanou navigaci. */
+  sectionsLabel?: string;
+  /**
+   * Třída obalu sekcí — typicky responsivní schování na mobilu
+   * (``hidden lg:flex``), kde navigaci nese hamburger.
+   */
+  sectionsClassName?: string;
+  /** Za poslední sekcí, uvnitř navigace — např. „Odemknout vše" day-1 režimu. */
+  sectionsEnd?: ReactNode;
   testId?: string;
 }): JSX.Element {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -159,11 +178,16 @@ export function IngotTopNav({
         }
       }}
     >
-      <div className="flex items-center gap-1 border-b border-border bg-surface px-4 py-2.5">
+      <div className="border-b border-border bg-surface">
+        <div className={cx("flex items-center gap-1 px-4 py-2.5", contentClassName)}>
         {menuButton}
         <div className="mr-3 flex items-center gap-2.5 text-base font-bold tracking-[-0.02em] text-ink">
           {brand}
         </div>
+        <nav
+          aria-label={sectionsLabel}
+          className={cx("flex items-center gap-1", sectionsClassName)}
+        >
         {sections.map((section) => {
           if (section.locked) {
             return (
@@ -237,9 +261,12 @@ export function IngotTopNav({
             </div>
           );
         })}
+        {sectionsEnd}
+        </nav>
         <div className="flex-1" />
         {actions}
         {account}
+        </div>
       </div>
       {children}
     </div>
