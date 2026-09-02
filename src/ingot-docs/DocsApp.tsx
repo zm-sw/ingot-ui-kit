@@ -52,12 +52,6 @@ import { AccentSwatches } from "@/components/AccentSwatches";
 import { DocSegmented } from "@/components/DocSegmented";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
-  DICTIONARY_MODES,
-  setDictionaryMode,
-  useDictionaryMode,
-  type DictionaryMode,
-} from "@/ingot-docs/dictionary";
-import {
   initialLang,
   writeStoredLang,
   type DocLang,
@@ -637,8 +631,7 @@ export function DocsApp(): JSX.Element {
   const [lang, setLang] = useState<DocLang>(initialLang);
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
-  const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
-  const dictionary = useDictionaryMode();
+  const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -752,25 +745,10 @@ export function DocsApp(): JSX.Element {
             />
           </>
         )}
-        {separator}
-        {/* Slovník Jednoduše/Expert. V aplikaci je zdrojem pravdy účet
-            (ui_dictionary) — doc web přihlášení nemá, takže volba žije
-            jen v prohlížeči, stejně jako motiv a akcent. */}
-        <DocSegmented
-          options={DICTIONARY_MODES.map((mode) => ({
-            value: mode,
-            label:
-              mode === "simple"
-                ? pick(CHROME.dictionarySimple, lang)
-                : mode === "expert"
-                  ? pick(CHROME.dictionaryExpert, lang)
-                  : pick(CHROME.dictionaryBoth, lang),
-          }))}
-          value={dictionary}
-          onChange={(next) => setDictionaryMode(next as DictionaryMode)}
-          label={pick(CHROME.dictionary, lang)}
-          testId="docs-dictionary"
-        />
+        {/* 🪤 Slovník Jednoduše/Expert tu SCHVÁLNĚ není. Ovládá jedinou
+            tabulku na stránce Překlady, takže vedle motivu, jazyka a
+            akcentu — voleb platných pro celý web — sliboval dopad, který
+            nemá. Přepínač proto stojí u té tabulky. */}
       </header>
 
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">

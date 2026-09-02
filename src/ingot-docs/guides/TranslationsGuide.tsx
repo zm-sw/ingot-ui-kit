@@ -216,8 +216,12 @@ export const TranslationsGuide: IngotGuidePage = {
               vyhledávání. Závorka je delší, ale vidí ji každý.
             </p>
             <p>
-              Vyzkoušej: přepni volbu <strong>Slovník</strong> vlevo dole a
-              sleduj, jak se termíny níže překreslí.
+              Vyzkoušej: přepni <strong>Slovník</strong> pod tímhle
+              odstavcem a sleduj, jak se termíny v tabulce překreslí. Volba
+              je tady u ukázky, protože jinou tabulku na tomhle webu
+              neovládá — dokumentace píše o rozhraní, ne o výrobě. V
+              aplikaci je to volba účtu a platí všude, kde odborný termín
+              padne.
             </p>
             <DictionaryTermsDemo lang="cs" />
           </div>
@@ -240,8 +244,12 @@ export const TranslationsGuide: IngotGuidePage = {
               everyone sees it.
             </p>
             <p>
-              Try it: flip the <strong>Dictionary</strong> control in the
-              bottom left and watch the terms below re-render.
+              Try it: flip the <strong>Dictionary</strong> control below this
+              paragraph and watch the terms in the table re-render. The
+              control sits with the demo because it drives no other table on
+              this site — the documentation writes about the interface, not
+              about manufacturing. In the application it is an account
+              setting and applies wherever a domain term appears.
             </p>
             <DictionaryTermsDemo lang="en" />
           </div>
