@@ -27,6 +27,10 @@ export interface ChromeStrings {
   a11y: Localized<string>;
   i18n: Localized<string>;
   limits: Localized<string>;
+  /** Sekce se seznamem tokenů, na kterých komponenta stojí. */
+  tokens: Localized<string>;
+  /** Věta nad tím seznamem — proč tam je. */
+  tokensNote: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -81,6 +85,11 @@ export const CHROME: ChromeStrings = {
   limits: {
     cs: "Co první verze neumí",
     en: "What the first version cannot do",
+  },
+  tokens: { cs: "Tokeny", en: "Tokens" },
+  tokensNote: {
+    cs: "Změna kteréhokoli z těchto tokenů se na téhle komponentě projeví všude v produktu.",
+    en: "Changing any of these tokens shows up on this component everywhere in the product.",
   },
   propName: { cs: "Vlastnost", en: "Property" },
   propType: { cs: "Typ", en: "Type" },

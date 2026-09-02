@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotDrawerDoc: IngotDocPage = {
   name: "IngotDrawer",
   status: "beta",
-  version: "0.1",
+  version: "1.0",
+  tag: ".drawer",
+  tokens: ["--surface", "--border", "--ink", "--ink-3", "--shadow-lg"],
   summary: {
     cs: "Boční panel pro editaci se stejnou a11y laťkou jako dialog: focus trap, ESC, scroll lock a návrat fokusu na spouštěč.",
     en: "A side panel for editing with the same accessibility floor as the dialog: focus trap, ESC, scroll lock and focus returned to the trigger.",

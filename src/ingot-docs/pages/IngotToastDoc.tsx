@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotToastDoc: IngotDocPage = {
   name: "IngotToast",
   status: "beta",
-  version: "0.1",
+  version: "1.0",
+  tag: ".toast",
+  tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   summary: {
     cs: "Imperativní toast pro výsledek akce: toast({ text, undo }) ohlásí, co se stalo, a nezastaví práci.",
     en: "An imperative toast for the result of an action: toast({ text, undo }) announces what happened without stopping the work.",

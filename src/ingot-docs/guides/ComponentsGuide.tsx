@@ -1,4 +1,4 @@
-import { IngotBadge, IngotList } from "@/ingot";
+import { IngotBadge, IngotCode, IngotList } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang } from "@/ingot-docs/lang";
 import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
@@ -38,10 +38,16 @@ function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
                 ? CHROME.statusStable[lang]
                 : CHROME.statusBeta[lang]}
             </IngotBadge>
+            {/* Verze vpravo, jak ji řadí návrh — dlaždice nese čtyři
+                údaje, ne dva. */}
+            <span className="ml-auto font-mono text-[11px] text-ink-4">
+              {`v${page.version}`}
+            </span>
           </span>
           <span className="text-[13px] leading-[1.55] text-ink-3">
             {page.summary[lang]}
           </span>
+          <IngotCode>{page.tag}</IngotCode>
         </a>
       ))}
     </div>
@@ -53,13 +59,30 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
     <div className="space-y-3 text-sm text-ink-2">
       <p>
         {lang === "cs"
-          ? "Každá komponenta má vlastní stránku: živou ukázku, kdy ji použít a kdy ne, vlastnosti pro vývojáře a přístupnost. Stav „stabilní“ znamená, že se rozhraní nemění bez ohlášení; „beta“ se ještě může měnit."
-          : "Every component has its own page: a live demo, when to use it and when not to, properties for developers, and accessibility. The “stable” status means the interface does not change without notice; “beta” may still change."}
+          ? "Každá komponenta má vlastní stránku: živou ukázku, kdy ji použít a kdy ne, vlastnosti pro vývojáře, přístupnost a tokeny, na kterých stojí. Vedle názvu stojí dva štítky — stav a verze — a oba jsou slib, ne dekorace."
+          : "Every component has its own page: a live demo, when to use it and when not to, properties for developers, accessibility, and the tokens it stands on. Two badges sit next to the name — status and version — and both are a promise, not decoration."}
       </p>
       <IngotList
         items={
           lang === "cs"
             ? [
+                <>
+                  <IngotBadge>stabilní</IngotBadge> — rozhraní se nemění bez
+                  ohlášení. Změna, která by rozbila volající kód, je tu
+                  vzácná a záměrná: přijde s vyšší verzí a s upravenými
+                  místy použití.
+                </>,
+                <>
+                  <IngotBadge tone="warn">beta</IngotBadge> — tvar se ještě
+                  hledá. Změny, které rozbijí volající kód, se tady čekají —
+                  a přesně proto ten štítek je: říká, jestli už se na
+                  komponentu dá stavět.
+                </>,
+                <>
+                  Verze se zvedá pokaždé, když se komponenta změní. Změněné
+                  chování pod nezměněnou verzí je tichá lež vůči každému,
+                  kdo si komponentu už zabudoval.
+                </>,
                 <>
                   Pořadí v menu jde od nejmenšího stavebního kamene ke
                   složeným celkům, ne abecedně.
@@ -70,6 +93,23 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
                 </>,
               ]
             : [
+                <>
+                  <IngotBadge>stable</IngotBadge> — the interface does not
+                  change without notice. A change that would break callers is
+                  rare and deliberate: it arrives with a higher version and
+                  with the call sites already updated.
+                </>,
+                <>
+                  <IngotBadge tone="warn">beta</IngotBadge> — the shape is
+                  still being found. Breaking changes are expected here, and
+                  that is exactly what the badge is for: it says whether you
+                  can build on it yet.
+                </>,
+                <>
+                  The version moves every time the component changes. Changed
+                  behaviour under an unchanged version is a silent lie to
+                  everyone who already built on it.
+                </>,
                 <>
                   The order in the menu runs from the smallest building block
                   to composed wholes, not alphabetically.

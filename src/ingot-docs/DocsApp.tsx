@@ -373,6 +373,23 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       ),
     },
     {
+      // Tokeny stojí za přístupností a před překlady, jak je řadí návrh:
+      // obojí je to, co se při review komponenty kontroluje naposled.
+      id: "tokeny",
+      title: pick(CHROME.tokens, lang),
+      cap: true,
+      body: (
+        <div className="space-y-3">
+          <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
+          <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
+            {page.tokens.map((token) => (
+              <IngotCode key={token}>{token}</IngotCode>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
       id: "preklady",
       title: pick(CHROME.i18n, lang),
       cap: true,
@@ -787,6 +804,9 @@ export function DocsApp(): JSX.Element {
                 <IngotBadge tone="accent" testId="docs-version">
                   {`v${page.doc.version}`}
                 </IngotBadge>
+                {/* Selektor je jediné jméno, kterým se o prvku dá bavit
+                    s designérem — jméno exportu zná jen kód. */}
+                <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
               </span>
             ) : undefined
           }

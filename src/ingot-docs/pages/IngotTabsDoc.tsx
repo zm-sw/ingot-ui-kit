@@ -18,7 +18,9 @@ const view = params.get("view") ?? "overview";
 export const IngotTabsDoc: IngotDocPage = {
   name: "IngotTabs",
   status: "beta",
-  version: "0.1",
+  version: "1.0",
+  tag: ".tabs",
+  tokens: ["--border", "--ink", "--ink-3", "--font-mono"],
   summary: {
     cs: "Přepínání pohledů na tentýž záznam: řízené value/onChange, role tablist a šipky mezi taby.",
     en: "Switching views of the same record: controlled value/onChange, the tablist role and arrow keys between tabs.",

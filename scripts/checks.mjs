@@ -139,10 +139,24 @@ function guardIngotDocPages() {
         "Every component page carries a status badge next to its title.",
       ]);
     }
-    if (!/version:\s*"[^"]+"/.test(src)) {
+    if (!/version:\s*"\d+\.\d+"/.test(src)) {
       fail(guard, [
-        `${pageRel} does not declare a non-empty version.`,
-        "Every component page carries a version badge next to its title.",
+        `${pageRel} does not declare a version of the form "MAJOR.MINOR".`,
+        "Every component page carries a version badge next to its title,",
+        "and changing the component means bumping it in the same commit.",
+      ]);
+    }
+    // tag + tokens are the review contract: the selector is the only name
+    // a designer can use for the element, and the token list says what a
+    // token change would break.
+    if (!/tag:\s*"[^"]+"/.test(src)) {
+      fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
+    }
+    const tokens = src.match(/tokens:\s*\[([^\]]*)\]/);
+    if (!tokens || !tokens[1].trim()) {
+      fail(guard, [
+        `${pageRel} does not declare the tokens it stands on.`,
+        "The token list is what tells review what a token change breaks.",
       ]);
     }
     const demoPath = join(DOCS_DIR, "demos", `${name}Demo.tsx`);

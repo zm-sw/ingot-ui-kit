@@ -116,8 +116,31 @@ export interface IngotDocPage {
   /**
    * Verze primitiva — druhý badge vedle nadpisu. Nepřekládá se, je to
    * číslo. Povinné ze stejného důvodu jako ``status``.
+   *
+   * 🚨 **Změna komponenty znamená zvednutí verze v témže commitu.**
+   * Změněné chování pod nezměněnou verzí je tichá lež vůči každému, kdo
+   * si komponentu zabudoval — a na rozdíl od chybějící verze ji nikdo
+   * neuvidí. Pravidlo je v ``CLAUDE.md``, tenhle komentář je jeho
+   * připomínka na místě, kde se hodnota píše.
    */
   version: string;
+  /**
+   * Selektor, pod kterým prvek vystupuje v návrhu (``.btn``, ``.badge``).
+   *
+   * Vypisuje se vedle nadpisu a na dlaždici rozcestníku, protože je to
+   * jediné jméno, kterým se o prvku dá bavit s designérem — jméno
+   * Reactového exportu zná jen kód.
+   */
+  tag: string;
+  /**
+   * Tokeny, na kterých komponenta stojí.
+   *
+   * Nejde o výčet všeho, co se v souboru vyskytne, ale o smlouvu:
+   * změna kteréhokoli z nich se na téhle komponentě projeví všude
+   * v produktu. Podle toho se při review pozná, co změna tokenu rozbije
+   * — proto povinné a proto vlastní sekce, ne věta v přístupnosti.
+   */
+  tokens: readonly string[];
   /** Jedna věta do menu i nad ukázku. */
   summary: Localized<string>;
   /** Živá ukázka. MUSÍ renderovat skutečnou komponentu z ``@/ingot``. */

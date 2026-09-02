@@ -120,7 +120,11 @@ describe("DocsApp", () => {
       // Statusy a verze živí badge vedle nadpisu — stránka bez nich by
       // tiše slibovala stabilitu, kterou nikdo nevyhlásil.
       expect(["stable", "beta"]).toContain(page.status);
-      expect(page.version.trim().length).toBeGreaterThan(0);
+      expect(page.version).toMatch(/^\d+\.\d+$/);
+      // Selektor a tokeny jsou smlouva pro review: čím prvek jmenovat
+      // a co rozbije změna tokenu.
+      expect(page.tag.trim().length).toBeGreaterThan(0);
+      expect(page.tokens.length).toBeGreaterThan(0);
       for (const lang of DOC_LANGS) {
         expect(page.summary[lang].trim().length).toBeGreaterThan(0);
         expect(page.useWhen[lang].length).toBeGreaterThan(0);
@@ -164,6 +168,7 @@ describe("DocsApp", () => {
       CHROME.avoidWhen.cs,
       CHROME.props.cs,
       CHROME.a11y.cs,
+      CHROME.tokens.cs,
       CHROME.i18n.cs,
       // IngotTable je jediná stránka s nepovinnou sekcí `limits`.
       CHROME.limits.cs,
@@ -179,7 +184,7 @@ describe("DocsApp", () => {
       name: CHROME.onThisPage.cs,
     });
     const anchors = within(aside).getAllByRole("link");
-    expect(anchors).toHaveLength(7);
+    expect(anchors).toHaveLength(8);
     for (const anchor of anchors) {
       const id = anchor.getAttribute("href")?.slice(1);
       expect(id).toBeTruthy();
@@ -322,6 +327,27 @@ describe("DocsApp", () => {
     expect(screen.getByTestId("docs-copy")).toHaveTextContent(
       CHROME.copiedCode.cs,
     );
+  });
+
+  it("vypíše sekci Tokeny se seznamem tokenů komponenty", () => {
+    window.location.hash = "#/IngotBadge";
+    render(<DocsApp />);
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: CHROME.tokens.cs }),
+    ).toBeInTheDocument();
+    const list = screen.getByTestId("docs-tokens");
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotBadge");
+    for (const token of page!.tokens) {
+      expect(within(list).getByText(token)).toBeInTheDocument();
+    }
+  });
+
+  it("ukazuje vedle nadpisu selektor prvku", () => {
+    window.location.hash = "#/IngotBadge";
+    render(<DocsApp />);
+    const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotBadge");
+    expect(screen.getByTestId("docs-tag")).toHaveTextContent(page!.tag);
   });
 
   it("ukazuje vedle nadpisu badge stavu a verze", () => {

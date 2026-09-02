@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotEmptyStateDoc: IngotDocPage = {
   name: "IngotEmptyState",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: ".empty",
+  tokens: ["--ink-2", "--ink-3"],
   summary: {
     cs: "Prázdný stav: jedna věta, co tu není, volitelně proč a volitelně afordance, jak to změnit.",
     en: "Empty state: one sentence saying what is missing, optionally why, and optionally the affordance that changes it.",

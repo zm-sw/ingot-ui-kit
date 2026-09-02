@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotFormDoc: IngotDocPage = {
   name: "IngotForm",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: ".form",
+  tokens: ["--ink-2", "--ink-3"],
   summary: {
     cs: "Deklarativní formulář: dostane pole a hodnoty, vrací změny přes onChange. Tvar formuláře jsou data, ne JSX.",
     en: "Declarative form: it takes fields and values and reports changes through onChange. The shape of the form is data, not JSX.",

@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotListDoc: IngotDocPage = {
   name: "IngotList",
   status: "stable",
-  version: "0.1",
+  version: "1.0",
+  tag: ".list",
+  tokens: ["--ink-2"],
   summary: {
     cs: "Výčet: odrážky, čísla, nebo holý seznam bez značek. Značka i odsazení patří k sobě a rozhoduje se o nich na jednom místě.",
     en: "A list: bullets, numbers, or no markers at all. The marker and the indent belong together, and one place decides both.",

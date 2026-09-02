@@ -11,7 +11,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotPageHintDoc: IngotDocPage = {
   name: "IngotPageHint",
   status: "beta",
-  version: "0.1",
+  version: "1.0",
+  tag: ".pagehint",
+  tokens: ["--ink", "--ink-2", "--ink-3", "--accent", "--accent-ink", "--accent-bg", "--accent-border", "--r-sm", "--r-lg"],
   summary: {
     cs: "Nápověda stránky se žárovkou: klik jednorázově zvýrazní prvky, kterých se nápověda týká.",
     en: "A page hint with a bulb: a click highlights the elements the hint talks about, once.",
