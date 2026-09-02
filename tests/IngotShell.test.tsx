@@ -18,7 +18,7 @@
  *   seděla.
  */
 
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -43,13 +43,11 @@ describe("IngotTopNav", () => {
   ];
 
   it("vykreslí sekci jako tlačítko s aria-expanded, ne jako odkaz", async () => {
-    const onToggle = vi.fn();
     render(
       <IngotTopNav
         brand="Forgmatic"
         sections={SECTIONS}
         openSection="provoz"
-        onToggleSection={onToggle}
         testId="nav"
       />,
     );
@@ -66,20 +64,73 @@ describe("IngotTopNav", () => {
     );
   });
 
-  it("hlásí klik i na už otevřenou sekci — stav drží volající", async () => {
+  it("najetí myší sekci otevírá a klik jen otevírá — nikdy nezavírá", async () => {
     const user = userEvent.setup();
-    const onToggle = vi.fn();
+    const onOpen = vi.fn();
     render(
       <IngotTopNav
         brand="Forgmatic"
         sections={SECTIONS}
         openSection="provoz"
-        onToggleSection={onToggle}
+        onOpenSection={onOpen}
       />,
     );
 
+    await user.hover(screen.getByRole("button", { name: "Sklad" }));
+    expect(onOpen).toHaveBeenLastCalledWith("sklad");
+    // Klik na UŽ otevřenou sekci hlásí zase open, ne zavření: hover ji
+    // otevřel dřív, než klik dopadl, a toggle by ji hned zhasnul.
     await user.click(screen.getByRole("button", { name: "Provoz" }));
-    expect(onToggle).toHaveBeenCalledWith("provoz");
+    expect(onOpen).toHaveBeenLastCalledWith("provoz");
+  });
+
+  // Reálné časovače schválně: prodleva je 120 ms a fake timers se
+  // s userEvent zadrhávaly tak, že pád prvního testu nechal falešné
+  // hodiny zapnuté pro celý zbytek souboru.
+  it("odjezd myší zavírá až po prodlevě — cesta do panelu nezhasne", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <IngotTopNav
+        brand="Forgmatic"
+        sections={SECTIONS}
+        openSection="provoz"
+        onCloseSection={onClose}
+        testId="nav"
+      >
+        <div data-testid="panel">menu</div>
+      </IngotTopNav>,
+    );
+
+    await user.hover(screen.getByRole("button", { name: "Provoz" }));
+    // Odjezd a NÁVRAT do panelu uvnitř prodlevy — zavření se odvolá.
+    await user.unhover(screen.getByTestId("nav"));
+    expect(onClose).not.toHaveBeenCalled();
+    await user.hover(screen.getByTestId("panel"));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(onClose).not.toHaveBeenCalled();
+    // Odjezd, který nikdo neodvolá, po prodlevě zavře.
+    await user.unhover(screen.getByTestId("nav"));
+    expect(onClose).not.toHaveBeenCalled();
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("Escape zavírá otevřenou sekci", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <IngotTopNav
+        brand="Forgmatic"
+        sections={SECTIONS}
+        openSection="provoz"
+        onCloseSection={onClose}
+      />,
+    );
+
+    screen.getByRole("button", { name: "Provoz" }).focus();
+    await user.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("účet nese popisek pro odečítač, ne jen iniciály", () => {
@@ -91,23 +142,29 @@ describe("IngotTopNav", () => {
 });
 
 describe("IngotMegaMenu", () => {
-  it("vykreslí sloupce, počty a označí otevřenou položku", () => {
-    render(
-      <IngotMegaMenu
-        columns={[
-          {
-            title: "Denní provoz",
-            items: [
-              { href: "#a", label: "Objednávky", count: 12, current: true },
-              { href: "#b", label: "Poptávky", count: 48 },
-            ],
-          },
-        ]}
-        preview={<p>Náhled</p>}
-        label="Provoz"
-        testId="mega"
-      />,
-    );
+  const GROUPS = [
+    {
+      title: "Denní provoz",
+      items: [
+        {
+          href: "#a",
+          label: "Objednávky",
+          description: "Co je přijaté a co čeká na potvrzení výroby.",
+          count: 12,
+          current: true,
+        },
+        {
+          href: "#b",
+          label: "Poptávky",
+          description: "Nacenění, která zákazník zatím nepotvrdil.",
+          count: 48,
+        },
+      ],
+    },
+  ];
+
+  it("vykreslí skupiny, počty a označí otevřenou položku", () => {
+    render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 
     const nav = screen.getByRole("navigation", { name: "Provoz" });
     expect(within(nav).getAllByRole("link")).toHaveLength(2);
@@ -117,7 +174,38 @@ describe("IngotMegaMenu", () => {
       "page",
     );
     expect(within(nav).getByText("12")).toBeInTheDocument();
-    expect(screen.getByText("Náhled")).toBeInTheDocument();
+  });
+
+  it("náhled začíná na první položce a sleduje kurzor i fokus", async () => {
+    const user = userEvent.setup();
+    render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
+
+    const preview = screen.getByTestId("mega-preview");
+    expect(preview).toHaveTextContent("Co je přijaté a co čeká");
+
+    await user.hover(screen.getByRole("link", { name: /Poptávky/ }));
+    expect(preview).toHaveTextContent("Nacenění, která zákazník");
+
+    // Fokus přepíná náhled stejně jako myš — klávesnice není druhá
+    // kategorie (rozhodnutí vlastníka 2026-09-02, bod 01). fireEvent,
+    // ne .focus(): jsdom fokus mimo act() neprobublá do React stavu.
+    fireEvent.focus(screen.getByRole("link", { name: /Objednávky/ }));
+    expect(preview).toHaveTextContent("Co je přijaté a co čeká");
+  });
+
+  it("odečítač slyší popis z odkazu — náhledový sloupec je aria-hidden", () => {
+    render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
+
+    expect(screen.getByTestId("mega-preview")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    const first = screen.getByRole("link", { name: /Objednávky/ });
+    const descId = first.getAttribute("aria-describedby");
+    expect(descId).toBeTruthy();
+    expect(document.getElementById(descId!)).toHaveTextContent(
+      "Co je přijaté a co čeká na potvrzení výroby.",
+    );
   });
 });
 

@@ -149,7 +149,7 @@ export {
 } from "./IngotTopNav";
 export {
   IngotMegaMenu,
-  type IngotMegaMenuColumn,
+  type IngotMegaMenuGroup,
   type IngotMegaMenuItem,
 } from "./IngotMegaMenu";
 export {

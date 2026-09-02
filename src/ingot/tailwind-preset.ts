@@ -127,11 +127,16 @@ export default {
       // Jména jsou Tailwindová, hodnoty handoffové: ``sm`` = r-xs 4,
       // DEFAULT = r-sm 6, ``md`` = r-md 10, ``lg`` = r-lg 14. ``xl``
       // v handoffu protějšek nemá a zůstává, jak bylo.
+      //
+      // Hodnoty jdou přes tokeny z ``tokens.css`` (rozhodnutí vlastníka
+      // 2026-09-02, bod 09) — doc stránky je vypisují, tak musí
+      // existovat. Px fallback drží strom vykreslený bez tokens.css
+      // (izolované testy, cizí host).
       borderRadius: {
-        sm: "4px",
-        DEFAULT: "6px",
-        md: "10px",
-        lg: "14px",
+        sm: "var(--r-xs, 4px)",
+        DEFAULT: "var(--r-sm, 6px)",
+        md: "var(--r-md, 10px)",
+        lg: "var(--r-lg, 14px)",
         xl: "16px",
       },
       // Typografická škála handoffu (sekce 3 TYPE v ``ingot.css``).

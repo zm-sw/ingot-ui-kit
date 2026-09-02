@@ -3,10 +3,14 @@ import { Demo } from "@/ingot-docs/demos/IngotTopNavDemo";
 import demoSource from "@/ingot-docs/demos/IngotTopNavDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 2.0 (rozhodnutí vlastníka 2026-09-02, body 02 a 04): sekce se otevírá
+// hoverem i klikem (klik jen otevírá; prodlevu zavření měří lišta),
+// ``onToggleSection`` nahradily ``onOpenSection``/``onCloseSection``
+// a limit „nejvýš šest sekcí" nahradilo měřítko 1280 px.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  version: "1.0",
+  version: "2.0",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -57,8 +61,10 @@ export const IngotTopNavDoc: IngotDocPage = {
         s jednou položkou, je krok navíc — udělej z ní odkaz.
       </>,
       <>
-        Víc než šest sekcí. Lišta se nezalamuje a sedmá sekce zmizí za
-        okrajem; víc sekcí znamená, že se dvě z nich dají spojit.
+        Sada sekcí, která se i s popisky nevejde na 1280 px. Lišta se
+        nezalamuje a co přeteče, zmizí za okrajem — měřítkem je nejužší
+        podporovaná šířka, ne pevný počet. Když se lišta láme, zkracuj
+        popisky nebo spoj dvě sekce.
       </>,
     ],
     en: [
@@ -72,8 +78,10 @@ export const IngotTopNavDoc: IngotDocPage = {
         item is a step too many — make it a link.
       </>,
       <>
-        More than six sections. The bar does not wrap and the seventh falls
-        off the edge; more sections means two of them can be merged.
+        A set of sections that will not fit at 1280 px with their labels.
+        The bar does not wrap and whatever overflows falls off the edge —
+        the measure is the narrowest supported width, not a fixed count.
+        When the bar breaks, shorten labels or merge two sections.
       </>,
     ],
   },
@@ -92,8 +100,8 @@ export const IngotTopNavDoc: IngotDocPage = {
       type: "readonly IngotTopNavSection[]",
       required: false,
       note: {
-        cs: "Sekce aplikace. Nejvýš šest — víc se do řádku nevejde čitelně.",
-        en: "The application's sections. Six at most — more do not fit the row legibly.",
+        cs: "Sekce aplikace. Všechny se svými popisky se musí vejít na 1280 px — lišta se nezalamuje.",
+        en: "The application's sections. All of them, labels included, must fit at 1280 px — the bar does not wrap.",
       },
     },
     {
@@ -106,12 +114,21 @@ export const IngotTopNavDoc: IngotDocPage = {
       },
     },
     {
-      name: "onToggleSection",
+      name: "onOpenSection",
       type: "(key: string) => void",
       required: false,
       note: {
-        cs: "Klik na sekci. Přijde i při zavírání — komponenta si stav nedrží.",
-        en: "A click on a section. Fires on closing too — the component keeps no state.",
+        cs: "Otevři sekci. Volá se z najetí myší, kliku i klávesnice (ArrowDown, Enter). Klik nikdy nezavírá — hover otevřel panel dřív, než klik dopadl, a toggle by ho hned zhasnul.",
+        en: "Open a section. Called on hover, click and keyboard (ArrowDown, Enter). A click never closes — hover opened the panel before the click landed, and a toggle would put it right out.",
+      },
+    },
+    {
+      name: "onCloseSection",
+      type: "() => void",
+      required: false,
+      note: {
+        cs: "Zavři otevřenou sekci. Lišta ho volá po odjezdu myší (se 120ms prodlevou, aby cesta do panelu nezhasla) a na Escape; po prokliku položky ho volá volající.",
+        en: "Close the open section. The bar calls it after the pointer leaves (with a 120 ms delay so the path into the panel does not go dark) and on Escape; after a link click the caller calls it.",
       },
     },
     {
@@ -119,8 +136,8 @@ export const IngotTopNavDoc: IngotDocPage = {
       type: "ReactNode",
       required: false,
       note: {
-        cs: "Ikonové akce vpravo před účtem — hledání, zprávy.",
-        en: "Icon actions on the right, before the account — search, messages.",
+        cs: "Ikonové akce vpravo před účtem — zprávy, notifikace.",
+        en: "Icon actions on the right, before the account — messages, notifications.",
       },
     },
     {

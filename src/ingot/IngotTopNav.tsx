@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode } from "react";
+import { useEffect, useRef, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
@@ -16,26 +16,39 @@ import { IngotIcon } from "./IngotIcon";
  * takže nikam sama nevede. Odkazy jsou až položky uvnitř toho menu — a
  * proto je otevřená sekce označená ``aria-expanded``, ne ``aria-current``.
  *
- * Lišta si nedrží, která sekce je otevřená. Drží to volající, protože
- * jen on ví, jestli se má menu zavřít po prokliku, po ``Esc`` nebo po
- * změně routy — a komponenta, která by to hádala, hádá špatně.
+ * **Sekce se otevírá najetím i klikem** (rozhodnutí vlastníka
+ * 2026-09-02, bod 02 — chování nasazené administrace). Klik jen otevírá,
+ * nezavírá: ukazovátko projde přes tlačítko dřív, než dopadne klik,
+ * takže panel už je v tu chvíli hoverem otevřený a toggle by ho zase
+ * zhasnul. Zavírá odjezd myší (se 120ms prodlevou, aby cesta z tlačítka
+ * do panelu nezhasla), ``Escape`` a volající po prokliku položky.
+ * Z klávesnice otevírá ``ArrowDown`` nebo ``Enter``.
+ *
+ * Stav drží volající (``openSection`` + ``onOpenSection``/
+ * ``onCloseSection``): jen on ví, jestli se menu zavírá po prokliku
+ * nebo po změně routy. Prodlevu odjezdu ale měří lišta — je to detail
+ * chování, ne stav.
  *
  * Ingot **nemá vlastní i18n namespace** — popisky dodává volající
  * přeložené.
  */
 
 export interface IngotTopNavSection {
-  /** Klíč sekce — hodnota pro ``openSection``/``onToggleSection``. */
+  /** Klíč sekce — hodnota pro ``openSection``/``onOpenSection``. */
   key: string;
   /** Popisek sekce, 1–3 slova. */
   label: string;
 }
 
+/** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
+const CLOSE_DELAY_MS = 120;
+
 export function IngotTopNav({
   brand,
   sections = [],
   openSection = null,
-  onToggleSection,
+  onOpenSection,
+  onCloseSection,
   actions,
   account,
   children,
@@ -43,13 +56,15 @@ export function IngotTopNav({
 }: {
   /** Značka vlevo. Odznak režimu (např. platformy) patří sem. */
   brand: ReactNode;
-  /** Sekce aplikace. Víc než šest se do lišty nevejde čitelně. */
+  /** Sekce aplikace. Vejít se musí všechny na 1280 px — lišta se nezalamuje. */
   sections?: readonly IngotTopNavSection[];
   /** Klíč právě rozbalené sekce, nebo ``null``. Řízené zvenčí. */
   openSection?: string | null;
-  /** Klik na sekci. Dostane klíč i tehdy, když se sekce zavírá. */
-  onToggleSection?: (key: string) => void;
-  /** Ikonové akce vpravo před účtem — hledání, zprávy. */
+  /** Otevři sekci — volá se z hoveru, kliku i klávesnice. */
+  onOpenSection?: (key: string) => void;
+  /** Zavři otevřenou sekci — odjezd myší (po prodlevě) a ``Escape``. */
+  onCloseSection?: () => void;
+  /** Ikonové akce vpravo před účtem — zprávy, notifikace. */
   actions?: ReactNode;
   /** Účet úplně vpravo. Typicky ``IngotTopNavAccount``. */
   account?: ReactNode;
@@ -57,8 +72,37 @@ export function IngotTopNav({
   children?: ReactNode;
   testId?: string;
 }): JSX.Element {
+  const closeTimer = useRef<number | null>(null);
+  const cancelClose = () => {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => {
+      closeTimer.current = null;
+      onCloseSection?.();
+    }, CLOSE_DELAY_MS);
+  };
+  useEffect(() => cancelClose, []);
+
   return (
-    <div className="relative" data-testid={testId}>
+    <div
+      className="relative"
+      data-testid={testId}
+      onMouseEnter={cancelClose}
+      onMouseLeave={() => {
+        if (openSection !== null) scheduleClose();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && openSection !== null) {
+          cancelClose();
+          onCloseSection?.();
+        }
+      }}
+    >
       <div className="flex items-center gap-1 border-b border-border bg-surface px-4 py-2.5">
         <div className="mr-3 flex items-center gap-2.5 text-base font-bold tracking-[-0.02em] text-ink">
           {brand}
@@ -70,7 +114,17 @@ export function IngotTopNav({
               key={section.key}
               type="button"
               aria-expanded={open}
-              onClick={() => onToggleSection?.(section.key)}
+              onClick={() => onOpenSection?.(section.key)}
+              onMouseEnter={() => {
+                cancelClose();
+                onOpenSection?.(section.key);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  onOpenSection?.(section.key);
+                }
+              }}
               className={cx(
                 "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
                 open

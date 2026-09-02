@@ -3,10 +3,16 @@ import { Demo } from "@/ingot-docs/demos/IngotMegaMenuDemo";
 import demoSource from "@/ingot-docs/demos/IngotMegaMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 2.0 (rozhodnutí vlastníka 2026-09-02, body 01–03): tvar přebírá
+// nasazenou administraci. Pevné tři sloupce nahradily skupiny tekoucí
+// do 1–2 sloupců, náhled sleduje položku pod kurzorem i fokusem a
+// odečítač čte popis z odkazu (aria-describedby) — kapitola Přístupnost
+// dřív tvrdila, že sledující náhled „pro klávesnici nefunguje vůbec",
+// což o implementaci s onFocus nebyla pravda.
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  version: "1.0",
+  version: "2.0",
   tag: ".megamenu",
   tokens: [
     "--surface",
@@ -24,8 +30,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
     "--shadow-lg",
   ],
   summary: {
-    cs: "Rozbalené menu sekce z horní lišty — tři sloupce odkazů a čtvrtý náhledový sloupec. Tvar je pevný: sekce, která se do tří sloupců nevejde, nejsou jedna sekce, ale dvě.",
-    en: "The opened section menu from the top bar — three columns of links plus a fourth preview column. The shape is fixed: a section that does not fit into three columns is not one section but two.",
+    cs: "Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo dvou sloupcích a náhledový sloupec, který popisuje položku pod kurzorem i pod fokusem.",
+    en: "The opened section menu from the top bar — groups of links in one or two columns, plus a preview column describing the item under the cursor and under focus alike.",
   },
   Demo,
   demoSource,
@@ -36,16 +42,17 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         tohle menu a teprve v něm jsou odkazy.
       </>,
       <>
-        Odkazy, které se dají poskládat do tří pojmenovaných skupin. Nadpis
-        sloupce je pracovní rozdělení, ne dekorace — čtenář podle něj hledá.
+        Odkazy, které se dají poskládat do pojmenovaných skupin. Nadpis
+        skupiny je pracovní rozdělení, ne dekorace — čtenář podle něj hledá.
       </>,
       <>
-        Sekce, u které se hodí jedna věta kontextu navíc. Čtvrtý sloupec
-        o šířce 300 px popisuje, k čemu ta sekce je.
+        Obrazovky, ke kterým se hodí jedna věta kontextu. Náhledový sloupec
+        ji ukazuje pro položku, na které čtenář stojí, a odečítač ji slyší
+        přímo z odkazu.
       </>,
       <>
         Platforma i zákaznická část. Obě sdílejí tutéž lištu i totéž menu,
-        liší se jen obsahem sloupců.
+        liší se jen obsahem skupin.
       </>,
     ],
     en: [
@@ -54,16 +61,17 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         this menu, and only inside it are the links.
       </>,
       <>
-        Links that can be grouped into three named groups. A column heading is
-        a working division, not decoration — readers navigate by it.
+        Links that can be arranged into named groups. A group heading is a
+        working division, not decoration — readers navigate by it.
       </>,
       <>
-        A section that benefits from one extra sentence of context. The fourth
-        column, 300 px wide, explains what the section is for.
+        Screens that benefit from one sentence of context. The preview column
+        shows it for the item the reader is on, and a screen reader hears it
+        from the link itself.
       </>,
       <>
         Both the platform side and the customer side. They share the same bar
-        and the same menu, and differ only in the contents of the columns.
+        and the same menu, and differ only in the contents of the groups.
       </>,
     ],
   },
@@ -74,8 +82,9 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         navíc — z takové sekce udělej rovnou odkaz v liště.
       </>,
       <>
-        Sekce, jejíž odkazy se do tří sloupců nevejdou. Nezvětšuj mřížku:
-        takové sekce jsou ve skutečnosti dvě a patří do lišty zvlášť.
+        Sekce s víc než dvěma tucty odkazů. Menu si sloupce rozdělí samo,
+        ale seznam všeho, co kdy vzniklo, nezachrání — taková sekce je ve
+        skutečnosti dvě a patří do lišty zvlášť.
       </>,
       <>
         Nabídka akcí nad vybraným záznamem — smazat, duplikovat, exportovat.
@@ -93,9 +102,9 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         many — make that section a plain link in the bar.
       </>,
       <>
-        A section whose links do not fit into three columns. Do not grow the
-        grid: such a section is really two, and they belong in the bar
-        separately.
+        A section with more than two dozen links. The menu splits its columns
+        by itself, but it cannot save a list of everything that ever existed —
+        such a section is really two, and they belong in the bar separately.
       </>,
       <>
         A list of actions on a selected record — delete, duplicate, export.
@@ -110,21 +119,21 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   },
   props: [
     {
-      name: "columns",
-      type: "readonly IngotMegaMenuColumn[]",
+      name: "groups",
+      type: "readonly IngotMegaMenuGroup[]",
       required: true,
       note: {
-        cs: "Sloupce odkazů. Tři je cíl; víc se do mřížky nevejde.",
-        en: "The columns of links. Three is the target; more do not fit the grid.",
+        cs: "Skupiny odkazů. Sloupce si menu rozdělí samo: do sedmi položek jeden, nad sedm dva; skupina se uprostřed nezlomí.",
+        en: "The groups of links. The menu splits columns by itself: one up to seven items, two above that; a group never breaks mid-way.",
       },
     },
     {
-      name: "preview",
+      name: "art",
       type: "ReactNode",
       required: false,
       note: {
-        cs: "Náhledový sloupec vpravo, 300 px. Popisuje první položku sekce, ne tu pod kurzorem.",
-        en: "The preview column on the right, 300 px. It describes the section's first item, not the one under the cursor.",
+        cs: "Schematická kresba sekce nad textem náhledu. Dekorativní — orientační kotva, ne informace.",
+        en: "A schematic drawing of the section above the preview text. Decorative — an orientation anchor, not information.",
       },
     },
     {
@@ -148,19 +157,19 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   ],
   extraProps: [
     {
-      name: "IngotMegaMenuColumn",
+      name: "IngotMegaMenuGroup",
       note: {
-        cs: "Jeden sloupec, předává se ve vlastnosti columns.",
-        en: "A single column, passed in the columns property.",
+        cs: "Jedna skupina, předává se ve vlastnosti groups.",
+        en: "A single group, passed in the groups property.",
       },
       props: [
         {
           name: "title",
           type: "string",
-          required: true,
+          required: false,
           note: {
-            cs: "Nadpis sloupce, mono verzálkami. Přeložený text dodává volající.",
-            en: "The column heading, in mono uppercase. The translated text comes from the caller.",
+            cs: "Nadpis skupiny, mono verzálkami. Bez něj se skupina kreslí bez hlavičky. Přeložený text dodává volající.",
+            en: "The group heading, in mono uppercase. Without it the group renders headless. The translated text comes from the caller.",
           },
         },
         {
@@ -168,8 +177,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
           type: "readonly IngotMegaMenuItem[]",
           required: true,
           note: {
-            cs: "Odkazy sloupce v pořadí, ve kterém je má čtenář číst.",
-            en: "The column's links, in the order the reader should read them.",
+            cs: "Odkazy skupiny v pořadí, ve kterém je má čtenář číst.",
+            en: "The group's links, in the order the reader should read them.",
           },
         },
       ],
@@ -177,8 +186,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
     {
       name: "IngotMegaMenuItem",
       note: {
-        cs: "Jeden odkaz ve sloupci, předává se v items.",
-        en: "A single link inside a column, passed in items.",
+        cs: "Jeden odkaz ve skupině, předává se v items.",
+        en: "A single link inside a group, passed in items.",
       },
       props: [
         {
@@ -197,6 +206,15 @@ export const IngotMegaMenuDoc: IngotDocPage = {
           note: {
             cs: "Popisek nese význam položky; ikona je jen doprovod.",
             en: "The label carries the item's meaning; the icon is only an accompaniment.",
+          },
+        },
+        {
+          name: "description",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Jedna věta o obrazovce. Kreslí se v náhledu, když čtenář na položce stojí, a čte ji odečítač z odkazu.",
+            en: "One sentence about the screen. Drawn in the preview while the reader is on the item, and read by a screen reader from the link.",
           },
         },
         {
@@ -226,16 +244,31 @@ export const IngotMegaMenuDoc: IngotDocPage = {
             en: "The currently open item. Sets aria-current and the --surface-3 surface.",
           },
         },
+        {
+          name: "onClick",
+          type: "(event) => void",
+          required: false,
+          note: {
+            cs: "Klik na odkaz — SPA tady volá router a preventDefault. href zůstává, aby fungoval střední klik a otevření v novém panelu.",
+            en: "Click on the link — an SPA calls its router here with preventDefault. href stays, so middle-click and open-in-new-tab keep working.",
+          },
+        },
       ],
     },
   ],
   a11y: {
     cs: [
       <>
-        Náhled popisuje <strong>první</strong> položku sekce, ne poslední, na
-        které byla myš. Náhled měnící se pod kurzorem je náhodný ve chvíli,
-        kdy čtenář dojede k pravému okraji, a pro ovládání klávesnicí
-        nefunguje vůbec.
+        Náhled sleduje položku pod kurzorem <strong>i pod fokusem</strong> —
+        procházení Tabem přepíná popis stejně jako myš, klávesnice není druhá
+        kategorie. Dokud čtenář na žádné položce nestojí, náhled popisuje
+        první.
+      </>,
+      <>
+        Popis položky čte odečítač <strong>z odkazu samotného</strong>{" "}
+        (<IngotCode>aria-describedby</IngotCode>); náhledový sloupec je jeho
+        vizuální kopie a je <IngotCode>aria-hidden</IngotCode>, aby nic
+        neznělo dvakrát.
       </>,
       <>
         Otevřená sekce se v liště značí plochou{" "}
@@ -254,10 +287,16 @@ export const IngotMegaMenuDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The preview describes the section's <strong>first</strong> item, not
-        the last one the mouse happened to pass over. A preview that changes
-        under the cursor is arbitrary by the time the reader reaches the right
-        edge, and for keyboard operation it does not work at all.
+        The preview follows the item under the cursor <strong>and under
+        focus</strong> — tabbing switches the description just like the mouse
+        does; the keyboard is not a second-class citizen. Until the reader is
+        on an item, the preview describes the first one.
+      </>,
+      <>
+        A screen reader hears an item's description <strong>from the link
+        itself</strong> (<IngotCode>aria-describedby</IngotCode>); the preview
+        column is its visual copy and is <IngotCode>aria-hidden</IngotCode>,
+        so nothing sounds twice.
       </>,
       <>
         An open section is marked in the bar with the{" "}
@@ -280,8 +319,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   i18n: {
     cs: [
       <>
-        Nadpisy sloupců i popisky položek dodává volající už přeložené — kit
-        vlastní jmenný prostor překladů nemá.
+        Nadpisy skupin, popisky položek i jejich popisy dodává volající už
+        přeložené — kit vlastní jmenný prostor překladů nemá.
       </>,
       <>
         <IngotCode>label</IngotCode> je text pro odečítač, a překládá se
@@ -293,14 +332,16 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         slovech.
       </>,
       <>
-        Text v náhledovém sloupci je vázaný na první položku sekce. Když se
-        pořadí položek v překladu změní, musí se přepsat i náhled.
+        <IngotCode>description</IngotCode> je jedna věta. Delší překlad
+        náhledový sloupec nerozšíří, jen zvýší — přesto ho drž krátký, čte se
+        koutkem oka.
       </>,
     ],
     en: [
       <>
-        Column headings and item labels arrive already translated from the
-        caller — the kit has no translation namespace of its own.
+        Group headings, item labels and their descriptions arrive already
+        translated from the caller — the kit has no translation namespace of
+        its own.
       </>,
       <>
         <IngotCode>label</IngotCode> is text for a screen reader, and it is
@@ -312,9 +353,9 @@ export const IngotMegaMenuDoc: IngotDocPage = {
         words.
       </>,
       <>
-        The text in the preview column is tied to the section's first item. If
-        the item order changes in a translation, the preview has to be
-        rewritten with it.
+        <IngotCode>description</IngotCode> is one sentence. A longer
+        translation does not widen the preview column, only makes it taller —
+        keep it short anyway; it is read from the corner of the eye.
       </>,
     ],
   },

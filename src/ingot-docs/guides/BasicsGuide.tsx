@@ -397,11 +397,14 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
 // hodnotu, takže číslo vedle něj nemůže lhát, aniž by to bylo vidět.
 const SPACE_STEPS = [4, 8, 12, 16, 24, 32, 48] as const;
 
+// Popisky jmenují TOKENY (r-xs…r-lg z tokens.css), ne utility třídy —
+// slovník systému je token; utilita je jen implementace (CLAUDE.md).
+// Plný kruh token nemá schválně: je vyhrazený avatarům a puntíkům.
 const RADIUS_STEPS = [
-  { className: "rounded-sm", label: "4px" },
-  { className: "rounded", label: "6px" },
-  { className: "rounded-md", label: "10px" },
-  { className: "rounded-lg", label: "14px" },
+  { className: "rounded-sm", label: "r-xs · 4px" },
+  { className: "rounded", label: "r-sm · 6px" },
+  { className: "rounded-md", label: "r-md · 10px" },
+  { className: "rounded-lg", label: "r-lg · 14px" },
   { className: "rounded-full", label: "999px" },
 ] as const;
 
