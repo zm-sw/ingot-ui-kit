@@ -72,6 +72,7 @@ import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import type {
   IngotDocPage,
   IngotExtraPropGroup,
+  IngotGuideGroup,
   IngotGuidePage,
   IngotPropRow,
 } from "@/ingot-docs/types";
@@ -443,21 +444,20 @@ function hrefOf(active: ActivePage): string {
   return `#/${active.kind === "guide" ? active.guide.slug : active.doc.name}`;
 }
 
-function navItems(
-  entries: readonly ActivePage[],
-  active: ActivePage,
+function navItem(
+  entry: ActivePage,
+  activeHref: string,
   lang: DocLang,
-): readonly IngotNavItem[] {
-  const activeHref = hrefOf(active);
-  return entries.map((entry) => {
-    const href = hrefOf(entry);
-    return {
-      href,
-      label: titleOf(entry, lang),
-      current: href === activeHref,
-      testId: `docs-nav-${href.slice(2)}`,
-    };
-  });
+  extra?: Partial<IngotNavItem>,
+): IngotNavItem {
+  const href = hrefOf(entry);
+  return {
+    href,
+    label: titleOf(entry, lang),
+    current: href === activeHref,
+    testId: `docs-nav-${href.slice(2)}`,
+    ...extra,
+  };
 }
 
 const GUIDE_ENTRIES: readonly ActivePage[] = INGOT_GUIDE_PAGES.map((guide) => ({
@@ -469,6 +469,53 @@ const COMPONENT_ENTRIES: readonly ActivePage[] = INGOT_DOC_PAGES.map((doc) => ({
   kind: "component" as const,
   doc,
 }));
+
+/** Slug rozcestníku, pod který se v menu vnořují komponenty. */
+const CATALOGUE_SLUG = "komponenty";
+
+const GROUP_LABELS: Record<IngotGuideGroup, keyof typeof CHROME> = {
+  system: "groupSystem",
+  app: "groupApp",
+  rules: "groupRules",
+};
+
+/**
+ * Levé menu jako v handoffu: JEDEN číslovaný seznam rozdělený nadpisy
+ * skupin, s komponentami vnořenými pod rozcestníkem.
+ *
+ * 🪤 **Číslo je pozice v ``INGOT_GUIDE_PAGES``, ne zapsaná hodnota.**
+ * Ručně psaná čísla by se při vložení stránky doprostřed musela
+ * přečíslovat celá — a to je práce, na kterou se zapomene přesně
+ * jednou, načež menu čísluje 00, 01, 01, 03.
+ *
+ * Skupiny se odvozují průchodem v pořadí registru: nadpis se vloží
+ * pokaždé, když se skupina změní. Stránky jedné skupiny proto musí
+ * v registru stát vedle sebe — viz komentář u ``INGOT_GUIDE_PAGES``.
+ */
+function guideGroups(
+  active: ActivePage,
+  lang: DocLang,
+): readonly { group: IngotGuideGroup; items: readonly IngotNavItem[] }[] {
+  const activeHref = hrefOf(active);
+  const componentItems = COMPONENT_ENTRIES.map((entry) =>
+    navItem(entry, activeHref, lang),
+  );
+
+  const groups: { group: IngotGuideGroup; items: IngotNavItem[] }[] = [];
+  GUIDE_ENTRIES.forEach((entry, index) => {
+    if (entry.kind !== "guide") return;
+    const group = entry.guide.group;
+    if (groups.at(-1)?.group !== group) groups.push({ group, items: [] });
+    groups.at(-1)!.items.push(
+      navItem(entry, activeHref, lang, {
+        ordinal: String(index).padStart(2, "0"),
+        children:
+          entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
+      }),
+    );
+  });
+  return groups;
+}
 
 /**
  * Pořadí pro prev/next patičku: průvodci → komponenty, přesně jak jdou
@@ -707,17 +754,17 @@ export function DocsApp(): JSX.Element {
       </header>
 
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
-        {/* Menu na zvednuté ploše — aktivní položka pak může být bílá
-            s ink linkou, přesně jak to kreslí handoff. */}
-        <div className="w-52 shrink-0 space-y-6 self-start rounded-md border border-border bg-surface-2 p-4">
-          <IngotSideNav
-            label={pick(CHROME.guides, lang)}
-            items={navItems(GUIDE_ENTRIES, page, lang)}
-          />
-          <IngotSideNav
-            label={pick(CHROME.components, lang)}
-            items={navItems(COMPONENT_ENTRIES, page, lang)}
-          />
+        {/* Menu stojí na ploše stránky, ne na kartě: kartou je až
+            aktivní položka, a dvě vrstvy nad sebou by ji zploštily. */}
+        <div className="w-56 shrink-0 space-y-5 self-start">
+          {guideGroups(page, lang).map(({ group, items }) => (
+            <IngotSideNav
+              key={group}
+              label={pick(CHROME[GROUP_LABELS[group]], lang)}
+              items={items}
+              testId={`docs-nav-group-${group}`}
+            />
+          ))}
         </div>
 
         <main className="min-w-0 flex-1 space-y-8">

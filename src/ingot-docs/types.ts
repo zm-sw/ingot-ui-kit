@@ -49,10 +49,23 @@ export interface IngotGuideSection {
   body: Localized<ReactNode>;
 }
 
+/**
+ * Skupina v levém menu. Tři schválně: co kit JE (``system``), jak se
+ * z něj staví obrazovky (``app``), a co se od autora čeká (``rules``).
+ * Čtvrtá skupina by znamenala, že se některá z těch tří rozpadla.
+ */
+export type IngotGuideGroup = "system" | "app" | "rules";
+
 export interface IngotGuidePage {
   /** Kus hashe za ``#/`` — ``uvod``, ``preklady``. Nepřekládá se: je to
    *  routa, a přeložený slug by rozbil sdílené odkazy. */
   slug: string;
+  /**
+   * Do které části menu stránka patří. Povinné: průvodce bez skupiny by
+   * se v číslovaném menu neměl kam zařadit, a výchozí skupina by tu
+   * volbu jen tiše udělala za autora.
+   */
+  group: IngotGuideGroup;
   /** Nadpis stránky i popisek v menu. */
   title: Localized<string>;
   /** Jedna věta pod nadpis. */

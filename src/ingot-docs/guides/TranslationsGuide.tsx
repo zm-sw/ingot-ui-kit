@@ -16,6 +16,7 @@ import type { IngotGuidePage } from "@/ingot-docs/types";
  */
 export const TranslationsGuide: IngotGuidePage = {
   slug: "preklady",
+  group: "rules",
   title: { cs: "Překlady", en: "Translations" },
   summary: {
     cs: "Ingot nemá vlastní jazykové soubory. Každý viditelný text je vlastnost, kterou dodává volající už přeloženou.",

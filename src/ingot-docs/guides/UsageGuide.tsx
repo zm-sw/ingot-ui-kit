@@ -169,6 +169,7 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
 
 export const UsageGuide: IngotGuidePage = {
   slug: "pravidla-pouzivani",
+  group: "rules",
   title: { cs: "Pravidla používání", en: "Usage rules" },
   summary: {
     cs: "Rám obrazovky, jeden pattern na obrazovku, tabulka ano/ne a pravidla textů v rozhraní.",

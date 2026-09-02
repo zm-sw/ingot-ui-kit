@@ -382,6 +382,7 @@ function AccentFamilies({ lang }: { lang: DocLang }): JSX.Element {
 
 export const BasicsGuide: IngotGuidePage = {
   slug: "zaklady",
+  group: "system",
   title: { cs: "Základy", en: "Basics" },
   summary: {
     cs: "Barevné role, které si obrazovky berou přes proměnné, a pět akcentových rodin, mezi kterými se přepíná.",

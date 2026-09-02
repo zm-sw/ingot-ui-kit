@@ -119,6 +119,7 @@ function ListPattern({ lang }: { lang: DocLang }): JSX.Element {
 
 export const ShellGuide: IngotGuidePage = {
   slug: "shell-a-patterny",
+  group: "app",
   title: { cs: "Shell a patterny", en: "Shell and patterns" },
   summary: {
     cs: "Rám, který obrazovky sdílejí, a pevné pořadí bloků, ze kterých se skládá obrazovka se seznamem záznamů.",

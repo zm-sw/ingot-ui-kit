@@ -15,6 +15,7 @@ const IMPORT_EXAMPLE = 'import { IngotTable, IngotEmptyState } from "@/ingot";';
 
 export const IntroGuide: IngotGuidePage = {
   slug: "uvod",
+  group: "system",
   title: { cs: "Úvod", en: "Introduction" },
   summary: {
     cs: "Ingot UI Kit je sada primitiv, ze kterých se skládají obrazovky administrace.",

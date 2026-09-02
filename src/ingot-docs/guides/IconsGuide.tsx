@@ -90,6 +90,7 @@ function IconRules({ lang }: { lang: DocLang }): JSX.Element {
 
 export const IconsGuide: IngotGuidePage = {
   slug: "ikony",
+  group: "system",
   title: { cs: "Ikony", en: "Icons" },
   summary: {
     cs: "Jedna sada čárových ikon, barvená barvou rodiče. Přehled glyfů a pravidla, kdy ikonu popsat a kdy nechat dekorativní.",
