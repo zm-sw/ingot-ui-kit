@@ -125,6 +125,100 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * Skladba stránky komponenty — pevné pořadí bloků a tři pohledy, které
+ * z něj čtou (handoff „Komponenty“, sekce „Skladba stránky komponenty“).
+ *
+ * Pořadí není estetika: drží se, aby se stránka dala číst napřeskáčku —
+ * každý ví, kde jeho blok začíná, a nemusí ji projít celou.
+ */
+function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  const order = cs
+    ? [
+        "název se stavem a verzí",
+        "jedna věta",
+        "živá ukázka a kód",
+        "kdy použít / kdy ne",
+        "vlastnosti",
+        "přístupnost",
+        "tokeny",
+        "překlady",
+      ]
+    : [
+        "the name with its status and version",
+        "one sentence",
+        "the live demo and its code",
+        "when to use it and when not to",
+        "properties",
+        "accessibility",
+        "tokens",
+        "translations",
+      ];
+  const views = cs
+    ? [
+        {
+          key: "design",
+          eyebrow: "Pro designéra",
+          text: "Ukázka a sekce kdy použít / kdy ne. Rozhodnutí, ne katalog variant.",
+        },
+        {
+          key: "dev",
+          eyebrow: "Pro vývojáře",
+          text: "Vlastnosti a živý kód ukázky — přesně ten, který se na stránce vykresluje.",
+        },
+        {
+          key: "review",
+          eyebrow: "Pro review",
+          text: "Přístupnost a seznam tokenů — podle nich se pozná, co změna tokenu rozbije.",
+        },
+      ]
+    : [
+        {
+          key: "design",
+          eyebrow: "For the designer",
+          text: "The demo and the when-to-use section. A decision, not a catalogue of variants.",
+        },
+        {
+          key: "dev",
+          eyebrow: "For the developer",
+          text: "The properties and the demo's live code — exactly the code the page renders.",
+        },
+        {
+          key: "review",
+          eyebrow: "For review",
+          text: "Accessibility and the token list — they say what a token change would break.",
+        },
+      ];
+  return (
+    <div className="space-y-4 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Pořadí bloků na stránce komponenty je pevné, aby se dala číst napřeskáčku — každý čtenář ví, kde jeho blok začíná."
+          : "The order of blocks on a component page is fixed so that it can be read out of order — every reader knows where their block starts."}
+      </p>
+      <IngotList variant="ordered" items={order} />
+      <p>
+        {cs
+          ? "Z toho pořadí čtou tři různí lidé tři různé části:"
+          : "Three different readers take three different parts out of that order:"}
+      </p>
+      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        {views.map((view) => (
+          <div key={view.key} className="bg-surface p-5">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-3">
+              {view.eyebrow}
+            </span>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
+              {view.text}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export const ComponentsGuide: IngotGuidePage = {
   slug: "komponenty",
   group: "system",
@@ -148,6 +242,17 @@ export const ComponentsGuide: IngotGuidePage = {
       body: {
         cs: <ComponentCatalogue lang="cs" />,
         en: <ComponentCatalogue lang="en" />,
+      },
+    },
+    {
+      id: "skladba",
+      title: {
+        cs: "Skladba stránky komponenty",
+        en: "How a component page is built",
+      },
+      body: {
+        cs: <PageLayout lang="cs" />,
+        en: <PageLayout lang="en" />,
       },
     },
   ],

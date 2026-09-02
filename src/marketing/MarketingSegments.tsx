@@ -1,10 +1,15 @@
 import type { JSX } from "react";
 
 /**
- * Segmenty „Pro koho" (KAN-664) — karty s tag pilulkami z handoffu
- * Veřejné stránky. Pilulky jsou neutrální (surface-2), žádná z nich
- * nenese akcent — pravidlo „akcent jen na jednom prvku sekce" patří
- * hlavičce sekce, ne kartám.
+ * Segmenty „Pro koho" (KAN-664) — karty se štítky z handoffu Veřejné
+ * stránky. Štítky jsou neutrální (surface-2), žádný z nich nenese
+ * akcent — pravidlo „akcent jen na jednom prvku sekce" patří hlavičce
+ * sekce, ne kartám.
+ *
+ * 🪤 **Štítek je hranatý mono, malými písmeny, ne kulatá pilulka
+ * s kapitálkami.** Handoff drží ``.seg-tag`` blízko ke ``codetag``:
+ * je to technický údaj o provozu, ne stav entity. Kulatá pilulka
+ * s verzálkami je odznak stavu (``IngotBadge``) a plete si s ním role.
  */
 export interface MarketingSegmentItem {
   title: string;
@@ -38,7 +43,7 @@ export function MarketingSegments({
             {item.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-xs text-ink-2"
+                className="rounded-sm border border-border bg-surface-2 px-[7px] py-[3px] font-mono text-[10.5px] lowercase text-ink-3"
               >
                 {tag}
               </span>

@@ -10,7 +10,17 @@ import type { JSX } from "react";
  * Blok je „inverzní": kreslí se tokeny ``ink``/``bg`` prohozeně, takže
  * v tmavém motivu se obrátí sám a žádnou vlastní barvu nezavádí.
  * Akce jsou odkazy, ne buttony — marketingové CTA naviguje (registrace,
- * kontakt), nic nespouští.
+ * kontakt), nic nespouští. Vzhled si ale berou z ``Button``: hlavní akce
+ * je AKCENTOVÁ (``variant="accent"``), vedlejší duchová.
+ *
+ * 🪤 **Hlavní akce není neutrální.** Na tmavé ploše je světlé neutrální
+ * tlačítko k nerozeznání od vedlejšího a závěrečná výzva pak nemá kam
+ * poslat oko. Akcent je tady jediný barevný prvek bloku.
+ *
+ * Třídy akcentu jsou tytéž jako ``Button variant="accent"`` včetně
+ * ``dark:text-bg``: tmavá paleta ``--accent`` rozsvěcuje, takže bílý
+ * text na něm v tmavém motivu spadne pod AA — proto se v tmavém obrací
+ * na inkoust plochy stránky. To řešení tady zůstává beze změny.
  */
 export interface MarketingCtaAction {
   label: string;
@@ -26,7 +36,7 @@ export function MarketingCta({
 }: {
   title: string;
   text?: string;
-  /** Hlavní akce — světlé vyplněné tlačítko na tmavé ploše. */
+  /** Hlavní akce — akcentové vyplněné tlačítko na tmavé ploše. */
   primary: MarketingCtaAction;
   /** Vedlejší akce — obrysové tlačítko. */
   secondary?: MarketingCtaAction;
@@ -48,7 +58,7 @@ export function MarketingCta({
       <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
         <a
           href={primary.href}
-          className="inline-flex h-[42px] items-center justify-center rounded-md bg-bg px-5 text-[15px] font-medium text-ink hover:bg-surface-2"
+          className="inline-flex h-[42px] items-center justify-center rounded-md bg-accent px-5 text-[15px] font-medium text-white transition-colors hover:bg-accent-ink dark:text-bg"
         >
           {primary.label}
         </a>

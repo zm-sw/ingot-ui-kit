@@ -3,64 +3,82 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Pravidla používání“ — rám obrazovky, jeden pattern na
- * obrazovku, tabulka ano/ne a pravidla textů (KAN-663).
+ * Stránka „Pravidla používání“ — skladba obrazovky, tabulka ano/ne,
+ * pravidla textů a údržba systému (KAN-663).
+ *
+ * 🚨 Obsah je převzatý z design handoffu (stránka Pravidla používání).
+ * Tabulka ano/ne má tři sloupce schválně: bez sloupce „Situace“ je dvojice
+ * ano/ne jen názor, se situací je to rozhodnutí. Sloupec „Ano“ je
+ * zvýrazněný akcentem, aby se správná odpověď dala přečíst na první
+ * pohled — v handoffu to dělá třída `hl`.
+ *
+ * ⚠️ Doc web je VEŘEJNÁ stránka: klíče úkolů, cesty do repa ani jména
+ * kontrol nesmí být v renderovaném textu. V komentářích ano.
  */
 
 interface YesNoRow {
-  yes: Localized<string>;
+  situation: Localized<string>;
   no: Localized<string>;
+  yes: Localized<string>;
 }
 
 const YES_NO: readonly YesNoRow[] = [
   {
-    yes: {
-      cs: "Jedna hlavní akce vpravo v hlavičce.",
-      en: "One primary action, top right in the header.",
+    situation: {
+      cs: "Delší editace záznamu",
+      en: "A longer edit of a record",
     },
     no: {
-      cs: "Dvě primární tlačítka vedle sebe.",
-      en: "Two primary buttons side by side.",
+      cs: "Modální okno přes celý seznam",
+      en: "A modal covering the whole list",
+    },
+    yes: {
+      cs: "Boční panel — kontext zůstane vidět",
+      en: "A side drawer — the context stays visible",
     },
   },
   {
-    yes: {
-      cs: "Editace záznamu v bočním panelu.",
-      en: "Editing a record in a side drawer.",
-    },
+    situation: { cs: "Potvrzení smazání", en: "Confirming a delete" },
     no: {
-      cs: "Formulář rozbalený uprostřed tabulky.",
-      en: "A form unfolded in the middle of a table.",
+      cs: "Plná červená plocha",
+      en: "A solid red surface",
+    },
+    yes: {
+      cs: "Obrysové tlačítko a název entity přímo v textu",
+      en: "An outline button and the entity name in the text",
     },
   },
   {
-    yes: {
-      cs: "Stav entity jako štítek s textem.",
-      en: "An entity state as a badge with text.",
-    },
+    situation: { cs: "Výsledek uložení", en: "The result of saving" },
     no: {
-      cs: "Stav vyjádřený jen barvou puntíku.",
-      en: "A state expressed only by the colour of a dot.",
+      cs: "Modální okno „Hotovo“",
+      en: "A “Done” modal",
+    },
+    yes: {
+      cs: "Toast se zpětnou akcí",
+      en: "A toast with an undo action",
     },
   },
   {
-    yes: {
-      cs: "Prázdný seznam s vysvětlením a dalším krokem.",
-      en: "An empty list with an explanation and a next step.",
-    },
+    situation: { cs: "Chyba ve formuláři", en: "An error in a form" },
     no: {
-      cs: "Prázdná bílá plocha bez jediného slova.",
-      en: "A blank white area without a single word.",
+      cs: "Jen toast nahoře",
+      en: "Only a toast at the top",
+    },
+    yes: {
+      cs: "Hláška u pole, které chybu má",
+      en: "A message at the field that has the error",
     },
   },
   {
-    yes: {
-      cs: "Nevratný krok potvrzený dialogem s dopadem.",
-      en: "An irreversible step confirmed by a dialog stating the impact.",
-    },
+    situation: { cs: "Prázdný seznam", en: "An empty list" },
     no: {
-      cs: "Smazání provedené hned po kliknutí.",
-      en: "A delete performed the instant it is clicked.",
+      cs: "Prázdná tabulka s hlavičkou",
+      en: "An empty table with a header row",
+    },
+    yes: {
+      cs: "Prázdný stav s první akcí",
+      en: "An empty state with the first action",
     },
   },
 ];
@@ -68,38 +86,77 @@ const YES_NO: readonly YesNoRow[] = [
 function yesNoColumns(lang: DocLang): readonly IngotColumn<YesNoRow>[] {
   return [
     {
-      key: "yes",
-      header: lang === "cs" ? "Ano" : "Yes",
-      cell: (row) => row.yes[lang],
+      key: "situation",
+      header: lang === "cs" ? "Situace" : "Situation",
+      cell: (row) => <strong className="text-ink">{row.situation[lang]}</strong>,
     },
     {
       key: "no",
       header: lang === "cs" ? "Ne" : "No",
       cell: (row) => row.no[lang],
     },
+    {
+      key: "yes",
+      header: lang === "cs" ? "Ano" : "Yes",
+      cell: (row) => row.yes[lang],
+      // Správná odpověď se má dát přečíst bez čtení celého řádku.
+      cellClassName: "bg-accent-bg text-accent-ink",
+    },
   ];
 }
 
-function FrameBody({ lang }: { lang: DocLang }): JSX.Element {
+function Layout({ lang }: { lang: DocLang }): JSX.Element {
+  return (
+    <div className="grid gap-4 text-sm text-ink-2 sm:grid-cols-3">
+      <div>
+        <div className="text-eyebrow uppercase text-ink-3">
+          {lang === "cs" ? "Rám" : "Frame"}
+        </div>
+        <p className="mt-2">
+          {lang === "cs"
+            ? "Horní lišta → drobečky → hlavička stránky → obsah. Drobečky se vynechávají jen na kořenových stránkách sekce, kde by ukazovaly samy na sebe."
+            : "Top bar → breadcrumbs → page header → content. Breadcrumbs are left out only on the root pages of a section, where they would point at themselves."}
+        </p>
+      </div>
+      <div>
+        <div className="text-eyebrow uppercase text-ink-3">
+          {lang === "cs" ? "Obsah" : "Content"}
+        </div>
+        <p className="mt-2">
+          {lang === "cs"
+            ? "Právě jeden hlavní pattern: tabulka, krokový setup, skupinové karty, detail s taby, nebo metriky. Dva se nemíchají — ani jeden by neměl dost místa."
+            : "Exactly one main pattern: a table, a step-by-step setup, grouped cards, a detail with tabs, or metrics. Two are never mixed — neither would have enough room."}
+        </p>
+      </div>
+      <div>
+        <div className="text-eyebrow uppercase text-ink-3">
+          {lang === "cs" ? "Akce" : "Actions"}
+        </div>
+        <p className="mt-2">
+          {lang === "cs"
+            ? "Primární akce je vpravo v hlavičce, nikdy plovoucí. Akce řádku jsou ikonové a vždy na konci řádku, aby se v seznamu hledaly na jednom místě."
+            : "The primary action sits at the right of the header, never floating. Row actions are icon-only and always at the end of the row, so a list has one place to look for them."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function YesNo({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="space-y-3 text-sm text-ink-2">
       <p>
         {lang === "cs"
-          ? "Obrazovka má rám: nadpis s větou pod ním, sekce s nadpisy, akce na svých místech. Rám se neskládá pokaždé jinak — čtenář, který ho jednou pochopil, se v každé další obrazovce už jen rozhlíží po obsahu."
-          : "A screen has a frame: a title with one sentence under it, sections with headings, actions in their places. The frame is not assembled differently each time — a reader who has understood it once only looks for content on every next screen."}
-      </p>
-      <p>
-        {lang === "cs"
-          ? "Na jednu obrazovku patří jeden pattern. Seznam záznamů, detail záznamu, formulář — každý z nich je celá obrazovka. Dva patterny na jedné obrazovce znamenají, že ani jeden nemá dost místa."
-          : "One screen takes one pattern. A list of records, a record detail, a form — each of them is a whole screen. Two patterns on one screen mean neither has enough room."}
+          ? "Pět situací, které se v administraci opakují a pokaždé svádí ke stejné špatné odpovědi. Sloupec vpravo je ta, která platí."
+          : "Five situations that keep coming back in admin screens and keep inviting the same wrong answer. The right-hand column is the one that holds."}
       </p>
       <div className="overflow-x-auto">
         <IngotTable
           columns={yesNoColumns(lang)}
           rows={YES_NO}
-          rowKey={(row) => row.yes.cs}
+          rowKey={(row) => row.situation.cs}
           caption={lang === "cs" ? "Ano a ne" : "Yes and no"}
-          className="min-w-[34rem]"
+          className="min-w-[40rem]"
           testId="docs-yes-no"
         />
       </div>
@@ -115,38 +172,58 @@ function TextRules({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Bez vykřičníků a bez emoji. Text v rozhraní informuje,
-                  nekřičí — naléhavost nese stavová barva a místo na
-                  obrazovce.
+                  Tlačítko pojmenovává výsledek: <strong>Přidat zemi</strong>,
+                  ne <strong>OK</strong>. Čtenář se rozhoduje podle toho, co
+                  se stane, ne podle toho, že něco potvrzuje. Zrušení je vždy{" "}
+                  <strong>Zrušit</strong>.
                 </>,
                 <>
-                  Popisek akce začíná slovesem: „Smazat řádek“, ne „Koš“.
+                  Popisek pole je podstatné jméno bez dvojtečky; nápověda pod
+                  polem je celá věta s tečkou. Dvě různé role textu se tak
+                  poznají i bez čtení.
                 </>,
                 <>
-                  Chybová hláška říká, co se stalo a co s tím — ne kód
-                  výjimky.
+                  Chyba říká, co udělat: „IČO musí mít 8 číslic“, ne
+                  „Neplatná hodnota“. Hláška, ze které nejde poznat další
+                  krok, uživatele zastaví stejně jako žádná.
                 </>,
                 <>
-                  Prázdný stav říká proč je prázdno a jaký je další krok.
+                  Odborný termín se používá jen tam, kde ho výroba sama
+                  používá. Přepínač slovníku v menu účtu (Jednoduše / Expert)
+                  přepíná mezi lidovou a odbornou variantou — každý termín
+                  proto potřebuje obě.
+                </>,
+                <>
+                  Bez vykřičníků, bez emoji a bez „Ups!“. Chyba je fakt, ne
+                  omluva.
                 </>,
               ]
             : [
                 <>
-                  No exclamation marks and no emoji. Interface text informs,
-                  it does not shout — urgency is carried by the state colour
-                  and the place on the screen.
+                  A button names the outcome: <strong>Add country</strong>,
+                  not <strong>OK</strong>. A reader decides by what will
+                  happen, not by the fact that something is being confirmed.
+                  Cancelling is always <strong>Cancel</strong>.
                 </>,
                 <>
-                  An action label starts with a verb: “Delete row”, not
-                  “Bin”.
+                  A field label is a noun without a colon; the hint below the
+                  field is a full sentence with a full stop. The two roles of
+                  the text are then distinguishable without reading them.
                 </>,
                 <>
-                  An error message says what happened and what to do about
-                  it — not the exception code.
+                  An error says what to do: “The company number must have 8
+                  digits”, not “Invalid value”. A message that does not reveal
+                  the next step stops the user just as surely as no message.
                 </>,
                 <>
-                  An empty state says why it is empty and what the next step
-                  is.
+                  A technical term is used only where production itself uses
+                  it. The vocabulary switch in the account menu (Plain /
+                  Expert) toggles between the everyday and the technical
+                  variant — so every term needs both.
+                </>,
+                <>
+                  No exclamation marks, no emoji and no “Oops”. An error is a
+                  fact, not an apology.
                 </>,
               ]
         }
@@ -158,11 +235,51 @@ function TextRules({ lang }: { lang: DocLang }): JSX.Element {
 function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="space-y-3 text-sm text-ink-2">
-      <p>
-        {lang === "cs"
-          ? "Nová komponenta nevzniká v obrazovce. Chybí-li primitivum, přidá se do kitu i se svou stránkou v téhle dokumentaci — a teprve pak se použije. Komponenta poskládaná v jedné obrazovce je ostrůvek: příště ji nikdo nenajde a napíše si vlastní."
-          : "A new component is not born inside a screen. If a primitive is missing, it is added to the kit together with its page in this documentation — and only then used. A component assembled inside one screen is an island: nobody finds it next time, and writes their own."}
-      </p>
+      <IngotList
+        items={
+          lang === "cs"
+            ? [
+                <>
+                  Nová komponenta vzniká v systému, ne v obrazovce — dostane
+                  název, pravidlo použití a stránku v téhle dokumentaci, a
+                  teprve pak se použije. Komponenta poskládaná uvnitř jedné
+                  obrazovky je ostrůvek: příště ji nikdo nenajde a napíše si
+                  vlastní.
+                </>,
+                <>
+                  Vlastní barva, mezera nebo rádius v obrazovce znamená
+                  chybějící token. Řeší se v systému, ne v obrazovce — jinak
+                  ta hodnota zůstane jediná svého druhu a nikdo ji při další
+                  změně palety nenajde.
+                </>,
+                <>
+                  Změna tokenu je změna produktu: prochází stejným review jako
+                  změna kódu. Projeví se všude naráz, takže se nedá vrátit
+                  jednou obrazovkou.
+                </>,
+              ]
+            : [
+                <>
+                  A new component is born in the system, not in a screen — it
+                  gets a name, a rule of use and a page in this documentation,
+                  and only then is used. A component assembled inside one
+                  screen is an island: nobody finds it next time, and writes
+                  their own.
+                </>,
+                <>
+                  A custom colour, spacing or radius in a screen means a
+                  missing token. It is settled in the system, not in the
+                  screen — otherwise that value stays one of a kind and nobody
+                  finds it at the next change of the palette.
+                </>,
+                <>
+                  Changing a token is changing the product: it goes through
+                  the same review as a change of code. It lands everywhere at
+                  once, so it cannot be undone by one screen.
+                </>,
+              ]
+        }
+      />
     </div>
   );
 }
@@ -172,16 +289,24 @@ export const UsageGuide: IngotGuidePage = {
   group: "rules",
   title: { cs: "Pravidla používání", en: "Usage rules" },
   summary: {
-    cs: "Rám obrazovky, jeden pattern na obrazovku, tabulka ano/ne a pravidla textů v rozhraní.",
-    en: "The screen frame, one pattern per screen, the yes/no table and the rules for interface text.",
+    cs: "Rozhodnutí, která nejsou vidět v katalogu, ale drží produkt pohromadě. Když se dva návrhy neshodnou, rozhoduje tato sekce.",
+    en: "The decisions that are not visible in the catalogue but hold the product together. When two designs disagree, this section decides.",
   },
   sections: [
     {
-      id: "ram-obrazovky",
-      title: { cs: "Rám obrazovky", en: "The screen frame" },
+      id: "skladba-obrazovky",
+      title: { cs: "Skladba obrazovky", en: "The layout of a screen" },
       body: {
-        cs: <FrameBody lang="cs" />,
-        en: <FrameBody lang="en" />,
+        cs: <Layout lang="cs" />,
+        en: <Layout lang="en" />,
+      },
+    },
+    {
+      id: "ano-ne",
+      title: { cs: "Ano a ne", en: "Yes and no" },
+      body: {
+        cs: <YesNo lang="cs" />,
+        en: <YesNo lang="en" />,
       },
     },
     {
