@@ -667,8 +667,11 @@ export function DocsApp(): JSX.Element {
     <div className="min-h-screen">
       {/* Horní lišta z handoffu: brand + verze vlevo, akcent / motiv /
           jazyk / slovník vpravo. Sticky, aby přepínače neutekly se
-          scrollem dlouhé stránky. */}
-      <header className="sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border bg-bg px-6 py-3">
+          scrollem dlouhé stránky.
+
+          ``docs-topbar`` (globals.css) drží sklo — průsvitná plocha
+          s blurem, bílá ve světlém motivu a tmavá v tmavém. */}
+      <header className="docs-topbar sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-6 py-3">
         {/* Logo nese celý název („INGOT UI KIT"), takže textový brand
             vedle něj by ho jen zopakoval — zbyla verze jako popisek.
 
