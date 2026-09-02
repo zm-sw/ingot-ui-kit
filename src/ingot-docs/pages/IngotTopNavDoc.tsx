@@ -16,7 +16,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  version: "2.3",
+  // 2.4: ``current`` zvýrazňuje i menu sekci (skupinu s aktivní routou).
+  version: "2.4",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -304,8 +305,8 @@ export const IngotTopNavDoc: IngotDocPage = {
           type: "boolean",
           required: false,
           note: {
-            cs: "Odkazová sekce je právě otevřená obrazovka — aria-current.",
-            en: "The link section is the open screen — aria-current.",
+            cs: "Sekce drží právě otevřenou obrazovku. Odkaz dostane aria-current; menu tlačítko jen zvýraznění — aria-current nese až položka uvnitř.",
+            en: "The section holds the open screen. A link gets aria-current; a menu button only the highlight — aria-current is carried by the item inside.",
           },
         },
         {
