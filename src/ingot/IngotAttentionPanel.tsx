@@ -41,12 +41,16 @@ export function IngotAttentionPanel({
       className="rounded-lg bg-ink px-6 py-5 text-bg shadow-md"
       data-testid={testId}
     >
-      <div className={cx("gap-6", aside !== undefined && "flex flex-wrap items-start justify-between")}>
+      <div className={cx("gap-6", aside !== undefined && "flex flex-wrap items-start")}>
         <div className="min-w-0 max-w-prose">
           <h2 className="text-base font-semibold">{title}</h2>
           <div className="mt-1.5 space-y-3 text-sm text-bg/80">{children}</div>
         </div>
-        {aside !== undefined && <div className="min-w-0">{aside}</div>}
+        {/* 1.1: aside roste — signální mřížka přehledu potřebuje zbytek
+            šířky, chip s pár řádky se jen přisune doprava (basis-80). */}
+        {aside !== undefined && (
+          <div className="min-w-0 flex-1 basis-80">{aside}</div>
+        )}
       </div>
     </section>
   );

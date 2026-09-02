@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotAttentionPanelDoc: IngotDocPage = {
   name: "IngotAttentionPanel",
   status: "beta",
-  version: "1.0",
+  // 1.1: aside sloupec roste (flex-1, basis-80) — signální mřížka
+  // přehledu potřebuje zbytek šířky panelu.
+  version: "1.1",
   tag: ".attention",
   tokens: ["--ink", "--bg", "--warn", "--r-lg", "--shadow-md"],
   summary: {

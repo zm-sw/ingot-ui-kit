@@ -193,6 +193,38 @@ describe("IngotMegaMenu", () => {
     expect(preview).toHaveTextContent("Co je přijaté a co čeká");
   });
 
+  it("zamčená položka je tlačítko s callbackem, ne odkaz — a náhled jí funguje", async () => {
+    const user = userEvent.setup();
+    const onLocked = vi.fn();
+    render(
+      <IngotMegaMenu
+        groups={[
+          {
+            title: "Denní provoz",
+            items: [
+              GROUPS[0]!.items[0]!,
+              { ...GROUPS[0]!.items[1]!, locked: true },
+            ],
+          },
+        ]}
+        onLockedItemClick={onLocked}
+        label="Provoz"
+        testId="mega"
+      />,
+    );
+
+    expect(screen.queryByRole("link", { name: /Poptávky/ })).toBeNull();
+    const locked = screen.getByRole("button", { name: /Poptávky/ });
+    await user.hover(locked);
+    expect(screen.getByTestId("mega-preview")).toHaveTextContent(
+      "Nacenění, která zákazník",
+    );
+    await user.click(locked);
+    expect(onLocked).toHaveBeenCalledWith(
+      expect.objectContaining({ label: "Poptávky" }),
+    );
+  });
+
   it("odečítač slyší popis z odkazu — náhledový sloupec je aria-hidden", () => {
     render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 

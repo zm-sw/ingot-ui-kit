@@ -22,8 +22,9 @@ export const IngotDrawerDoc: IngotDocPage = {
         překryje jen část obrazovky.
       </>,
       <>
-        Delší editace. Krátké potvrzení patří do dialogu, výsledek akce do
-        toastu; formulář na víc polí patří sem.
+        Rychlá úprava několika polí, u které se dál pracuje se seznamem.
+        Delší editace s vysvětlováním patří do{" "}
+        <IngotCode>IngotModal</IngotCode> — tam je místo i soustředění.
       </>,
       <>
         Úprava záznamu z řádku tabulky: drawer se otevře vedle, kontext
@@ -36,8 +37,10 @@ export const IngotDrawerDoc: IngotDocPage = {
         the panel covers only part of the screen.
       </>,
       <>
-        Longer edits. A short confirmation belongs in a dialog, the result of
-        an action in a toast; a form with several fields belongs here.
+        A quick edit of a few fields while the list stays in play. A longer
+        edit that needs explaining belongs in{" "}
+        <IngotCode>IngotModal</IngotCode> — that is where the room and the
+        focus are.
       </>,
       <>
         Editing a record from a table row: the drawer opens beside it and the
