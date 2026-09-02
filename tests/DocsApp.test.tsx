@@ -260,6 +260,15 @@ describe("DocsApp", () => {
     }
   });
 
+  it("řadí komponenty abecedně podle jména, které ukazuje", () => {
+    // Rejstřík o jedenatřiceti položkách se prochází podle abecedy.
+    // Podle ZOBRAZENÉHO jména: podle jména exportu by Button a Card
+    // skončily první, protože prefix nemají.
+    const shown = INGOT_DOC_PAGES.map((page) => displayName(page.name));
+    const sorted = [...shown].sort((a, b) => a.localeCompare(b, "en"));
+    expect(shown).toEqual(sorted);
+  });
+
   it("čísluje průvodce podle pořadí v registru, ne ručně", () => {
     render(<DocsApp />);
     INGOT_GUIDE_PAGES.forEach((guide, index) => {

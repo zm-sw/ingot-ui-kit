@@ -91,43 +91,43 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
 ];
 
 export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
-  // Pořadí je od nejmenšího stavebního kamene ke složeným celkům, ne
-  // abecední: čtenář, který kit nezná, potřebuje nejdřív tlačítko a
-  // plochu, teprve pak formulář postavený z obojího.
+  // Abecedně podle jména, které stránka ukazuje — tedy bez prefixu:
+  // Badge, Breadcrumbs, Button… Menu je rejstřík o jedenatřiceti
+  // položkách a v rejstříku se hledá podle abecedy, ne podle toho, jak
+  // si pořadí představil ten, kdo ho psal.
+  //
+  // 🪤 Řadí se podle ZOBRAZENÉHO jména, ne podle jména exportu — jinak
+  // by Button a Card skončily před vším ostatním, protože prefix nemají.
+  // Pořadí hlídá test; ručně se netrefuje.
+  IngotBadgeDoc,
+  IngotBreadcrumbsDoc,
   ButtonDoc,
   CardDoc,
   IngotCodeDoc,
-  IngotIconDoc,
-  IngotOpIconDoc,
-  IngotBadgeDoc,
-  IngotListDoc,
-  IngotSectionDoc,
-  IngotPageHeaderDoc,
-  IngotSideNavDoc,
-  IngotTabsDoc,
-  // Rám aplikace: lišta → menu sekce → menu účtu → drobečky → čísla
-  // v hlavičce. Pořadí je odshora dolů, jak je čtenář vidí na obrazovce.
-  IngotTopNavDoc,
-  IngotMegaMenuDoc,
-  IngotUserMenuDoc,
-  IngotBreadcrumbsDoc,
-  IngotMetricsDoc,
-  IngotFormDoc,
-  IngotFieldInputDoc,
-  IngotFieldDoc,
-  IngotModalDoc,
-  IngotDrawerDoc,
   IngotConfirmDoc,
-  IngotToastDoc,
-  IngotPageHintDoc,
-  // Bloky list obrazovky v pořadí, ve kterém stojí na stránce (KAN-654):
-  // filtr bar → tabulka (s bulk barem) → prázdný stav → pager.
-  IngotToolbarDoc,
-  IngotTableDoc,
-  IngotRowActionsDoc,
+  IngotDrawerDoc,
   IngotEmptyStateDoc,
-  IngotPaginationDoc,
-  // Bloky konfiguračních obrazovek — krok nastavení a volba varianty.
-  IngotStepCardDoc,
+  IngotFieldDoc,
+  IngotFieldInputDoc,
+  IngotFormDoc,
+  IngotIconDoc,
+  IngotListDoc,
+  IngotMegaMenuDoc,
+  IngotMetricsDoc,
+  IngotModalDoc,
+  IngotOpIconDoc,
   IngotOptionCardDoc,
+  IngotPageHeaderDoc,
+  IngotPageHintDoc,
+  IngotPaginationDoc,
+  IngotRowActionsDoc,
+  IngotSectionDoc,
+  IngotSideNavDoc,
+  IngotStepCardDoc,
+  IngotTableDoc,
+  IngotTabsDoc,
+  IngotToastDoc,
+  IngotToolbarDoc,
+  IngotTopNavDoc,
+  IngotUserMenuDoc,
 ];
