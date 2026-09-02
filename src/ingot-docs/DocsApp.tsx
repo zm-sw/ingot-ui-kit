@@ -705,14 +705,14 @@ export function DocsApp(): JSX.Element {
         <img
           src="/ingot-logo.png"
           alt="Ingot UI Kit"
-          className="h-7 w-auto dark:hidden"
+          className="h-9 w-auto dark:hidden"
           width={356}
           height={128}
         />
         <img
           src="/ingot-logo-dark.png"
           alt="Ingot UI Kit"
-          className="hidden h-7 w-auto dark:block"
+          className="hidden h-9 w-auto dark:block"
           width={356}
           height={128}
         />
