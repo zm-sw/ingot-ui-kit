@@ -840,25 +840,6 @@ export function DocsApp(): JSX.Element {
           ))}
 
           <PagerFooter page={page} lang={lang} />
-
-          {/* Mini patička (pokyn vlastníka 2026-09-02): verze + pill
-              odkaz na Forgmatic, oddělené čárou od obsahu. */}
-          <footer className="flex items-center justify-between border-t border-border pt-4">
-            {/* Verze z package.json — píše ji release workflow, ručně
-                psané číslo tu lhalo od prvního release. */}
-            <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-              Ingot UI Kit · v{pkg.version}
-            </span>
-            <a
-              href="https://forgmatic.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3 hover:border-border-strong hover:text-ink"
-              data-testid="docs-footer-forgmatic"
-            >
-              developed for Forgmatic
-            </a>
-          </footer>
         </main>
 
         <aside
@@ -882,6 +863,32 @@ export function DocsApp(): JSX.Element {
           />
         </aside>
       </div>
+
+      {/* Mini patička (pokyn vlastníka 2026-09-02): čára přes CELOU
+          šířku, nízká, kraje od sebe — verze vlevo u okraje, pill
+          s logem Forgmaticu vpravo u okraje. Verzi píše release
+          workflow do package.json; ručně psané číslo tu lhalo. */}
+      <footer className="flex items-center justify-between border-t border-border px-6 py-2.5">
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+          Ingot UI Kit · v{pkg.version}
+        </span>
+        <a
+          href="https://forgmatic.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3 hover:border-border-strong hover:text-ink"
+          data-testid="docs-footer-forgmatic"
+        >
+          developed for
+          <img
+            src="/forgmatic-logo.png"
+            alt=""
+            aria-hidden="true"
+            className="h-3.5 w-3.5 object-contain"
+          />
+          Forgmatic
+        </a>
+      </footer>
     </div>
   );
 }
