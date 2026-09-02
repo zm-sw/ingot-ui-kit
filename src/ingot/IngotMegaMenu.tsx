@@ -53,6 +53,17 @@ export interface IngotMegaMenuItem {
    * Náhled pro ni funguje dál: popis je marketing té obrazovky.
    */
   locked?: boolean;
+  /**
+   * Ztlumená položka — NAVIGUJE normálně, jen je jemně odlišená
+   * (např. modul, jehož výlohou je stránka s bránou; menu nezamyká).
+   * Tvrdé zamčení bez navigace je ``locked``.
+   */
+  muted?: boolean;
+  /**
+   * Značka za popiskem, vpravo (tam, kde jinak stojí ``count``) —
+   * třeba jiskra „tady je co objevit". Dekorativní.
+   */
+  marker?: ReactNode;
   /** Kotva testu položky — e2e kliká na konkrétní odkaz, ne na menu. */
   testId?: string;
 }
@@ -162,7 +173,9 @@ export function IngotMegaMenu({
                         "flex items-center gap-2.5 rounded px-2 py-1.5 text-sm",
                         item.current
                           ? "bg-surface-3 font-medium text-ink"
-                          : "text-ink hover:bg-surface-2 hover:text-accent-ink",
+                          : item.muted
+                            ? "text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                            : "text-ink hover:bg-surface-2 hover:text-accent-ink",
                       )}
                     >
                       {item.icon}
@@ -170,6 +183,11 @@ export function IngotMegaMenu({
                       {item.count !== undefined && (
                         <span className="ml-auto font-mono text-[11px] text-ink-4">
                           {item.count}
+                        </span>
+                      )}
+                      {item.marker !== undefined && (
+                        <span className="ml-auto inline-flex" aria-hidden="true">
+                          {item.marker}
                         </span>
                       )}
                     </a>

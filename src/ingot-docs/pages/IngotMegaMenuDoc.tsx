@@ -16,7 +16,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  version: "2.2",
+  // 2.3: muted + marker na položce — ztlumený odkaz s jiskrou, který
+  // NAVIGUJE (bránu kreslí cílová stránka); menu nezamyká.
+  version: "2.3",
   tag: ".megamenu",
   tokens: [
     "--surface",
@@ -273,6 +275,24 @@ export const IngotMegaMenuDoc: IngotDocPage = {
           note: {
             cs: "Zamčená položka: viditelná, ztlumená, se zámkem — není to odkaz, klik volá onLockedItemClick. Náhled funguje dál.",
             en: "A locked item: visible, dimmed, with a padlock — not a link; a click calls onLockedItemClick. The preview still works.",
+          },
+        },
+        {
+          name: "muted",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Ztlumená položka — naviguje normálně, jen je jemně odlišená. Bránu kreslí cílová stránka; tvrdé zamčení bez navigace je locked.",
+            en: "A muted item — navigates normally, just softly set apart. The gate is drawn by the target page; a hard lock without navigation is locked.",
+          },
+        },
+        {
+          name: "marker",
+          type: "ReactNode",
+          required: false,
+          note: {
+            cs: "Značka za popiskem vpravo (kde jinak stojí count) — třeba jiskra „tady je co objevit“. Dekorativní.",
+            en: "A mark after the label, on the right (where count otherwise sits) — a spark saying “something to discover”. Decorative.",
           },
         },
         {
