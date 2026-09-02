@@ -1,0 +1,29 @@
+# Automatický release vX.Y.Z po každém pushi do main — viz
+# scripts/release.mjs (zdroj pravdy je registr doc stránek; epochu X
+# zvedá jen commit `release!:`). Vlastní release commit se přeskakuje,
+# jinak by workflow spouštěl sám sebe.
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Tagy a historie od posledního release — mělký checkout by
+          # neviděl ani tag, ani commity k analýze.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/release.mjs
