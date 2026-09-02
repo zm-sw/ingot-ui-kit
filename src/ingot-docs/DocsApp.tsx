@@ -709,7 +709,7 @@ export function DocsApp(): JSX.Element {
           height={128}
         />
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-          v0.1 · Forgmatic
+          v1.0 · Forgmatic
         </span>
         <span className="flex-1" aria-hidden="true" />
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
