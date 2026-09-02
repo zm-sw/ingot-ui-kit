@@ -53,6 +53,8 @@ export interface IngotMegaMenuItem {
    * Náhled pro ni funguje dál: popis je marketing té obrazovky.
    */
   locked?: boolean;
+  /** Kotva testu položky — e2e kliká na konkrétní odkaz, ne na menu. */
+  testId?: string;
 }
 
 export interface IngotMegaMenuGroup {
@@ -131,6 +133,7 @@ export function IngotMegaMenu({
                         onMouseEnter={() => setPreviewHref(item.href)}
                         onFocus={() => setPreviewHref(item.href)}
                         aria-describedby={describedBy}
+                        data-testid={item.testId}
                         className="flex w-full items-center gap-2.5 rounded px-2 py-1.5 text-left text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
                       >
                         {item.icon}
@@ -154,6 +157,7 @@ export function IngotMegaMenu({
                       onFocus={() => setPreviewHref(item.href)}
                       aria-current={item.current ? "page" : undefined}
                       aria-describedby={describedBy}
+                      data-testid={item.testId}
                       className={cx(
                         "flex items-center gap-2.5 rounded px-2 py-1.5 text-sm",
                         item.current

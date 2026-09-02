@@ -76,6 +76,12 @@ export interface IngotTopNavSection {
   onLockedClick?: () => void;
   /** Odznak za popiskem — počet čekající práce u odkazové sekce. */
   badge?: ReactNode;
+  /**
+   * Vlastní kotva testu sekce. Bez ní se odvodí
+   * ``{testId}-section-{key}`` z kotvy lišty; existující testy a e2e
+   * ale často drží vlastní jména a konverze je nemá přejmenovávat.
+   */
+  testId?: string;
 }
 
 /** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
@@ -202,7 +208,7 @@ export function IngotTopNav({
                 onClick={section.onLockedClick}
                 className="inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
                 data-testid={
-                  testId ? `${testId}-section-${section.key}` : undefined
+                  section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
                 }
               >
                 {section.label}
@@ -224,7 +230,7 @@ export function IngotTopNav({
                     : "text-ink-2 hover:bg-surface-2 hover:text-ink",
                 )}
                 data-testid={
-                  testId ? `${testId}-section-${section.key}` : undefined
+                  section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
                 }
               >
                 {section.label}
@@ -258,7 +264,7 @@ export function IngotTopNav({
                       : "text-ink-2 hover:bg-surface-2 hover:text-ink",
                 )}
                 data-testid={
-                  testId ? `${testId}-section-${section.key}` : undefined
+                  section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
                 }
               >
                 {section.label}

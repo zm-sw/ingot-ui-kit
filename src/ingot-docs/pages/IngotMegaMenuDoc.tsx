@@ -11,11 +11,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // což o implementaci s onFocus nebyla pravda.
 // 2.1: zamčené položky (locked + onLockedItemClick) — modul, který si
 // tenant nezapnul, je v menu vidět se zámkem a klik otevírá vysvětlení
-// místo navigace. Parita s nasazenou administrací.
+// místo navigace. Parita s nasazenou administrací. 2.2: testId na
+// položce (e2e kliká na konkrétní odkaz) a kotvení left-0 pod sekcí.
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  version: "2.1",
+  version: "2.2",
   tag: ".megamenu",
   tokens: [
     "--surface",
@@ -272,6 +273,15 @@ export const IngotMegaMenuDoc: IngotDocPage = {
           note: {
             cs: "Zamčená položka: viditelná, ztlumená, se zámkem — není to odkaz, klik volá onLockedItemClick. Náhled funguje dál.",
             en: "A locked item: visible, dimmed, with a padlock — not a link; a click calls onLockedItemClick. The preview still works.",
+          },
+        },
+        {
+          name: "testId",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Kotva testu položky — e2e kliká na konkrétní odkaz, ne na menu.",
+            en: "The item's test anchor — e2e clicks a specific link, not the menu.",
           },
         },
       ],

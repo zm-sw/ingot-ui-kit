@@ -17,7 +17,9 @@ export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
   // 2.4: ``current`` zvýrazňuje i menu sekci (skupinu s aktivní routou).
-  version: "2.4",
+  // 2.5: sekce může nést vlastní ``testId`` — konverze nepřejmenovává
+  // kotvy existujících testů a e2e.
+  version: "2.5",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -334,6 +336,15 @@ export const IngotTopNavDoc: IngotDocPage = {
           note: {
             cs: "Odznak za popiskem — počet čekající práce u odkazové sekce.",
             en: "A badge after the label — pending-work count on a link section.",
+          },
+        },
+        {
+          name: "testId",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Vlastní kotva testu sekce. Bez ní se odvodí z kotvy lišty a klíče.",
+            en: "The section's own test anchor. Without it, derived from the bar's anchor and the key.",
           },
         },
       ],
