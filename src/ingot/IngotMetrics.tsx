@@ -35,6 +35,56 @@ export interface IngotMetric {
   note?: ReactNode;
   /** Kritická hodnota se obarví. Výchozí je neutrální. */
   tone?: "neutral" | "warn" | "danger";
+  /**
+   * Křivka vývoje — syrové hodnoty v čase, zleva doprava. Jen ve
+   * variantě ``strip``. Kreslí se normalizovaná (vypovídá tvar, ne
+   * měřítko) a je dekorativní: číslo je údaj, křivka kontext. Co období
+   * ukazuje, říká volající vedle pruhu — třeba „posledních 12 týdnů".
+   * (Rozhodnutí vlastníka 2026-09-02, bod 07 — právě tenhle jeden tvar,
+   * žádný obecný graf.)
+   */
+  trend?: readonly number[];
+}
+
+/**
+ * Normalizovaná čára 72 × 24 se zvýrazněným koncem. Dvě stejné hodnoty
+ * (nebo jediná) by daly dělení nulou — čára se pak kreslí vodorovně.
+ */
+function Sparkline({ trend }: { trend: readonly number[] }): JSX.Element {
+  const width = 72;
+  const height = 24;
+  const pad = 2;
+  const min = Math.min(...trend);
+  const max = Math.max(...trend);
+  const span = max - min;
+  const points = trend.map((value, index) => {
+    const x = pad + (index * (width - 2 * pad)) / Math.max(trend.length - 1, 1);
+    const y =
+      span === 0
+        ? height / 2
+        : height - pad - ((value - min) * (height - 2 * pad)) / span;
+    return [x, y] as const;
+  });
+  const last = points[points.length - 1]!;
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      aria-hidden="true"
+      className="shrink-0 text-ink-4"
+    >
+      <polyline
+        points={points.map(([x, y]) => `${x},${y}`).join(" ")}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <circle cx={last[0]} cy={last[1]} r="2" className="fill-accent" />
+    </svg>
+  );
 }
 
 const TONE: Record<NonNullable<IngotMetric["tone"]>, string> = {
@@ -94,21 +144,28 @@ export function IngotMetrics({
       {items.map((item) => (
         <div
           key={item.label}
-          className="border-r border-border px-[18px] py-3.5 last:border-r-0"
+          className="flex items-start justify-between gap-3 border-r border-border px-[18px] py-3.5 last:border-r-0"
         >
-          <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-            {item.label}
-          </p>
-          <p
-            className={cx(
-              "mt-1 font-mono text-[22px] font-semibold tabular-nums leading-none",
-              TONE[item.tone ?? "neutral"],
+          <div className="min-w-0">
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+              {item.label}
+            </p>
+            <p
+              className={cx(
+                "mt-1 font-mono text-[22px] font-semibold tabular-nums leading-none",
+                TONE[item.tone ?? "neutral"],
+              )}
+            >
+              {item.value}
+            </p>
+            {item.note !== undefined && (
+              <p className="mt-1.5 text-[13px] text-ink-3">{item.note}</p>
             )}
-          >
-            {item.value}
-          </p>
-          {item.note !== undefined && (
-            <p className="mt-1.5 text-[13px] text-ink-3">{item.note}</p>
+          </div>
+          {item.trend !== undefined && item.trend.length > 1 && (
+            <span className="mt-4">
+              <Sparkline trend={item.trend} />
+            </span>
           )}
         </div>
       ))}
