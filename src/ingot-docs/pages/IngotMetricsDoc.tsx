@@ -6,7 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotMetricsDoc: IngotDocPage = {
   name: "IngotMetrics",
   status: "beta",
-  version: "1.0",
+  // 1.1: buňka stripu umí volitelnou křivku vývoje (trend) — rozhodnutí
+  // vlastníka 2026-09-02, bod 07.
+  version: "1.1",
   tag: ".metricstrip",
   tokens: [
     "--surface",
@@ -16,6 +18,7 @@ export const IngotMetricsDoc: IngotDocPage = {
     "--ink-4",
     "--warn",
     "--danger",
+    "--accent",
     "--font-mono",
     "--r-md",
   ],
@@ -178,6 +181,15 @@ export const IngotMetricsDoc: IngotDocPage = {
           note: {
             cs: "Obarví hodnotu, když je to problém. Výchozí je neutral.",
             en: "Colours the value when it is a problem. The default is neutral.",
+          },
+        },
+        {
+          name: "trend",
+          type: "readonly number[]",
+          required: false,
+          note: {
+            cs: "Křivka vývoje, zleva doprava, jen ve variantě strip. Kreslí se normalizovaná — vypovídá tvar, ne měřítko; co období ukazuje, řekni větou vedle pruhu. Údaj je číslo, křivka kontext.",
+            en: "A trend line, left to right, strip variant only. Drawn normalised — the shape speaks, not the scale; say what period it shows in a sentence next to the strip. The number is the datum, the line is context.",
           },
         },
       ],

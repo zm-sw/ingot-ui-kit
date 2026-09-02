@@ -162,3 +162,10 @@ export { IngotMetrics, type IngotMetric } from "./IngotMetrics";
 export { IngotStepCard } from "./IngotStepCard";
 export { IngotOptionCard } from "./IngotOptionCard";
 export { IngotRowActions, type IngotRowAction } from "./IngotRowActions";
+// Rozhodnutí vlastníka 2026-09-02: filtrační atomy (bod 06), rám obsahu
+// stránky (05) a pojmenovaná výjimka z principu 02 (08).
+export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
+export { IngotCheckbox } from "./IngotCheckbox";
+export { IngotSearchInput } from "./IngotSearchInput";
+export { IngotPageLayout } from "./IngotPageLayout";
+export { IngotAttentionPanel } from "./IngotAttentionPanel";

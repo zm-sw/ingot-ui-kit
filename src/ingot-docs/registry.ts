@@ -19,8 +19,10 @@ import { TranslationsGuide } from "@/ingot-docs/guides/TranslationsGuide";
 import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
+import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
+import { IngotCheckboxDoc } from "@/ingot-docs/pages/IngotCheckboxDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
@@ -37,9 +39,12 @@ import { IngotOpIconDoc } from "@/ingot-docs/pages/IngotOpIconDoc";
 import { IngotOptionCardDoc } from "@/ingot-docs/pages/IngotOptionCardDoc";
 import { IngotPageHeaderDoc } from "@/ingot-docs/pages/IngotPageHeaderDoc";
 import { IngotPageHintDoc } from "@/ingot-docs/pages/IngotPageHintDoc";
+import { IngotPageLayoutDoc } from "@/ingot-docs/pages/IngotPageLayoutDoc";
 import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
+import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
+import { IngotSelectDoc } from "@/ingot-docs/pages/IngotSelectDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
 import { IngotStepCardDoc } from "@/ingot-docs/pages/IngotStepCardDoc";
 import { IngotTableDoc } from "@/ingot-docs/pages/IngotTableDoc";
@@ -99,10 +104,12 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   // 🪤 Řadí se podle ZOBRAZENÉHO jména, ne podle jména exportu — jinak
   // by Button a Card skončily před vším ostatním, protože prefix nemají.
   // Pořadí hlídá test; ručně se netrefuje.
+  IngotAttentionPanelDoc,
   IngotBadgeDoc,
   IngotBreadcrumbsDoc,
   ButtonDoc,
   CardDoc,
+  IngotCheckboxDoc,
   IngotCodeDoc,
   IngotConfirmDoc,
   IngotDrawerDoc,
@@ -119,9 +126,12 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotOptionCardDoc,
   IngotPageHeaderDoc,
   IngotPageHintDoc,
+  IngotPageLayoutDoc,
   IngotPaginationDoc,
   IngotRowActionsDoc,
+  IngotSearchInputDoc,
   IngotSectionDoc,
+  IngotSelectDoc,
   IngotSideNavDoc,
   IngotStepCardDoc,
   IngotTableDoc,
