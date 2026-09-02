@@ -339,6 +339,7 @@ function Principles({ lang }: { lang: DocLang }): JSX.Element {
 
 export const PublicPagesGuide: IngotGuidePage = {
   slug: "verejne-stranky",
+  group: "app",
   title: { cs: "Veřejné stránky", en: "Public pages" },
   summary: {
     cs: "Marketingové bloky veřejného webu: hlavička sekce, featury, kroky, segmenty, srovnání, ceník, časté dotazy a závěrečná výzva.",

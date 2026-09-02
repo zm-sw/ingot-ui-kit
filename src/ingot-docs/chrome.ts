@@ -15,6 +15,10 @@ import type { Localized } from "@/ingot-docs/lang";
 export interface ChromeStrings {
   guides: Localized<string>;
   components: Localized<string>;
+  /** Nadpisy skupin v levém menu — viz ``IngotGuideGroup``. */
+  groupSystem: Localized<string>;
+  groupApp: Localized<string>;
+  groupRules: Localized<string>;
   onThisPage: Localized<string>;
   demo: Localized<string>;
   useWhen: Localized<string>;
@@ -64,6 +68,9 @@ export interface ChromeStrings {
 export const CHROME: ChromeStrings = {
   guides: { cs: "Průvodce", en: "Guides" },
   components: { cs: "Komponenty", en: "Components" },
+  groupSystem: { cs: "Systém", en: "System" },
+  groupApp: { cs: "Aplikace", en: "Application" },
+  groupRules: { cs: "Pravidla", en: "Rules" },
   onThisPage: { cs: "Co je na stránce", en: "On this page" },
   demo: { cs: "Ukázka", en: "Demo" },
   useWhen: { cs: "Kdy použít", en: "When to use it" },

@@ -92,10 +92,8 @@ describe("DocsApp", () => {
 
   it("vypíše do menu každé primitivum z registru", () => {
     render(<DocsApp />);
-    const nav = screen.getByRole("navigation", { name: CHROME.components.cs });
-    expect(within(nav).getAllByRole("link")).toHaveLength(
-      INGOT_DOC_PAGES.length,
-    );
+    // Komponenty jsou vnořené pod rozcestníkem ve skupině „Systém“.
+    const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
     for (const page of INGOT_DOC_PAGES) {
       expect(within(nav).getByText(page.name)).toBeInTheDocument();
     }
@@ -235,25 +233,46 @@ describe("DocsApp", () => {
     expect(screen.queryByTestId("docs-props")).not.toBeInTheDocument();
   });
 
-  it("drží průvodce a komponenty ve dvou oddělených menu", () => {
+  it("rozdělí menu do skupin a každého průvodce dá právě do jedné", () => {
     render(<DocsApp />);
 
-    const guides = screen.getByRole("navigation", { name: CHROME.guides.cs });
-    expect(within(guides).getAllByRole("link")).toHaveLength(
-      INGOT_GUIDE_PAGES.length,
-    );
+    const navs = [
+      CHROME.groupSystem.cs,
+      CHROME.groupApp.cs,
+      CHROME.groupRules.cs,
+    ].map((name) => screen.getByRole("navigation", { name }));
 
-    const components = screen.getByRole("navigation", {
-      name: CHROME.components.cs,
-    });
-    expect(within(components).getAllByRole("link")).toHaveLength(
-      INGOT_DOC_PAGES.length,
+    // Dohromady musí sedět počet: každý průvodce v jedné skupině plus
+    // komponenty vnořené pod rozcestníkem.
+    const links = navs.flatMap((nav) => within(nav).getAllByRole("link"));
+    expect(links).toHaveLength(
+      INGOT_GUIDE_PAGES.length + INGOT_DOC_PAGES.length,
     );
     for (const guide of INGOT_GUIDE_PAGES) {
-      expect(
-        within(components).queryByText(guide.title.cs),
-      ).not.toBeInTheDocument();
+      expect(screen.getAllByTestId(`docs-nav-${guide.slug}`)).toHaveLength(1);
     }
+  });
+
+  it("čísluje průvodce podle pořadí v registru, ne ručně", () => {
+    render(<DocsApp />);
+    INGOT_GUIDE_PAGES.forEach((guide, index) => {
+      expect(screen.getByTestId(`docs-nav-${guide.slug}`)).toHaveTextContent(
+        String(index).padStart(2, "0"),
+      );
+    });
+  });
+
+  it("vnoří komponenty pod rozcestník, ne vedle něj", () => {
+    render(<DocsApp />);
+
+    // Podseznam visí na položce rozcestníku — vnoření je struktura,
+    // takže musí být poznat i z DOM, ne jen z odsazení.
+    const catalogue = screen.getByTestId("docs-nav-komponenty");
+    const sublist = catalogue.closest("li")?.querySelector("ul");
+    expect(sublist).not.toBeNull();
+    expect(within(sublist as HTMLElement).getAllByRole("link")).toHaveLength(
+      INGOT_DOC_PAGES.length,
+    );
   });
 
   it("žádný slug průvodce nekoliduje se jménem primitiva", () => {

@@ -9,6 +9,7 @@
  */
 import { A11yGuide } from "@/ingot-docs/guides/A11yGuide";
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
+import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
@@ -54,21 +55,31 @@ import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
  *
  * První položka je zároveň **výchozí obrazovka** doc webu.
  */
+/**
+ * Pořadí určuje číslo v menu i posloupnost prev/next patičky, a je
+ * čtenářské: nejdřív co kit JE (skupina ``system``), pak jak se z něj
+ * staví obrazovky (``app``), nakonec co se od autora čeká (``rules``).
+ *
+ * 🚨 **Stránky JEDNÉ skupiny musí stát vedle sebe.** Menu skupiny
+ * nepřerovnává — vypisuje je v tomhle pořadí a nadpis vloží při každé
+ * změně. Rozházené pořadí by tedy vyrobilo skupinu dvakrát.
+ */
 export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
-  // Pořadí je čtenářské: od „co to je“ přes stavební kameny a pravidla
-  // ke speciálům. Prev/next patička z něj dělá souvislou četbu.
   IntroGuide,
   BasicsGuide,
+  // Rozcestník komponent — v menu se pod něj vnořují jednotlivá
+  // primitiva, takže stojí před Ikonami, ne až za nimi.
+  ComponentsGuide,
   IconsGuide,
   ShellGuide,
-  UsageGuide,
-  FormatsGuide,
-  A11yGuide,
-  TranslationsGuide,
   // Marketingové bloky veřejného webu (KAN-664) — bloky nejsou export
   // ``@/ingot`` (v adminu nemají konzumenta), proto průvodce, ne
   // komponentní stránka.
   PublicPagesGuide,
+  UsageGuide,
+  FormatsGuide,
+  A11yGuide,
+  TranslationsGuide,
 ];
 
 export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [

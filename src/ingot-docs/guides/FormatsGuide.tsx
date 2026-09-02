@@ -116,6 +116,7 @@ function DictionaryBody({ lang }: { lang: DocLang }): JSX.Element {
 
 export const FormatsGuide: IngotGuidePage = {
   slug: "jazyky-a-formaty",
+  group: "rules",
   title: { cs: "Jazyky a formáty", en: "Languages and formats" },
   summary: {
     cs: "Delší překlady, tři tvary množného čísla, formátování čísel podle prostředí a kódy, které se nepřekládají.",

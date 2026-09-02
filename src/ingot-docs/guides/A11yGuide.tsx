@@ -130,6 +130,7 @@ function Checklist({ lang }: { lang: DocLang }): JSX.Element {
 
 export const A11yGuide: IngotGuidePage = {
   slug: "pristupnost",
+  group: "rules",
   title: { cs: "Přístupnost", en: "Accessibility" },
   summary: {
     cs: "Pravidla WCAG 2.2 AA, která kit drží za obrazovky, a tři zkoušky před vydáním: Tab, zvětšení na 200 % a šedotisk.",
