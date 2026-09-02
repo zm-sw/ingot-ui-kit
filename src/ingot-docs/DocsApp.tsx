@@ -857,14 +857,14 @@ export function DocsApp(): JSX.Element {
           src="/ingot-logo.png"
           alt="Ingot UI Kit"
           className="h-9 w-auto dark:hidden"
-          width={356}
+          width={311}
           height={128}
         />
         <img
           src="/ingot-logo-dark.png"
           alt="Ingot UI Kit"
           className="hidden h-9 w-auto dark:block"
-          width={356}
+          width={311}
           height={128}
         />
         {/* Verze a značka se přestěhovaly do mini patičky dole
