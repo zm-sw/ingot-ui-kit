@@ -14,6 +14,10 @@
  *    test na „něco se vykreslilo" by pořád procházel a obě kopie by se
  *    rozešly tiše. Proto se porovnává s tím, co vrací sama knihovna
  *    operací — ne s konstantou v testu.
+ * 4. **Výplň je JEDNA pojmenovaná výjimka.** Sada je čára; ``star-filled``
+ *    je druhý tvar ke stavovému glyfu, ne povolení kreslit plné ikony.
+ *    Bez testu by se druhá výplň přidala mimochodem a ta věta v Limitech
+ *    by tiše přestala platit.
  */
 
 import { render, screen } from "@testing-library/react";
@@ -71,6 +75,26 @@ describe("IngotIcon", () => {
       expect.stringContaining("rozhodne-neexistuje"),
     );
     warn.mockRestore();
+  });
+
+  it("výplň má jediný glyf a s čárovým párem sdílí geometrii", () => {
+    const { container: line } = render(<IngotIcon name="star" />);
+    const { container: filled } = render(<IngotIcon name="star-filled" />);
+
+    const outline = line.querySelector("polygon");
+    const solid = filled.querySelector("polygon");
+
+    expect(solid?.getAttribute("points")).toBe(outline?.getAttribute("points"));
+    expect(solid).toHaveAttribute("fill", "currentColor");
+    expect(outline).not.toHaveAttribute("fill");
+
+    const withFill = INGOT_ICON_NAMES.filter((name) => {
+      const { container, unmount } = render(<IngotIcon name={name} />);
+      const fills = container.innerHTML.includes('fill="currentColor"');
+      unmount();
+      return fills;
+    });
+    expect(withFill).toEqual(["star-filled"]);
   });
 
   it("vypisuje každý svůj klíč a všechny se vykreslí", () => {

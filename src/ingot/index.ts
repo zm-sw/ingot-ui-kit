@@ -66,6 +66,13 @@ export {
   INGOT_PAGE_DESC_CLASS,
 } from "./IngotPageHeader";
 export { IngotSection } from "./IngotSection";
+// 🪤 Sbalitelná sekce je VLASTNÍ primitivum, ne prop na ``IngotSection``.
+// Ta sází nadpis a drží osnovu stránky; tahle je popisek bloku v panelu.
+// Jeden prop nad dvěma sazbami by byly dvě komponenty za přepínačem.
+export {
+  IngotDisclosure,
+  IngotDisclosureGroup,
+} from "./IngotDisclosure";
 export { IngotList } from "./IngotList";
 export { IngotSideNav, type IngotNavItem } from "./IngotSideNav";
 export { IngotCode } from "./IngotCode";

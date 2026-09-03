@@ -74,6 +74,12 @@ const DOCUMENTED_UNPREFIXED = new Set(["Button", "Card"]);
  * itself from having a page just by being named after IngotTable.
  */
 const SUBCOMPONENTS = new Map([
+  // IngotDisclosureGroup is the one entry that wraps its parent rather
+  // than sitting inside it. It is still the same call: a group with no
+  // sections in it is nothing, and it is documented in the parent page's
+  // extraProps the way IngotUserMenuSection is. A page of its own would
+  // be a page about a context provider.
+  ["IngotDisclosureGroup", "IngotDisclosure"],
   ["IngotTopNavAccount", "IngotTopNav"],
   ["IngotUserMenuSection", "IngotUserMenu"],
   ["IngotUserMenuRow", "IngotUserMenu"],

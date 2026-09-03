@@ -12,6 +12,8 @@
  *   nekreslí vůbec.
  */
 
+import { createRef } from "react";
+
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -105,6 +107,24 @@ describe("IngotSearchInput", () => {
 
     await user.type(screen.getByRole("searchbox"), "a");
     expect(onChange).toHaveBeenCalledWith("a");
+  });
+
+  // Zkratka „skoč do hledání“ musí mít cestu k poli v API, ne přes
+  // querySelector do vnitřku obalu.
+  it("pouští ven ref na input, ne na obal", () => {
+    const ref = createRef<HTMLInputElement>();
+    render(
+      <IngotSearchInput
+        value=""
+        onChange={() => undefined}
+        label="Hledat"
+        inputRef={ref}
+      />,
+    );
+
+    expect(ref.current).toBe(screen.getByRole("searchbox"));
+    ref.current?.focus();
+    expect(ref.current).toHaveFocus();
   });
 });
 
