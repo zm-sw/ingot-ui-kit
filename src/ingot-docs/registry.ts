@@ -25,6 +25,7 @@ import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
 import { IngotCheckboxDoc } from "@/ingot-docs/pages/IngotCheckboxDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
+import { IngotDisclosureDoc } from "@/ingot-docs/pages/IngotDisclosureDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
 import { IngotEmptyStateDoc } from "@/ingot-docs/pages/IngotEmptyStateDoc";
 import { IngotFieldDoc } from "@/ingot-docs/pages/IngotFieldDoc";
@@ -112,6 +113,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotCheckboxDoc,
   IngotCodeDoc,
   IngotConfirmDoc,
+  IngotDisclosureDoc,
   IngotDrawerDoc,
   IngotEmptyStateDoc,
   IngotFieldDoc,
