@@ -167,7 +167,7 @@ if (pkg.version === next) {
 }
 
 // main přímý push nepřijímá, takže bump přijíždí jako každá jiná změna —
-// pull requestem. Větev je krátkoživotná, po sloučení ji smaže samo repo.
+// pull requestem. Větev je krátkoživotná — skript ji po sloučení uklidí.
 const branch = `release/v${next}`;
 
 pkg.version = next;
