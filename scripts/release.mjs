@@ -173,12 +173,22 @@ const branch = `release/v${next}`;
 pkg.version = next;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
-git("checkout", "-b", branch);
+git("checkout", "-B", branch);
 git("add", pkgPath);
 git("commit", "-m", `chore(release): v${next}`);
-git("push", "origin", branch);
+// Přepisem, ne přidáním: když předchozí běh vypadl mezi pushem větve a
+// založením PR, zůstala větev viset a obyčejný push by na ní uvízl.
+// Vlastníkem téhle větve je stroj, takže její historie nikomu nepatří.
+git("push", "--force", "origin", branch);
 
-gh("pr", "create", "--base", "main", "--head", branch, "--title", `chore(release): v${next}`, "--body", notes);
+// Stejný důvod, jen o krok dál: nedokončený běh mohl PR už založit.
+// Druhé ``pr create`` by na tom spadlo, takže se otevřené PR přebírá.
+const open = gh("pr", "list", "--head", branch, "--state", "open", "--json", "number", "--jq", "length");
+if (open === "0") {
+  gh("pr", "create", "--base", "main", "--head", branch, "--title", `chore(release): v${next}`, "--body", notes);
+} else {
+  console.log(`PR na ${branch} už je otevřené -> pokračuje se na něm`);
+}
 
 // PR založený GITHUB_TOKENem nespouští ``pull_request`` workflow — to je
 // pojistka GitHubu proti zacyklení. Povinné checky by tedy nikdy
