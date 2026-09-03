@@ -135,7 +135,7 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                 title: cs ? "Denní provoz" : "Daily operations",
                 items: [
                   {
-                    href: "#/shell-a-patterny",
+                    href: "#objednavky",
                     label: cs ? "Objednávky" : "Orders",
                     description: cs
                       ? "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu."
@@ -145,7 +145,7 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                     current: true,
                   },
                   {
-                    href: "#/shell-a-patterny",
+                    href: "#poptavky",
                     label: cs ? "Poptávky" : "Enquiries",
                     description: cs
                       ? "Nacenění, která zákazník zatím nepotvrdil."
@@ -159,7 +159,7 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                 title: cs ? "Katalog" : "Catalogue",
                 items: [
                   {
-                    href: "#/shell-a-patterny",
+                    href: "#materialy",
                     label: cs ? "Materiály" : "Materials",
                     description: cs
                       ? "Skladové položky a jejich vlastnosti — tloušťky, jakosti, ceny."

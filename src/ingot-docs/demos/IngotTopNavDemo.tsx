@@ -34,14 +34,14 @@ export function Demo(): JSX.Element {
                   title: "Denní provoz",
                   items: [
                     {
-                      href: "#/IngotTopNav",
+                      href: "#objednavky",
                       label: "Objednávky",
                       description:
                         "Co je přijaté a co čeká na potvrzení výroby.",
                       count: 12,
                     },
                     {
-                      href: "#/IngotTopNav",
+                      href: "#poptavky",
                       label: "Poptávky",
                       description:
                         "Nacenění, která zákazník zatím nepotvrdil.",
@@ -58,13 +58,13 @@ export function Demo(): JSX.Element {
                 {
                   items: [
                     {
-                      href: "#/IngotTopNav",
+                      href: "#operace",
                       label: "Operace",
                       description:
                         "Výrobní operace a jejich parametry.",
                     },
                     {
-                      href: "#/IngotTopNav",
+                      href: "#stroje",
                       label: "Stroje",
                       description:
                         "Kapacity strojů a jejich směny.",
