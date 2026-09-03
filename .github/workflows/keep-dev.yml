@@ -1,0 +1,34 @@
+# dev je dlouhoživá větev, ale promoční pull request má právě ji jako
+# hlavu — a repozitář hlavu slitého requestu maže. Ruleset na dev mazání
+# zakazuje, jenže slévá admin, který má bypass, takže dev po každé promoci
+# zmizí.
+#
+# Zakládat ji ručně je krok, na který se zapomene, a repo pak stojí na
+# jediné větvi. Dělá to tedy stroj: dev se vrací nad main, což je přesně
+# ten stav, do kterého ji promoce stejně srovnat musí.
+name: keep-dev
+
+on:
+  delete:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: ${{ github.event.ref_type == 'branch' && github.event.ref == 'dev' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Založit dev znovu nad main
+        run: |
+          set -euo pipefail
+          if gh api "repos/$REPO/git/ref/heads/dev" >/dev/null 2>&1; then
+            echo "dev už existuje — nic k obnově"
+            exit 0
+          fi
+          sha=$(gh api "repos/$REPO/git/ref/heads/main" --jq .object.sha)
+          gh api -X POST "repos/$REPO/git/refs" -f ref=refs/heads/dev -f "sha=$sha"
+          echo "dev znovu nad main ($sha)"
