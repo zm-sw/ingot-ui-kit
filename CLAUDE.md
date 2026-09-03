@@ -91,43 +91,43 @@ that never ships.
 ## The remote holds exactly two branches
 
 `main` and `dev` are the only long-lived branches. Everything else is a
-working branch: it exists while its pull request is open and is deleted
-the moment that request is merged or closed. A branch on the remote with
+working branch: it exists while its pull request is open, and deleting it
+is part of merging it, not a separate errand. A branch on the remote with
 no open pull request is a finding, not a leftover — stale branches are
 how a repository stops telling the truth about what is in flight.
 
 Work flows one way:
 
 - A working branch starts from `dev` and returns to `dev` by pull
-  request, **squash** merged. One feature, one commit on `dev`.
-- `dev` reaches `main` by pull request, **rebase** merged, when a batch
-  is ready to release. `main` is what ships; `dev` is where things are
+  request, **squash** merged. One feature, one commit on `dev`. Merge it
+  with `gh pr merge --squash --delete-branch`, or press the button the
+  web interface offers afterwards.
+- `dev` reaches `main` by pull request, **merge** commit, when a batch is
+  ready to release. `main` is what ships; `dev` is where things are
   proven first.
-- A promotion consumes `dev`. The repository deletes a merged pull
-  request's head branch, and `dev` is the head of that request; even if
-  it survived, rebase merging would have left it holding commit ids that
-  no longer exist on `main`. The `keep-dev` workflow puts it back on top
-  of `main` the moment it goes, which is the state the promotion had to
-  leave it in anyway — so nobody has to remember. Repository admins keep
-  a bypass on the `dev` ruleset for the rare hand correction, and for
-  nothing else.
 
-`release/vX.Y.Z` is the single exception: the release automation opens it
-against `main` directly, because the version it carries describes what is
-already on `main`. Nobody writes to that branch by hand.
+The promotion is a merge commit and nothing else on purpose. Squashing or
+rebasing it would give `main` new commit ids for work that `dev` already
+holds under the old ones, and `dev` would then have to be reset by hand
+after every promotion — a step nobody remembers and no bot may take,
+because the `dev` ruleset refuses a write that did not arrive by pull
+request. A merge commit leaves `dev`'s history untouched, so `dev` is
+simply a few commits behind `main` and needs no maintenance at all. That
+is why `main` does not require a linear history.
 
-Merge commits are disabled repository-wide. Both branches require a
-linear history, so a merge commit could not land anyway; turning the
-option off keeps the choice from being offered.
+`release/vX.Y.Z` is the exception to the one-way flow: the release
+automation opens it against `main` directly, because the version it
+carries describes what is already on `main`, and deletes it once the
+request lands. Nobody writes to that branch by hand.
 
 ### What the rulesets enforce
 
 Neither branch accepts a direct push, a force push, or a deletion. Every
 change arrives as a pull request with `gate` and `version-guard` green.
-A `main` pull request must additionally be up to date with `main` before
-it can merge, and its review threads must be resolved — `main` is the
-branch a consumer installs from, so it is the one that gets the stricter
-gate.
+A `main` pull request must additionally have its review threads resolved
+— `main` is the branch a consumer installs from, so it is the one that
+gets the stricter gate. `dev` additionally requires a linear history,
+which its squash merges give it for free.
 
 Approvals are not required. A gate nobody can satisfy is a gate that gets
 switched off; the checks are the gate here, and a reviewer is welcome
