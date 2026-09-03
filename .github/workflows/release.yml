@@ -2,6 +2,10 @@
 # scripts/release.mjs (zdroj pravdy je registr doc stránek; epochu X
 # zvedá jen commit `release!:`). Vlastní release commit se přeskakuje,
 # jinak by workflow spouštěl sám sebe.
+#
+# Bump verze nejde do main přímo — main přímý push nepřijímá. Skript ho
+# posílá pull requestem s auto-merge, a proto potřebuje víc než zápis do
+# obsahu: založit PR a spustit ci.yml, aby na něm byly povinné checky.
 name: release
 
 on:
@@ -10,6 +14,8 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  actions: write
 
 jobs:
   release:
