@@ -76,7 +76,7 @@ if (tag === null) {
   const version = JSON.parse(readFileSync("package.json", "utf-8")).version;
   console.log(`no release tag yet -> anchoring v${version} at HEAD`);
   if (!DRY) {
-    git("tag", `v${version}`);
+    git("tag", "-a", `v${version}`, "-m", `v${version}`);
     git("push", "origin", `v${version}`);
   }
   process.exit(0);
@@ -123,19 +123,88 @@ console.log(notes);
 
 if (DRY) process.exit(0);
 
+/**
+ * Tag a GitHub release nad tím, co už na main leží.
+ *
+ * Tag je anotovaný záměrně. Dřív se vyráběl lightweight a odesílal se
+ * přes ``--follow-tags``, který ale posílá VÝHRADNĚ anotované tagy —
+ * tag proto na remote nikdy nedorazil, další běh viděl pořád ten starý,
+ * spočítal tutéž verzi a spadl na prázdném commitu. Verze se od té
+ * chvíle nehnula a každý běh svítil červeně.
+ */
+function publish(version, body) {
+  git("tag", "-a", `v${version}`, "-m", `v${version}`);
+  git("push", "origin", `v${version}`);
+  writeFileSync("release-notes.txt", `${body}\n`);
+  execFileSync(
+    "gh",
+    ["release", "create", `v${version}`, "--title", `v${version}`, "--notes-file", "release-notes.txt"],
+    { stdio: "inherit" },
+  );
+}
+
+function gh(...args) {
+  return execFileSync("gh", args, { encoding: "utf-8" }).trim();
+}
+
 const pkgPath = "package.json";
 const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+
+// main už verzi nese: předchozí běh své PR dotáhl, ale na tag už nedošel
+// (spadl, vypršel mu limit, nebo ho slil auto-merge až po jeho konci).
+// Chybí tedy jen tag a release — bump by tu byl podruhé a commit prázdný.
+if (pkg.version === next) {
+  console.log(`package.json už je na v${next} -> dotahuje se jen tag a release`);
+  publish(next, notes);
+  process.exit(0);
+}
+
+// main přímý push nepřijímá, takže bump přijíždí jako každá jiná změna —
+// pull requestem. Větev je krátkoživotná, po sloučení ji smaže samo repo.
+const branch = `release/v${next}`;
+
 pkg.version = next;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
 git("config", "user.name", "ingot-release-bot");
 git("config", "user.email", "noreply@forgmatic.com");
-git("add", "package.json");
+git("checkout", "-b", branch);
+git("add", pkgPath);
 git("commit", "-m", `chore(release): v${next}`);
-git("tag", `v${next}`);
-git("push", "origin", "HEAD:main", "--follow-tags");
+git("push", "origin", branch);
 
-writeFileSync("release-notes.txt", `${notes}\n`);
-execFileSync("gh", ["release", "create", `v${next}`, "--title", `v${next}`, "--notes-file", "release-notes.txt"], {
-  stdio: "inherit",
-});
+gh("pr", "create", "--base", "main", "--head", branch, "--title", `chore(release): v${next}`, "--body", notes);
+
+// PR založený GITHUB_TOKENem nespouští ``pull_request`` workflow — to je
+// pojistka GitHubu proti zacyklení. Povinné checky by tedy nikdy
+// nedorazily a auto-merge by čekal navěky. ``workflow_dispatch`` je
+// dokumentovaná výjimka, kterou GITHUB_TOKEN spustit smí, a jeho check
+// runy sednou na tentýž commit, takže je ruleset uzná.
+gh("workflow", "run", "ci.yml", "--ref", branch);
+gh("pr", "merge", branch, "--auto", "--squash");
+
+// Squash dá sloučení nové id, takže tag musí až na něj — ne na commit
+// větve. Když se merge do limitu nestihne, nic se neztratí: PR dojede
+// samo a tag dotáhne příští běh větví výše.
+const deadline = Date.now() + 20 * 60 * 1000;
+let merged = false;
+while (Date.now() < deadline) {
+  await new Promise((resolve) => setTimeout(resolve, 30_000));
+  const state = gh("pr", "view", branch, "--json", "state", "--jq", ".state");
+  console.log(`PR ${branch}: ${state}`);
+  if (state === "MERGED") {
+    merged = true;
+    break;
+  }
+  if (state === "CLOSED") break;
+}
+
+if (!merged) {
+  console.log(`PR na v${next} se do limitu neslil -> tag dotáhne příští běh`);
+  process.exit(0);
+}
+
+git("checkout", "main");
+git("fetch", "origin", "main");
+git("reset", "--hard", "origin/main");
+publish(next, notes);
