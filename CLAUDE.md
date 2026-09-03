@@ -106,10 +106,11 @@ Work flows one way:
 - A promotion consumes `dev`. The repository deletes a merged pull
   request's head branch, and `dev` is the head of that request; even if
   it survived, rebase merging would have left it holding commit ids that
-  no longer exist on `main`. Recreate it from `main` —
-  `git push origin main:refs/heads/dev` — before opening the next working
-  branch. Repository admins bypass the `dev` ruleset for exactly this one
-  move, and for nothing else.
+  no longer exist on `main`. The `keep-dev` workflow puts it back on top
+  of `main` the moment it goes, which is the state the promotion had to
+  leave it in anyway — so nobody has to remember. Repository admins keep
+  a bypass on the `dev` ruleset for the rare hand correction, and for
+  nothing else.
 
 `release/vX.Y.Z` is the single exception: the release automation opens it
 against `main` directly, because the version it carries describes what is
