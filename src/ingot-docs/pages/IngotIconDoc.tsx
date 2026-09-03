@@ -9,7 +9,14 @@ export const IngotIconDoc: IngotDocPage = {
   // 1.2 — přibyla pošta (``inbox``, ``send``, ``reply``, ``forward``,
   // ``tag``), ``archive``, ``star``, ``user``, ``building`` a ``more``.
   // Sada je širší, volající nemusí sáhnout na nic.
-  version: "1.2",
+  //
+  // 1.3 (KAN-784) — přibyl ``star-filled``, první a zatím jediná výplň
+  // v sadě. Rozhodnutí vlastníka: dva TVARY se čtou i v šedotónu, dvě
+  // barvy ne, a označené vlákno se dnes od neoznačeného liší jen barvou.
+  // Slib „výplň v sadě není a nebude“ se proto změkčil na úzkou výjimku,
+  // ne zrušil — přepsaná sekce Limity ji drží. Volající nemusí sáhnout
+  // na nic.
+  version: "1.3",
   tag: "[data-icon]",
   tokens: ["currentColor"],
   summary: {
@@ -145,6 +152,13 @@ export const IngotIconDoc: IngotDocPage = {
         Barva jde z <IngotCode>currentColor</IngotCode>. Kontrast tedy
         neřeší ikona, ale text kolem ní — a mění se s motivem spolu s ním.
       </>,
+      <>
+        <strong>Stav nesmí stát jen na barvě.</strong> Přepnutý stav si
+        vezme druhý tvar (<IngotCode>star</IngotCode> →{" "}
+        <IngotCode>star-filled</IngotCode>), protože barvoslepý uživatel
+        rozdíl žluté a šedé nevidí a <IngotCode>aria-pressed</IngotCode>{" "}
+        neuslyší — ten je pro odečítač. Obojí je potřeba, ne jedno z toho.
+      </>,
     ],
     en: [
       <>
@@ -161,6 +175,14 @@ export const IngotIconDoc: IngotDocPage = {
         The colour comes from <IngotCode>currentColor</IngotCode>. Contrast
         is therefore decided by the surrounding text, and follows the theme
         with it.
+      </>,
+      <>
+        <strong>State must not rest on colour alone.</strong> A toggled
+        state takes the second shape (<IngotCode>star</IngotCode> →{" "}
+        <IngotCode>star-filled</IngotCode>), because a colour-blind reader
+        cannot see yellow against grey and will never hear{" "}
+        <IngotCode>aria-pressed</IngotCode> — that one is for the screen
+        reader. Both are needed, not either.
       </>,
     ],
   },
@@ -189,8 +211,21 @@ export const IngotIconDoc: IngotDocPage = {
   limits: {
     cs: [
       <>
-        Sada je jednobarevná čára. Vícebarevný glyf, výplň ani obrázek
-        v ní není a nebude.
+        Sada je jednobarevná čára. Vícebarevný glyf ani obrázek v ní není
+        a nebude.
+      </>,
+      <>
+        Výplň je jediná výjimka a má podmínky: smí být jen{" "}
+        <IngotCode>currentColor</IngotCode> a smí vzniknout jen jako druhý{" "}
+        <strong>tvar</strong> k čárovému glyfu, který nese stav — dnes{" "}
+        <IngotCode>star</IngotCode> a <IngotCode>star-filled</IngotCode>.
+        Důvod je čitelnost: dva tvary se přečtou i v šedotónu, dvě barvy
+        ne. Dekorativní výplň do sady nepatří.
+      </>,
+      <>
+        Pár se pozná podle jména (<IngotCode>-filled</IngotCode>), ne podle
+        vlastnosti. Až budou páry víc než tři, překlopí se to na
+        vlastnost — s dvěma jmény by vlastnost jen zesložitila typ za nic.
       </>,
       <>
         Pět starších sad v repu (<IngotCode>platformProcessesIcons</IngotCode>,{" "}
@@ -201,8 +236,23 @@ export const IngotIconDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The set is single-colour line art. A multi-colour glyph, a fill or
-        a bitmap is not in it and will not be.
+        The set is single-colour line art. A multi-colour glyph or a bitmap
+        is not in it and will not be.
+      </>,
+      <>
+        A fill is the one exception, and it comes with conditions: it may
+        only be <IngotCode>currentColor</IngotCode>, and it may only exist
+        as a second <strong>shape</strong> for a line glyph that carries a
+        state — today <IngotCode>star</IngotCode> and{" "}
+        <IngotCode>star-filled</IngotCode>. The reason is legibility: two
+        shapes read in greyscale, two colours do not. A decorative fill
+        does not belong in the set.
+      </>,
+      <>
+        The pair is told apart by name (<IngotCode>-filled</IngotCode>), not
+        by a prop. Once there are more than three pairs this flips to a
+        prop — with two names a prop would only complicate the type for
+        nothing.
       </>,
       <>
         Five older sets in this repo (<IngotCode>platformProcessesIcons</IngotCode>,{" "}
