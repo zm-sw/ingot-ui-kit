@@ -1,4 +1,4 @@
-import { type JSX } from "react";
+import { type JSX, type Ref } from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
@@ -15,6 +15,12 @@ import { IngotIcon } from "./IngotIcon";
  * ``type="search"`` dává prohlížečové vymazání křížkem zadarmo.
  *
  * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ *
+ * 🪤 ``inputRef`` míří na ten ``<input>`` schválně, a ne na obal: obrazovka
+ * s klávesovou zkratkou „skoč do hledání“ na pole jinak nedosáhne a sáhne
+ * si do vnitřku primitiva (``wrap.querySelector("input")``). Takové
+ * sáhnutí přejmenování elementu uvnitř kitu tiše rozbije a žádný test kitu
+ * to nechytí — proto je cesta ven součástí API, ne náhoda.
  */
 export function IngotSearchInput({
   value,
@@ -22,6 +28,7 @@ export function IngotSearchInput({
   label,
   placeholder,
   disabled = false,
+  inputRef,
   className,
   testId,
 }: {
@@ -32,6 +39,11 @@ export function IngotSearchInput({
   /** Přeložený placeholder. Nápověda formátu, ne jméno pole. */
   placeholder?: string;
   disabled?: boolean;
+  /**
+   * Ref na samotné pole — pro klávesovou zkratku, která do hledání skáče.
+   * Ne na „fokus po mountu“; ten patří prohlížeči přes ``autoFocus``.
+   */
+  inputRef?: Ref<HTMLInputElement>;
   /** Průchozí třída — šířku určuje obrazovka, vzhled primitivum. */
   className?: string;
   testId?: string;
@@ -45,6 +57,7 @@ export function IngotSearchInput({
         aria-hidden
       />
       <input
+        ref={inputRef}
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}

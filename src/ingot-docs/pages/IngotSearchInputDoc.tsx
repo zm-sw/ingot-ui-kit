@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotSearchInputDoc: IngotDocPage = {
   name: "IngotSearchInput",
   status: "beta",
-  version: "1.0",
+  // 1.1 — přibyl ``inputRef``. Volající nemusí sáhnout na nic.
+  version: "1.1",
   tag: ".search",
   tokens: ["--surface", "--border-strong", "--ink", "--ink-4", "--r-md", "--shadow-sm"],
   summary: {
@@ -108,6 +109,15 @@ export const IngotSearchInputDoc: IngotDocPage = {
       },
     },
     {
+      name: "inputRef",
+      type: "React.Ref<HTMLInputElement>",
+      required: false,
+      note: {
+        cs: "Ref na samotné pole — pro klávesovou zkratku, která do hledání skáče. Ne na fokus po mountu; ten patří autoFocus.",
+        en: "A ref to the field itself — for the keyboard shortcut that jumps into search. Not for focus on mount; that is what autoFocus is for.",
+      },
+    },
+    {
       name: "className",
       type: "string",
       required: false,
@@ -137,6 +147,12 @@ export const IngotSearchInputDoc: IngotDocPage = {
         <IngotCode>type="search"</IngotCode> dává prohlížečový křížek na
         vymazání a odečítači roli hledacího pole zadarmo.
       </>,
+      <>
+        Klávesová zkratka, která do hledání skáče, si pole vezme přes{" "}
+        <IngotCode>inputRef</IngotCode> — ne hledáním{" "}
+        <IngotCode>&lt;input&gt;</IngotCode> uvnitř obalu. Vnitřek primitiva
+        se smí přejmenovat, vlastnost ne.
+      </>,
     ],
     en: [
       <>
@@ -147,6 +163,12 @@ export const IngotSearchInputDoc: IngotDocPage = {
       <>
         <IngotCode>type="search"</IngotCode> gives the browser's clear cross
         and the search-field role for free.
+      </>,
+      <>
+        A keyboard shortcut that jumps into search takes the field through{" "}
+        <IngotCode>inputRef</IngotCode> — not by looking for the{" "}
+        <IngotCode>&lt;input&gt;</IngotCode> inside the wrapper. The inside of
+        a primitive may be renamed; a prop may not.
       </>,
     ],
   },
