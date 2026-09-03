@@ -22,7 +22,7 @@ export function Demo(): JSX.Element {
             title: "Denní provoz",
             items: [
               {
-                href: "#/IngotMegaMenu",
+                href: "#objednavky",
                 label: "Objednávky",
                 description:
                   "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu.",
@@ -31,7 +31,7 @@ export function Demo(): JSX.Element {
                 current: true,
               },
               {
-                href: "#/IngotMegaMenu",
+                href: "#poptavky",
                 label: "Poptávky",
                 description:
                   "Nacenění, která zákazník zatím nepotvrdil. Stárnoucí poptávka je první kandidát na telefonát.",
@@ -39,7 +39,7 @@ export function Demo(): JSX.Element {
                 count: 48,
               },
               {
-                href: "#/IngotMegaMenu",
+                href: "#expedice",
                 label: "Expedice",
                 description:
                   "Zabalené zakázky a štítky dopravců. Co tu leží přes noc, mělo být pryč.",
@@ -52,14 +52,14 @@ export function Demo(): JSX.Element {
             title: "Katalog",
             items: [
               {
-                href: "#/IngotMegaMenu",
+                href: "#materialy",
                 label: "Materiály",
                 description:
                   "Skladové položky a jejich vlastnosti — tloušťky, jakosti, ceny.",
                 icon: <IngotIcon name="grid" size={15} />,
               },
               {
-                href: "#/IngotMegaMenu",
+                href: "#operace",
                 label: "Operace",
                 description:
                   "Výrobní operace a jejich parametry. Změna se projeví v nacenění.",

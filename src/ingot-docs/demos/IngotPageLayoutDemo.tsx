@@ -12,9 +12,9 @@ export function Demo(): JSX.Element {
         <IngotSideNav
           label="Obsah nastavení"
           items={[
-            { href: "#/IngotPageLayout", label: "Profil firmy", current: true },
-            { href: "#/IngotPageLayout", label: "Daňové údaje" },
-            { href: "#/IngotPageLayout", label: "Číslování dokladů" },
+            { href: "#profil-firmy", label: "Profil firmy", current: true },
+            { href: "#danove-udaje", label: "Daňové údaje" },
+            { href: "#cislovani-dokladu", label: "Číslování dokladů" },
           ]}
         />
       }
