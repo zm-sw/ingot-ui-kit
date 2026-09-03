@@ -6,9 +6,10 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotIconDoc: IngotDocPage = {
   name: "IngotIcon",
   status: "stable",
-  // 1.1 — přibyl glyf ``menu``; sada je o jednu ikonu širší, volající
-  // nemusí sáhnout na nic.
-  version: "1.1",
+  // 1.2 — přibyla pošta (``inbox``, ``send``, ``reply``, ``forward``,
+  // ``tag``), ``archive``, ``star``, ``user``, ``building`` a ``more``.
+  // Sada je širší, volající nemusí sáhnout na nic.
+  version: "1.2",
   tag: "[data-icon]",
   tokens: ["currentColor"],
   summary: {

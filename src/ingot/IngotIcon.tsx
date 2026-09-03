@@ -4,7 +4,9 @@ import type { ReactNode } from "react";
  * Ikonová vrstva kitu — sada rozhraní (KAN-649).
  *
  * Geometrie je převzatá z design handoffu Ingot v0.1
- * (``design_handoff_ingot/assets/icons.js``), technika je jeho:
+ * (``design_handoff_ingot/assets/icons.js``) a — u poštovní pětice,
+ * hvězdy, archivu a tří teček — z návrhu obrazovky Pošta, který kreslí
+ * touž rukou. Technika je handoffu:
  * viewBox 24×24, ``fill="none"``, ``stroke="currentColor"``, tloušťka
  * 1.6 se jmenovitými výjimkami, kulaté konce i spoje. Ikona se tedy
  * barví ``color`` rodiče a škáluje ``size`` — žádná vlastní paleta.
@@ -75,6 +77,13 @@ const GLYPHS = {
       <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     </>
   ),
+  "archive": (
+    <>
+      <polyline points="21 8 21 21 3 21 3 8" />
+      <rect x={1} y={3} width={22} height={5} />
+      <line x1={10} y1={12} x2={14} y2={12} />
+    </>
+  ),
   // --- stav ---
   "check": <polyline points="20 6 9 17 4 12" />,
   "alert": (
@@ -91,6 +100,7 @@ const GLYPHS = {
       <line x1={12} y1={8} x2={12.01} y2={8} />
     </>
   ),
+  "star": <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />,
   "shield": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
   "bolt": <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
   // --- šipky a navigace ---
@@ -152,6 +162,54 @@ const GLYPHS = {
     </>
   ),
   "chat": <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
+  // --- pošta ---
+  //
+  // ``mail`` a ``chat`` výše jsou o kanálu; tahle pětice je o tom, co
+  // se se zprávou dělá. Schránka má vlastní glyf, protože „složka
+  // s poštou" a „obálka" znamenají v jednom rozhraní dvě různé věci.
+  "inbox": (
+    <>
+      <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+      <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+    </>
+  ),
+  "send": (
+    <>
+      <path d="M22 2L11 13" />
+      <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+    </>
+  ),
+  "reply": (
+    <>
+      <polyline points="9 17 4 12 9 7" />
+      <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
+    </>
+  ),
+  "forward": (
+    <>
+      <polyline points="15 17 20 12 15 7" />
+      <path d="M4 18v-2a4 4 0 0 1 4-4h12" />
+    </>
+  ),
+  "tag": (
+    <>
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+      <line x1={7} y1={7} x2={7.01} y2={7} />
+    </>
+  ),
+  // --- lidé a firmy ---
+  "user": (
+    <>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx={12} cy={7} r={4} />
+    </>
+  ),
+  "building": (
+    <>
+      <rect x={4} y={3} width={16} height={18} rx={1.5} />
+      <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M10 21v-4h4v4" />
+    </>
+  ),
   "map": (
     <>
       <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
@@ -243,6 +301,13 @@ const GLYPHS = {
       <circle cx={15} cy={5} r={1} />
       <circle cx={15} cy={12} r={1} />
       <circle cx={15} cy={19} r={1} />
+    </>
+  ),
+  "more": (
+    <>
+      <circle cx={5} cy={12} r={1} />
+      <circle cx={12} cy={12} r={1} />
+      <circle cx={19} cy={12} r={1} />
     </>
   ),
   // --- doplněk mimo handoff ---
