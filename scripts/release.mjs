@@ -147,6 +147,13 @@ function gh(...args) {
   return execFileSync("gh", args, { encoding: "utf-8" }).trim();
 }
 
+// Identita musí stát před vším, co zapisuje do historie. Anotovaný tag
+// je plnohodnotný objekt s autorem, takže ji potřebuje stejně jako
+// commit — a zkratka níž, která dotahuje jen tag, se k žádnému commitu
+// nedostane.
+git("config", "user.name", "ingot-release-bot");
+git("config", "user.email", "noreply@forgmatic.com");
+
 const pkgPath = "package.json";
 const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
@@ -166,8 +173,6 @@ const branch = `release/v${next}`;
 pkg.version = next;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
-git("config", "user.name", "ingot-release-bot");
-git("config", "user.email", "noreply@forgmatic.com");
 git("checkout", "-b", branch);
 git("add", pkgPath);
 git("commit", "-m", `chore(release): v${next}`);
