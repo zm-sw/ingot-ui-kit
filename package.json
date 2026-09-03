@@ -1,6 +1,6 @@
 {
   "name": "@forgmatic/ingot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Ingot UI Kit — the Forgmatic admin design system. Source-distributed React + Tailwind primitives, plus the public doc web (ingot.forgmatic.com).",
   "license": "MIT",
   "repository": {
