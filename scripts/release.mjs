@@ -167,7 +167,7 @@ if (pkg.version === next) {
 }
 
 // main přímý push nepřijímá, takže bump přijíždí jako každá jiná změna —
-// pull requestem. Větev je krátkoživotná, po sloučení ji smaže samo repo.
+// pull requestem. Větev je krátkoživotná — skript ji po sloučení uklidí.
 const branch = `release/v${next}`;
 
 pkg.version = next;
@@ -249,4 +249,10 @@ if (!merged) {
 git("checkout", "main");
 git("fetch", "origin", "main");
 git("reset", "--hard", "origin/main");
+
+// Repo hlavy slitých requestů nemaže — dev by tím po každé promoci
+// zmizela. Release si tedy po sobě uklidí sám, jinak by tu po každé
+// verzi zůstala viset jedna mrtvá větev.
+git("push", "origin", "--delete", branch);
+
 publish(next, notes);
