@@ -11,6 +11,11 @@ import type { ReactNode } from "react";
  * 1.6 se jmenovitými výjimkami, kulaté konce i spoje. Ikona se tedy
  * barví ``color`` rodiče a škáluje ``size`` — žádná vlastní paleta.
  *
+ * Výplň je v sadě JEDNA výjimka a je pojmenovaná: ``star-filled``. Smí
+ * vzniknout jen jako ``currentColor`` a jen jako druhý TVAR k čárovému
+ * glyfu, který nese stav — dva tvary se čtou i v šedotónu, dvě barvy ne.
+ * Dekorativní ani vícebarevná výplň do sady nepatří.
+ *
  * 🚨 **Nekresli novou ikonu inline.** Před tímhle souborem byl v repu
  * pět nesouvisejících ostrůvků (``processIconLibrary``,
  * ``platformProcessesIcons``, ``plans/icons``, ``storageTypeIcons``,
@@ -101,6 +106,21 @@ const GLYPHS = {
     </>
   ),
   "star": <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />,
+  // 🪤 Jediná výplň v sadě, a je to výjimka s důvodem. Označené vlákno
+  // se od neoznačeného dnes liší jen barvou, a žluto-šedý pár je přesně
+  // ten, který barvosleposti stírají nejvíc; odečítač má ``aria-pressed``,
+  // ale sighted barvoslepý uživatel ho nikdy neuslyší. Druhý TVAR je
+  // čitelný i v šedotónu.
+  //
+  // Podmínky, za kterých výplň do sady patří, drží sekce Limity na doc
+  // stránce: jen ``currentColor``, jen jako druhý tvar k existujícímu
+  // čárovému glyfu, který nese stav. Dekorativní výplň v sadě není.
+  "star-filled": (
+    <polygon
+      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+      fill="currentColor"
+    />
+  ),
   "shield": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
   "bolt": <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
   // --- šipky a navigace ---
