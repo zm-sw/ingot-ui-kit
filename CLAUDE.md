@@ -82,6 +82,43 @@ without moving a `version:` on a doc page — the release automation
 stands on those versions, so a version that does not move is a release
 that never ships.
 
+## The remote holds exactly two branches
+
+`main` and `dev` are the only long-lived branches. Everything else is a
+working branch: it exists while its pull request is open and is deleted
+the moment that request is merged or closed. A branch on the remote with
+no open pull request is a finding, not a leftover — stale branches are
+how a repository stops telling the truth about what is in flight.
+
+Work flows one way:
+
+- A working branch starts from `dev` and returns to `dev` by pull
+  request, **squash** merged. One feature, one commit on `dev`.
+- `dev` reaches `main` by pull request, **rebase** merged, when a batch
+  is ready to release. `main` is what ships; `dev` is where things are
+  proven first.
+- Rebase merging rewrites the commit ids, so after a promotion `dev` no
+  longer matches `main`. Reset it — `git push --force origin main:dev` —
+  before opening the next working branch. Repository admins bypass the
+  `dev` ruleset for exactly this one move, and for nothing else.
+
+Merge commits are disabled repository-wide. Both branches require a
+linear history, so a merge commit could not land anyway; turning the
+option off keeps the choice from being offered.
+
+### What the rulesets enforce
+
+Neither branch accepts a direct push, a force push, or a deletion. Every
+change arrives as a pull request with `gate` and `version-guard` green.
+A `main` pull request must additionally be up to date with `main` before
+it can merge, and its review threads must be resolved — `main` is the
+branch a consumer installs from, so it is the one that gets the stricter
+gate.
+
+Approvals are not required. A gate nobody can satisfy is a gate that gets
+switched off; the checks are the gate here, and a reviewer is welcome
+rather than mandatory.
+
 ## Before pushing
 
 ```bash
