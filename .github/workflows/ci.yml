@@ -1,9 +1,14 @@
 name: ci
 
+# ``workflow_dispatch`` tu není pro ruční spouštění, ale pro release:
+# PR, které založí GITHUB_TOKEN, nespustí ``pull_request`` běh, takže by
+# se povinné checky na release PR nikdy neobjevily a auto-merge by čekal
+# navěky. Dispatch je výjimka, kterou GITHUB_TOKEN spustit smí.
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   gate:
@@ -25,7 +30,9 @@ jobs:
         run: npx vite build
 
   version-guard:
-    if: ${{ github.event_name == 'pull_request' }}
+    # Na pushi do main nemá co porovnávat; na dispatchi ano — a musí
+    # doběhnout, jinak by povinný check na release PR chyběl.
+    if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,4 +42,4 @@ jobs:
         with:
           node-version: 22
       - name: Component change requires a version bump
-        run: node scripts/version_guard.mjs origin/${{ github.base_ref }}
+        run: node scripts/version_guard.mjs origin/${{ github.base_ref || 'main' }}

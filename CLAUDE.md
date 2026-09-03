@@ -70,6 +70,12 @@ developer is the point of the system.
 `scripts/release.mjs` (GitHub Actions, on every push to `main`). Never
 edit them by hand.
 
+The bump reaches `main` the same way everything else does — as a pull
+request from `release/vX.Y.Z` that merges itself once the checks pass.
+The tag is cut afterwards, on the merged commit, and it is annotated:
+`git push --follow-tags` carries annotated tags only, and a lightweight
+one silently never leaves the runner.
+
 - **Z** — anything that changed since the last tag (component patches,
   tokens, docs, chrome).
 - **Y** — a new primitive, or a MAJOR bump of any component (read from
@@ -101,6 +107,10 @@ Work flows one way:
   longer matches `main`. Reset it — `git push --force origin main:dev` —
   before opening the next working branch. Repository admins bypass the
   `dev` ruleset for exactly this one move, and for nothing else.
+
+`release/vX.Y.Z` is the single exception: the release automation opens it
+against `main` directly, because the version it carries describes what is
+already on `main`. Nobody writes to that branch by hand.
 
 Merge commits are disabled repository-wide. Both branches require a
 linear history, so a merge commit could not land anyway; turning the
