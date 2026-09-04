@@ -192,6 +192,26 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                   Počet u položky je mono — je to číslo k porovnání
                   s ostatními řádky.
                 </>,
+                <>
+                  <strong>Sloupce rostou z obsahu</strong>, nemá je pevná
+                  mřížka. Skutečné sekce mají jednu až osm položek, takže
+                  natvrdo tři sloupce znamenají u většiny z nich dva prázdné
+                  — a prázdný sloupec čtenáři tvrdí, že mu něco chybí.
+                </>,
+                <>
+                  <strong>Náhled sleduje čtenáře, nezůstává na první
+                  položce.</strong> Popis té, na které stojí, je odpověď na
+                  otázku, kterou si zrovna klade; popis první položky by u
+                  osmé odpovídal na otázku, kterou si položil před chvílí.
+                  Kresba sekce nad textem zůstává — je to znak sekce, ne
+                  ilustrace položky.
+                </>,
+                <>
+                  Z klávesnice panel obsluhuje šipka: otevře sekci a
+                  prochází položky. <IngotCode>Tab</IngotCode> z otevřeného
+                  panelu nevypadne, <IngotCode>Esc</IngotCode> ho zavře a
+                  vrátí fokus na tlačítko sekce.
+                </>,
               ]
             : [
                 <>
@@ -208,6 +228,29 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   The count next to an item is mono — it is a number meant to
                   be compared with the rows around it.
+                </>,
+                <>
+                  <strong>Columns grow from the content</strong>, they are not
+                  a fixed grid. Real sections hold one to eight items, so
+                  three hard-coded columns leave most of them with two empty
+                  ones — and an empty column tells the reader something is
+                  missing.
+                </>,
+                <>
+                  <strong>The preview follows the reader; it does not stay on
+                  the first item.</strong> Describing the item they are on
+                  answers the question they are asking right now; describing
+                  the first item would, at the eighth, answer the one they
+                  asked a moment ago. The section's drawing above the text
+                  stays — it marks the section, it does not illustrate the
+                  item.
+                </>,
+                <>
+                  From the keyboard the arrow keys drive the panel: they open
+                  the section and walk its items.{" "}
+                  <IngotCode>Tab</IngotCode> does not fall out of an open
+                  panel, and <IngotCode>Esc</IngotCode> closes it and returns
+                  focus to the section button.
                 </>,
               ]
         }
@@ -350,6 +393,32 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
           label={cs ? "Přehled objednávek" : "Order summary"}
         />
       </div>
+      <p>
+        {cs
+          ? "Vpravo v hlavičce stojí akce, NEBO čísla — ne obojí. Obrazovka, na které se nic nezakládá, tam má místo tlačítek shluk dvou tří čísel; je to tatáž komponenta jako pruh, jen hustší."
+          : "The right side of the header holds actions OR numbers — not both. A screen where nothing gets created puts a cluster of two or three numbers there instead of buttons; it is the same component as the strip, only denser."}
+      </p>
+      <div className={`${STAGE} bg-surface`}>
+        <IngotPageHeader
+          title={cs ? "Vytížení strojů" : "Machine load"}
+          description={
+            cs
+              ? "Plán na příští týden podle dnešních potvrzených objednávek."
+              : "Next week's plan from today's confirmed orders."
+          }
+          actions={
+            <IngotMetrics
+              variant="inline"
+              items={[
+                { label: cs ? "strojů" : "machines", value: 6 },
+                { label: cs ? "volných hodin" : "free hours", value: "37 / 240" },
+                { label: cs ? "přetížených" : "overloaded", value: 1, tone: "danger" },
+              ]}
+              label={cs ? "Vytížení" : "Load"}
+            />
+          }
+        />
+      </div>
       <IngotList
         items={
           cs
@@ -357,6 +426,12 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   Primární akce je právě jedna a stojí vpravo v hlavičce.
                   Nikdy neplave nad obsahem.
+                </>,
+                <>
+                  Čísla v hlavičce a pruh pod ní jsou <strong>dvě hustoty
+                  téže komponenty</strong>, ne dvě komponenty. Do hlavičky
+                  se vejdou dvě až tři čísla, do pruhu čtyři až šest —
+                  a obojí naráz je z obrazovky přehled o přehledu.
                 </>,
                 <>
                   Poslední drobeček není odkaz — je to místo, kde stojíš. Na
@@ -371,6 +446,13 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   There is exactly one primary action and it sits at the top
                   right of the header. It never floats above the content.
+                </>,
+                <>
+                  The numbers in the header and the strip below it are{" "}
+                  <strong>two densities of one component</strong>, not two
+                  components. Two or three numbers fit in the header, four to
+                  six in the strip — and both at once turns the screen into
+                  an overview of an overview.
                 </>,
                 <>
                   The last breadcrumb is not a link — it is where you stand.
