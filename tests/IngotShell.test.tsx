@@ -18,6 +18,8 @@
  *   seděla.
  */
 
+import { useState } from "react";
+
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -199,6 +201,143 @@ describe("IngotTopNav", () => {
     const account = screen.getByRole("button", { name: "Menu účtu" });
     expect(account).toHaveAttribute("aria-expanded", "true");
     expect(account).toHaveTextContent("8S");
+  });
+});
+
+/**
+ * Klávesnice v otevřeném panelu.
+ *
+ * Menu, které se otevírá hoverem, se z klávesnice snadno stane past:
+ * panel je vidět, ale fokus je pořád na tlačítku a šipka jím jen odroluje
+ * stránku. Tyhle testy měří tři místa, kde se to láme a kde je špatná
+ * varianta na pohled k nerozeznání od správné — panel v obou případech
+ * svítí stejně.
+ *
+ * Stav sekce drží volající, takže i harness je řízený: kdyby se testovalo
+ * proti napevno otevřené sekci, „šipka na zavřené sekci otevře a skočí
+ * dovnitř" by se nedalo změřit vůbec.
+ */
+describe("IngotTopNav klávesnice", () => {
+  function Bar(): JSX.Element {
+    const [open, setOpen] = useState<string | null>(null);
+    return (
+      <IngotTopNav
+        brand="Forgmatic"
+        sections={[
+          { key: "provoz", label: "Provoz" },
+          { key: "sklad", label: "Sklad" },
+        ]}
+        openSection={open}
+        onOpenSection={setOpen}
+        onCloseSection={() => setOpen(null)}
+        renderMenu={() => (
+          <IngotMegaMenu
+            groups={[
+              {
+                items: [
+                  { href: "#a", label: "Objednávky" },
+                  { href: "#b", label: "Poptávky" },
+                  { href: "#c", label: "Materiály" },
+                ],
+              },
+            ]}
+            label="Provoz"
+          />
+        )}
+      />
+    );
+  }
+
+  const item = (name: string) => screen.getByRole("link", { name });
+
+  it("šipka dolů na zavřené sekci ji otevře a skočí na první položku", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    const provoz = screen.getByRole("button", { name: "Provoz" });
+    provoz.focus();
+    await user.keyboard("{ArrowDown}");
+
+    expect(provoz).toHaveAttribute("aria-expanded", "true");
+    expect(item("Objednávky")).toHaveFocus();
+  });
+
+  it("šipka nahoru na zavřené sekci skočí na poslední položku", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    screen.getByRole("button", { name: "Provoz" }).focus();
+    await user.keyboard("{ArrowUp}");
+
+    expect(item("Materiály")).toHaveFocus();
+  });
+
+  it("šipky procházejí položky a na konci se vrátí na začátek", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    screen.getByRole("button", { name: "Provoz" }).focus();
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    expect(item("Poptávky")).toHaveFocus();
+
+    await user.keyboard("{ArrowUp}");
+    expect(item("Objednávky")).toHaveFocus();
+
+    // Přes první položku nahoru se vychází na poslední, ne mimo panel.
+    await user.keyboard("{ArrowUp}");
+    expect(item("Materiály")).toHaveFocus();
+
+    await user.keyboard("{ArrowDown}");
+    expect(item("Objednávky")).toHaveFocus();
+  });
+
+  it("Tab z otevřeného panelu nevypadne — obejde jeho položky", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    screen.getByRole("button", { name: "Provoz" }).focus();
+    await user.keyboard("{ArrowDown}");
+
+    await user.tab();
+    expect(item("Poptávky")).toHaveFocus();
+    await user.tab();
+    expect(item("Materiály")).toHaveFocus();
+
+    // Poslední položka nevede na sousední sekci, ale zpátky na první.
+    await user.tab();
+    expect(item("Objednávky")).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Sklad" })).not.toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(item("Materiály")).toHaveFocus();
+  });
+
+  it("Escape zavře panel a vrátí fokus na tlačítko sekce", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    const provoz = screen.getByRole("button", { name: "Provoz" });
+    provoz.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(item("Objednávky")).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+
+    expect(provoz).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("link", { name: "Objednávky" })).not.toBeInTheDocument();
+    // Bez tohohle by fokus spadl na <body> a čtenář by se probral na
+    // začátku stránky — u menu otevřeného šipkou o krok zpátky.
+    expect(provoz).toHaveFocus();
+  });
+
+  it("zavřená sekce klávesnici nechává být — Tab jde na další sekci", async () => {
+    const user = userEvent.setup();
+    render(<Bar />);
+
+    screen.getByRole("button", { name: "Provoz" }).focus();
+    await user.tab();
+
+    expect(screen.getByRole("button", { name: "Sklad" })).toHaveFocus();
   });
 });
 

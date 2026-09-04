@@ -19,7 +19,10 @@ export const IngotTopNavDoc: IngotDocPage = {
   // 2.4: ``current`` zvýrazňuje i menu sekci (skupinu s aktivní routou).
   // 2.5: sekce může nést vlastní ``testId`` — konverze nepřejmenovává
   // kotvy existujících testů a e2e. 2.6: ``muted`` na odkazové sekci.
-  version: "2.6",
+  // 2.7: klávesnice v otevřeném panelu — šipky procházejí položky, Tab
+  // z panelu nevypadne a Escape vrací fokus na tlačítko sekce. Návrat
+  // fokusu tahle stránka slibovala od 2.0, ale kód ho nedělal.
+  version: "2.7",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
@@ -379,7 +382,21 @@ export const IngotTopNavDoc: IngotDocPage = {
       <>
         <IngotCode>Esc</IngotCode> zavírá menu a vrací fokus na tlačítko
         sekce. Zavírání drží volající, protože jen on ví, jestli se má
-        menu zavřít i po prokliku.
+        menu zavřít i po prokliku. Návrat fokusu drží lišta — zmizelý
+        panel by ho jinak zahodil na začátek stránky.
+      </>,
+      <>
+        <IngotCode>ArrowDown</IngotCode> a <IngotCode>ArrowUp</IngotCode>{" "}
+        na tlačítku sekci otevřou a skočí na první, resp. poslední
+        položku; uvnitř panelu procházejí položky dokola. Menu, které se
+        otevírá najetím myší, je bez toho z klávesnice past: panel je
+        vidět, ale fokus zůstal na tlačítku.
+      </>,
+      <>
+        <IngotCode>Tab</IngotCode> z otevřeného panelu{" "}
+        <strong>nevypadne</strong> — obchází jeho položky. Odejít doprostřed
+        lišty a nechat si panel viset za zády je stav, ze kterého se čtenář
+        nedostane zpátky; ven vede <IngotCode>Esc</IngotCode>.
       </>,
     ],
     en: [
@@ -402,7 +419,23 @@ export const IngotTopNavDoc: IngotDocPage = {
       <>
         <IngotCode>Esc</IngotCode> closes the menu and returns focus to the
         section button. Closing is the caller's, because only they know
-        whether the menu should also close after a click-through.
+        whether the menu should also close after a click-through. The
+        focus return is the bar's — a vanished panel would otherwise drop
+        focus at the top of the page.
+      </>,
+      <>
+        <IngotCode>ArrowDown</IngotCode> and <IngotCode>ArrowUp</IngotCode>{" "}
+        on the button open the section and jump to its first or last item;
+        inside the panel they walk the items and wrap around. Without that,
+        a menu that opens on hover is a keyboard trap: the panel is
+        visible, but focus stayed on the button.
+      </>,
+      <>
+        <IngotCode>Tab</IngotCode> does <strong>not</strong> fall out of an
+        open panel — it cycles through its items. Walking off into the
+        middle of the bar with the panel left hanging behind you is a state
+        there is no way back from; <IngotCode>Esc</IngotCode> is the way
+        out.
       </>,
     ],
   },

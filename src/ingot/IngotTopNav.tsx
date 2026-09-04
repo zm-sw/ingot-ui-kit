@@ -31,7 +31,16 @@ import { IngotIcon } from "./IngotIcon";
  * takže panel už je v tu chvíli hoverem otevřený a toggle by ho zase
  * zhasnul. Zavírá odjezd myší (se 120ms prodlevou, aby cesta z tlačítka
  * do panelu nezhasla), klik mimo lištu, ``Escape`` a volající po
- * prokliku položky. Z klávesnice otevírá ``ArrowDown`` nebo ``Enter``.
+ * prokliku položky.
+ *
+ * **Z klávesnice je panel obsluha sama pro sebe.** ``ArrowDown`` /
+ * ``ArrowUp`` na tlačítku sekci otevře a skočí na první / poslední
+ * položku, uvnitř panelu procházejí položky dokola. ``Tab`` z otevřeného
+ * panelu NEVYPADNE — obchází jeho položky, protože odejít doprostřed
+ * lišty a nechat si panel viset za zády je stav, ze kterého se čtenář
+ * nedostane zpátky. Ven vede ``Escape``: zavře panel a vrátí fokus na
+ * tlačítko sekce (zmizelý panel by ho jinak zahodil na začátek stránky).
+ * ``Enter`` otevírá jako klik.
  *
  * **Panel se kotví pod svou sekcí**, ne pod levým okrajem lišty:
  * ``renderMenu(key)`` se vykreslí do relativního obalu otevřené sekce.
@@ -91,6 +100,24 @@ export interface IngotTopNavSection {
 
 /** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
 const CLOSE_DELAY_MS = 120;
+
+/**
+ * Položky otevřeného panelu v pořadí, v jakém je čtenář vidí.
+ *
+ * Panel je poslední dítě obalu sekce (první je tlačítko), takže se
+ * hledá pozicí, ne třídou ani ``data-`` značkou: ``renderMenu`` smí
+ * vrátit cokoli a klávesnice mu do markupu nemá co mluvit. Zamčená
+ * položka je tlačítko, ne odkaz — proto oboje.
+ */
+function menuItems(section: HTMLElement | null): HTMLElement[] {
+  const panel = section?.lastElementChild;
+  if (panel === undefined || panel === null || panel === section?.firstElementChild) {
+    return [];
+  }
+  return Array.from(
+    panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+  );
+}
 
 export function IngotTopNav({
   brand,
@@ -165,6 +192,22 @@ export function IngotTopNav({
     }, CLOSE_DELAY_MS);
   };
   useEffect(() => cancelClose, []);
+
+  //: Šipka na ZAVŘENÉ sekci musí nejdřív otevřít panel a teprve pak do něj
+  //: skočit — v tu chvíli ale panel ještě není vykreslený, protože stav drží
+  //: volající. Přání se proto odloží sem a vybere ho efekt po překreslení.
+  const pendingFocus = useRef<"first" | "last" | null>(null);
+  useEffect(() => {
+    const want = pendingFocus.current;
+    if (want === null) return;
+    pendingFocus.current = null;
+    if (openSection === null) return;
+    const section = Array.from(
+      wrapperRef.current?.querySelectorAll<HTMLElement>("[data-ingot-section]") ?? [],
+    ).find((el) => el.dataset.ingotSection === openSection);
+    const items = menuItems(section ?? null);
+    (want === "first" ? items[0] : items[items.length - 1])?.focus();
+  }, [openSection]);
 
   // Klik mimo lištu zavírá. Posluchač visí jen při otevřené sekci.
   useEffect(() => {
@@ -247,7 +290,50 @@ export function IngotTopNav({
           }
           const open = section.key === openSection;
           return (
-            <div key={section.key} className="relative">
+            <div
+              key={section.key}
+              className="relative"
+              data-ingot-section={section.key}
+              onKeyDown={(e) => {
+                const wrapper = e.currentTarget;
+                const button = wrapper.firstElementChild as HTMLElement | null;
+                const items = menuItems(wrapper);
+                const index = items.indexOf(document.activeElement as HTMLElement);
+
+                if (e.key === "Escape") {
+                  //: Zavření obstará posluchač celé lišty (Escape odtud k němu
+                  //: bublá). Sem patří jen návrat fokusu: zmizelý panel ho
+                  //: zahodí na <body> a čtenář by se probral na začátku stránky
+                  //: — u menu, které se otevírá i hoverem, o krok zpátky.
+                  if (open) button?.focus();
+                  return;
+                }
+
+                if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                  e.preventDefault();
+                  if (!open) {
+                    pendingFocus.current = e.key === "ArrowDown" ? "first" : "last";
+                    onOpenSection?.(section.key);
+                    return;
+                  }
+                  if (items.length === 0) return;
+                  const step = e.key === "ArrowDown" ? 1 : -1;
+                  const from = index === -1 ? (step === 1 ? -1 : 0) : index;
+                  items[(from + step + items.length) % items.length]?.focus();
+                  return;
+                }
+
+                //: Tab z otevřeného panelu nevypadne — jinak by čtenář odešel
+                //: doprostřed lišty a panel by mu zůstal viset za zády. Ven
+                //: vede Escape, který ho zavře a vrátí fokus na tlačítko.
+                if (e.key === "Tab" && open && items.length > 0) {
+                  e.preventDefault();
+                  const step = e.shiftKey ? -1 : 1;
+                  const from = index === -1 ? (step === 1 ? -1 : 0) : index;
+                  items[(from + step + items.length) % items.length]?.focus();
+                }
+              }}
+            >
               <button
                 type="button"
                 aria-expanded={open}
@@ -255,12 +341,6 @@ export function IngotTopNav({
                 onMouseEnter={() => {
                   cancelClose();
                   onOpenSection?.(section.key);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    onOpenSection?.(section.key);
-                  }
                 }}
                 className={cx(
                   "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
