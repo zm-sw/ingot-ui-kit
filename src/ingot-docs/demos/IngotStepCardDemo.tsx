@@ -6,9 +6,11 @@ export function Demo(): JSX.Element {
         step="01"
         kicker="Krok 01"
         title="Země a měny"
-        meta="3 země"
+        meta="3 / 3 aktivní"
         done
         doneLabel="Hotovo"
+        collapsible
+        toggleLabel="Rozbalit krok Země a měny"
         footer={
           <Button variant="ghost" size="sm">
             Přidat zemi
@@ -25,6 +27,8 @@ export function Demo(): JSX.Element {
         kicker="Krok 02"
         title="Skupiny vlastností"
         meta="24 vlastností"
+        collapsible
+        toggleLabel="Sbalit krok Skupiny vlastností"
         footer={
           <Button variant="ghost" size="sm">
             Přidat vlastnost

@@ -6,11 +6,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotStepCardDoc: IngotDocPage = {
   name: "IngotStepCard",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".stepcard",
   tokens: [
     "--surface",
     "--surface-2",
+    "--surface-3",
     "--border",
     "--border-strong",
     "--ink",
@@ -48,6 +49,11 @@ export const IngotStepCardDoc: IngotDocPage = {
         Krok, do kterého se průběžně přidávají další položky. Na to je
         patička — jedna akce typu „Přidat…“ pod obsahem karty.
       </>,
+      <>
+        Nastavení o mnoha krocích, kde by hotové kroky odsunuly ten
+        rozdělaný pod okraj obrazovky. <IngotCode>collapsible</IngotCode>{" "}
+        nechá z hotového kroku jen záhlaví, takže přehled zůstane přehled.
+      </>,
     ],
     en: [
       <>
@@ -69,6 +75,12 @@ export const IngotStepCardDoc: IngotDocPage = {
       <>
         A step that keeps gathering more items over time. That is what the
         footer is for — a single “Add…” action below the card content.
+      </>,
+      <>
+        A setup with many steps, where the finished ones would push the
+        unfinished one below the fold. <IngotCode>collapsible</IngotCode>{" "}
+        leaves a finished step as just its header, so the overview stays an
+        overview.
       </>,
     ],
   },
@@ -148,8 +160,8 @@ export const IngotStepCardDoc: IngotDocPage = {
       type: "ReactNode",
       required: false,
       note: {
-        cs: "Doplněk za nadpisem — počet položek, jednotka.",
-        en: "An addendum after the title — item count, unit.",
+        cs: "Shrnutí za nadpisem — počet položek, jednotka („2 / 2 aktivní“). U sbalitelné karty je to jediné, co ze sbaleného kroku zbude.",
+        en: "A summary after the title — item count, unit (“2 / 2 active”). On a collapsible card it is the only thing a collapsed step leaves behind.",
       },
     },
     {
@@ -168,6 +180,24 @@ export const IngotStepCardDoc: IngotDocPage = {
       note: {
         cs: "Přeložený popisek stavu pro odečítač („Hotovo“). Bez něj je fajfka němá.",
         en: "A translated status label for screen readers (“Done”). Without it the check mark is silent.",
+      },
+    },
+    {
+      name: "collapsible",
+      type: "boolean",
+      required: false,
+      note: {
+        cs: "Přidá do záhlaví sbalovací tlačítko. Hotové kroky se sbalují samy — i ten, který se dokončí až na obrazovce.",
+        en: "Adds a collapse button to the header. Finished steps collapse on their own — including one that gets finished while you watch.",
+      },
+    },
+    {
+      name: "toggleLabel",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Přeložený popisek sbalovacího tlačítka („Sbalit krok“). Bez něj je tlačítko pro odečítač bezejmenné.",
+        en: "A translated label for the collapse button (“Collapse step”). Without it the button is nameless to a screen reader.",
       },
     },
     {
@@ -220,6 +250,19 @@ export const IngotStepCardDoc: IngotDocPage = {
         „přidej další položku“ hádanku, kterou u kroku bez potvrzení nemá
         co rozhodovat.
       </>,
+      <>
+        Sbalovací tlačítko hlásí stav přes <IngotCode>aria-expanded</IngotCode>{" "}
+        a přes <IngotCode>aria-controls</IngotCode> ukazuje na tělo kroku,
+        takže odečítač nabídne skok přesně na to, co tlačítko odkrylo.
+        Popisek dodává <IngotCode>toggleLabel</IngotCode> — chevron sám je
+        němý.
+      </>,
+      <>
+        Sbalené tělo zůstává v dokumentu a schová ho{" "}
+        <IngotCode>hidden</IngotCode>. Odstranit ho z DOM by rozbilo{" "}
+        <IngotCode>aria-controls</IngotCode>, které by pak mířilo do prázdna
+        — a hledání na stránce by sbalený krok přestalo najít.
+      </>,
     ],
     en: [
       <>
@@ -243,6 +286,20 @@ export const IngotStepCardDoc: IngotDocPage = {
         another item” into a puzzle, which a step with no confirmation has
         no business posing.
       </>,
+      <>
+        The collapse button reports its state through{" "}
+        <IngotCode>aria-expanded</IngotCode> and points at the step body
+        through <IngotCode>aria-controls</IngotCode>, so a screen reader can
+        offer a jump to exactly what the button revealed. The label comes
+        from <IngotCode>toggleLabel</IngotCode> — the chevron alone is
+        silent.
+      </>,
+      <>
+        A collapsed body stays in the document and is hidden by{" "}
+        <IngotCode>hidden</IngotCode>. Removing it from the DOM would break{" "}
+        <IngotCode>aria-controls</IngotCode>, which would then point at
+        nothing — and find-on-page would stop finding a collapsed step.
+      </>,
     ],
   },
   i18n: {
@@ -262,6 +319,11 @@ export const IngotStepCardDoc: IngotDocPage = {
         Nadpis a <IngotCode>meta</IngotCode> jsou na jednom řádku a
         v překladu oba rostou. Meta patří počet a jednotka, ne věta.
       </>,
+      <>
+        <IngotCode>toggleLabel</IngotCode> pojmenuj krokem („Sbalit krok
+        Země a měny“), ne jen akcí. Na obrazovce je takových tlačítek tolik,
+        kolik je kroků, a seznam pěti stejných „Sbalit“ odečítači nepomůže.
+      </>,
     ],
     en: [
       <>
@@ -278,6 +340,12 @@ export const IngotStepCardDoc: IngotDocPage = {
       <>
         The title and <IngotCode>meta</IngotCode> share one line and both
         grow in translation. Meta is for a count and a unit, not a sentence.
+      </>,
+      <>
+        Name <IngotCode>toggleLabel</IngotCode> after the step (“Collapse
+        step Countries and currencies”), not just the action. A screen holds
+        as many of these buttons as it has steps, and a list of five
+        identical “Collapse” entries helps no screen reader.
       </>,
     ],
   },
