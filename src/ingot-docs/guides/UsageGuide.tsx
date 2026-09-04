@@ -1,4 +1,4 @@
-import { IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -287,6 +287,101 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * Pinovací kontrakt (KAN-813, po planém poplachu KAN-790).
+ *
+ * 🪤 **Číslo verze neidentifikuje obsah.** `package.json` píše release
+ * automatika až při pushi do `main`, takže každý commit mezi dvěma
+ * releasy nese verzi toho předchozího — jedno číslo, víc různých stromů.
+ * npm si git závislost cachuje pod jménem a verzí, takže pod jednou
+ * verzí mu může ležet kterýkoli z nich.
+ *
+ * Tohle stálo den hledání „rozbité" větve, která rozbitá nebyla: shodu
+ * hlásil `package.json`, `package-lock.json` i grep do `node_modules` —
+ * jen to `node_modules` bylo jiné 1.0.1.
+ *
+ * Tag je proti tomu jednoznačný, protože release automatika taguje každý
+ * release anotovaným tagem. Proto sem ta věta patří: konzument čte tuhle
+ * stránku, ne release skript.
+ */
+function Pinning({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Kit se instaluje z gitu, takže pin je celá dohoda. Míří na tag vydání, ne na commit."
+          : "The kit is installed from git, so the pin is the whole agreement. It points at a release tag, never at a commit."}
+      </p>
+      <IngotCode block lang="tsx">
+        {'"@forgmatic/ingot": "github:zm-sw/ingot-ui-kit#v1.1.0"'}
+      </IngotCode>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <strong>Commit vypadá přesněji, ale je méně
+                  bezpečný.</strong> Číslo verze se hne až s vydáním, takže
+                  každý commit mezi dvěma vydáními nese číslo toho
+                  předchozího — jedno číslo verze označuje víc různých
+                  stromů.
+                </>,
+                <>
+                  Správce balíčků si závislost z gitu ukládá do mezipaměti
+                  pod jménem a verzí. Pod jedním číslem tam proto může ležet
+                  jiný strom, než na který pin ukazuje — a nic to
+                  neohlásí: <IngotCode>package.json</IngotCode>,{" "}
+                  <IngotCode>package-lock.json</IngotCode> i{" "}
+                  <IngotCode>node_modules</IngotCode> spolu souhlasí.
+                </>,
+                <>
+                  Vydání se tagují, takže <strong>tag je právě jedna verze a
+                  právě jeden strom</strong>. To je jediný pin, který drží.
+                </>,
+                <>
+                  Když typová kontrola nenajde symbol, který ve zdrojích kitu
+                  vidíš, podezřívej instalaci dřív než kit: porovnej
+                  nainstalovaný soubor proti <strong>tagu</strong>, ne proti
+                  číslu verze, a napřed vyčisti mezipaměť. Shoda čísel
+                  nedokazuje nic.
+                </>,
+              ]
+            : [
+                <>
+                  <strong>A commit looks more precise and is in fact less
+                  safe.</strong> The version number moves only at a release,
+                  so every commit between two releases carries the previous
+                  one's number — a single version string names many
+                  different trees.
+                </>,
+                <>
+                  A package manager caches a git dependency under its name
+                  and version. Under one number it may therefore hold a
+                  different tree than the pin points at — and nothing warns
+                  you: <IngotCode>package.json</IngotCode>,{" "}
+                  <IngotCode>package-lock.json</IngotCode> and{" "}
+                  <IngotCode>node_modules</IngotCode> all agree.
+                </>,
+                <>
+                  Releases are tagged, so <strong>a tag is exactly one
+                  version and exactly one tree</strong>. It is the only pin
+                  that holds.
+                </>,
+                <>
+                  When a type check cannot find a symbol you can see in the
+                  kit's own source, suspect the install before the kit:
+                  compare the installed file against the <strong>tag</strong>,
+                  not against a version number, and clear the cache before
+                  measuring again. Matching numbers prove nothing.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 export const UsageGuide: IngotGuidePage = {
   slug: "pravidla-pouzivani",
   group: "rules",
@@ -319,6 +414,11 @@ export const UsageGuide: IngotGuidePage = {
         cs: <TextRules lang="cs" />,
         en: <TextRules lang="en" />,
       },
+    },
+    {
+      id: "pinovani",
+      title: { cs: "Připojení kitu", en: "Pinning the kit" },
+      body: { cs: <Pinning lang="cs" />, en: <Pinning lang="en" /> },
     },
     {
       id: "udrzba",

@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode } from "react";
+import { useId, useState, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
@@ -31,6 +31,8 @@ export function IngotStepCard({
   meta,
   done = false,
   doneLabel,
+  collapsible = false,
+  toggleLabel,
   children,
   footer,
   testId,
@@ -40,16 +42,45 @@ export function IngotStepCard({
   /** Řádek nad nadpisem — mono verzálky, typicky „Krok 02". */
   kicker: string;
   title: ReactNode;
-  /** Doplněk za nadpisem — počet položek, jednotka. */
+  /**
+   * Doplněk za nadpisem — počet položek, jednotka („2 / 2 aktivní").
+   * U sbalitelné karty je to jediné, co ze sbaleného kroku zbude, takže
+   * tam patří shrnutí obsahu, ne ozdoba.
+   */
   meta?: ReactNode;
   done?: boolean;
   /** Přeložený popisek stavu pro odečítač („Hotovo"). */
   doneLabel?: string;
+  /**
+   * Přidá do záhlaví tlačítko, které schová tělo i patičku. Hotové kroky
+   * se sbalují samy — viz `open` níž.
+   */
+  collapsible?: boolean;
+  /** Přeložený popisek sbalovacího tlačítka („Sbalit krok"). */
+  toggleLabel?: string;
   children: ReactNode;
   /** Patička — typicky jedna akce „Přidat…". */
   footer?: ReactNode;
   testId?: string;
 }): JSX.Element {
+  const bodyId = useId();
+  const [open, setOpen] = useState(!done);
+
+  //: Sbalení hotového kroku drží stav, ale ODVOZUJE se od `done`: krok,
+  //: který se dokončí až na obrazovce, se musí sbalit hned, jinak by
+  //: „automaticky" znamenalo „po reloadu" a další krok by se nikdy sám
+  //: nedostal do zorného pole. Ruční přepnutí mezitím zůstává — přepíše
+  //: ho teprve další změna `done`, tedy nová informace, ne překreslení.
+  const [syncedDone, setSyncedDone] = useState(done);
+  if (syncedDone !== done) {
+    setSyncedDone(done);
+    setOpen(!done);
+  }
+
+  //: Nesbalitelná karta žádný stav nemá. Bez tohohle by `open` z dřívějška
+  //: schoval obsah kartě, která o sbalování nikdy nepožádala.
+  const shown = !collapsible || open;
+
   return (
     <div
       className="overflow-hidden rounded-md border border-border bg-surface"
@@ -95,9 +126,35 @@ export function IngotStepCard({
             )}
           </p>
         </div>
+        {collapsible && (
+          <button
+            type="button"
+            //: `aria-controls` míří na tělo, ne na kartu — odečítač tak
+            //: nabídne skok přesně na to, co tlačítko odkrylo.
+            aria-expanded={open}
+            aria-controls={bodyId}
+            aria-label={toggleLabel}
+            onClick={() => setOpen((prev) => !prev)}
+            className="-mr-1.5 ml-auto grid h-7 w-7 flex-none place-items-center self-start rounded-sm text-ink-3 hover:bg-surface-3 hover:text-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink"
+          >
+            <IngotIcon
+              name="chevron-right"
+              size={13}
+              className={cx("transition-transform", open && "rotate-90")}
+            />
+          </button>
+        )}
       </div>
-      <div className="px-[18px] py-4">{children}</div>
-      {footer !== undefined && (
+      {/*
+        Tělo zůstává v DOM i sbalené a schová ho `hidden`. Vlastní `id`
+        musí existovat pořád — `aria-controls` mířící do prázdna je
+        rozbitý vztah, ne dočasný stav, a hledání na stránce má sbalený
+        krok pořád najít.
+      */}
+      <div id={bodyId} hidden={!shown} className="px-[18px] py-4">
+        {children}
+      </div>
+      {footer !== undefined && shown && (
         <div className="flex justify-center border-t border-border bg-surface p-2.5">
           {footer}
         </div>

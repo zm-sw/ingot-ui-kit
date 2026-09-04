@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import {
   Button,
+  Card,
   IngotBadge,
   IngotBreadcrumbs,
   IngotCode,
@@ -12,7 +13,9 @@ import {
   IngotOptionCard,
   IngotPageHeader,
   IngotRowActions,
+  IngotSelect,
   IngotStepCard,
+  IngotTable,
   IngotTopNav,
   IngotTopNavAccount,
   IngotUserMenu,
@@ -192,6 +195,26 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                   Počet u položky je mono — je to číslo k porovnání
                   s ostatními řádky.
                 </>,
+                <>
+                  <strong>Sloupce rostou z obsahu</strong>, nemá je pevná
+                  mřížka. Skutečné sekce mají jednu až osm položek, takže
+                  natvrdo tři sloupce znamenají u většiny z nich dva prázdné
+                  — a prázdný sloupec čtenáři tvrdí, že mu něco chybí.
+                </>,
+                <>
+                  <strong>Náhled sleduje čtenáře, nezůstává na první
+                  položce.</strong> Popis té, na které stojí, je odpověď na
+                  otázku, kterou si zrovna klade; popis první položky by u
+                  osmé odpovídal na otázku, kterou si položil před chvílí.
+                  Kresba sekce nad textem zůstává — je to znak sekce, ne
+                  ilustrace položky.
+                </>,
+                <>
+                  Z klávesnice panel obsluhuje šipka: otevře sekci a
+                  prochází položky. <IngotCode>Tab</IngotCode> z otevřeného
+                  panelu nevypadne, <IngotCode>Esc</IngotCode> ho zavře a
+                  vrátí fokus na tlačítko sekce.
+                </>,
               ]
             : [
                 <>
@@ -208,6 +231,29 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   The count next to an item is mono — it is a number meant to
                   be compared with the rows around it.
+                </>,
+                <>
+                  <strong>Columns grow from the content</strong>, they are not
+                  a fixed grid. Real sections hold one to eight items, so
+                  three hard-coded columns leave most of them with two empty
+                  ones — and an empty column tells the reader something is
+                  missing.
+                </>,
+                <>
+                  <strong>The preview follows the reader; it does not stay on
+                  the first item.</strong> Describing the item they are on
+                  answers the question they are asking right now; describing
+                  the first item would, at the eighth, answer the one they
+                  asked a moment ago. The section's drawing above the text
+                  stays — it marks the section, it does not illustrate the
+                  item.
+                </>,
+                <>
+                  From the keyboard the arrow keys drive the panel: they open
+                  the section and walk its items.{" "}
+                  <IngotCode>Tab</IngotCode> does not fall out of an open
+                  panel, and <IngotCode>Esc</IngotCode> closes it and returns
+                  focus to the section button.
                 </>,
               ]
         }
@@ -350,6 +396,32 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
           label={cs ? "Přehled objednávek" : "Order summary"}
         />
       </div>
+      <p>
+        {cs
+          ? "Vpravo v hlavičce stojí akce, NEBO čísla — ne obojí. Obrazovka, na které se nic nezakládá, tam má místo tlačítek shluk dvou tří čísel; je to tatáž komponenta jako pruh, jen hustší."
+          : "The right side of the header holds actions OR numbers — not both. A screen where nothing gets created puts a cluster of two or three numbers there instead of buttons; it is the same component as the strip, only denser."}
+      </p>
+      <div className={`${STAGE} bg-surface`}>
+        <IngotPageHeader
+          title={cs ? "Vytížení strojů" : "Machine load"}
+          description={
+            cs
+              ? "Plán na příští týden podle dnešních potvrzených objednávek."
+              : "Next week's plan from today's confirmed orders."
+          }
+          actions={
+            <IngotMetrics
+              variant="inline"
+              items={[
+                { label: cs ? "strojů" : "machines", value: 6 },
+                { label: cs ? "volných hodin" : "free hours", value: "37 / 240" },
+                { label: cs ? "přetížených" : "overloaded", value: 1, tone: "danger" },
+              ]}
+              label={cs ? "Vytížení" : "Load"}
+            />
+          }
+        />
+      </div>
       <IngotList
         items={
           cs
@@ -357,6 +429,12 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   Primární akce je právě jedna a stojí vpravo v hlavičce.
                   Nikdy neplave nad obsahem.
+                </>,
+                <>
+                  Čísla v hlavičce a pruh pod ní jsou <strong>dvě hustoty
+                  téže komponenty</strong>, ne dvě komponenty. Do hlavičky
+                  se vejdou dvě až tři čísla, do pruhu čtyři až šest —
+                  a obojí naráz je z obrazovky přehled o přehledu.
                 </>,
                 <>
                   Poslední drobeček není odkaz — je to místo, kde stojíš. Na
@@ -373,6 +451,13 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
                   right of the header. It never floats above the content.
                 </>,
                 <>
+                  The numbers in the header and the strip below it are{" "}
+                  <strong>two densities of one component</strong>, not two
+                  components. Two or three numbers fit in the header, four to
+                  six in the strip — and both at once turns the screen into
+                  an overview of an overview.
+                </>,
+                <>
                   The last breadcrumb is not a link — it is where you stand.
                   On a section's root page breadcrumbs are not drawn at all.
                 </>,
@@ -380,6 +465,182 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
                   A coloured number means that number is a problem, not that
                   it is the most important one. Half a coloured strip says
                   nothing.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
+/**
+ * Pattern skupinové karty — blok, který drží pojmenovanou skupinu
+ * záznamů: hlavička s klíčem a počtem, tabulka obsahu, patička, kterou
+ * se do skupiny přidává další položka.
+ *
+ * 🪤 **Karta je bez vlastního odsazení a s `overflow-hidden`.** Tabulka
+ * jde od kraje ke kraji, aby její vlastní záhlaví lícovalo s rámem
+ * karty; vnitřní odsazení nese hlavička a patička, ne karta. Bez
+ * `overflow-hidden` by rohy tabulky vylezly ze zaoblení rámu.
+ *
+ * Skupin je na obrazovce víc pod sebou a KAŽDÁ má vlastní „přidat"
+ * patičku. Jedno plovoucí tlačítko nad seznamem by se muselo ptát, do
+ * které skupiny přidává — a ta otázka nemá dobrou odpověď.
+ */
+function GroupCard({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  const [adding, setAdding] = useState("");
+  const rows = cs
+    ? [
+        { key: "tloustka", label: "Tloušťka", unit: "mm", active: true },
+        { key: "povrch", label: "Povrchová úprava", unit: "—", active: true },
+        { key: "atest", label: "Atest 3.1", unit: "—", active: false },
+      ]
+    : [
+        { key: "thickness", label: "Thickness", unit: "mm", active: true },
+        { key: "finish", label: "Surface finish", unit: "—", active: true },
+        { key: "certificate", label: "Certificate 3.1", unit: "—", active: false },
+      ];
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Pojmenovaná skupina záznamů je vlastní karta: hlavička říká, čí je a kolik toho drží, tabulka ukazuje obsah a patička do ní přidává další položku. Karta nemá vlastní odsazení, aby tabulka lícovala s jejím rámem."
+          : "A named group of records is its own card: the header says whose it is and how much it holds, the table shows the content, and the footer adds another item to it. The card carries no padding of its own so the table lines up with its frame."}
+      </p>
+      <div className={STAGE}>
+        <Card padded={false} className="overflow-hidden">
+          <div className="flex flex-wrap items-start gap-3 border-b border-border px-4 py-3">
+            <div className="min-w-0 flex-1">
+              <p className="flex items-center gap-2">
+                <IngotCode>material.ocel</IngotCode>
+                <IngotBadge>
+                  {cs ? "3 vlastnosti" : "3 attributes"}
+                </IngotBadge>
+              </p>
+              <p className="mt-1 text-[13px] text-ink-3">
+                {cs
+                  ? "Vlastnosti, na které se ptá poptávkový formulář u ocelových dílů."
+                  : "The attributes the enquiry form asks for on steel parts."}
+              </p>
+            </div>
+            <IngotRowActions
+              actions={[
+                {
+                  icon: "sliders",
+                  label: cs ? "Upravit skupinu" : "Edit the group",
+                  onClick: () => {},
+                },
+                {
+                  icon: "trash",
+                  label: cs ? "Smazat skupinu" : "Delete the group",
+                  tone: "danger",
+                  onClick: () => {},
+                },
+              ]}
+            />
+          </div>
+          <IngotTable
+            columns={[
+              {
+                key: "label",
+                header: cs ? "Vlastnost" : "Attribute",
+                cell: (row: (typeof rows)[number]) => (
+                  <span className="flex items-center gap-2">
+                    <IngotBadge dot tone={row.active ? "ok" : "neutral"}>
+                      {row.active
+                        ? cs
+                          ? "aktivní"
+                          : "active"
+                        : cs
+                          ? "skrytá"
+                          : "hidden"}
+                    </IngotBadge>
+                    {row.label}
+                  </span>
+                ),
+              },
+              {
+                key: "key",
+                header: cs ? "Klíč" : "Key",
+                cell: (row: (typeof rows)[number]) => (
+                  <IngotCode>{row.key}</IngotCode>
+                ),
+              },
+              {
+                key: "unit",
+                header: cs ? "Jednotka" : "Unit",
+                align: "end",
+                cell: (row: (typeof rows)[number]) => row.unit,
+              },
+            ]}
+            rows={rows}
+            rowKey={(row) => row.key}
+            density="compact"
+            caption={
+              cs
+                ? "Vlastnosti skupiny material.ocel"
+                : "Attributes of the material.ocel group"
+            }
+          />
+          <div className="border-t border-border bg-surface-2 px-4 py-2.5">
+            <IngotSelect
+              value={adding}
+              onChange={setAdding}
+              label={cs ? "Přidat vlastnost" : "Add an attribute"}
+              options={[
+                { value: "", label: cs ? "Přidat vlastnost…" : "Add an attribute…" },
+                { value: "delka", label: cs ? "Délka" : "Length" },
+                { value: "tolerance", label: cs ? "Tolerance" : "Tolerance" },
+                { value: "barva", label: cs ? "Barva" : "Colour" },
+              ]}
+              className="w-full sm:w-auto"
+            />
+          </div>
+        </Card>
+      </div>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  Každý blok má vlastní hlavičku a vlastní „přidat“ patičku.
+                  Jedno plovoucí tlačítko nad seznamem skupin by se muselo
+                  ptát, do které skupiny přidává.
+                </>,
+                <>
+                  Patička je na <IngotCode>--surface-2</IngotCode>, takže se
+                  čte jako nástroj karty, ne jako další řádek tabulky.
+                </>,
+                <>
+                  Přidání ze seznamu, ne z prázdného pole: vlastnosti jsou
+                  výčet, který někdo jinde založil. Volné pole by tady
+                  zakládalo překlepy jako nové vlastnosti.
+                </>,
+                <>
+                  Klíč je kód, takže se sází jako kód — a nepřekládá se.
+                  Stav řádku nese tečka i slovo, ne jen barva.
+                </>,
+              ]
+            : [
+                <>
+                  Every block has its own header and its own “add” footer. A
+                  single floating button above the list of groups would have
+                  to ask which group it adds to.
+                </>,
+                <>
+                  The footer sits on <IngotCode>--surface-2</IngotCode>, so it
+                  reads as a tool of the card rather than one more table row.
+                </>,
+                <>
+                  Adding from a list, not an empty field: attributes are an
+                  enumeration someone established elsewhere. A free field
+                  here would establish typos as new attributes.
+                </>,
+                <>
+                  The key is code, so it is set as code — and not translated.
+                  A row's state is carried by a dot and a word, not colour
+                  alone.
                 </>,
               ]
         }
@@ -403,9 +664,13 @@ function SettingsPatterns({ lang }: { lang: DocLang }): JSX.Element {
           step="01"
           kicker={cs ? "Krok 01" : "Step 01"}
           title={cs ? "Země a měny" : "Countries and currencies"}
-          meta={cs ? "3 země" : "3 countries"}
+          meta={cs ? "3 / 3 aktivní" : "3 / 3 active"}
           done
           doneLabel={cs ? "Hotovo" : "Done"}
+          collapsible
+          toggleLabel={
+            cs ? "Rozbalit krok Země a měny" : "Expand step Countries and currencies"
+          }
           footer={
             <Button variant="ghost" size="sm">
               {cs ? "Přidat zemi" : "Add a country"}
@@ -467,6 +732,11 @@ function SettingsPatterns({ lang }: { lang: DocLang }): JSX.Element {
                   Varianta s důsledkem se vybírá kartou s vysvětlující větou,
                   ne položkou v rozbalovacím seznamu. Ta věta je půlka volby.
                 </>,
+                <>
+                  Hotový krok se sbalí sám a nechá po sobě záhlaví se
+                  shrnutím („3 / 3 aktivní“). Nastavení o osmi krocích jinak
+                  odsune ten rozdělaný pod okraj obrazovky.
+                </>,
               ]
             : [
                 <>
@@ -481,6 +751,11 @@ function SettingsPatterns({ lang }: { lang: DocLang }): JSX.Element {
                   A choice with a consequence is made on a card with an
                   explaining sentence, not an option in a dropdown. That
                   sentence is half the choice.
+                </>,
+                <>
+                  A finished step collapses on its own and leaves a header
+                  with a summary behind (“3 / 3 active”). Otherwise a setup
+                  of eight steps pushes the unfinished one below the fold.
                 </>,
               ]
         }
@@ -615,6 +890,11 @@ export const ShellGuide: IngotGuidePage = {
         cs: <SettingsPatterns lang="cs" />,
         en: <SettingsPatterns lang="en" />,
       },
+    },
+    {
+      id: "skupinova-karta",
+      title: { cs: "Skupinová karta", en: "The group card" },
+      body: { cs: <GroupCard lang="cs" />, en: <GroupCard lang="en" /> },
     },
     {
       id: "pattern-seznamu",

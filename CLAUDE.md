@@ -88,6 +88,41 @@ without moving a `version:` on a doc page — the release automation
 stands on those versions, so a version that does not move is a release
 that never ships.
 
+### A consumer pins to a tag, never to a commit
+
+The kit is installed from git, so the pin is the whole contract:
+
+```
+"@forgmatic/ingot": "github:zm-sw/ingot-ui-kit#v1.1.0"
+```
+
+**That `#v1.1.0` must be a tag.** A commit SHA there looks more precise
+and is in fact less safe, because the version in `package.json` moves
+only when a release lands on `main`. Every commit between two releases
+therefore carries the PREVIOUS release's number, and one version string
+names many different trees:
+
+| commit | version | ships the `inbox` icon? |
+| --- | --- | --- |
+| before the icons landed | `1.0.1` | no |
+| the commit that added them | `1.0.1` | yes |
+| the commit after that | `1.0.1` | yes |
+
+npm caches a `github:` dependency under its name and version, so under
+`@forgmatic/ingot@1.0.1` it may hold any of those trees and hand back one
+that is not what the SHA points at. Nothing warns you: `package.json`,
+`package-lock.json` and `node_modules` all agree — `node_modules` is just
+a *different* `1.0.1`. Debugging that costs a day and ends in a bug report
+against code that was never broken.
+
+Every release is tagged with an annotated tag, so a tag is exactly one
+version and exactly one tree. Pin to it.
+
+When a typecheck fails on kit symbols you can see in the kit's own source,
+suspect the install before the kit: compare the installed file against the
+tag rather than against a version number, and `npm cache clean --force`
+before re-measuring. A matching version number proves nothing.
+
 ## The remote holds exactly two branches
 
 `main` and `dev` are the only long-lived branches. Everything else is a
