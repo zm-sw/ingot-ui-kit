@@ -3,9 +3,9 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingPricingDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingPricingDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Žádné částky v kódu: ceník jsou platformní data (plány,
-// entitlementy KAN-499). Komponenta neumí vykreslit nic, co nedostane
-// přes ``plans``.
+// KAN-664. No amounts in code: pricing is platform data (plans,
+// entitlements KAN-499). The component cannot render anything it does not
+// receive through ``plans``.
 export const IngotMarketingPricingDoc: IngotDocPage = {
   name: "IngotMarketingPricing",
   status: "beta",

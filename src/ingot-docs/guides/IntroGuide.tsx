@@ -3,26 +3,27 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Úvodní stránka doc webu (KAN-625) — výchozí obrazovka.
+ * Intro page of the doc web — the default screen.
  *
- * Do KAN-625 padl příchozí rovnou na první komponentu v registru, takže
- * první věta, kterou o kitu četl, byla popis propu. Kdo neví, co Ingot
- * je, se z toho nedozví nic.
+ * A visitor used to land straight on the first component in the registry,
+ * so the first sentence they read about the kit was a prop description.
+ * Someone who does not know what Ingot is learns nothing from that.
  *
- * 🚨 Text sekcí „Co to je“, „Principy“, „Z čeho se systém skládá“, „Jak
- * začít“ a „Pravidlo palce“ je převzatý z design handoffu (stránka Úvod).
- * Handoff popisuje vrstvu „kde žije“ cestami do svých vlastních souborů;
- * na veřejném doc webu je to přepsané na neutrální popis vrstvy, protože
- * cesta do repa čtenáři zvenku neříká nic.
+ * The text of the sections "What it is", "Principles", "What the system
+ * is made of", "Getting started" and "Rule of thumb" is taken from the
+ * design handoff (the Intro page). The handoff describes the "where it
+ * lives" layer with paths to its own files; on the public doc web that is
+ * rewritten to a neutral description of the layer, because a repository
+ * path tells an outside reader nothing.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: čísla
- * technického dluhu, jména kontrol, klíče úkolů ani rozhodnutí s daty.
+ * The doc web is a PUBLIC page. Internal prose does not belong here: no
+ * tech-debt figures, guard names, issue keys or dated decisions.
  */
 const IMPORT_EXAMPLE = 'import { IngotTable, IngotEmptyState } from "@/ingot";';
 
 
 interface Principle {
-  /** Pořadové číslo z návrhu — je to popisek, ne index v poli. */
+  /** Ordinal from the design — it is a label, not an array index. */
   num: string;
   title: Localized<string>;
   body: Localized<string>;

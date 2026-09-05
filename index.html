@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0c0a09" />
-    <!-- Favicon je oriznuta znacka z loga, ne vlastni kresba. Dve varianty
-         proto, ze znacka je obrysova a v tmavem: inkoust je skoro cerny
-         a na tmavem panelu zalozek by zmizel. Poradi je zamer — prohlizec
-         bere POSLEDNI vyhovujici <link>, takze tmava musi byt az za
-         svetlou, jinak by ve svetlem rezimu vyhrala. -->
+    <!-- The favicon is the mark cropped from the logo, not a drawing of its
+         own. Two variants because the mark is an outline and in the dark:
+         the ink is almost black and would vanish on a dark tab strip. The
+         order is deliberate — the browser takes the LAST matching <link>,
+         so the dark one must come after the light one, otherwise it would
+         win in light mode. -->
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link
       rel="icon"
@@ -17,9 +18,9 @@
       media="(prefers-color-scheme: dark)"
     />
     <title>Ingot UI Kit</title>
-    <!-- Doc web nemá tenanta, takže ani brandovací middleware — titulek je
-         statický. Anti-flash skript je týž jako u hlavního entry: dark mode
-         drží `.dark` na <html> a bez něj by studený load blikl light→dark. -->
+    <!-- The doc web has no tenant, so no branding middleware either — the
+         title is static. The anti-flash script: dark mode holds `.dark` on
+         <html> and without it a cold load would flash light→dark. -->
     <script src="/theme-init.js"></script>
   </head>
   <body class="min-h-screen bg-bg text-ink antialiased">

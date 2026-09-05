@@ -8,15 +8,16 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Jazyky a formáty“ — co musí obrazovka unést, aby přežila
- * překlad (KAN-663).
+ * "Languages and formats" page — what a screen has to bear to survive
+ * translation.
  *
- * 🪤 **Tabulka formátů je jádro stránky.** Vedle sebe postavená česká a
- * anglická podoba téže hodnoty je jediné, co autora obrazovky přesvědčí,
- * že „datum“ není jeden tvar — věta o tom se přečte a zapomene.
+ * **The formats table is the core of the page.** The Czech and English
+ * forms of the same value placed side by side are the only thing that
+ * convinces a screen author that "a date" is not one shape — a sentence
+ * about it is read and forgotten.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: klíče úkolů,
- * cesty do repa ani jména kontrol.
+ * The doc web is a PUBLIC page. Internal prose does not belong here: no
+ * issue keys, repository paths or guard names.
  */
 
 function LengthAndPlurals({ lang }: { lang: DocLang }): JSX.Element {

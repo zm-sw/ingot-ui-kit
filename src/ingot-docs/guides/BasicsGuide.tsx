@@ -7,25 +7,26 @@ import type { IngotGuidePage } from "@/ingot-docs/types";
 import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
 
 /**
- * Stránka „Základy“ — tokeny, na kterých stojí všechno ostatní: barevná
- * škála, typografický systém a mřížka prostoru.
+ * "Basics" page — the tokens everything else stands on: the colour scale,
+ * the type system and the spacing grid.
  *
- * 🪤 **Ukázka rodin si barvy nedrží.** Každý řádek je obalený prvkem
- * s ``data-accent``, uvnitř kterého ``var(--accent)`` a spol. odpovídají
- * té rodině — kreslí to tedy TÁŽ tabulka v ``styles/globals.css``, kterou
- * stránka popisuje. Seznam hexů napsaný tady by byl druhá pravda o tom,
- * jak rodina vypadá, a rozešel by se s první při prvním doladění odstínu.
+ * **The family demo holds no colours of its own.** Every row is wrapped in
+ * an element with ``data-accent``, inside which ``var(--accent)`` and
+ * friends resolve to that family — so it is drawn by the SAME table in the
+ * token stylesheet that the page describes. A list of hexes written here
+ * would be a second truth about what a family looks like and would drift
+ * from the first at the first shade tweak.
  *
- * Ze stejného důvodu se řádky generují z ``ACCENT_CHOICES``: rodina
- * přidaná do kitu se na stránce objeví sama, místo aby na ni někdo musel
- * vzpomenout.
+ * For the same reason the rows are generated from ``ACCENT_CHOICES``: a
+ * family added to the kit appears on the page by itself, instead of
+ * someone having to remember it.
  *
- * 🪤 Ukázka mezer kreslí ČTVERCE n×n, ne pruhy. Pruh o šířce násobku
- * hodnoty vypadá líp, ale u popisku „4px“ pak stojí obrázek široký 12px —
- * ukázka, která lže o čísle, které popisuje.
+ * The spacing demo draws SQUARES n×n, not bars. A bar a multiple of the
+ * value wide looks better, but next to the label "4px" then stands an
+ * image 12px wide — a demo that lies about the number it describes.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: čísla
- * technického dluhu, jména kontrol, klíče úkolů ani rozhodnutí s daty.
+ * The doc web is a PUBLIC page. Internal prose does not belong here: no
+ * tech-debt figures, guard names, issue keys or dated decisions.
  */
 
 const ACCENT_LABELS: Record<AccentChoice, Localized<string>> = {
@@ -44,8 +45,9 @@ const TOKEN_NAMES = [
 ] as const;
 
 /**
- * Jeden puntík barvy. ``token`` se dosadí jako ``var(--…)``, takže hodnotu
- * bere z právě platné rodiny — tu určuje ``data-accent`` na obalu řádku.
+ * One colour dot. ``token`` is substituted as ``var(--…)``, so it takes the
+ * value from the family currently in effect — set by ``data-accent`` on
+ * the row wrapper.
  */
 function TokenDot({ token }: { token: string }): JSX.Element {
   return (
@@ -58,13 +60,14 @@ function TokenDot({ token }: { token: string }): JSX.Element {
 }
 
 /**
- * Hodnota tokenu odečtená za běhu přes ``getComputedStyle`` — swatche
- * tedy ukazují TO, co paleta právě drží, ne opsaný seznam hexů, který
- * by se rozešel s první úpravou odstínu.
+ * Token value read at runtime via ``getComputedStyle`` — the swatches thus
+ * show WHAT the palette currently holds, not a copied list of hexes that
+ * would drift with the first shade edit.
  *
- * Efekt schválně bez pole závislostí: přepnutí motivu hodnotu tokenu
- * změní, ale žádnou závislost komponenty ne — po každém překreslení se
- * proto odečte znovu (``setState`` se stejným řetězcem nic nepřekreslí).
+ * The effect has no dependency array on purpose: a theme switch changes
+ * the token value but no dependency of the component — so it is read
+ * again after every render (``setState`` with the same string re-renders
+ * nothing).
  */
 function TokenValue({ token }: { token: string }): JSX.Element {
   const ref = useRef<HTMLSpanElement>(null);
@@ -393,13 +396,15 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
-// Mezery i rádiusy odpovídají škále kitu — obrázek vlevo kreslí právě tu
-// hodnotu, takže číslo vedle něj nemůže lhát, aniž by to bylo vidět.
+// Spacing and radii match the kit's scale — the picture on the left draws
+// exactly that value, so the number next to it cannot lie without it
+// showing.
 const SPACE_STEPS = [4, 8, 12, 16, 24, 32, 48] as const;
 
-// Popisky jmenují TOKENY (r-xs…r-lg z tokens.css), ne utility třídy —
-// slovník systému je token; utilita je jen implementace (CLAUDE.md).
-// Plný kruh token nemá schválně: je vyhrazený avatarům a puntíkům.
+// Labels name TOKENS (r-xs…r-lg from tokens.css), not utility classes —
+// the system's vocabulary is the token; the utility is just the
+// implementation (CLAUDE.md). The full circle has no token on purpose: it
+// is reserved for avatars and dots.
 const RADIUS_STEPS = [
   { className: "rounded-sm", label: "r-xs · 4px" },
   { className: "rounded", label: "r-sm · 6px" },
@@ -557,8 +562,8 @@ function familyColumns(lang: DocLang): readonly IngotColumn<FamilyRow>[] {
     ...TOKEN_NAMES.map((token) => ({
       key: token,
       header: <IngotCode>{token}</IngotCode>,
-      // Puntík i jeho řádek nesou ``data-accent`` — barva tedy pochází
-      // z rodiny, ne odsud.
+      // The dot and its row carry ``data-accent`` — the colour thus comes
+      // from the family, not from here.
       cell: (row: FamilyRow) => (
         <span data-accent={row.accent}>
           <TokenDot token={token} />

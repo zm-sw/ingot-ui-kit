@@ -1,21 +1,21 @@
 /**
- * Texty skořápky doc webu (KAN-627).
+ * Texts of the doc web shell.
  *
- * Obsah stránek je ``Localized`` přímo u sebe (viz ``types.ts``), protože
- * je to próza s vlastním JSX. Skořápka jsou naopak krátké popisky, které
- * se opakují na každé stránce — ty patří na jedno místo, aby se
- * nepřekládaly šestkrát a pokaždé o kousek jinak.
+ * Page content is ``Localized`` right where it lives (see ``types.ts``),
+ * because it is prose with its own JSX. The shell, by contrast, is short
+ * labels repeated on every page — those belong in one place so they are
+ * not translated six times, each time slightly differently.
  *
- * ``Localized<string>`` je ``Record<DocLang, string>``, takže přidání
- * jazyka do ``DOC_LANGS`` shodí typecheck na každém popisku, který
- * v tom jazyce chybí. Slíbit jazyk bez textů tedy nejde.
+ * ``Localized<string>`` is ``Record<DocLang, string>``, so adding a
+ * language to ``DOC_LANGS`` fails the typecheck on every label missing in
+ * that language. A language cannot be promised without its texts.
  */
 import type { Localized } from "@/ingot-docs/lang";
 
 export interface ChromeStrings {
   guides: Localized<string>;
   components: Localized<string>;
-  /** Nadpisy skupin v levém menu — viz ``IngotGuideGroup``. */
+  /** Group headings in the left menu — see ``IngotGuideGroup``. */
   groupSystem: Localized<string>;
   groupApp: Localized<string>;
   groupRules: Localized<string>;
@@ -27,24 +27,24 @@ export interface ChromeStrings {
   a11y: Localized<string>;
   i18n: Localized<string>;
   limits: Localized<string>;
-  /** Sekce se seznamem tokenů, na kterých komponenta stojí. */
+  /** Section listing the tokens the component stands on. */
   tokens: Localized<string>;
-  /** Věta nad tím seznamem — proč tam je. */
+  /** Sentence above that list — why it is there. */
   tokensNote: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
   propNote: Localized<string>;
   yes: Localized<string>;
-  /** Badge stavu vedle nadpisu stránky komponenty. */
+  /** Status badge next to a component page heading. */
   statusStable: Localized<string>;
   statusBeta: Localized<string>;
-  /** Taby nad ukázkou + tlačítko kopírování jejího zdroje. */
+  /** Tabs above the demo + the button copying its source. */
   previewTab: Localized<string>;
   codeTab: Localized<string>;
   copyCode: Localized<string>;
   copiedCode: Localized<string>;
-  /** Patička prev/next mezi stránkami. */
+  /** Prev/next footer between pages. */
   prevPage: Localized<string>;
   nextPage: Localized<string>;
   language: Localized<string>;
@@ -53,20 +53,20 @@ export interface ChromeStrings {
   themeDark: Localized<string>;
   themeSystem: Localized<string>;
   accent: Localized<string>;
-  /** Tlačítko a nadpis draweru, do kterého se pod ``md`` stěhuje menu
-   *  i přepínače — na úzkém výřezu na ně v liště není místo. */
+  /** Button and heading of the drawer the menu and switches move into
+   *  below ``md`` — on a narrow viewport there is no room for them in the bar. */
   openMenu: Localized<string>;
   closeMenu: Localized<string>;
   menuTitle: Localized<string>;
-  /** Přepínač slovníku Jednoduše/Expert — viz ``dictionary.ts``. Ploché
-   *  klíče místo mapy ze stejného důvodu jako ``themeLight``. */
+  /** Simple/Expert dictionary switch — see ``dictionary.ts``. Flat keys
+   *  instead of a map for the same reason as ``themeLight``. */
   dictionary: Localized<string>;
   dictionarySimple: Localized<string>;
   dictionaryExpert: Localized<string>;
   dictionaryBoth: Localized<string>;
-  /** Jména rodin. Plochá pole (ne mapa) ze stejného důvodu jako
-   *  ``themeLight``/``themeDark``: chybějící překlad tak shodí typecheck
-   *  na konkrétním jménu, ne až na tvaru mapy. */
+  /** Family names. Flat fields (not a map) for the same reason as
+   *  ``themeLight``/``themeDark``: a missing translation then fails the
+   *  typecheck on the concrete name, not on the shape of the map. */
   accentBlue: Localized<string>;
   accentEmerald: Localized<string>;
   accentOrange: Localized<string>;

@@ -1,31 +1,32 @@
 /**
- * Jazyky doc webu (KAN-627).
+ * Languages of the doc web.
  *
- * ## Proč tu je seznam, když „natvrdo napsaný seznam je chyba“
+ * ## Why there is a list here when "a hard-coded list is a bug"
  *
- * Jsou to dvě různé otázky a pletou se snadno:
+ * These are two different questions and they are easily confused:
  *
- * 1. **Které jazyky platforma nabízí?** To je *politika* a rozhoduje o ní
- *    vlastník za běhu (registr jazyků v administraci). Natvrdo napsaný
- *    seznam by tady byl chyba, a taky tu žádný není — čte se z API, viz
- *    ``platformLanguages.ts``.
- * 2. **Pro které jazyky má doc web obsah?** To je *inventura*. Doc web je
- *    statická stránka: text buď v bundlu je, nebo není, a žádné API na tom
- *    nic nezmění. Tenhle soubor odpovídá na druhou otázku.
+ * 1. **Which languages does the platform offer?** That is *policy* and the
+ *    owner decides it at runtime (the language registry in the admin). A
+ *    hard-coded list would be a bug here, and there is none — it is read
+ *    from the API, see ``platformLanguages.ts``.
+ * 2. **Which languages does the doc web have content for?** That is
+ *    *inventory*. The doc web is a static page: the text either is in the
+ *    bundle or it is not, and no API changes that. This file answers the
+ *    second question.
  *
- * Nabídnou se jedině jazyky, které projdou **oběma** — platforma je má
- * zapnuté A doc web pro ně má text. Přepínač, který přepne na jazyk bez
- * obsahu, je horší než přepínač, který ten jazyk nenabídne.
+ * Only languages that pass **both** are offered — the platform has them
+ * enabled AND the doc web has text for them. A switch that switches to a
+ * language without content is worse than a switch that does not offer it.
  *
- * ## Typ to vynucuje, ne domluva
+ * ## The type enforces it, not an agreement
  *
- * ``Localized<T>`` je ``Record<DocLang, T>``, takže přidat kód do
- * ``DOC_LANGS`` znamená, že ``tsc`` odmítne **každý** text, který v tom
- * jazyce chybí. Jazyk se tedy nedá slíbit, aniž by se napsal — a to je
- * přesně ta půlka, kterou próza uhlídat neumí.
+ * ``Localized<T>`` is ``Record<DocLang, T>``, so adding a code to
+ * ``DOC_LANGS`` means ``tsc`` refuses **every** text missing in that
+ * language. A language thus cannot be promised without being written —
+ * which is exactly the half that prose cannot guard.
  */
 
-/** Jazyky, pro které tenhle bundle NESE text. Inventura, ne politika. */
+/** Languages this bundle CARRIES text for. Inventory, not policy. */
 import { readStorage, writeStorage } from "@/lib/storage";
 
 export const DOC_LANGS = ["cs", "en"] as const;
@@ -33,10 +34,10 @@ export const DOC_LANGS = ["cs", "en"] as const;
 export type DocLang = (typeof DOC_LANGS)[number];
 
 /**
- * Hodnota, která existuje v každém jazyce doc webu.
+ * A value that exists in every language of the doc web.
  *
- * ``Record``, ne ``Partial<Record>``: chybějící překlad má shodit
- * typecheck, ne se za běhu tiše propadnout na jinou řeč.
+ * ``Record``, not ``Partial<Record>``: a missing translation should fail
+ * the typecheck, not silently fall back to another language at runtime.
  */
 export type Localized<T> = Readonly<Record<DocLang, T>>;
 
@@ -47,11 +48,11 @@ export function isDocLang(value: unknown): value is DocLang {
 }
 
 /**
- * Popisky pro případ, že platformu nejde zeptat.
+ * Labels for when the platform cannot be asked.
  *
- * Nejsou to „ty správné“ popisky — ty vlastní platforma a přicházejí
- * z API i s vlastním pojmenováním. Tohle je jen to, co se ukáže, když
- * API neodpoví, aby přepínač nezmizel úplně.
+ * These are not "the right" labels — the platform owns those and they
+ * arrive from the API with their own naming. This is only what shows when
+ * the API does not answer, so the switch does not disappear entirely.
  */
 export const DOC_LANG_FALLBACK_LABELS: Localized<string> = {
   cs: "Čeština",
@@ -69,10 +70,10 @@ export function writeStoredLang(lang: DocLang): void {
 }
 
 /**
- * Výchozí jazyk: uložená volba → jazyk prohlížeče → čeština.
+ * Default language: stored choice → browser language → Czech.
  *
- * ``navigator.language`` může být ``cs-CZ``; bere se jen ta část před
- * pomlčkou, jinak by se ``cs-CZ`` nikdy netrefilo do ``cs``.
+ * ``navigator.language`` may be ``cs-CZ``; only the part before the dash
+ * is taken, otherwise ``cs-CZ`` would never match ``cs``.
  */
 export function initialLang(): DocLang {
   const stored = readStoredLang();
@@ -81,7 +82,7 @@ export function initialLang(): DocLang {
     const preferred = navigator.language?.split("-")[0];
     if (isDocLang(preferred)) return preferred;
   } catch {
-    // navigator nemusí být (SSR, exotický runtime).
+    // navigator may be missing (SSR, an exotic runtime).
   }
   return "cs";
 }

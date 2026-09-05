@@ -1,38 +1,39 @@
 /**
- * Slovník Jednoduše / Expert (KAN-662).
+ * Simple / Expert dictionary.
  *
- * Uživatelská volba, která přepíná ODBORNÉ TERMÍNY: „Rozmístění dílů na
- * plech“ vs. „Nesting“. Tři režimy — ``simple`` (jednoduché opisy),
- * ``expert`` (odborné termíny), ``both`` (výchozí: expert termín a
- * jednoduchý opis v závorce za ním).
+ * A user choice that switches TECHNICAL TERMS: "laying parts out on a
+ * sheet" vs. "nesting". Three modes — ``simple`` (plain descriptions),
+ * ``expert`` (technical terms), ``both`` (default: the expert term with
+ * the plain description in parentheses after it).
  *
- * ## Proč závorka, ne tooltip
+ * ## Why parentheses, not a tooltip
  *
- * Režim „Obojí“ potřebuje formu a KAN-662 chce to rozhodnutí zapsané:
- * je to **závorka**, ne tooltip. Tooltip nefunguje na dotykové obrazovce,
- * odečítač obrazovky ho čte jen s extra ARIA drátováním a v tabulce se
- * nevejde do vyhledávání (Ctrl+F nenajde text, který není v DOM). Závorka
- * je delší, ale vidí ji každý — a „Obojí“ je režim právě pro čtenáře,
- * který si termíny teprve spojuje.
+ * The "Both" mode needs a form and the decision is recorded here: it is
+ * **parentheses**, not a tooltip. A tooltip does not work on a touch
+ * screen, a screen reader reads it only with extra ARIA wiring, and in a
+ * table it escapes search (Ctrl+F does not find text that is not in the
+ * DOM). Parentheses are longer, but everyone sees them — and "Both" is the
+ * mode for exactly the reader who is still connecting the terms.
  *
- * ## Dva „překladové klíče“ na termín
+ * ## Two "translation keys" per term
  *
- * V aplikaci jsou to klíče ``term.<klíč>.simple`` / ``term.<klíč>.expert``
- * v jazykových souborech. Doc web žádné jazykové soubory nemá (text nese
- * bundle, viz ``lang.ts``), takže tady je táž struktura zapsaná typem:
- * termín má pole ``expert`` a ``simple``, obě ``Localized``. ``simple``
- * je nepovinné schválně — ne každý termín jednoduchý opis má, a chybějící
- * opis se za běhu propadá na expert variantu (testováno), nikdy na klíč.
+ * In the application these are the keys ``term.<key>.simple`` /
+ * ``term.<key>.expert`` in the language files. The doc web has no language
+ * files (the bundle carries the text, see ``lang.ts``), so here the same
+ * structure is written as a type: a term has ``expert`` and ``simple``
+ * fields, both ``Localized``. ``simple`` is optional on purpose — not
+ * every term has a plain description, and a missing one falls back to the
+ * expert variant at runtime (tested), never to the key.
  *
- * ## Kde volba bydlí
+ * ## Where the choice lives
  *
  * In the product the account is the source of truth and the same choice
  * drives ``IngotPageHint.level``, which is why they share the values
  * ``simple|expert|both``. The doc web has no login, so the choice lives
  * only in the browser, like theme and accent (see ``DocsApp``).
  *
- * 🪤 Kit sám nepřekládá nic (viz stránka Překlady) — proto tenhle modul
- * bydlí v ``ingot-docs``, ne v ``@/ingot``.
+ * The kit itself translates nothing (see the Translations page) — which is
+ * why this module lives in ``ingot-docs``, not in ``@/ingot``.
  */
 import { createStore } from "@/ingot/store";
 import { readStorage, writeStorage } from "@/lib/storage";
@@ -44,7 +45,7 @@ export const DICTIONARY_MODES = ["simple", "expert", "both"] as const;
 /** The same set of values as ``IngotPageHint.level``. */
 export type DictionaryMode = (typeof DICTIONARY_MODES)[number];
 
-/** Výchozí režim podle specu: obojí. */
+/** Default mode per the spec: both. */
 export const DEFAULT_DICTIONARY_MODE: DictionaryMode = "both";
 
 export function isDictionaryMode(value: unknown): value is DictionaryMode {
@@ -55,11 +56,11 @@ export function isDictionaryMode(value: unknown): value is DictionaryMode {
 }
 
 /**
- * Jeden termín slovníku — dvojice variant, obě už přeložené.
+ * One dictionary term — a pair of variants, both already translated.
  *
- * ``simple`` je nepovinné: termín bez jednoduchého opisu se ve všech
- * režimech ukazuje expertně. Opačný směr neexistuje schválně — expert
- * varianta je ta kanonická a povinná.
+ * ``simple`` is optional: a term without a plain description shows the
+ * expert form in every mode. The opposite direction does not exist on
+ * purpose — the expert variant is the canonical, required one.
  */
 export interface DictionaryTerm {
   expert: Localized<string>;
@@ -67,16 +68,17 @@ export interface DictionaryTerm {
 }
 
 /**
- * Registr termínů. Tři termíny ze specu jako důkaz konceptu.
+ * Term registry. Three terms from the spec as a proof of concept.
  *
- * ## Jak přidat termín (strážný vzor)
+ * ## How to add a term (the guarded pattern)
  *
- * 1. Přidej klíč sem — ``expert`` povinně, ``simple`` jen pokud má termín
- *    opravdový jednoduchý opis (ne jen synonymum).
- * 2. ``as const satisfies`` níže vynutí, že každá varianta má všechny
- *    jazyky z ``DOC_LANGS`` — jazyk se nedá slíbit, aniž by se napsal.
- * 3. V textu pak volej ``termLabel(klíč, mode, lang)`` — nikdy nevpisuj
- *    variantu natvrdo, tím by se termín odpojil od volby uživatele.
+ * 1. Add the key here — ``expert`` is required, ``simple`` only if the term
+ *    has a genuine plain description (not just a synonym).
+ * 2. ``as const satisfies`` below enforces that every variant has all the
+ *    languages from ``DOC_LANGS`` — a language cannot be promised without
+ *    being written.
+ * 3. In text, call ``termLabel(key, mode, lang)`` — never hard-code a
+ *    variant, that would disconnect the term from the user's choice.
  */
 export const DICTIONARY_TERMS = {
   nesting: {
@@ -99,11 +101,11 @@ export const DICTIONARY_TERMS = {
 export type DictionaryTermKey = keyof typeof DICTIONARY_TERMS;
 
 /**
- * Vybere zobrazenou podobu termínu podle režimu.
+ * Picks the displayed form of a term by mode.
  *
- * Fallback: termín bez ``simple`` varianty se v režimu ``simple`` ukáže
- * expertně a v režimu ``both`` bez závorky — nikdy prázdný řetězec,
- * nikdy klíč.
+ * Fallback: a term without a ``simple`` variant shows the expert form in
+ * ``simple`` mode and no parentheses in ``both`` mode — never an empty
+ * string, never the key.
  */
 export function termLabel(
   term: DictionaryTerm,
@@ -130,12 +132,12 @@ export function readStoredDictionaryMode(): DictionaryMode {
 }
 
 /**
- * Miniaturní sdílený stav volby.
+ * Tiny shared state of the choice.
  *
- * Volbu čte přepínač ve skořápce doc webu I živá ukázka na stránce
- * Překlady. Kdyby si každý držel vlastní ``useState`` nad localStorage,
- * přepnutí na jednom místě by se na druhém neprojevilo do reloadu —
- * proto jeden modulový stav a ``useSyncExternalStore``.
+ * The choice is read by the switch in the doc web shell AND by the live
+ * demo on the Translations page. If each held its own ``useState`` over
+ * localStorage, a switch in one place would not show in the other until a
+ * reload — hence one module-level state and ``useSyncExternalStore``.
  */
 // Lazy initial value: localStorage is read on first use, not at module load.
 const modeStore = createStore<DictionaryMode>(() => readStoredDictionaryMode());

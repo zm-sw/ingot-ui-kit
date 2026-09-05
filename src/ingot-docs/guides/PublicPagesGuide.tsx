@@ -15,17 +15,17 @@ import {
 } from "@/ingot";
 
 /**
- * Stránka „Veřejné stránky" (KAN-664) — marketingové bloky z handoffu
- * Veřejné stránky, s živými ukázkami.
+ * "Public pages" page — the marketing blocks from the "Public pages"
+ * handoff, with live demos.
  *
- * Bloky jsou primitiva kitu a každý má vlastní komponentní stránku.
- * Tenhle průvodce je o něčem jiném: o SKLADBĚ stránky — o pravidlech,
- * která žádná jednotlivá komponenta uhlídat nemůže, protože platí přes
- * celou stránku (kolik akcentů, kolik tmavých bloků, kdy čtyři sloupce).
+ * The blocks are kit primitives and each has its own component page. This
+ * guide is about something else: the COMPOSITION of a page — the rules no
+ * single component can guard because they apply across the whole page (how
+ * many accents, how many dark blocks, when four columns).
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka: žádné klíče úkolů ani interní cesty
- * v renderovaném textu. Ukázková data (názvy plánů, ceny) jsou zjevně
- * smyšlená — skutečný ceník bere web z dat plánů, což text i říká.
+ * The doc web is a PUBLIC page: no issue keys or internal paths in
+ * rendered text. The sample data (plan names, prices) is obviously made up
+ * — the real pricing comes from the plans data, which the text says too.
  */
 
 function SectionHeadExample({ lang }: { lang: DocLang }): JSX.Element {

@@ -3,10 +3,10 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingCtaDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingCtaDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Akce jsou odkazy, ne tlačítka: marketingové CTA naviguje,
-// nic nespouští. Vzhled se z Buttonu nekopíruje, bere se z něj —
-// ``as="a"`` přibylo do Buttonu právě kvůli tomuhle bloku a s ním
-// varianta ``inverse`` pro vedlejší akci na obrácené ploše.
+// KAN-664. The actions are links, not buttons: a marketing CTA navigates,
+// it triggers nothing. The look is not copied from Button, it is taken from
+// it — ``as="a"`` was added to Button precisely for this block, and with it
+// the ``inverse`` variant for the secondary action on an inverted surface.
 export const IngotMarketingCtaDoc: IngotDocPage = {
   name: "IngotMarketingCta",
   status: "beta",

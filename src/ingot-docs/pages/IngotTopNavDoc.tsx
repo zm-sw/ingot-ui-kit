@@ -3,25 +3,27 @@ import { Demo } from "@/ingot-docs/demos/IngotTopNavDemo";
 import demoSource from "@/ingot-docs/demos/IngotTopNavDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// 2.0 (rozhodnutí vlastníka 2026-09-02, body 02 a 04): sekce se otevírá
-// hoverem i klikem (klik jen otevírá; prodlevu zavření měří lišta),
-// ``onToggleSection`` nahradily ``onOpenSection``/``onCloseSection``
-// a limit „nejvýš šest sekcí" nahradilo měřítko 1280 px.
-// 2.2 (parita s nasazenou administrací pro konverzi shellu): sekce umí
-// být odkaz (href — jediná obrazovka) nebo zamčená (locked), panel se
-// kotví pod svou sekcí přes renderMenu, přibyl menuButton pro mobilní
-// hamburger a klik mimo lištu zavírá. 2.3: rám řádku (contentClassName)
-// patří shellu, sekce jsou pojmenovaná <nav> (sectionsLabel) s
-// responsivní třídou (sectionsClassName) a slotem sectionsEnd.
+// 2.0 (owner decision of 2026-09-02, items 02 and 04): a section opens on
+// hover and on click (click only opens; the bar measures the close delay),
+// ``onToggleSection`` was replaced by ``onOpenSection``/``onCloseSection``
+// and the "at most six sections" limit by the 1280 px yardstick.
+// 2.2 (parity with the deployed admin for the shell conversion): a section
+// can be a link (href — a single screen) or locked (locked), the panel
+// anchors under its section via renderMenu, menuButton arrived for the
+// mobile hamburger and a click outside the bar closes. 2.3: the row frame
+// (contentClassName) belongs to the shell, sections are a named <nav>
+// (sectionsLabel) with a responsive class (sectionsClassName) and a
+// sectionsEnd slot.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
-  // 2.4: ``current`` zvýrazňuje i menu sekci (skupinu s aktivní routou).
-  // 2.5: sekce může nést vlastní ``testId`` — konverze nepřejmenovává
-  // kotvy existujících testů a e2e. 2.6: ``muted`` na odkazové sekci.
-  // 2.7: klávesnice v otevřeném panelu — šipky procházejí položky, Tab
-  // z panelu nevypadne a Escape vrací fokus na tlačítko sekce. Návrat
-  // fokusu tahle stránka slibovala od 2.0, ale kód ho nedělal.
+  // 2.4: ``current`` highlights a menu section too (the group with the
+  // active route). 2.5: a section can carry its own ``testId`` — the
+  // conversion does not rename the anchors of existing tests and e2e.
+  // 2.6: ``muted`` on a link section. 2.7: keyboard in the open panel —
+  // arrows walk the items, Tab does not fall out of the panel and Escape
+  // returns focus to the section button. This page had promised the focus
+  // return since 2.0, but the code did not do it.
   // 2.8 — row states (current, open, muted, locked, hover) come from the kit's shared menu row.
   version: "2.8",
   tag: ".topnav",

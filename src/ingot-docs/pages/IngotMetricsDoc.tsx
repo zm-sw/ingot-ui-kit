@@ -6,9 +6,9 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotMetricsDoc: IngotDocPage = {
   name: "IngotMetrics",
   status: "beta",
-  // 1.1: buňka stripu umí volitelnou křivku vývoje (trend) — rozhodnutí
-  // vlastníka 2026-09-02, bod 07. 1.2: testId na buňce. 1.3: okno bez
-  // pohybu se kreslí čárkovaně — plná čára by tvrdila stabilní hodnotu.
+  // 1.1: a strip cell can carry an optional trend curve — owner decision
+  // of 2026-09-02, item 07. 1.2: testId on the cell. 1.3: a window with no
+  // movement is drawn dashed — a solid line would claim a stable value.
   // 1.4 — caption set by IngotEyebrow, the kit's shared mono label.
   version: "1.4",
   tag: ".metricstrip",

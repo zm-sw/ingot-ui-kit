@@ -3,9 +3,10 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingFaqDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingFaqDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Prototyp měl a11y díru: otázka byla button bez
-// ``aria-expanded``/``aria-controls`` a 2 ze 3 odpovědí byly prázdné.
-// Obojí drží kontrakt — atributy komponenta, ``answer`` typ.
+// KAN-664. The prototype had an accessibility hole: the question was a
+// button without ``aria-expanded``/``aria-controls`` and 2 of 3 answers were
+// empty. Both are held by contract — the attributes by the component,
+// ``answer`` by the type.
 export const IngotMarketingFaqDoc: IngotDocPage = {
   name: "IngotMarketingFaq",
   status: "beta",

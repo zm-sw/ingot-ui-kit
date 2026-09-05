@@ -3,9 +3,9 @@ import { Demo } from "@/ingot-docs/demos/IngotTabsDemo";
 import demoSource from "@/ingot-docs/demos/IngotTabsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// Vzorové napojení hodnoty na URL. Kit je schválně bez routeru, takže
-// tohle je věc volajícího — snippet je tu proto, aby si ho každý
-// konzument nevymýšlel po svém.
+// Reference wiring of the value to the URL. The kit deliberately has no
+// router, so this is the caller's business — the snippet is here so every
+// consumer does not invent their own.
 const URL_SNIPPET = `const [params, setParams] = useSearchParams();
 const view = params.get("view") ?? "overview";
 

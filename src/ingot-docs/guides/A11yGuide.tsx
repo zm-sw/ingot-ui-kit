@@ -13,19 +13,20 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Přístupnost“ — pravidla WCAG 2.2 AA, jak je kit drží, a
- * kontrolní seznam před vydáním (KAN-663).
+ * "Accessibility" page — the WCAG 2.2 AA rules, how the kit holds them,
+ * and the pre-release checklist.
  *
- * Slug „pristupnost“ nekoliduje s kotvou „pristupnost“ na stránkách
- * komponent: routy žijí za ``#/``, kotvy sekcí za holým ``#``.
+ * The slug "pristupnost" does not collide with the "pristupnost" anchor on
+ * component pages: routes live after ``#/``, section anchors after a bare
+ * ``#``.
  *
- * 🪤 **Ukázka fokusu je ŽIVÁ.** Prstenec se nekreslí obrázkem ani opsaným
- * ``outline`` — jsou to skutečné ``Button`` a ``IngotFieldInput`` z kitu,
- * takže si čtenář může projít Tabem přesně to, co stránka popisuje. Obrázek
- * by se s prvním doladěním prstence rozešel a nikdo by si toho nevšiml.
+ * **The focus demo is LIVE.** The ring is not drawn as an image or a copied
+ * ``outline`` — these are the real ``Button`` and ``IngotFieldInput`` from
+ * the kit, so the reader can Tab through exactly what the page describes.
+ * An image would drift with the first ring tweak and nobody would notice.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: klíče úkolů,
- * cesty do repa ani jména kontrol.
+ * The doc web is a PUBLIC page. Internal prose does not belong here: no
+ * issue keys, repository paths or guard names.
  */
 
 function Rules({ lang }: { lang: DocLang }): JSX.Element {
@@ -136,9 +137,9 @@ function Contrast({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Živý prstenec fokusu. ``IngotFieldInput`` je řízený vstup, takže
- * hodnotu drží stav téhle ukázky — bez něj by do pole nešlo psát a
- * „zkus si to Tabem“ by byla prázdná věta.
+ * Live focus ring. ``IngotFieldInput`` is a controlled input, so the value
+ * is held by this demo's state — without it the field could not be typed
+ * into and "try it with Tab" would be an empty sentence.
  */
 const FOCUS_FIELD: IngotFieldSpec = {
   key: "focus-demo",
@@ -155,8 +156,8 @@ function FocusDemo({ lang }: { lang: DocLang }): JSX.Element {
       data-testid="docs-focus-ring"
     >
       <Button variant="accent">{lang === "cs" ? "Tlačítko" : "Button"}</Button>
-      {/* Popisek obaluje vstup: ``IngotFieldInput`` id nevystavuje, takže
-          ``htmlFor`` by ukazoval do prázdna a pole by zůstalo bezejmenné. */}
+      {/* The label wraps the input: ``IngotFieldInput`` exposes no id, so
+          ``htmlFor`` would point into a void and the field would stay nameless. */}
       <label>
         <span className="sr-only">{label}</span>
         <IngotFieldInput

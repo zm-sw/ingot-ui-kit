@@ -3,15 +3,16 @@ import { Demo } from "@/ingot-docs/demos/IngotDisclosureDemo";
 import demoSource from "@/ingot-docs/demos/IngotDisclosureDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-786. Vzniklo z kontextového panelu, který si sbalitelnou sekci
-// nakreslil sám — přesně to, před čím kit varuje.
+// KAN-786. Born from a context panel that drew its own collapsible section
+// — exactly what the kit warns against.
 //
-// Rozhodnutí vlastníka: VLASTNÍ primitivum, ne prop ``collapsible`` na
-// ``IngotSection``. Ta sází nadpis (h2/h3) a drží osnovu stránky; tahle
-// sekce je mono uppercase popisek bloku. Jeden prop nad dvěma sazbami by
-// byly dvě komponenty schované za přepínačem.
+// Owner decision: a primitive of its OWN, not a ``collapsible`` prop on
+// ``IngotSection``. That one sets a heading (h2/h3) and holds the page
+// outline; this section is a mono uppercase block label. One prop over two
+// typesettings would be two components hidden behind a switch.
 //
-// Skupina (accordion) je součástí první verze, taky rozhodnutím vlastníka.
+// The group (accordion) is part of the first version, also by owner
+// decision.
 export const IngotDisclosureDoc: IngotDocPage = {
   name: "IngotDisclosure",
   status: "beta",

@@ -15,27 +15,28 @@ import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Ikony“ — obě sady (rozhraní + výrobní operace), stupnice
- * velikostí a pravidla jejich používání (KAN-663, sady samotné KAN-649).
+ * "Icons" page — both sets (interface + manufacturing operations), the
+ * size scale and the rules for using them.
  *
- * 🪤 Obě mřížky se generují ze seznamů kitu — ``INGOT_ICON_NAMES``
- * a ``INGOT_OP_ICON_KEYS``. Glyf přidaný do sady se tu objeví sám.
- * Ručně psaný výčet by byl druhá pravda o tom, co sada umí, a rozešel
- * by se s první při prvním přidaném glyfu — návrh vykresluje CELOU
- * sadu operací, takže stránka, která jich ukáže šest, o sadě lže.
+ * Both grids are generated from the kit's lists — ``INGOT_ICON_NAMES`` and
+ * ``INGOT_OP_ICON_KEYS``. A glyph added to a set appears here by itself. A
+ * hand-written list would be a second truth about what a set can do and
+ * would drift from the first at the first added glyph — the design renders
+ * the WHOLE operations set, so a page showing six of them lies about the
+ * set.
  *
- * 🪤 Velikosti jsou stupnice z návrhu: 13 · 14 · 15 · 20. Mřížka sady se
- * proto sází ve 20 px, ne v 18 — 18 px na stupnici není a nemá odkud
- * vzít smysl.
+ * Sizes are the scale from the design: 13 · 14 · 15 · 20. The set grid is
+ * therefore set at 20 px, not 18 — 18 px is not on the scale and has
+ * nowhere to take meaning from.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka: v renderovaném textu žádné klíče úkolů
- * ani interní cesty. Vysvětlení patří sem, do komentáře.
+ * The doc web is a PUBLIC page: no issue keys or internal paths in
+ * rendered text. Explanations belong here, in the comment.
  */
 
-/** Glyf, na kterém se ukazuje stupnice velikostí. */
+/** The glyph the size scale is shown on. */
 const SCALE_GLYPH = "search" as const;
 
-/** Stupnice z návrhu: velikost + kde se používá. */
+/** The scale from the design: size + where it is used. */
 const SIZES: readonly { size: number; cs: string; en: string }[] = [
   { size: 13, cs: "tlačítko sm", en: "small button" },
   { size: 14, cs: "tlačítko", en: "button" },
@@ -112,9 +113,10 @@ interface OpRow {
 }
 
 /**
- * Ukázkové řádky přesně podle návrhu (Laser, Ohyb, Svařování, Prášková
- * barva). Klíče jsou skutečné tokeny z knihovny, ne vymyšlené řetězce —
- * kdyby se z knihovny ztratily, ikona se přestane kreslit a je to vidět.
+ * Sample rows exactly per the design (laser, bending, welding, powder
+ * coating). The keys are real tokens from the library, not made-up
+ * strings — if they vanished from the library the icon would stop drawing
+ * and it would show.
  */
 const OP_ROWS: readonly OpRow[] = [
   {
