@@ -172,7 +172,7 @@ rather than mandatory.
 
 Every comment in code is English: JSDoc, `//` lines, JSX comments, HTML,
 CSS and workflow YAML comments, and the `describe` / `it` names in
-`tests/`. The code
+every test file. The code
 is read by people who do not read Czech, and a comment only half the
 team can read is a comment that gets deleted at the next refactor.
 User-facing text is content, not a comment — it stays localized, in the

@@ -70,7 +70,7 @@ describe("IngotTable rowClassName", () => {
   });
 });
 
-describe("IngotTable výběr řádků (KAN-654)", () => {
+describe("IngotTable row selection (KAN-654)", () => {
   const selectionProps = (
     selected: ReadonlySet<string>,
     onChange: (keys: ReadonlySet<string>) => void,
@@ -81,14 +81,14 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
     selectRowLabel: (row: Row) => `Vybrat ${row.label}`,
   });
 
-  it("bez výběrových props se nic nemění — kořenem zůstává <table>", () => {
+  it("without selection props nothing changes — the root stays <table>", () => {
     const { container } = renderTable();
 
     expect(container.firstElementChild!.tagName).toBe("TABLE");
     expect(screen.queryByRole("checkbox")).toBeNull();
   });
 
-  it("checkbox řádku hlásí novou množinu a řádek nese aria-selected", () => {
+  it("a row checkbox reports the new set and the row carries aria-selected", () => {
     const onChange = vi.fn();
     renderTable(selectionProps(new Set(["a"]), onChange));
 
@@ -99,7 +99,7 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
     expect(onChange).toHaveBeenCalledWith(new Set(["a", "b"]));
   });
 
-  it("„vybrat vše“ vybere vykreslené řádky a podruhé výběr zruší", () => {
+  it("select all selects the rendered rows and clears the selection the second time", () => {
     const onChange = vi.fn();
     const { rerender } = render(
       <IngotTable
@@ -125,7 +125,7 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
     expect(onChange).toHaveBeenLastCalledWith(new Set());
   });
 
-  it("checkbox v hlavičce je s částečným výběrem indeterminate", () => {
+  it("the header checkbox is indeterminate with a partial selection", () => {
     renderTable(selectionProps(new Set(["a"]), () => {}));
 
     const all = screen.getByRole("checkbox", { name: "Vybrat vše" });
@@ -133,7 +133,7 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
     expect((all as HTMLInputElement).checked).toBe(false);
   });
 
-  it("bulkbar se ukáže jen s neprázdným výběrem", () => {
+  it("the bulk bar shows only with a non-empty selection", () => {
     const { rerender } = render(
       <IngotTable
         columns={COLUMNS}
@@ -163,7 +163,7 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
     expect(screen.getByText("2 vybrané")).toBeInTheDocument();
   });
 
-  it("výběrový sloupec zvedne colSpan prázdného řádku", () => {
+  it("the selection column raises the colSpan of the empty row", () => {
     renderTable({
       rows: [],
       empty: <span>Nic tu není</span>,
@@ -178,19 +178,19 @@ describe("IngotTable výběr řádků (KAN-654)", () => {
   });
 });
 
-describe("IngotTable řazení (KAN-654)", () => {
+describe("IngotTable sorting (KAN-654)", () => {
   const sortableColumns: readonly IngotColumn<Row>[] = [
     { key: "label", header: "Label", cell: (row) => row.label, sortable: true },
     { key: "id", header: "Id", cell: (row) => row.id },
   ];
 
-  it("bez onSortChange zůstává hlavička obyčejná — tlačítko, které nic nedělá, je horší než žádné", () => {
+  it("without onSortChange the header stays plain — a button that does nothing is worse than none", () => {
     renderTable({ columns: sortableColumns });
 
     expect(screen.queryByRole("button", { name: /Label/ })).toBeNull();
   });
 
-  it("aktivní hlavička nese aria-sort a klik převrací směr", () => {
+  it("the active header carries aria-sort and a click flips the direction", () => {
     const onSortChange = vi.fn();
     const sort: IngotSort = { key: "label", dir: "asc" };
     renderTable({ columns: sortableColumns, sort, onSortChange });
@@ -202,7 +202,7 @@ describe("IngotTable řazení (KAN-654)", () => {
     expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "desc" });
   });
 
-  it("klik na neaktivní řaditelnou hlavičku začíná vzestupně", () => {
+  it("a click on an inactive sortable header starts ascending", () => {
     const onSortChange = vi.fn();
     renderTable({
       columns: sortableColumns,
@@ -214,7 +214,7 @@ describe("IngotTable řazení (KAN-654)", () => {
     expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "asc" });
   });
 
-  it("neřaditelná hlavička aria-sort nenese", () => {
+  it("a non-sortable header carries no aria-sort", () => {
     renderTable({
       columns: sortableColumns,
       sort: { key: "label", dir: "asc" } as IngotSort,
@@ -228,14 +228,14 @@ describe("IngotTable řazení (KAN-654)", () => {
 });
 
 describe("IngotTable density (KAN-654)", () => {
-  it("výchozí hustota drží padding z první verze", () => {
+  it("the default density keeps the padding of the first version", () => {
     renderTable();
 
     const cell = screen.getByTestId("row-a").querySelector("td")!;
     expect(cell.className).toContain("px-3 py-2");
   });
 
-  it("compact stáhne padding buňky na 8px", () => {
+  it("compact pulls the cell padding down to 8px", () => {
     renderTable({ density: "compact" });
 
     const cell = screen.getByTestId("row-a").querySelector("td")!;

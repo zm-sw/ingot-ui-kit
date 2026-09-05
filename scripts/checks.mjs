@@ -443,7 +443,7 @@ function guardIngotCommentsEnglish() {
         hits.push(`${rel(path)}:${lineAt(src, index)}: ${first}`);
       }
     }
-    if (rel(path).startsWith("tests/")) {
+    if (/\.test\.tsx?$/.test(path)) {
       for (const m of src.matchAll(TEST_NAME_RE)) {
         if (CZECH_RE.test(m[2])) {
           hits.push(`${rel(path)}:${lineAt(src, m.index)}: ${m[2].slice(0, 70)}`);
