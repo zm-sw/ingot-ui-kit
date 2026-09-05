@@ -1,5 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit. Three guards:
+ * Repo checks for the Ingot UI Kit. Four guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -15,6 +15,10 @@
  *
  *  - ingot-docs-no-internal-prose: the doc web is a PUBLIC page; rendered
  *    text must not name issue keys, monorepo paths or guard names.
+ *
+ *  - ingot-comments-english: every comment (JSDoc, `//`, JSX, HTML, CSS,
+ *    workflow YAML) and every describe/it name is English. User-facing
+ *    text is content, not a comment, so string literals are never read.
  *
  * Exit code 0 = all green; 1 = at least one guard failed.
  */
@@ -335,7 +339,7 @@ const INTERNAL_RE = new RegExp(
   [
     String.raw`KAN-\d+`,
     String.raw`\b(?:apps/(?:web|api)|scripts)/[\w/.-]+`,
-    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose)\b`,
+    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose|comments-english)\b`,
   ].join("|"),
   "g",
 );
@@ -366,11 +370,109 @@ function guardIngotDocsNoInternalProse() {
   }
 }
 
+// --- ingot-comments-english -------------------------------------------------
+
+// Czech diacritics, both cases. A comment that carries one is not English.
+const CZECH_RE =
+  /[ěščřžýáíéúůťďňĚŠČŘŽÝÁÍÉÚŮŤĎŇ]/;
+
+const COMMENT_SCOPES = [
+  ["src", /\.(?:tsx?|css)$/],
+  ["scripts", /\.mjs$/],
+  ["tests", /\.tsx?$/],
+  ["public", /\.js$/],
+  [".github/workflows", /\.ya?ml$/],
+];
+const COMMENT_FILES = [
+  "index.html",
+  "vite.config.ts",
+  "vitest.config.ts",
+  "tailwind.config.ts",
+  "tailwind.config.js",
+  "postcss.config.js",
+  "postcss.config.cjs",
+];
+
+// First string argument of describe / it / test, including .each / .only / .skip.
+const TEST_NAME_RE =
+  /\b(?:describe|it|test)(?:\.(?:each|only|skip|todo|concurrent)(?:\([^)]*\))?)?\(\s*(["'`])((?:\\.|(?!\1)[^\\])*)\1/g;
+
+function lineAt(src, index) {
+  let line = 1;
+  for (let i = 0; i < index; i += 1) if (src.charCodeAt(i) === 10) line += 1;
+  return line;
+}
+
+// [offset, text] of every comment in the file. Block comments cover JSX
+// comments too; `://` (URLs) and `\/\/` (regex literals) are not comments.
+function commentSpans(src, path) {
+  const spans = [];
+  if (path.endsWith(".html")) {
+    for (const m of src.matchAll(/<!--([\s\S]*?)-->/g)) spans.push([m.index, m[1]]);
+    return spans;
+  }
+  if (/\.ya?ml$/.test(path)) {
+    for (const m of src.matchAll(/(?:^|\s)#([^\n]*)/g)) spans.push([m.index, m[1]]);
+    return spans;
+  }
+  for (const m of src.matchAll(/\/\*([\s\S]*?)\*\//g)) spans.push([m.index, m[1]]);
+  if (path.endsWith(".css")) return spans;
+  for (const m of src.matchAll(/(?<![:"'`\\])\/\/([^\n]*)/g)) spans.push([m.index, m[1]]);
+  return spans;
+}
+
+function guardIngotCommentsEnglish() {
+  const guard = "ingot-comments-english";
+  const files = [];
+  for (const [dir, pattern] of COMMENT_SCOPES) {
+    const full = join(ROOT, dir);
+    if (existsSync(full)) files.push(...walk(full, pattern));
+  }
+  for (const name of COMMENT_FILES) {
+    const full = join(ROOT, name);
+    if (existsSync(full)) files.push(full);
+  }
+  const hits = [];
+  let comments = 0;
+  for (const path of files) {
+    const src = read(path);
+    for (const [index, text] of commentSpans(src, path)) {
+      comments += 1;
+      if (CZECH_RE.test(text)) {
+        const first = text.trim().split("\n")[0].replace(/^\*\s*/, "").slice(0, 70);
+        hits.push(`${rel(path)}:${lineAt(src, index)}: ${first}`);
+      }
+    }
+    if (rel(path).startsWith("tests/")) {
+      for (const m of src.matchAll(TEST_NAME_RE)) {
+        if (CZECH_RE.test(m[2])) {
+          hits.push(`${rel(path)}:${lineAt(src, m.index)}: ${m[2].slice(0, 70)}`);
+        }
+      }
+    }
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} comment(s) or test name(s) not in English:`,
+      ...hits.slice(0, 30),
+      "Every comment, JSDoc, JSX/HTML/CSS comment and describe/it name is",
+      "English (CLAUDE.md). User-facing text is content and stays localized —",
+      "this guard reads comments and test names only, never string literals.",
+    ]);
+  } else {
+    ok(
+      guard,
+      `${comments} comment(s) across ${files.length} file(s) and every test name read as English`,
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 guardIngotDocPages();
 guardIngotDocsKitOnly();
 guardIngotDocsNoInternalProse();
+guardIngotCommentsEnglish();
 
 if (failures.length) {
   for (const failure of failures) console.error(`\n${failure}`);

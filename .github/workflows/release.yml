@@ -1,11 +1,12 @@
-# Automatický release vX.Y.Z po každém pushi do main — viz
-# scripts/release.mjs (zdroj pravdy je registr doc stránek; epochu X
-# zvedá jen commit `release!:`). Vlastní release commit se přeskakuje,
-# jinak by workflow spouštěl sám sebe.
+# Automatic release vX.Y.Z after every push to main — see
+# scripts/release.mjs (the source of truth is the doc page registry; the
+# epoch X is raised only by a `release!:` commit). The release commit
+# itself is skipped, otherwise the workflow would trigger itself.
 #
-# Bump verze nejde do main přímo — main přímý push nepřijímá. Skript ho
-# posílá pull requestem s auto-merge, a proto potřebuje víc než zápis do
-# obsahu: založit PR a spustit ci.yml, aby na něm byly povinné checky.
+# The version bump does not go to main directly — main accepts no direct
+# push. The script sends it as a pull request with auto-merge, and
+# therefore needs more than writing to contents: to open the PR and to
+# trigger ci.yml so the required checks are on it.
 name: release
 
 on:
@@ -26,8 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Tagy a historie od posledního release — mělký checkout by
-          # neviděl ani tag, ani commity k analýze.
+          # Tags and history since the last release — a shallow checkout
+          # would see neither the tag nor the commits to analyse.
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:

@@ -1,9 +1,9 @@
 name: ci
 
-# ``workflow_dispatch`` tu není pro ruční spouštění, ale pro release:
-# PR, které založí GITHUB_TOKEN, nespustí ``pull_request`` běh, takže by
-# se povinné checky na release PR nikdy neobjevily a auto-merge by čekal
-# navěky. Dispatch je výjimka, kterou GITHUB_TOKEN spustit smí.
+# ``workflow_dispatch`` is not here for manual runs but for the release:
+# a PR opened with GITHUB_TOKEN does not trigger a ``pull_request`` run, so
+# the required checks would never appear on the release PR and auto-merge
+# would wait forever. Dispatch is the exception GITHUB_TOKEN may trigger.
 on:
   push:
     branches: [main]
@@ -20,7 +20,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Repo checks (doc-pages, kit-only, no-internal-prose)
+      - name: Repo checks (doc-pages, kit-only, no-internal-prose, comments-english)
         run: npm run check
       - name: Typecheck
         run: npm run typecheck
@@ -30,8 +30,9 @@ jobs:
         run: npx vite build
 
   version-guard:
-    # Na pushi do main nemá co porovnávat; na dispatchi ano — a musí
-    # doběhnout, jinak by povinný check na release PR chyběl.
+    # On a push to main there is nothing to compare against; on dispatch
+    # there is — and it has to finish, otherwise the required check on the
+    # release PR would be missing.
     if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
     steps:
