@@ -139,7 +139,16 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
     // The demo arrives on demand, so it is awaited — and the real
     // IngotEmptyState is what has to arrive, not text about it.
-    expect(await screen.findByTestId("docs-empty")).toBeInTheDocument();
+    //
+    // The wait is explicit because findBy's own default is one second,
+    // which is a fine budget for a state update and a poor one for a
+    // dynamic import on a machine running the rest of this suite in
+    // parallel. It failed once in about twenty runs before this line; a
+    // test that fails one run in twenty teaches people to re-run instead
+    // of to read.
+    expect(
+      await screen.findByTestId("docs-empty", {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Zatím tu nic není")).toBeInTheDocument();
   });
 
