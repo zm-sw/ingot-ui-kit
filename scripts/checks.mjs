@@ -11,7 +11,9 @@
  *    slugs that don't shadow a primitive.
  *
  *  - ingot-docs-kit-only: markup that has a kit counterpart must not be
- *    hand-rolled in the doc web — the doc web TEACHES the kit.
+ *    hand-rolled in anything this repository ships around the kit — the
+ *    doc web TEACHES the kit, and a page that composes its own classes
+ *    contradicts it by example.
  *
  *  - ingot-docs-no-internal-prose: the doc web is a PUBLIC page; rendered
  *    text must not name issue keys, monorepo paths or guard names.
@@ -317,10 +319,18 @@ const TAG_RE = new RegExp(
   "g",
 );
 
+// The doc web today; whatever else this repository grows around the kit
+// (marketing pages, app screens) is held to the same rule the day it
+// appears, without anyone having to remember this guard.
+const KIT_ONLY_DIRS = ["src/ingot-docs", "src/marketing", "src/components"];
+
 function guardIngotDocsKitOnly() {
   const guard = "ingot-docs-kit-only";
   const hits = [];
-  for (const path of walk(DOCS_DIR, /\.tsx$/)) {
+  const dirs = KIT_ONLY_DIRS.map((dir) => join(ROOT, dir)).filter((dir) =>
+    existsSync(dir),
+  );
+  for (const path of dirs.flatMap((dir) => [...walk(dir, /\.tsx$/)])) {
     const code = stripComments(read(path));
     code.split("\n").forEach((line, index) => {
       for (const match of line.matchAll(TAG_RE)) {
