@@ -116,7 +116,29 @@ export interface IngotDocPage {
    * being found". Required on purpose: a page without a status would
    * silently promise stability.
    */
-  status: "stable" | "beta";
+  status: "stable" | "beta" | "deprecated";
+  /**
+   * Set when ``status`` is ``deprecated``, and required then.
+   *
+   * The kit's old rule — "a breaking change rewrites every call site in the
+   * same pull request" — assumed every caller lives in this repository. It
+   * does not any more: the public web installs the package, and third-party
+   * apps will. For those callers a removal without notice is a build that
+   * stops on a Monday morning with no explanation.
+   *
+   * So a primitive leaves in three steps, and this field is the middle one:
+   * it says WHEN the notice started, WHAT to use instead, and in which
+   * version it goes away. A deprecation without ``removeIn`` is a warning
+   * nobody can plan around, which is why the guard refuses it.
+   */
+  deprecated?: {
+    /** The version the notice started in — "1.4". */
+    since: string;
+    /** What to use instead. Absent only when nothing replaces it. */
+    replacedBy?: string;
+    /** The version it disappears in — never sooner than two releases out. */
+    removeIn: string;
+  };
   /**
    * Version of the primitive — the second badge next to the heading. Not
    * translated, it is a number. Required for the same reason as ``status``.

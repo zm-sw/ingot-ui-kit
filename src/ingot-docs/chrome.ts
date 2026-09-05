@@ -41,6 +41,12 @@ export interface ChromeStrings {
   /** Status badge next to a component page heading. */
   statusStable: Localized<string>;
   statusBeta: Localized<string>;
+  statusDeprecated: Localized<string>;
+  /** Heading of the notice on a deprecated primitive's page. */
+  deprecatedTitle: Localized<string>;
+  deprecatedSince: Localized<string>;
+  deprecatedReplacedBy: Localized<string>;
+  deprecatedRemoveIn: Localized<string>;
   /** Tabs above the demo + the button copying its source. */
   previewTab: Localized<string>;
   codeTab: Localized<string>;
@@ -109,6 +115,14 @@ export const CHROME: ChromeStrings = {
   yes: { cs: "ano", en: "yes" },
   statusStable: { cs: "stabilní", en: "stable" },
   statusBeta: { cs: "beta", en: "beta" },
+  statusDeprecated: { cs: "zastaralé", en: "deprecated" },
+  deprecatedTitle: {
+    cs: "Tohle primitivum odchází",
+    en: "This primitive is going away",
+  },
+  deprecatedSince: { cs: "Oznámeno ve verzi", en: "Announced in version" },
+  deprecatedReplacedBy: { cs: "Místo něj použij", en: "Use instead" },
+  deprecatedRemoveIn: { cs: "Zmizí ve verzi", en: "Disappears in version" },
   previewTab: { cs: "Náhled", en: "Preview" },
   codeTab: { cs: "Kód", en: "Code" },
   copyCode: { cs: "Kopírovat", en: "Copy" },

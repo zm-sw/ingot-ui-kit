@@ -38,6 +38,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   Button,
   IngotBadge,
+  IngotCallout,
   IngotCode,
   IngotDrawer,
   IngotEyebrow,
@@ -310,6 +311,25 @@ function CapTitle({ children }: { children: ReactNode }): JSX.Element {
 }
 
 /**
+ * The status badge, by status.
+ *
+ * ``deprecated`` is the danger tone rather than a warning: a reader who
+ * lands on the page has to see, before anything else, that building on
+ * this is building on something with a removal date.
+ */
+const STATUS_TONE = {
+  stable: "neutral",
+  beta: "warn",
+  deprecated: "danger",
+} as const;
+
+const STATUS_LABEL = {
+  stable: CHROME.statusStable,
+  beta: CHROME.statusBeta,
+  deprecated: CHROME.statusDeprecated,
+} as const;
+
+/**
  * What is currently shown. The doc web has two kinds of pages and tells
  * them apart by type, not by a flag: a guide has no ``props`` and no demo,
  * and a component has no free sections, so one shared shape would always
@@ -332,6 +352,37 @@ const DEFAULT_PAGE: ActivePage = {
  */
 function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
   const sections: DocSection[] = [
+    // The deprecation notice comes FIRST, before the demo. A reader who
+    // scrolls to the props and starts typing has already decided; the
+    // removal date has to reach them before that.
+    ...(page.deprecated === undefined
+      ? []
+      : [
+          {
+            id: "zastarale",
+            title: pick(CHROME.deprecatedTitle, lang),
+            cap: true,
+            body: (
+              <IngotCallout
+                tone="danger"
+                title={pick(CHROME.deprecatedTitle, lang)}
+                testId="docs-deprecated"
+              >
+                <IngotList
+                  items={[
+                    `${pick(CHROME.deprecatedSince, lang)}: v${page.deprecated.since}`,
+                    ...(page.deprecated.replacedBy === undefined
+                      ? []
+                      : [
+                          `${pick(CHROME.deprecatedReplacedBy, lang)}: ${page.deprecated.replacedBy}`,
+                        ]),
+                    `${pick(CHROME.deprecatedRemoveIn, lang)}: v${page.deprecated.removeIn}`,
+                  ]}
+                />
+              </IngotCallout>
+            ),
+          } satisfies DocSection,
+        ]),
     {
       id: "ukazka",
       title: pick(CHROME.demo, lang),
@@ -964,13 +1015,8 @@ export function DocsApp(): JSX.Element {
                 <span className="flex items-center gap-2">
                   {/* Tones per the handoff: status neutral (beta warning),
                     version accent. */}
-                  <IngotBadge
-                    tone={page.doc.status === "stable" ? "neutral" : "warn"}
-                    testId="docs-status"
-                  >
-                    {page.doc.status === "stable"
-                      ? pick(CHROME.statusStable, lang)
-                      : pick(CHROME.statusBeta, lang)}
+                  <IngotBadge tone={STATUS_TONE[page.doc.status]} testId="docs-status">
+                    {pick(STATUS_LABEL[page.doc.status], lang)}
                   </IngotBadge>
                   <IngotBadge tone="accent" testId="docs-version">
                     {`v${page.doc.version}`}

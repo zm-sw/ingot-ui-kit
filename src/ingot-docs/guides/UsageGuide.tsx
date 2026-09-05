@@ -375,6 +375,70 @@ function Pinning({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+function Lifecycle({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Kit se instaluje z tagu, takže volající nesedí v tomhle repozitáři. Odebrat komponentu bez ohlášení proto znamená, že někomu v pondělí ráno přestane jít build a nemá si co přečíst. Odchod má tři kroky a růst má dvě podmínky."
+          : "The kit is installed from a tag, so its callers do not sit in this repository. Removing a component without notice therefore means somebody's build stops on a Monday morning with nothing to read. Leaving has three steps; growing up has two conditions."}
+      </p>
+      <IngotList
+        variant="ordered"
+        items={
+          cs
+            ? [
+                <>
+                  Stránka dostane stav <strong>zastaralé</strong> a s ním datum
+                  odstranění a náhradu. Odznak zčervená a stránka začíná upozorněním —
+                  před ukázkou, ne za ní.
+                </>,
+                <>
+                  Komponenta <strong>dál funguje beze změny nejméně dvě vydání</strong>.
+                  Zastarání, které věc odstraní v příští verzi, je odstranění s
+                  mezikrokem.
+                </>,
+                <>
+                  Zmizí ve verzi, kterou stránka jmenovala — nikdy dřív. Je to{" "}
+                  <strong>minor</strong>, ne patch: pro volajícího je to stejně tvrdá
+                  změna jako přejmenovaný prop.
+                </>,
+              ]
+            : [
+                <>
+                  The page gets the <strong>deprecated</strong> status, with a removal
+                  version and a replacement. The badge turns red and the page opens with
+                  the notice — before the demo, not after it.
+                </>,
+                <>
+                  The component{" "}
+                  <strong>keeps working, unchanged, for at least two releases</strong>.
+                  A deprecation that removes the thing in the next version is a removal
+                  with extra steps.
+                </>,
+                <>
+                  It disappears in the version the page named — never sooner. That is a{" "}
+                  <strong>minor</strong> bump, not a patch: to a caller it is as hard a
+                  change as a renamed prop.
+                </>,
+              ]
+        }
+      />
+      <p>
+        {cs
+          ? "Z bety na stabilní se komponenta dostane na důkazy, ne stářím: musí ji používat dva konzumenti (doc web se nepočítá, ten ukazuje všechno) a dvě vydání za sebou nesmí dostat major. Označit něco za stabilní, protože to vypadá hotově, je nejrychlejší cesta k systému, který si nesmí opravit vlastní chyby."
+          : "A component moves from beta to stable on evidence, not on age: two consumers have to use it (the doc web does not count — it demonstrates everything) and it must go two releases without a major bump. Marking something stable because it looks finished is the fastest way to a system that may not fix its own mistakes."}
+      </p>
+      <p>
+        {cs
+          ? "Podle toho kritéria je dnes 36 z 55 primitiv v betě a zůstávají tam: kit zatím nemá dva konzumenty mimo tenhle repozitář. Až je bude mít, projde se seznam znovu — a bude z čeho rozhodovat."
+          : "By that criterion 36 of the 55 primitives are in beta today and stay there: the kit does not yet have two consumers outside this repository. Once it does, the list gets another pass — and there will be something to decide on."}
+      </p>
+    </div>
+  );
+}
+
 function ApiRules({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
@@ -491,6 +555,14 @@ export const UsageGuide: IngotGuidePage = {
         en: "The API rules of a component",
       },
       body: { cs: <ApiRules lang="cs" />, en: <ApiRules lang="en" /> },
+    },
+    {
+      id: "zivotni-cyklus",
+      title: {
+        cs: "Jak komponenta odchází a jak dospívá",
+        en: "How a component leaves, and how it grows up",
+      },
+      body: { cs: <Lifecycle lang="cs" />, en: <Lifecycle lang="en" /> },
     },
     {
       id: "pinovani",

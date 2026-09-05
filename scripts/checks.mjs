@@ -177,9 +177,9 @@ function guardIngotDocPages() {
     }
     // status/version feed the badges next to the page title; a page
     // without them would silently promise stability it never declared.
-    if (!/status:\s*"(?:stable|beta)"/.test(src)) {
+    if (!/status:\s*"(?:stable|beta|deprecated)"/.test(src)) {
       fail(guard, [
-        `${pageRel} does not declare status: "stable" | "beta".`,
+        `${pageRel} does not declare status: "stable" | "beta" | "deprecated".`,
         "Every component page carries a status badge next to its title.",
       ]);
     }
@@ -196,6 +196,27 @@ function guardIngotDocPages() {
     if (!/tag:\s*"[^"]+"/.test(src)) {
       fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
     }
+    // A deprecation without a removal date is a warning nobody can plan
+    // around, and a removal date on a primitive nobody deprecated is a
+    // promise attached to the wrong page.
+    const deprecated = /status:\s*"deprecated"/.test(src);
+    const notice = /deprecated:\s*\{/.test(src);
+    if (deprecated && !notice) {
+      fail(guard, [
+        `${pageRel} is deprecated but says nothing about the removal.`,
+        "Add deprecated: { since, replacedBy?, removeIn } — a consumer outside",
+        "this repository plans around those dates, not around a badge.",
+      ]);
+    }
+    if (!deprecated && notice) {
+      fail(guard, [
+        `${pageRel} carries a deprecation notice without status: "deprecated".`,
+      ]);
+    }
+    if (deprecated && notice && !/removeIn:\s*"[^"]+"/.test(src)) {
+      fail(guard, [`${pageRel} declares a deprecation without removeIn.`]);
+    }
+
     // Every page answers "may I pass className here?" — a primitive that
     // does not take it has no props row to say so.
     if (!/classNameNote:\s*\{/.test(src)) {
