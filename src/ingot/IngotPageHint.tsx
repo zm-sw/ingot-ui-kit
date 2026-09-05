@@ -27,11 +27,9 @@ import { IngotIcon } from "./IngotIcon";
  * ``data-hint-level``), ale všechny uživatele ber jako ``both`` —
  * filtrovat podle úrovně je věc volajícího, až bude mít podle čeho.
  *
- * Vztah k ``GuideDock``/``HelpProvider`` z monorepa: v tomhle repu
- * žádný není — po extrakci kitu tu z nich zbyla jen třída
- * ``.help-highlight`` v ``globals.css`` doc webu (týž vizuální idiom).
- * IngotPageHint je NAHRAZUJE jako jediná nápověda stránky v kitu;
- * verdikt patří i do PR a na doc stránku.
+ * This is the kit's only page-level help. Earlier help mechanisms of the
+ * product (a help dock, deep-link highlights) are not part of the kit; the
+ * `.is-hinted` idiom in `tokens.css` is the one highlight the kit ships.
  *
  * A11y: žárovka je obyčejné tlačítko s popisným ``aria-label``
  * (jednorázová akce, ne přepínač). Pruh patří v pořadí čtení PŘED

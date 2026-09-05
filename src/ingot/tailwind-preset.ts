@@ -43,17 +43,17 @@ function token(name: string): string {
   return resolve as unknown as string;
 }
 
-// Sdílený Tailwind preset Ingot UI Kitu (@forgmatic/ingot/tailwind-preset).
-// Mapuje utility na tokeny z tokens.css; hodnoty tokenů deklaruje
-// tokens.css, tenhle soubor jen říká Tailwindu, jak z nich dělat třídy.
-// Konzument (doc web i Forgmatic appka) si doplní jen `content`.
+// The kit's shared Tailwind preset (@forgmatic/ingot/tailwind-preset).
+// It maps utilities onto the tokens declared in tokens.css; the values
+// live there, this file only tells Tailwind how to turn them into classes.
+// A consumer adds its own `content` and nothing else.
 export default {
-  // Dark mode is a `.dark` class on <html>, applied by the admin/operator
-  // shell only (see ThemeProvider + AdminLayout). The palette itself is
-  // driven by the CSS custom properties re-declared under `:root.dark` in
-  // globals.css, so most token-based UI (`bg-surface`, `text-ink`, …)
-  // themes for free; `dark:` variants are available for the few spots
-  // that hardcode a colour and need an explicit override.
+  // Dark mode is a `.dark` class on <html>, applied by the consuming app's
+  // theme switch. The palette itself is driven by the custom properties
+  // re-declared under `:root.dark` in tokens.css, so token-based UI
+  // (`bg-surface`, `text-ink`, …) themes for free; `dark:` variants exist
+  // for the few spots that hard-code a colour and need an explicit
+  // override.
   darkMode: "class",
   theme: {
     extend: {

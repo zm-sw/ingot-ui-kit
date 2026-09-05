@@ -488,8 +488,8 @@ describe("DocsApp", () => {
     expect(screen.getByText(emptyState!.summary.en)).toBeInTheDocument();
 
     expect(window.localStorage.getItem(LANG_KEY)).toBe("en");
-    // `ingot.html` má lang="cs" natvrdo; po přepnutí by to byla lež, na
-    // kterou doplatí odečítač obrazovky, a nikdo by ji neviděl.
+    // `index.html` ships lang="cs"; after a switch it would be a lie a
+    // screen reader pays for and nobody sees.
     expect(document.documentElement.lang).toBe("en");
   });
 

@@ -1,30 +1,23 @@
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
 /**
- * KAN-109 — jak hluboko v modalech se právě renderuje.
+ * How deep in modals the current render is.
  *
- * Rozhodnutí vlastníka z 2026-08-10 znělo: **T2 afordance nikdy uvnitř
- * modalu** (navigace pryč modal odmountuje a zahodí rozepsaný formulář)
- * a **quick-create se smí stackovat nejvýš o jednu úroveň**. Do KAN-109
- * to drželo jen prózou v komentáři `QuickManageLink.tsx` — „the caller
- * guarantees placement". Komentář ale nic negarantuje: nový volající
- * ho nepřečte a afordance se objeví v modalu, kde nemá co dělat.
+ * The owner's decision of 2026-08-10: **a "manage" affordance that
+ * navigates away never appears inside a modal** (navigating unmounts the
+ * modal and discards the half-written form) and **quick-create may stack
+ * at most one level**. A comment saying "the caller guarantees placement"
+ * guarantees nothing: a new caller does not read it and the affordance
+ * shows up in a modal where it has no business.
  *
- * Kontext to překlápí do kódu. Bez providera je hloubka 0, takže
- * stránky mimo modal se nemění a komponenta, která provider zapomene
- * obalit, se chová jako dosud — tedy fail-open směrem k dnešnímu
- * stavu, ne k novému omezení.
+ * The context turns the rule into code. Without a provider the depth is
+ * 0, so pages outside a modal are unchanged and a component that forgets
+ * the provider behaves as before — fail-open towards today's behaviour,
+ * not towards a new restriction.
  *
- * ⚠️ **Modal postavený na ``IngotModal`` provider NEPOTŘEBUJE** — shell
- * ho má uvnitř (KAN-580). Ruční obalení zůstává povinné jen u modalů, které
- * si overlay pořád dělají samy; po sweepu zbylých ad-hoc dialogů odpadne
- * úplně.
- *
- * 🕰️ Do KAN-580 tady stálo, že „tohle nejde zapojit centrálně", protože
- * modaly nebyly jedna sdílená komponenta. Byla to pravda a byla to cena:
- * pravidlo vlastníka z 2026-08-10 se muselo odbavit fail-open kontextem,
- * který si každý modal obaluje ručně. Chybějící skořápka takhle jednou
- * zablokovala centrální opravu — proto ``IngotModal`` vznikl.
+ * A modal built on `IngotModal` does NOT need the provider — the shell has
+ * it inside. Manual wrapping remains only for dialogs that still draw
+ * their own overlay.
  */
 const ModalDepthContext = createContext<number>(0);
 

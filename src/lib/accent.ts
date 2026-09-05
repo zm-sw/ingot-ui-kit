@@ -16,11 +16,9 @@
  * This module owns the PERSISTENCE only; which families exist is the
  * kit's answer, because the kit is where their tokens are.
  *
- * The choice is persisted on the account (``AuthMe.ui_accent`` via ``PATCH
- * /auth/profile``) so it follows the operator across devices; this module
- * owns only the fast **localStorage mirror** that the ``theme-init.js``
- * anti-flash script and the first React render read before ``/auth/me``
- * resolves. Same split as ``lib/theme.ts``, deliberately.
+ * In the product the choice is persisted on the account so it follows the
+ * operator across devices; this module owns only the fast localStorage
+ * mirror that the first render reads. Same split as ``lib/theme.ts``.
  */
 
 /**

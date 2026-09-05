@@ -11,70 +11,18 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 /* ============================================================
- * React Flow (@xyflow/react) dark theming. The library exposes
- * ``--xy-*`` custom properties on the ``.react-flow`` container; we
- * repoint them at our tokens under ``.dark`` so the graph chrome —
- * controls, minimap, edges, handles, default node surfaces,
- * attribution and the dot grid — flips with the rest of the admin.
- * Custom node components (which set their own bg/text classes) are
- * themed by the ordinary token sweep, not these vars.
+ * Doc web base. Everything a kit consumer needs is in tokens.css and
+ * the Tailwind preset; this file only styles the doc web's own document.
  * ============================================================ */
-:root.dark .react-flow {
-  --xy-background-color-default: var(--bg);
-  --xy-background-pattern-dots-color-default: rgba(250, 250, 249, 0.1);
-  --xy-background-pattern-lines-color-default: rgba(250, 250, 249, 0.08);
-  --xy-background-pattern-cross-color-default: rgba(250, 250, 249, 0.1);
-
-  --xy-node-background-color-default: var(--surface);
-  --xy-node-border-default: 1px solid var(--border);
-  --xy-node-color-default: var(--ink);
-  --xy-node-group-background-color-default: rgba(255, 255, 255, 0.04);
-  --xy-node-boxshadow-hover-default: 0 2px 8px rgba(0, 0, 0, 0.5);
-  --xy-node-boxshadow-selected-default: 0 0 0 2px var(--accent);
-
-  --xy-edge-stroke-default: var(--border-strong);
-  --xy-edge-stroke-selected-default: var(--accent);
-  --xy-edge-label-background-color-default: var(--surface);
-  --xy-edge-label-color-default: var(--ink-2);
-  --xy-connectionline-stroke-default: var(--border-strong);
-
-  --xy-handle-background-color-default: var(--surface);
-  --xy-handle-border-color-default: var(--border-strong);
-
-  --xy-controls-button-background-color-default: var(--surface);
-  --xy-controls-button-background-color-hover-default: var(--surface-2);
-  --xy-controls-button-color-default: var(--ink-2);
-  --xy-controls-button-color-hover-default: var(--ink);
-  --xy-controls-button-border-color-default: var(--border);
-  --xy-controls-box-shadow-default: var(--shadow-md);
-
-  --xy-minimap-background-color-default: var(--surface-2);
-  --xy-minimap-mask-background-color-default: rgba(12, 10, 9, 0.55);
-  --xy-minimap-node-background-color-default: var(--ink-4);
-  --xy-minimap-node-stroke-color-default: var(--border-strong);
-
-  --xy-attribution-background-color-default: rgba(28, 25, 23, 0.7);
-  --xy-selection-background-color-default: rgba(59, 130, 246, 0.08);
-  --xy-selection-border-default: 1px dotted var(--accent);
-  --xy-resize-background-color-default: var(--accent);
-}
 
 html {
   -webkit-text-size-adjust: 100%;
-  /* Nech místo NAD cílem skoku, jinak přistane pod přilepenou horní
-     lištou: prohlížeč ho odroluje přesně na nulu, kde ho lišta zakryje,
-     takže „Co je na stránce" skočí na nadpis, který není vidět.
-     5rem = lišta (jedna řada, ~61px) a kousek vzduchu nad nadpisem. */
+  /* Leave room ABOVE a jump target, or it lands under the sticky top
+     bar: the browser scrolls it to exactly zero, where the bar covers
+     it, so "On this page" jumps to a heading nobody can see.
+     5rem = the bar (one row, ~61px) plus a little air above the heading. */
   scroll-padding-top: 5rem;
-  /* Nech místo pod přilepenou spodní lištou (``GuideDock``), když se
-     na něco skáče — kotvou, Tab navigací nebo ``scrollIntoView``.
-     Bez toho cíl přistane přesně pod dokem: prohlížeč ho považuje za
-     viditelný, ale klik i fokusový prstenec padnou na lištu. Odsazení
-     v ``AdminLayout`` řeší klidový stav, tohle ten skok. */
-  scroll-padding-bottom: 7rem;
 }
 
 html,
@@ -92,17 +40,14 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Tabular numerals everywhere — keeps prices, IČO, dimensions,
-   * counts perfectly aligned without per-component .num / .mono
-   * sprinkles. The mono helper still flips font-family to Geist
-   * Mono for the technical-context contexts. */
+  /* Tabular numerals everywhere — prices, IDs, dimensions and counts stay
+     aligned without per-component sprinkles. */
   font-variant-numeric: tabular-nums;
 }
 
 /* ============================================================
- * Subtle scrollbar — admin pages have long sidebars, drawers
- * and tables; the default Chrome/Edge scrollbar overpowers the
- * Forgmatic neutral palette. Mirrors the Admin v2 reference.
+ * Scrollbars — thin, token-coloured, so a scrolling demo stage does not
+ * bring the OS default into a page that is otherwise all tokens.
  * ============================================================ */
 ::-webkit-scrollbar {
   width: 10px;
@@ -120,226 +65,19 @@ body {
   background: var(--ink-4);
 }
 
-.mono {
-  font-family: var(--font-mono);
-  letter-spacing: 0;
-}
-
-/* Subtle 24×24 grid background used on hero sections + dark CTA blocks.
- * The radial-gradient mask fades the lines toward the edges so the
- * grid feels like a paper-texture rather than a hard overlay. */
-.grid-bg {
-  background-image:
-    linear-gradient(to right, rgba(120, 113, 108, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(120, 113, 108, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.grid-bg-dense {
-  background-image:
-    linear-gradient(to right, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-/* Soft fade so the grid never reaches the section edges hard. Must be
- * applied to a layer that contains *only* the grid (e.g. the absolute
- * background <div> inside <PageHero>) — putting `.grid-fade` on a
- * container with foreground content fades that content too. */
-.grid-fade {
-  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-          mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-}
-
-/* Dark variant for the FinalCTA block — white grid lines on ink bg. */
-.grid-bg-dark {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Step illustration animations — sourced from the design's
- * `JakFunguje.html` keyframes so the homepage / how-it-works
- * step rows show live motion instead of static SVGs. */
-@keyframes laser-move {
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -80;
-  }
-}
-.beam-path {
-  stroke-dasharray: 4 4;
-  animation: laser-move 3s linear infinite;
-}
-
-/* „Kde prodáváte" — the wire of a route that is already carrying
- * orders. Dashes drift toward the inbox so the picture says which
- * routes are live, not only which are drawn solid. Same idiom as
- * ``.beam-path`` above. */
-@keyframes sales-wire-flow {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-.sales-wire-live {
-  stroke-dasharray: 6 4;
-  animation: sales-wire-flow 1.4s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .sales-wire-live {
-    animation: none;
-    stroke-dasharray: none;
-  }
-}
-
-@keyframes spark {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-.spark {
-  animation: spark 0.8s ease-in-out infinite;
-  transform-origin: center;
-}
-
-@keyframes tool-head {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(40px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-.tool-head {
-  animation: tool-head 3s ease-in-out infinite;
-}
-
-/* Brushed-steel texture used as a background on a couple of
- * illustrations — repeating vertical stripes overlaid on a soft
- * metallic gradient. */
-.brushed-steel {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.5) 0 1px,
-      transparent 1px 3px
-    ),
-    linear-gradient(135deg, #e5e5e4 0%, #c7c7c5 50%, #e5e5e4 100%);
-}
-
-*:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
 /* ============================================================
- * Animation utilities used by the admin shell — drawer slide-in,
- * modal/palette fade-up, "live" pulse dot on status badges.
- * Copied from the Forgmatic Admin v2 reference so PR 6 can drop
- * these class names directly without inlining keyframes.
- * ============================================================ */
-@keyframes forgmatic-fadein {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.fadein {
-  animation: forgmatic-fadein 0.4s ease-out both;
-}
-
-@keyframes forgmatic-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
-  }
-}
-.pulse {
-  animation: forgmatic-pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes forgmatic-drawer-in {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-.drawer-in {
-  animation: forgmatic-drawer-in 0.25s ease-out both;
-}
-
-/* Horizontal-scroll container that hides its own scrollbar.
- * Used by sub-nav tab strip on tablet — the row of tabs becomes
- * scrollable when there are more tabs than fit, but the visible
- * scrollbar would chop off the bottom border of active tabs. */
-.scrollx {
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.scrollx::-webkit-scrollbar {
-  display: none;
-}
-
-/* Inline-help deep-link highlight: applied briefly by <HelpProvider> when a
- * ``?help=<anchor>`` link scrolls a region into view. A pulsing accent ring
- * that fades out; under reduced-motion it's a plain static ring (no pulse). */
-.help-highlight {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 6px;
-  animation: help-highlight-pulse 2.4s ease-out;
-}
-@keyframes help-highlight-pulse {
-  0% {
-    outline-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-bg);
-  }
-  100% {
-    outline-color: transparent;
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .help-highlight {
-    animation: none;
-  }
-}
-
-/* ============================================================
- * Horní lišta doc webu — sklo.
+ * Doc web top bar — glass.
  *
- * Průsvitná plocha + blur (a špetka saturate, aby obsah pod ní
- * neztratil barvu). Kryje se `backdrop-filter`, ne poloprůhledná
- * vrstva navíc: lišta je `sticky`, takže pod ní projíždí obsah
- * stránky, a bez blur by prosvítal doslova.
+ * A translucent surface plus blur (and a touch of saturate so the
+ * content under it keeps its colour). Covered with `backdrop-filter`,
+ * not an extra semi-transparent layer: the bar is `sticky`, page content
+ * scrolls under it, and without blur it would show through literally.
  *
- * Sklo je v každém motivu své: bílé nad světlou plochou, tmavé
- * (nadzvednuté z `--bg` k `--surface`) nad tmavou. Bílá lišta i
- * v tmavém by znamenala přepisovat uvnitř ní celou neutrální paletu
- * — jinak by na ní `text-ink` i pilulky přepínačů byly světlé na
- * bílé. Barvy tokenů se tu proto nesahají vůbec.
+ * The glass differs per theme: white over the light ground, dark (lifted
+ * from `--bg` towards `--surface`) over the dark one. A white bar in
+ * dark mode would mean overriding the whole neutral palette inside it —
+ * otherwise `text-ink` and the switch pills would be light on white. Token
+ * colours are therefore not touched here at all.
  * ============================================================ */
 .docs-topbar {
   background: rgba(255, 255, 255, 0.82);

@@ -2,16 +2,14 @@
  * Dark-mode preference plumbing (pure, framework-free).
  *
  * The user picks one of three: ``system`` (follow the OS via
- * ``prefers-color-scheme``), ``light`` or ``dark``. The choice is
- * persisted on the account (``AuthMe.ui_theme`` via ``PATCH
- * /auth/profile``) so it follows the operator across devices; this
- * module owns only the fast **localStorage mirror** that the
- * ``index.html`` anti-flash script and the first React render read
- * before ``/auth/me`` resolves.
+ * ``prefers-color-scheme``), ``light`` or ``dark``. In the product the
+ * choice is persisted on the account so it follows the operator across
+ * devices; this module owns only the fast localStorage mirror that the
+ * ``public/theme-init.js`` anti-flash script and the first React render
+ * read.
  *
- * Scope: the ``.dark`` class is applied to <html> by the admin/operator
- * shell only (see ``ThemeProvider`` + ``AdminLayout``). The marketing
- * site and the customer storefront never carry it and stay light.
+ * The ``.dark`` class on <html> is applied by whoever owns the theme
+ * switch — the doc web shell here, the app shell in the product.
  */
 import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
 

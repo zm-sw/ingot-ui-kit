@@ -3,11 +3,9 @@ import { Demo } from "@/ingot-docs/demos/IngotPageHintDemo";
 import demoSource from "@/ingot-docs/demos/IngotPageHintDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// Vztah k dřívějším nápovědám (verdikt z tiketu): GuideDock ani
-// HelpProvider v tomhle repu nejsou — z monorepa tu po nich zbyla jen
-// třída .help-highlight v globals.css doc webu, týž vizuální idiom.
-// IngotPageHint je NAHRAZUJE jako jediná nápověda stránky v kitu.
-// Rendered text to říct nesmí (interní jména), proto jen tady.
+// IngotPageHint is the kit's only page-level help; earlier help mechanisms
+// of the product are not part of the kit. The rendered text must not name
+// them (internal names), hence this comment.
 export const IngotPageHintDoc: IngotDocPage = {
   name: "IngotPageHint",
   status: "beta",

@@ -20,13 +20,13 @@ import { describe, expect, it, vi } from "vitest";
 import { IngotConfirm, useConfirmVeto } from "@/ingot";
 
 /**
- * Obsah `impact` slotu, který potvrzení odvolá — sonda přesně podle
- * skutečného volajícího (`UsageImpactLoader` v `ImpactSummary.tsx`):
- * veto se hlásí z `useEffect`, ne z renderu.
+ * Content of the `impact` slot that withdraws the confirmation — a probe
+ * shaped like a real caller: the veto is reported from `useEffect`, not
+ * from render.
  *
- * Ten efekt je zároveň test na stabilní identitu setteru — kdyby
- * `IngotConfirm` předával novou funkci při každém renderu, efekt by se
- * pouštěl pořád dokola a tenhle soubor by se zacyklil.
+ * The effect doubles as a test of the setter's stable identity — if
+ * `IngotConfirm` passed a new function on every render, the effect would
+ * run again and again and this file would loop.
  */
 function VetoingImpact({ reason }: { reason: ReactNode | null }) {
   const veto = useConfirmVeto();

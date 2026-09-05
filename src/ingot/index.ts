@@ -1,40 +1,32 @@
 /**
- * Ingot UI Kit v1 (KAN-382, program KAN-376).
+ * Ingot UI Kit — the public API of `@forgmatic/ingot`.
  *
- * Sdílená primitiva admin obrazovek: deklarativní formulář (KAN-382),
- * skořápka dialogu (KAN-580), potvrzovací dialog (KAN-583) a tabulka
- * s prázdným stavem (KAN-585). Další přibude, až si o něj řekne konkrétní
- * obrazovka — primitivum bez konzumenta je nezapojený slib.
+ * Shared primitives for the Forgmatic admin screens, the public web and,
+ * in time, third-party apps built for Forgmatic: one source of truth for
+ * how a form, a dialog, a table or a page frame looks and behaves. A
+ * primitive is added when a concrete screen asks for it — a primitive
+ * without a consumer is an unwired promise.
  *
- * Každé primitivum drží a11y laťku z rozhodnutí vlastníka 2026-08-25: focus
- * trap, ESC, scroll lock, ``role``/``aria-*`` a návrat fokusu na spouštěč.
+ * Every primitive holds the accessibility bar decided by the owner on
+ * 2026-08-25: focus trap, ESC, scroll lock, `role` / `aria-*`, and focus
+ * returned to the opener.
  *
- * **Tenhle soubor JE veřejné API Ingotu** (KAN-590). Co odsud nevede ven, je
- * vnitřek modulu a smí se přejmenovat nebo rozdělit bez ohlášení; konzument
- * proto importuje ``@/ingot``, nikdy ``@/ingot/IngotTable``. Uvnitř modulu
- * hluboká cesta zůstává — pravidlo je o konzumentech.
+ * **This file IS the public API.** Whatever is not re-exported here is a
+ * module internal and may be renamed or split without notice; a consumer
+ * imports `@forgmatic/ingot`, never `@forgmatic/ingot/IngotTable`. Inside
+ * the kit, deep relative paths are fine — the rule is about consumers.
  *
- * Breaking change primitiva je povolený jedině v témž PR, který převede
- * všechny konzumenty: všichni žijí v tomhle repu a gate je staví, takže
- * deprecation okno by jen prodloužilo dobu, kdy platí dvě pravdy. Podrobně
- * i s odpovědí na Aplikace třetích stran: ``docs/INGOT_INVENTORY.md`` § 5e.
- *
- * Guardy (``scripts/repo_checks.py``): ``ingot-inventory`` ratchetuje počet
- * nepřevedených admin obrazovek, ``apps-on-ingot`` drží tvrdou podmínku pro
- * Aplikace (bez baseline) a ``ingot-public-api`` hlídá hranici výše.
+ * Breaking changes: a primitive's version on its doc page moves (major)
+ * and the change ships with a deprecation path, because consumers no
+ * longer live in this repository. The `version-guard` CI check refuses a
+ * change to `src/ingot/` that does not move a doc-page version.
  */
-// --- atomy, které se do kitu přestěhovaly v KAN-628 ------------------
+// --- atoms without the Ingot prefix ---------------------------------
 //
-// 🚨 Do KAN-628 bydlely v ``@/components/ui`` a pravidlo „doc web se smí
-// kreslit jen komponentami kitu" mělo proto DVĚ čtení: patří tlačítko do
-// kitu, nebo ne? Teď bydlí tady, takže čtení je jedno.
-//
-// Jména zůstala BEZ prefixu ``Ingot`` schválně. Přejmenovat je by
-// znamenalo sáhnout do JSX ve ~150 souborech, což je diff, který se
-// nedá přečíst a v repu s 5–10 souběžnými sessions se nedá ani
-// zmergovat. Guard ``ingot-doc-pages`` je proto zná jménem
-// (``_INGOT_UNPREFIXED_COMPONENTS``) a doc stránku po nich chce stejně
-// jako po ostatních.
+// Button and Card predate the prefix convention. Renaming them would touch
+// JSX in every consumer for no gain in behaviour, so the doc-page guard
+// knows them by name (DOCUMENTED_UNPREFIXED in scripts/checks.mjs) and
+// demands a doc page for them like for everything else.
 export { Button } from "./Button";
 export { Card, CardHeader, CardTitle } from "./Card";
 
