@@ -7,10 +7,17 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // painted with ``var(--accent)``, so a swatch is drawn by the block it
 // advertises. A list of hexes would be a second truth about what emerald
 // looks like.
+//
+// 1.1 (KAN-852): the picker no longer needs a host that knows how to
+// remember or apply the choice — reading it, writing it and putting it on
+// <html> ship with the kit as @forgmatic/ingot/theme. The component is
+// unchanged; what changed is that a consumer can now wire it up without
+// rewriting the plumbing, which is exactly the sort of change that must
+// move a version even though no markup moved.
 export const IngotAccentSwatchesDoc: IngotDocPage = {
   name: "IngotAccentSwatches",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".swatches",
   tokens: ["--accent", "--ink", "--border-strong"],
   classNameNote: {

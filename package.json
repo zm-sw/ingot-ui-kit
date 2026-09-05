@@ -10,6 +10,9 @@
   "type": "module",
   "exports": {
     ".": "./src/ingot/index.ts",
+    "./marketing": "./src/ingot/marketing.ts",
+    "./theme": "./src/ingot/theme.ts",
+    "./theme-init.js": "./src/ingot/theme-init.js",
     "./tailwind-preset": "./src/ingot/tailwind-preset.ts",
     "./tokens.css": "./src/ingot/tokens.css",
     "./tokens.json": "./src/ingot/tokens.json"
@@ -32,7 +35,8 @@
   },
   "peerDependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

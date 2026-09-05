@@ -4,7 +4,7 @@ import { Card, IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingo
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
-import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
+import { ACCENT_CHOICES, type AccentChoice } from "@/ingot/theme";
 
 /**
  * "Basics" page — the tokens everything else stands on: the colour scale,

@@ -94,9 +94,11 @@ export default tseslint.config(
     },
   },
   {
-    // The anti-flash script is browser code served as a static file, not part
-    // of the app bundle, so it gets the browser globals and nothing else.
-    files: ["public/**/*.js"],
+    // The anti-flash script is browser code a consumer serves as a static
+    // file, not part of any bundle, so it gets the browser globals and
+    // nothing else. It ships from the kit, which is why it is matched there
+    // and not under public/ — that copy is gone.
+    files: ["src/ingot/**/*.js"],
     languageOptions: {
       globals: {
         window: "readonly",

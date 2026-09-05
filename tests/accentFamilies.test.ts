@@ -24,7 +24,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { ACCENT_CHOICES, DEFAULT_ACCENT } from "@/lib/accent";
+import { ACCENT_CHOICES, DEFAULT_ACCENT } from "@/ingot/theme";
 
 const CSS = readFileSync(
   join(process.cwd(), "src/ingot/tokens.generated.css"),

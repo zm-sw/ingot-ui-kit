@@ -26,8 +26,8 @@
  * from the platform (``platformLanguages.ts``) and intersected with what
  * the doc web really has text for. The theme sets ``.dark`` on ``<html>``,
  * the accent ``data-accent`` on the same element — the initial state of
- * both is applied before first paint by ``public/theme-init.js``; here is
- * only the switch and its stored choice.
+ * both is applied before first paint by the kit's ``theme-init.js``; here
+ * is only the switch and its stored choice.
  *
  * The doc web has no login, so both choices live only in the browser. In
  * the product the account is the source of truth and localStorage is a
@@ -79,17 +79,14 @@ import type {
 } from "@/ingot-docs/types";
 import {
   applyAccent,
+  applyTheme,
   readStoredAccent,
-  writeStoredAccent,
-  type AccentChoice,
-} from "@/lib/accent";
-import {
   readStoredTheme,
-  resolveTheme,
-  systemPrefersDark,
+  writeStoredAccent,
   writeStoredTheme,
+  type AccentChoice,
   type ThemeChoice,
-} from "@/lib/theme";
+} from "@/ingot/theme";
 
 /** Shorthand for "pick the language" — reads better than ``value[lang]`` everywhere. */
 function pick<T>(value: Localized<T>, lang: DocLang): T {
@@ -712,19 +709,6 @@ const ACCENT_LABELS: Record<AccentChoice, keyof typeof CHROME> = {
   violet: "accentViolet",
   slate: "accentSlate",
 };
-
-/**
- * Puts ``.dark`` on ``<html>`` (or takes it off).
- *
- * The initial state on load is applied by the synchronous
- * ``public/theme-init.js`` — without it a cold load would flash light →
- * dark. This function is the other half: what happens when the reader
- * switches.
- */
-function applyTheme(choice: ThemeChoice): void {
-  const dark = resolveTheme(choice, systemPrefersDark()) === "dark";
-  document.documentElement.classList.toggle("dark", dark);
-}
 
 export function DocsApp(): JSX.Element {
   const [page, setPage] = useState<ActivePage>(
