@@ -18,7 +18,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   status: "beta",
   // 2.3: muted + marker na položce — ztlumený odkaz s jiskrou, který
   // NAVIGUJE (bránu kreslí cílová stránka); menu nezamyká.
-  version: "2.3",
+  // 2.4 — caption set by IngotEyebrow, the kit's shared mono label.
+  version: "2.4",
   tag: ".megamenu",
   tokens: [
     "--surface",

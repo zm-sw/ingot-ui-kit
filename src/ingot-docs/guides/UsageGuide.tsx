@@ -1,4 +1,4 @@
-import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import { IngotCode, IngotEyebrow, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -112,9 +112,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="grid gap-4 text-sm text-ink-2 sm:grid-cols-3">
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Rám" : "Frame"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Horní lišta → drobečky → hlavička stránky → obsah. Drobečky se vynechávají jen na kořenových stránkách sekce, kde by ukazovaly samy na sebe."
@@ -122,9 +122,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
         </p>
       </div>
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Obsah" : "Content"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Právě jeden hlavní pattern: tabulka, krokový setup, skupinové karty, detail s taby, nebo metriky. Dva se nemíchají — ani jeden by neměl dost místa."
@@ -132,9 +132,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
         </p>
       </div>
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Akce" : "Actions"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Primární akce je vpravo v hlavičce, nikdy plovoucí. Akce řádku jsou ikonové a vždy na konci řádku, aby se v seznamu hledaly na jednom místě."

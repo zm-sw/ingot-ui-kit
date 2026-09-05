@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotStepCardDoc: IngotDocPage = {
   name: "IngotStepCard",
   status: "beta",
-  version: "1.1",
+  // 1.2 — caption set by IngotEyebrow, the kit's shared mono label.
+  version: "1.2",
   tag: ".stepcard",
   tokens: [
     "--surface",

@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotBreadcrumbsDoc: IngotDocPage = {
   name: "IngotBreadcrumbs",
   status: "stable",
-  version: "1.0",
+  // 1.1 — caption set by IngotEyebrow, the kit's shared mono label.
+  version: "1.1",
   tag: ".crumbs",
   tokens: ["--ink", "--ink-3", "--ink-4", "--font-mono"],
   summary: {

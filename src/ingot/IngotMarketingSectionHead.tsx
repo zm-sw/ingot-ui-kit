@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+import { IngotEyebrow } from "./IngotEyebrow";
+
 /**
  * Hlavička marketingové sekce (KAN-664) — handoff Veřejné stránky,
  * ingot.css sekce 13.
@@ -37,9 +39,9 @@ export function IngotMarketingSectionHead({
     >
       <div>
         {eyebrow !== undefined && (
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-widest text-accent">
+          <IngotEyebrow size="md" tone="accent" className="mb-3">
             {eyebrow}
-          </p>
+          </IngotEyebrow>
         )}
         <h2 className="text-3xl font-semibold tracking-tight text-ink">
           {title}

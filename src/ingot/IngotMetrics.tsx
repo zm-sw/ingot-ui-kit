@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotEyebrow } from "./IngotEyebrow";
 
 /**
  * Čísla, podle kterých se obrazovka čte na první pohled.
@@ -174,9 +175,7 @@ export function IngotMetrics({
           data-testid={item.testId}
         >
           <div className="min-w-0">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
-              {item.label}
-            </p>
+            <IngotEyebrow tone="muted">{item.label}</IngotEyebrow>
             <p
               className={cx(
                 "mt-1 font-mono text-[22px] font-semibold tabular-nums leading-none",

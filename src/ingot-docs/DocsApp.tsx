@@ -39,6 +39,7 @@ import {
   IngotBadge,
   IngotCode,
   IngotDrawer,
+  IngotEyebrow,
   IngotIcon,
   IngotList,
   IngotPageHeader,
@@ -294,13 +295,13 @@ interface DocSection {
 /** Nadpis sekce ve stylu cap — obsah pro ``IngotSection.title``. */
 function CapTitle({ children }: { children: ReactNode }): JSX.Element {
   return (
-    <span className="flex items-center gap-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.07em] text-ink-4">
+    <IngotEyebrow as="span" tone="muted" className="flex items-center gap-2">
       {children}
       <span
         aria-hidden="true"
         className="flex-1 border-t border-dashed border-border"
       />
-    </span>
+    </IngotEyebrow>
   );
 }
 
@@ -599,9 +600,9 @@ function PagerFooter({
     <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between sm:gap-4">
       {prev ? (
         <a className={cardClass} href={hrefOf(prev)} data-testid="docs-prev">
-          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
+          <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.prevPage, lang)}
-          </span>
+          </IngotEyebrow>
           <span className="truncate text-sm font-medium">
             {titleOf(prev, lang)}
           </span>
@@ -617,9 +618,9 @@ function PagerFooter({
           href={hrefOf(next)}
           data-testid="docs-next"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
+          <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.nextPage, lang)}
-          </span>
+          </IngotEyebrow>
           <span className="truncate text-sm font-medium">
             {titleOf(next, lang)}
           </span>
@@ -760,9 +761,9 @@ export function DocsApp(): JSX.Element {
       }
     >
       <div className="flex items-center gap-2">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+        <IngotEyebrow as="span" tone="muted">
           {pick(CHROME.accent, lang)}
-        </span>
+        </IngotEyebrow>
         <IngotAccentSwatches
           value={accent}
           onChange={(next) => {
@@ -998,9 +999,9 @@ export function DocsApp(): JSX.Element {
           aria-label={pick(CHROME.onThisPage, lang)}
           className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-44 shrink-0 self-start overflow-y-auto border-l border-border pl-4 lg:block"
         >
-          <p className="mb-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
+          <IngotEyebrow tone="muted" className="mb-3">
             {pick(CHROME.onThisPage, lang)}
-          </p>
+          </IngotEyebrow>
           <IngotList
             variant="plain"
             items={sections.map((section) => (
@@ -1021,17 +1022,20 @@ export function DocsApp(): JSX.Element {
           s logem Forgmaticu vpravo u okraje. Verzi píše release
           workflow do package.json; ručně psané číslo tu lhalo. */}
       <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-border px-4 py-2.5 md:px-6">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+        <IngotEyebrow as="span" tone="muted">
           Ingot UI Kit · v{pkg.version}
-        </span>
+        </IngotEyebrow>
         <a
           href="https://forgmatic.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3 hover:border-border-strong hover:text-ink"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-ink-3 hover:border-border-strong hover:text-ink"
           data-testid="docs-footer-forgmatic"
         >
-          developed for
+          {/* `inherit`: the link owns the colour so hover can change it. */}
+          <IngotEyebrow as="span" tone="inherit">
+            developed for
+          </IngotEyebrow>
           <img
             src="/forgmatic-logo.png"
             alt=""

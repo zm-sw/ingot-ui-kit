@@ -1,4 +1,4 @@
-import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import { IngotCode, IngotEyebrow, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -20,7 +20,6 @@ import type { IngotGuidePage } from "@/ingot-docs/types";
  */
 const IMPORT_EXAMPLE = 'import { IngotTable, IngotEmptyState } from "@/ingot";';
 
-const EYEBROW = "text-eyebrow uppercase text-ink-3";
 
 interface Principle {
   /** Pořadové číslo z návrhu — je to popisek, ne index v poli. */
@@ -179,7 +178,7 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
       </p>
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <div className={EYEBROW}>{lang === "cs" ? "Co to je" : "What it is"}</div>
+          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Co to je" : "What it is"}</IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Tokeny a třídy na jednom místě. Obrazovka se z nich skládá — nevzniká z vlastních stylů psaných až v ní. Proto se změna rozhodnutí projeví všude, a ne jen tam, kde si na ni někdo vzpomene."
@@ -187,7 +186,7 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
           </p>
         </div>
         <div>
-          <div className={EYEBROW}>{lang === "cs" ? "Pro koho" : "Who it is for"}</div>
+          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Pro koho" : "Who it is for"}</IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Pro designéry i vývojáře. Stejný slovník na obou stranách znamená, že návrh a kód mluví o téže věci — a nikdo mezi nimi nepřekládá dva popisy jedné obrazovky."
@@ -195,7 +194,7 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
           </p>
         </div>
         <div>
-          <div className={EYEBROW}>{lang === "cs" ? "Jak se mění" : "How it changes"}</div>
+          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Jak se mění" : "How it changes"}</IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Nová komponenta nevzniká v obrazovce. Nejdřív vznikne v systému, dostane pravidlo a název, a teprve pak se použije."

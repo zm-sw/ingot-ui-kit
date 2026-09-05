@@ -66,6 +66,13 @@ export {
   INGOT_PAGE_DESC_CLASS,
 } from "./IngotPageHeader";
 export { IngotSection } from "./IngotSection";
+// The small mono caption every component used to draw by hand; one
+// primitive so the idiom has one size and one weight.
+export {
+  IngotEyebrow,
+  type IngotEyebrowSize,
+  type IngotEyebrowTone,
+} from "./IngotEyebrow";
 // 🪤 Sbalitelná sekce je VLASTNÍ primitivum, ne prop na ``IngotSection``.
 // Ta sází nadpis a drží osnovu stránky; tahle je popisek bloku v panelu.
 // Jeden prop nad dvěma sazbami by byly dvě komponenty za přepínačem.

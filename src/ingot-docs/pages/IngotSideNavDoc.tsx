@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotSideNavDoc: IngotDocPage = {
   name: "IngotSideNav",
   status: "stable",
-  version: "1.0",
+  // 1.1 — caption set by IngotEyebrow, the kit's shared mono label.
+  version: "1.1",
   tag: ".sidenav",
   tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-2", "--ink-3", "--ink-4", "--font-mono", "--r-sm", "--shadow-sm"],
   summary: {

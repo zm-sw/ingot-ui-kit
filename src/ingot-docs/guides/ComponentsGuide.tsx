@@ -1,4 +1,4 @@
-import { IngotBadge, IngotCode, IngotList } from "@/ingot";
+import { IngotBadge, IngotCode, IngotEyebrow, IngotList } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang } from "@/ingot-docs/lang";
 import { displayName } from "@/ingot-docs/naming";
@@ -207,9 +207,9 @@ function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
         {views.map((view) => (
           <div key={view.key} className="bg-surface p-5">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-3">
+            <IngotEyebrow as="span" size="md">
               {view.eyebrow}
-            </span>
+            </IngotEyebrow>
             <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
               {view.text}
             </p>

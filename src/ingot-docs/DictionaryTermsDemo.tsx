@@ -23,6 +23,7 @@
  */
 import {
   IngotCode,
+  IngotEyebrow,
   IngotSegmented,
   IngotTable,
   type IngotColumn,
@@ -73,9 +74,9 @@ export function DictionaryTermsDemo({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+        <IngotEyebrow as="span" tone="muted">
           {CHROME.dictionary[lang]}
-        </span>
+        </IngotEyebrow>
         <IngotSegmented
           options={DICTIONARY_MODES.map((option) => ({
             value: option,
