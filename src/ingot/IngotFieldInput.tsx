@@ -2,6 +2,8 @@ import type { JSX, ReactNode } from "react";
 
 import { cx } from "./cx";
 import { isNumericKind, type IngotFieldSpec } from "./fields";
+import { IngotCheckboxControl } from "./IngotCheckbox";
+import { IngotSelect } from "./IngotSelect";
 import { inputChrome } from "./inputChrome";
 
 /**
@@ -53,9 +55,9 @@ export function IngotFieldInput({
   const inputClass = className ?? cx("w-full max-w-xs", inputChrome());
 
   if (field.kind === "boolean") {
+    // Bare control on purpose: IngotForm supplies the label around it.
     return (
-      <input
-        type="checkbox"
+      <IngotCheckboxControl
         disabled={disabled}
         checked={Boolean(value)}
         onChange={(ev) => onChange(ev.target.checked)}
@@ -65,16 +67,33 @@ export function IngotFieldInput({
     );
   }
 
-  if (field.kind === "options" && renderOptions) {
-    const rendered = renderOptions({
-      field,
-      value,
-      onChange,
-      disabled,
-      testId,
-      className,
-    });
-    if (rendered) return <>{rendered}</>;
+  if (field.kind === "options") {
+    if (renderOptions) {
+      const rendered = renderOptions({
+        field,
+        value,
+        onChange,
+        disabled,
+        testId,
+        className,
+      });
+      if (rendered) return <>{rendered}</>;
+    }
+    // No picker supplied: a disabled select holding only the current value.
+    // A text input here used to invite typing a free string into a field
+    // whose value is an id from a named set.
+    const current = value === undefined || value === null ? "" : String(value);
+    return (
+      <IngotSelect
+        value={current}
+        onChange={onChange}
+        options={current === "" ? [] : [{ value: current, label: current }]}
+        label={field.label}
+        disabled
+        className={className}
+        testId={testId}
+      />
+    );
   }
 
   if (field.kind === "secret") {

@@ -6,9 +6,10 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotTableDoc: IngotDocPage = {
   name: "IngotTable",
   status: "stable",
-  version: "1.0",
+  // 1.1 — selection boxes are the kit's shared checkbox control (accent colour, 16px hit size).
+  version: "1.1",
   tag: ".table-wrap",
-  tokens: ["--surface-2", "--border", "--ink", "--ink-3", "--ink-4", "--accent-bg", "--accent-border", "--r-md"],
+  tokens: ["--surface-2", "--border", "--ink", "--ink-3", "--ink-4", "--accent", "--accent-bg", "--accent-border", "--r-md"],
   summary: {
     cs: "Tabulka se sloupci jako daty. Drží scope na záhlaví, jeden zdroj pravdy pro colSpan a řádkové akce neschovává za hover.",
     en: "A table whose columns are data. It keeps scope on the headers, one source of truth for colSpan, and never hides row actions behind hover.",

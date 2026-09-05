@@ -1,5 +1,6 @@
 import type { JSX, ReactNode } from "react";
 
+import { IngotCheckbox } from "./IngotCheckbox";
 import { IngotFieldInput } from "./IngotFieldInput";
 import type { IngotFieldSpec } from "./fields";
 
@@ -57,11 +58,16 @@ export function IngotForm({
         // popisek nad vstupem. Je to jediná odchylka a drží ji formulář,
         // aby ji konzumenti neopisovali.
         if (field.kind === "boolean") {
+          // The labelled checkbox already exists as a primitive; the form
+          // used to redraw its label wrapper by hand.
           return (
-            <label key={field.key} className="flex items-center gap-3 text-sm">
-              {input}
-              <span>{field.label}</span>
-            </label>
+            <IngotCheckbox
+              key={field.key}
+              checked={Boolean(values[field.key])}
+              onChange={(next) => onChange(field.key, next)}
+              label={field.label}
+              testId={`${testIdPrefix}-${field.key}`}
+            />
           );
         }
         return (

@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotCheckboxDoc: IngotDocPage = {
   name: "IngotCheckbox",
   status: "beta",
-  version: "1.0",
+  // 1.1 — the box is the kit's single checkbox control, shared with IngotTable and IngotFieldInput.
+  version: "1.1",
   tag: ".check",
   tokens: ["--accent", "--ink-2", "--ink-4"],
   summary: {
