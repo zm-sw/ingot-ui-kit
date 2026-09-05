@@ -27,7 +27,11 @@ jobs:
       - name: Unit tests
         run: npm test
       - name: Build doc web
-        run: npx vite build
+        # The full build, not just `vite build`: the prerender step writes
+        # one HTML file per address, and a page whose content cannot be
+        # rendered in node must fail here rather than ship as an empty
+        # shell that still looks like a page.
+        run: npm run build
 
   version-guard:
     # On a push to main there is nothing to compare against; on dispatch

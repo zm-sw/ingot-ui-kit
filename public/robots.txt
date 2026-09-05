@@ -1,0 +1,5 @@
+# Everything here is public documentation and meant to be found.
+User-agent: *
+Allow: /
+
+Sitemap: https://ingot.forgmatic.com/sitemap.xml

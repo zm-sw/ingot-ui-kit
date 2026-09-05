@@ -22,6 +22,10 @@
          title is static. The anti-flash script: dark mode holds `.dark` on
          <html> and without it a cold load would flash light→dark. -->
     <script src="/theme-init.js"></script>
+    <!-- The language of the root address, which is the one page whose
+         language is the reader's rather than the URL's. Every other page
+         carries it in its own prerendered file. -->
+    <script src="/lang-init.js"></script>
   </head>
   <body class="min-h-screen bg-bg text-ink antialiased">
     <div id="root"></div>

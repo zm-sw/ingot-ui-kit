@@ -14,10 +14,10 @@
  * 2. **The demo really renders.** The real component is rendered, not a
  *    description of it.
  * 3. **An anchor in the right column must not switch the page.** The
- *    router runs on the hash (`#/IngotModal`), but "On this page" anchors
- *    to `#ukazka` inside the same page. The first version took such a hash
- *    as a route too, so clicking an anchor threw the content back to the
- *    first primitive.
+ *    addresses are paths now and the fragment is only ever an anchor, but
+ *    the failure this guards against is worth keeping measured: an early
+ *    version read the fragment as a route, so clicking "On this page"
+ *    threw the reader back to the first primitive.
  *
  * Content, pages without a component and the code listing:
  *
@@ -27,7 +27,9 @@
  *    typecheck. The type can enforce that a section exists; that there is
  *    something in it, a test must enforce.
  * 5. **The right column links to sections that are on the page.**
- * 6. **The intro is the default screen** and an unknown hash falls to it.
+ * 6. **The intro is the default screen** and an unknown address falls to
+ *    it. Links shared before the addresses existed are fragments, and
+ *    those still land on the page they named.
  * 7. **Guides must not mix in among components**, not even in the DOM.
  * 8. **The code listing must come from the real module.** `?raw` returns
  *    the WHOLE file, so it has to contain the imports and the function
@@ -51,6 +53,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CHROME } from "@/ingot-docs/chrome";
+import { COMPONENT_SEGMENT, GUIDE_SEGMENT, componentSlug } from "@/ingot-docs/routes";
 import { DocsApp } from "@/ingot-docs/DocsApp";
 import { DOC_LANGS, type DocLang } from "@/ingot-docs/lang";
 import { displayName } from "@/ingot-docs/naming";
@@ -76,9 +79,25 @@ function languagesResponse(codes: readonly string[]): Response {
   );
 }
 
+/**
+ * The address bar, as a test can set it.
+ *
+ * jsdom carries the path from one test to the next, so every test says
+ * where it starts rather than relying on what the last one left behind —
+ * that was exactly how the "opens the intro" test came to pass while
+ * standing on another page.
+ */
+function goto(path: string): void {
+  window.history.replaceState(null, "", path);
+}
+
+const guidePath = (slug: string) => `/${GUIDE_SEGMENT}/${slug}`;
+const componentPath = (name: string) => `/${COMPONENT_SEGMENT}/${componentSlug(name)}`;
+
 describe("DocsApp", () => {
   beforeEach(() => {
     window.location.hash = "";
+    goto("/");
     // The language is pinned on purpose: jsdom reports navigator.language
     // "en-US", so without it the default language would depend on the
     // environment, not on the test.
@@ -101,7 +120,7 @@ describe("DocsApp", () => {
 
   it("lists every primitive from the registry in the menu", () => {
     // The component list is visible only in its section — collapsed elsewhere.
-    window.location.hash = "#/komponenty";
+    goto(guidePath("komponenty"));
     render(<DocsApp />);
     // Components nest under the overview page in the "System" group.
     const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
@@ -112,7 +131,7 @@ describe("DocsApp", () => {
   });
 
   it("renders the live demo of the selected primitive, not just its description", () => {
-    window.location.hash = "#/IngotEmptyState";
+    goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     expect(
@@ -175,7 +194,7 @@ describe("DocsApp", () => {
   );
 
   it("renders sections with content and links to them from the right column", () => {
-    window.location.hash = "#/IngotTable";
+    goto(componentPath("IngotTable"));
     render(<DocsApp />);
 
     for (const title of [
@@ -210,7 +229,7 @@ describe("DocsApp", () => {
   });
 
   it("lists the IngotColumn type props on the IngotTable page too", () => {
-    window.location.hash = "#/IngotTable";
+    goto(componentPath("IngotTable"));
     render(<DocsApp />);
 
     // `cell` and `cellClassName` do not live on IngotTable but on IngotColumn.
@@ -230,7 +249,7 @@ describe("DocsApp", () => {
   });
 
   it("an unknown hash falls back to the intro, not to the first component", () => {
-    window.location.hash = "#/NeexistujiciStranka";
+    goto(componentPath("NeexistujiciStranka"));
     render(<DocsApp />);
     expect(
       screen.getByRole("heading", {
@@ -241,7 +260,7 @@ describe("DocsApp", () => {
   });
 
   it("renders the Translations page as a standalone page without a component", () => {
-    window.location.hash = "#/preklady";
+    goto(guidePath("preklady"));
     render(<DocsApp />);
 
     expect(
@@ -257,7 +276,7 @@ describe("DocsApp", () => {
 
   it("splits the menu into groups and puts every guide into exactly one", () => {
     // In the components section the index is expanded — the full link count.
-    window.location.hash = "#/komponenty";
+    goto(guidePath("komponenty"));
     render(<DocsApp />);
 
     const navs = [CHROME.groupSystem.cs, CHROME.groupApp.cs, CHROME.groupRules.cs].map(
@@ -292,7 +311,7 @@ describe("DocsApp", () => {
   });
 
   it("nests components under the overview page, not next to it", () => {
-    window.location.hash = "#/komponenty";
+    goto(guidePath("komponenty"));
     render(<DocsApp />);
 
     // The sublist hangs on the overview item — nesting is structure, so it
@@ -309,14 +328,14 @@ describe("DocsApp", () => {
     // Owner instruction of 2026-09-02: 31 expanded items on every page
     // turned the menu into an index in which the other groups had to be
     // found by scrolling.
-    window.location.hash = "#/preklady";
+    goto(guidePath("preklady"));
     const first = render(<DocsApp />);
     expect(
       screen.getByTestId("docs-nav-komponenty").closest("li")?.querySelector("ul"),
     ).toBeNull();
     first.unmount();
 
-    window.location.hash = "#/IngotTable";
+    goto(componentPath("IngotTable"));
     render(<DocsApp />);
     expect(
       screen.getByTestId("docs-nav-komponenty").closest("li")?.querySelector("ul"),
@@ -334,7 +353,7 @@ describe("DocsApp", () => {
 
   it("shows the preview and switches to the source via the Preview/Code tabs", async () => {
     const user = userEvent.setup();
-    window.location.hash = "#/IngotEmptyState";
+    goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     // The default view is the preview on the stage; the source is not rendered.
@@ -357,7 +376,7 @@ describe("DocsApp", () => {
 
   it("copies the demo source to the clipboard with the Copy button", async () => {
     const user = userEvent.setup();
-    window.location.hash = "#/IngotEmptyState";
+    goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     await user.click(screen.getByTestId("docs-copy"));
@@ -369,7 +388,7 @@ describe("DocsApp", () => {
   });
 
   it("renders the Tokens section with the component token list", () => {
-    window.location.hash = "#/IngotBadge";
+    goto(componentPath("IngotBadge"));
     render(<DocsApp />);
 
     expect(
@@ -383,14 +402,14 @@ describe("DocsApp", () => {
   });
 
   it("ukazuje vedle nadpisu selektor prvku", () => {
-    window.location.hash = "#/IngotBadge";
+    goto(componentPath("IngotBadge"));
     render(<DocsApp />);
     const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotBadge");
     expect(screen.getByTestId("docs-tag")).toHaveTextContent(page!.tag);
   });
 
   it("ukazuje vedle nadpisu badge stavu a verze", () => {
-    window.location.hash = "#/IngotEmptyState";
+    goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
@@ -401,7 +420,7 @@ describe("DocsApp", () => {
   });
 
   it("a guide has neither a status nor a version badge", () => {
-    window.location.hash = "#/uvod";
+    goto(guidePath("uvod"));
     render(<DocsApp />);
     expect(screen.queryByTestId("docs-status")).not.toBeInTheDocument();
     expect(screen.queryByTestId("docs-version")).not.toBeInTheDocument();
@@ -410,14 +429,14 @@ describe("DocsApp", () => {
   // --- prev/next footer -----------------------------------------------
 
   it("the first page has no Previous and the last has no Next", () => {
-    window.location.hash = `#/${INGOT_GUIDE_PAGES[0].slug}`;
+    goto(guidePath(INGOT_GUIDE_PAGES[0].slug));
     const { unmount } = render(<DocsApp />);
     expect(screen.queryByTestId("docs-prev")).not.toBeInTheDocument();
     expect(screen.getByTestId("docs-next")).toBeInTheDocument();
     unmount();
 
     const last = INGOT_DOC_PAGES[INGOT_DOC_PAGES.length - 1];
-    window.location.hash = `#/${last.name}`;
+    goto(componentPath(last.name));
     render(<DocsApp />);
     expect(screen.getByTestId("docs-prev")).toBeInTheDocument();
     expect(screen.queryByTestId("docs-next")).not.toBeInTheDocument();
@@ -425,15 +444,15 @@ describe("DocsApp", () => {
 
   it("the footer leads from the last guide to the first component", () => {
     const lastGuide = INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 1];
-    window.location.hash = `#/${lastGuide.slug}`;
+    goto(guidePath(lastGuide.slug));
     render(<DocsApp />);
 
     const next = screen.getByTestId("docs-next");
-    expect(next).toHaveAttribute("href", `#/${INGOT_DOC_PAGES[0].name}`);
+    expect(next).toHaveAttribute("href", componentPath(INGOT_DOC_PAGES[0].name));
     const prev = screen.getByTestId("docs-prev");
     expect(prev).toHaveAttribute(
       "href",
-      `#/${INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 2].slug}`,
+      guidePath(INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 2].slug),
     );
   });
 
@@ -449,8 +468,8 @@ describe("DocsApp", () => {
     },
   );
 
-  it("leaves the page alone when the hash points to an anchor inside it", () => {
-    window.location.hash = "#/IngotModal";
+  it("leaves the page alone when the fragment points to an anchor inside it", () => {
+    goto(componentPath("IngotModal"));
     render(<DocsApp />);
     expect(
       screen.getByRole("heading", { level: 1, name: "Modal" }),
@@ -464,11 +483,40 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
   });
 
+  it("a link shared before the addresses existed still lands on its page", () => {
+    // Those fragments are the only links to this site that exist. Dropping
+    // them would turn the point of having addresses — that they can be
+    // shared — into a lesson learned at the reader's expense.
+    goto("/");
+    window.location.hash = "#/IngotTable";
+    render(<DocsApp />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Table" }),
+    ).toBeInTheDocument();
+    // And the address bar is corrected, so the next share is a real one.
+    expect(window.location.pathname).toBe(componentPath("IngotTable"));
+  });
+
+  it("a link in the menu navigates without reloading the page", async () => {
+    const user = userEvent.setup();
+    goto(guidePath("komponenty"));
+    render(<DocsApp />);
+
+    const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
+    await user.click(within(nav).getByText(displayName("IngotTable")));
+
+    expect(window.location.pathname).toBe(componentPath("IngotTable"));
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Table" }),
+    ).toBeInTheDocument();
+  });
+
   // --- jazyky (KAN-627) ----------------------------------------------
 
   it("switches content and shell to the chosen language and remembers the choice", async () => {
     const user = userEvent.setup();
-    window.location.hash = "#/IngotEmptyState";
+    goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     const enButton = await screen.findByTestId("docs-lang-en");
@@ -671,7 +719,7 @@ describe("DocsApp", () => {
   });
 
   it("the Basics page shows all five families", () => {
-    window.location.hash = "#/zaklady";
+    goto(guidePath("zaklady"));
     render(<DocsApp />);
 
     const table = screen.getByTestId("docs-accent-families");
