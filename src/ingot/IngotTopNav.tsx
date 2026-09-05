@@ -8,6 +8,7 @@ import {
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
+import { LockedRow, menuRowClass } from "./menuRow";
 
 /**
  * Horní lišta aplikace — jediná navigace, kterou admin má.
@@ -100,6 +101,9 @@ export interface IngotTopNavSection {
 
 /** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
 const CLOSE_DELAY_MS = 120;
+
+/** Geometry of a section in the bar; colours come from menuRowClass. */
+const SECTION_ROW = "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm";
 
 /**
  * Položky otevřeného panelu v pořadí, v jakém je čtenář vidí.
@@ -250,18 +254,16 @@ export function IngotTopNav({
         {sections.map((section) => {
           if (section.locked) {
             return (
-              <button
+              <LockedRow
                 key={section.key}
-                type="button"
                 onClick={section.onLockedClick}
-                className="inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                className={SECTION_ROW}
                 data-testid={
                   section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
                 }
               >
                 {section.label}
-                <IngotIcon name="lock" size={13} aria-hidden />
-              </button>
+              </LockedRow>
             );
           }
           if (section.href !== undefined) {
@@ -272,12 +274,8 @@ export function IngotTopNav({
                 onClick={section.onNavigate}
                 aria-current={section.current ? "page" : undefined}
                 className={cx(
-                  "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
-                  section.current
-                    ? "bg-surface-2 font-medium text-ink"
-                    : section.muted
-                      ? "text-ink-4 hover:bg-surface-2 hover:text-ink-3"
-                      : "text-ink-2 hover:bg-surface-2 hover:text-ink",
+                  SECTION_ROW,
+                  menuRowClass({ current: section.current, muted: section.muted }),
                 )}
                 data-testid={
                   section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
@@ -342,14 +340,7 @@ export function IngotTopNav({
                   cancelClose();
                   onOpenSection?.(section.key);
                 }}
-                className={cx(
-                  "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm",
-                  open
-                    ? "bg-surface-3 font-medium text-ink"
-                    : section.current
-                      ? "bg-surface-2 font-medium text-ink"
-                      : "text-ink-2 hover:bg-surface-2 hover:text-ink",
-                )}
+                className={cx(SECTION_ROW, menuRowClass({ open, current: section.current }))}
                 data-testid={
                   section.testId ?? (testId ? `${testId}-section-${section.key}` : undefined)
                 }

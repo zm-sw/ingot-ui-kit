@@ -2,7 +2,7 @@ import { useId, useState, type JSX, type MouseEvent, type ReactNode } from "reac
 
 import { cx } from "./cx";
 import { IngotEyebrow } from "./IngotEyebrow";
-import { IngotIcon } from "./IngotIcon";
+import { LockedRow, menuRowClass } from "./menuRow";
 
 /**
  * Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo
@@ -78,6 +78,9 @@ export interface IngotMegaMenuGroup {
 /** Nad tolik položek se odkazy lámou do dvou sloupců. */
 const SINGLE_COLUMN_MAX = 7;
 
+/** Geometry of an item row; colours come from menuRowClass. */
+const ITEM_ROW = "flex items-center gap-2.5 rounded px-2 py-1.5 text-sm";
+
 export function IngotMegaMenu({
   groups,
   art,
@@ -137,24 +140,17 @@ export function IngotMegaMenu({
                 if (item.locked) {
                   return (
                     <li key={item.href}>
-                      <button
-                        type="button"
+                      <LockedRow
                         onClick={() => onLockedItemClick?.(item)}
                         onMouseEnter={() => setPreviewHref(item.href)}
                         onFocus={() => setPreviewHref(item.href)}
                         aria-describedby={describedBy}
                         data-testid={item.testId}
-                        className="flex w-full items-center gap-2.5 rounded px-2 py-1.5 text-left text-sm text-ink-4 hover:bg-surface-2 hover:text-ink-3"
+                        className={cx(ITEM_ROW, "w-full text-left")}
                       >
                         {item.icon}
                         {item.label}
-                        <IngotIcon
-                          name="lock"
-                          size={13}
-                          className="ml-auto shrink-0"
-                          aria-hidden
-                        />
-                      </button>
+                      </LockedRow>
                     </li>
                   );
                 }
@@ -169,12 +165,8 @@ export function IngotMegaMenu({
                       aria-describedby={describedBy}
                       data-testid={item.testId}
                       className={cx(
-                        "flex items-center gap-2.5 rounded px-2 py-1.5 text-sm",
-                        item.current
-                          ? "bg-surface-3 font-medium text-ink"
-                          : item.muted
-                            ? "text-ink-4 hover:bg-surface-2 hover:text-ink-3"
-                            : "text-ink hover:bg-surface-2 hover:text-accent-ink",
+                        ITEM_ROW,
+                        menuRowClass({ current: item.current, muted: item.muted }),
                       )}
                     >
                       {item.icon}

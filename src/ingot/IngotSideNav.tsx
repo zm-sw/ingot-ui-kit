@@ -2,6 +2,7 @@ import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotEyebrow } from "./IngotEyebrow";
+import { menuRowClass } from "./menuRow";
 
 /**
  * Boční menu (KAN-628) — pojmenovaná skupina odkazů, jeden z nich aktivní.
@@ -69,9 +70,7 @@ export function IngotSideNav({
               aria-current={item.current ? "page" : undefined}
               className={cx(
                 "flex items-baseline gap-2 rounded border px-2.5 py-1.5 text-sm",
-                item.current
-                  ? "border-border bg-surface font-medium text-ink shadow-sm"
-                  : "border-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
+                menuRowClass({ current: item.current, surface: "page" }),
               )}
               data-testid={item.testId}
             >
@@ -96,9 +95,12 @@ export function IngotSideNav({
                       aria-current={child.current ? "page" : undefined}
                       className={cx(
                         "relative block rounded py-1 pl-[22px] pr-2 text-[13px]",
+                        // A current child is marked by the bar on its left, not
+                        // by a background — nesting reads better without a
+                        // second highlighted box under the parent's.
                         child.current
                           ? "font-medium text-ink before:absolute before:bottom-1 before:left-[9px] before:top-1 before:w-0.5 before:bg-ink before:content-['']"
-                          : "text-ink-3 hover:bg-surface-2 hover:text-ink",
+                          : menuRowClass({ dim: true }),
                       )}
                       data-testid={child.testId}
                     >
