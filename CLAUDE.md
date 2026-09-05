@@ -168,6 +168,21 @@ Approvals are not required. A gate nobody can satisfy is a gate that gets
 switched off; the checks are the gate here, and a reviewer is welcome
 rather than mandatory.
 
+## Comments are English
+
+Every comment in code is English: JSDoc, `//` lines, JSX comments, HTML,
+CSS and workflow YAML comments, and the `describe` / `it` names in
+`tests/`. The code
+is read by people who do not read Czech, and a comment only half the
+team can read is a comment that gets deleted at the next refactor.
+User-facing text is content, not a comment — it stays localized, in the
+`Localized` records and in the strings the tests look for.
+
+The `ingot-comments-english` guard in `npm run check` reads comments and
+test names (never string literals) and fails on Czech diacritics. If a
+comment has to point at a Czech UI string, describe it in English rather
+than quoting it.
+
 ## Before pushing
 
 ```bash
