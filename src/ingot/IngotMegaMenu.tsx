@@ -6,77 +6,77 @@ import { LockedRow, menuRowClass } from "./menuRow";
 import { MENU_LAYER } from "./modalLayer";
 
 /**
- * Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo
- * dvou sloupcích a náhledový sloupec vpravo.
+ * The unfolded menu of a top-bar section — groups of links in one or two
+ * columns and a preview column on the right.
  *
- * Tvar 2.0 přebírá nasazenou administraci (rozhodnutí vlastníka
- * 2026-09-02, body 01–03), ne opačně:
+ * Shape 2.0 follows the deployed admin (owner's decision, 2026-09-02,
+ * points 01–03), not the other way round:
  *
- * - **Sloupce rostou z obsahu.** Do sedmi položek jeden sloupec, nad
- *   sedm dva (CSS columns; skupina se nezlomí uprostřed). Pevná
- *   třísloupcová mřížka z 1.0 dělala z většiny skutečných sekcí
- *   (1–8 položek) prázdnou tabulku.
- * - **Náhled sleduje položku pod kurzorem i pod fokusem.** Popisuje
- *   tu, na které čtenář stojí (``description``); dokud nestojí na
- *   žádné, popisuje první. Fokus přepíná náhled stejně jako myš —
- *   klávesnice není druhá kategorie.
- * - **Odečítač popis slyší z odkazu samotného.** Text náhledu je
- *   vizuální kopie; každý odkaz nese ``aria-describedby`` na element
- *   se SVÝM popisem, takže popis čte i ten, kdo náhledový sloupec
- *   nevidí. Sloupec sám je ``aria-hidden`` — jinak by odečítač slyšel
- *   všechno dvakrát.
+ * - **Columns grow from content.** Up to seven items one column, above
+ *   seven two (CSS columns; a group does not break in the middle). The
+ *   fixed three-column grid of 1.0 turned most real sections (1–8 items)
+ *   into an empty table.
+ * - **The preview follows the item under the cursor and under focus.** It
+ *   describes the item the reader is on (``description``); until they are
+ *   on one, it describes the first. Focus switches the preview like the
+ *   mouse does — the keyboard is not a second class.
+ * - **A screen reader hears the description from the link itself.** The
+ *   preview text is a visual copy; every link carries ``aria-describedby``
+ *   to an element with ITS description, so the description is read by
+ *   those who cannot see the preview column. The column itself is
+ *   ``aria-hidden`` — otherwise a screen reader would hear everything
+ *   twice.
  *
- * Otevřená sekce se v liště značí ``--surface-3``, ne akcentem: akcent
- * v téhle aplikaci znamená akci, a rozbalené menu žádná akce není.
- *
- * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ * The kit has no i18n namespace of its own — texts arrive translated.
  */
 
 export interface IngotMegaMenuItem {
   href: string;
   label: string;
-  /** Jedna věta o obrazovce. Kreslí se v náhledu a čte se odečítačem. */
+  /** One sentence about the screen. Drawn in the preview and read by a screen reader. */
   description?: string;
-  /** Ikona před popiskem. Dekorativní — popisek nese význam. */
+  /** Icon before the label. Decorative — the label carries the meaning. */
   icon?: ReactNode;
-  /** Počet záznamů vpravo. Mono, protože je to číslo k porovnání. */
+  /** Record count on the right. Mono, because it is a number to compare. */
   count?: number;
-  /** Právě otevřená položka. */
+  /** The currently open item. */
   current?: boolean;
   /**
-   * Klik na odkaz. SPA volající tady zavolá router a ``preventDefault``;
-   * ``href`` zůstává, aby fungoval střední klik a „otevřít v novém patře".
+   * Click on the link. An SPA caller calls its router here with
+   * ``preventDefault``; ``href`` stays so the middle click and "open in a
+   * new tab" keep working.
    */
   onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
   /**
-   * Zamčená položka (např. modul, který si tenant zatím nezapnul).
-   * Kreslí se VIDITELNĚ, ztlumeně a se zámkem, ale není to odkaz —
-   * klik volá ``onLockedItemClick`` menu (typicky modal s vysvětlením).
-   * Náhled pro ni funguje dál: popis je marketing té obrazovky.
+   * Locked item (e.g. a module the tenant has not enabled yet). Drawn
+   * VISIBLY, muted and with a lock, but it is not a link — the click calls
+   * the menu's ``onLockedItemClick`` (typically a modal with an
+   * explanation). The preview still works for it: the description is the
+   * screen's marketing.
    */
   locked?: boolean;
   /**
-   * Ztlumená položka — NAVIGUJE normálně, jen je jemně odlišená
-   * (např. modul, jehož výlohou je stránka s bránou; menu nezamyká).
-   * Tvrdé zamčení bez navigace je ``locked``.
+   * Muted item — NAVIGATES normally, only softly de-emphasised (e.g. a
+   * module whose storefront is a gate page; the menu does not lock it). A
+   * hard lock without navigation is ``locked``.
    */
   muted?: boolean;
   /**
-   * Značka za popiskem, vpravo (tam, kde jinak stojí ``count``) —
-   * třeba jiskra „tady je co objevit". Dekorativní.
+   * A mark after the label, on the right (where ``count`` otherwise sits)
+   * — e.g. a spark saying "something to discover". Decorative.
    */
   marker?: ReactNode;
-  /** Kotva testu položky — e2e kliká na konkrétní odkaz, ne na menu. */
+  /** Test anchor of the item — e2e clicks a concrete link, not the menu. */
   testId?: string;
 }
 
 export interface IngotMegaMenuGroup {
-  /** Nadpis skupiny — mono verzálky. Bez něj se skupina kreslí bez hlavičky. */
+  /** Group title — mono uppercase. Without it the group is drawn without a header. */
   title?: string;
   items: readonly IngotMegaMenuItem[];
 }
 
-/** Nad tolik položek se odkazy lámou do dvou sloupců. */
+/** Above this many items the links break into two columns. */
 const SINGLE_COLUMN_MAX = 7;
 
 /** Geometry of an item row; colours come from menuRowClass. */
@@ -89,16 +89,16 @@ export function IngotMegaMenu({
   onLockedItemClick,
   testId,
 }: {
-  /** Skupiny odkazů. Sloupce (1–2) si menu rozdělí samo podle počtu položek. */
+  /** Groups of links. The menu splits them into 1–2 columns by item count. */
   groups: readonly IngotMegaMenuGroup[];
-  /** Kresba sekce nad textem náhledu — schematická, dekorativní. */
+  /** Drawing of the section above the preview text — schematic, decorative. */
   art?: ReactNode;
-  /** Přeložený ``aria-label`` menu. */
+  /** Translated ``aria-label`` of the menu. */
   label: string;
   /**
-   * Klik na zamčenou položku (``locked``) — typicky otevře modal
-   * s vysvětlením, co modul umí a jak se zapíná. Bez callbacku se
-   * zamčená položka kreslí jen ztlumeně.
+   * Click on a locked item (``locked``) — typically opens a modal that
+   * explains what the module does and how to enable it. Without the
+   * callback a locked item is only drawn muted.
    */
   onLockedItemClick?: (item: IngotMegaMenuItem) => void;
   testId?: string;
@@ -112,10 +112,10 @@ export function IngotMegaMenu({
   const twoColumns = flat.length > SINGLE_COLUMN_MAX;
 
   return (
-    // ``left-0`` vůči relativnímu obalu SVÉ sekce (IngotTopNav 2.2
-    // renderMenu) — panel stojí pod svým tlačítkem. Kotvení k levému
-    // okraji lišty by s hover-otevíráním nutilo kurzor přejíždět cizí
-    // triggery a cestou je otvírat.
+    // ``left-0`` relative to the wrapper of ITS section (IngotTopNav
+    // renderMenu) — the panel stands under its button. Anchoring to the
+    // bar's left edge would, with hover-open, force the cursor across other
+    // sections' triggers, opening them on the way.
     <div
       // MENU_LAYER, not a fixed z-index: a menu belongs above every open
       // dialog (see modalLayer.ts); a hard-coded 60 ended up under the
@@ -211,8 +211,9 @@ export function IngotMegaMenu({
           )}
         </div>
       )}
-      {/* ``aria-describedby`` cíl mimo aria-hidden náhled — odečítač ho
-          smí číst, oko ho nepotřebuje (vizuálně týž text kreslí náhled). */}
+      {/* ``aria-describedby`` target outside the aria-hidden preview — a
+          screen reader may read it, the eye does not need it (the preview
+          draws the same text visually). */}
       {preview !== null && preview.description && (
         <span id={descId} className="sr-only">
           {preview.description}

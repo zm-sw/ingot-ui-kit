@@ -6,53 +6,52 @@ import {
 } from "./processIconLibrary";
 
 /**
- * Ikonová vrstva kitu — sada výrobních operací (KAN-649).
+ * The kit's icon layer — the set of production operations.
  *
- * 🚨 **Geometrie tady NENÍ a nikdy nebude.** Bydlí v
- * ``processIconLibrary`` — 43 glyfů portovaných z téže
- * reference jako handoff — a tahle komponenta je jen obálka nad nimi.
- * Druhá kopie kreseb by se rozešla tiše: obě by se dál vykreslovaly a
- * lišily by se jen tvarem, kterého si nikdo nevšimne.
+ * **The geometry is NOT here and never will be.** It lives in
+ * ``processIconLibrary`` — 43 glyphs ported from the same reference as the
+ * handoff — and this component is only an envelope over them. A second
+ * copy of the drawings would drift silently: both would keep rendering and
+ * differ only in a shape nobody notices.
  *
- * 🔑 **Klíč je pro backend neprůhledný.** ``process_module_definitions
- * .icon_key`` ukládá token ``<klíč>`` / ``<klíč>:black`` /
- * ``<klíč>:white`` a jeho význam určuje ``parseProcessIconKey``, ne
- * tahle komponenta. Nepřekládej ho, nesestavuj z názvu operace a
- * nepřiřazuj automaticky — ikonu vybírá admin ručně a žádné párování
- * slug→ikona v repu není.
+ * **The key is opaque to the backend.** The stored ``icon_key`` token is
+ * ``<key>`` / ``<key>:black`` / ``<key>:white`` and its meaning is decided
+ * by ``parseProcessIconKey``, not by this component. Do not translate it,
+ * do not build it from the operation's name and do not assign it
+ * automatically — an admin picks the icon by hand and there is no
+ * slug→icon mapping in the repository.
  *
- * ⛔ **Jméno konkrétní technologie sem nepiš** — ani do ukázky, ani do
- * příkladu. Platforma nesmí znát pojmy jedné domény
- * (``docs/GENERIC_PLATFORM.md``) a hlídá to hardcode ratchet. Potřebuješ
- * v ukázce doopravdy nějaké klíče? Vezmi si je z ``INGOT_OP_ICON_KEYS``,
- * které je vypisuje z knihovny za běhu.
+ * **Do not write the name of a concrete technology here** — not in a demo,
+ * not in an example. The platform must not know the vocabulary of one
+ * domain. Need real keys in a demo? Take them from ``INGOT_OP_ICON_KEYS``,
+ * which lists them from the library at runtime.
  *
- * Pravidla použití (doc stránka je vypisuje celá):
+ * Usage rules (the doc page lists them in full):
  *
- * * ikona operace **nikdy nestojí bez názvu operace** — výjimkou je
- *   šířkově kritický řádek, kde musí nést ``title``;
- * * ikona a ``.opdot`` (tečka kategorie) se **nekombinují** — obojí
- *   říká totéž a vedle sebe si protiřečí;
- * * nová technologie = nová ikona v knihovně, **nikdy emoji**.
+ * * an operation icon **never stands without the operation's name** — the
+ *   exception is a width-critical row, where it must carry ``title``;
+ * * the icon and the category dot are **not combined** — both say the same
+ *   thing and side by side they contradict each other;
+ * * a new technology = a new icon in the library, **never an emoji**.
  */
 export interface IngotOpIconProps {
   /**
-   * Uložený ``icon_key``. ``null``/neznámý token vykreslí ``null``,
-   * aby volající mohl spadnout na svůj vlastní náhradní glyf.
+   * The stored ``icon_key``. ``null`` / an unknown token renders ``null``
+   * so the caller can fall back to its own replacement glyph.
    */
   token: string | null | undefined;
-  /** Hrana čtverce v px; sada operací se sází 18–22. */
+  /** Edge of the square in px; the operations set is set at 18–22. */
   size?: number;
   /**
-   * ``operation_category_color`` procesu, ke kterému ikona patří.
-   * Uplatní se jen u varianty ``category`` — u ``:black``/``:white``
-   * si barvu nese token sám.
+   * The category colour of the process the icon belongs to. Applies only
+   * to the ``category`` variant — with ``:black`` / ``:white`` the token
+   * carries its own colour.
    */
   categoryColor?: string | null;
   /**
-   * Název operace pro odečítač. Vyplň JEN v šířkově kritickém řádku,
-   * kde ikona stojí bez svého popisku; jinde ji nech dekorativní, ať
-   * čtečka nečte název dvakrát.
+   * Operation name for a screen reader. Fill in ONLY in a width-critical
+   * row where the icon stands without its label; elsewhere leave it
+   * decorative so the reader does not read the name twice.
    */
   title?: string;
   className?: string;
@@ -60,19 +59,19 @@ export interface IngotOpIconProps {
 }
 
 /**
- * Klíče, které knihovna operací zná — vyčtené z ní za běhu, ne opsané.
+ * The keys the operations library knows — read from it at runtime, not
+ * copied out.
  *
- * Je to jediný způsob, jak ukázat skutečné ikony (doc web, picker),
- * aniž by se do zdrojáku napsalo jméno konkrétní technologie. Ten zákaz
- * není kosmetika: platforma nesmí znát pojmy jedné domény
- * (``docs/GENERIC_PLATFORM.md``) a hardcode ratchet ho vynucuje.
+ * It is the only way to show real icons (doc web, picker) without writing
+ * the name of a concrete technology into the source. That ban is not
+ * cosmetic: the platform must not know the vocabulary of one domain.
  */
 export const INGOT_OP_ICON_KEYS: readonly string[] = PROCESS_ICON_CATEGORIES
   .flatMap((category) => category.items.map((item) => item.key))
   .sort();
 
-/** Varianta inkoustu vyčtená z tokenu — pro volající, kteří potřebují
- *  vědět, jestli si ikona barvu určuje sama. */
+/** Ink variant read from the token — for callers that need to know
+ *  whether the icon decides its own colour. */
 export type IngotOpIconVariant = ProcessIconVariant;
 
 export function IngotOpIcon({

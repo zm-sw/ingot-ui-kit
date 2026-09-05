@@ -1,45 +1,45 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Tokenová barva, která umí i ``/opacity``.
+ * A token colour that also supports ``/opacity``.
  *
- * 🚨 **Holý řetězec ``"var(--ink)"`` modifikátor NEUMÍ.** Tailwind do něj
- * nemá kam vložit alfu, takže utilitu s modifikátorem **nevygeneruje
- * vůbec** — a to není chyba, je to no-op. Změřeno 2026-08-25 nad
- * buildnutým CSS: 228 volání typu ``bg-ink/40`` ve zdrojácích, **nula**
- * odpovídajících selektorů ve výstupu (KAN-574).
+ * **A bare string ``"var(--ink)"`` does NOT support the modifier.**
+ * Tailwind has nowhere to put the alpha, so it does not generate the
+ * utility with a modifier at all — and that is not an error, it is a
+ * no-op. Measured on 2026-08-25 over the built CSS: 228 uses like
+ * ``bg-ink/40`` in the sources, zero matching selectors in the output.
  *
- * Nejhorší na tom je, co to udělá: ``bg-surface/95`` neznamená
- * „průsvitné pozadí", ale **žádné pozadí** — a ``bg-ink/40`` pod modály
- * znamenalo, že ztmavení pod nimi nikdy nebylo.
+ * The worst part is what it does: ``bg-surface/95`` does not mean "a
+ * translucent background" but NO background — and ``bg-ink/40`` under
+ * modals meant the dimming under them never existed.
  *
- * Funkční tvar to řeší, aniž by se hnula paleta:
+ * The functional form fixes it without moving the palette:
  *
- * * **bez** ``opacityValue`` vrátí ``var(--x)`` — základní třídy
- *   (``bg-ink``, ``text-ink-2``) se ve výstupu nezmění o znak;
- * * **s** ním složí ``color-mix``, který alfu unese i nad ``var()``.
+ * * WITHOUT ``opacityValue`` it returns ``var(--x)`` — base classes
+ *   (``bg-ink``, ``text-ink-2``) do not change by a character;
+ * * WITH it, it composes ``color-mix``, which carries alpha over ``var()``.
  *
- * Proč ne kanálový zápis (``--ink: 12 10 9`` + ``rgb(var(--ink) /
- * <alpha-value>)``): ``globals.css`` čte ``var(--ink)`` i přímo
- * (React Flow ``--xy-*``), takže by se rozbil — a druhá proměnná na
- * barvu je druhá věc, která se dá rozejít.
+ * Why not the channel notation (``--ink: 12 10 9`` +
+ * ``rgb(var(--ink) / <alpha-value>)``): the tokens are read as
+ * ``var(--ink)`` directly in places, so it would break — and a second
+ * variable per colour is a second thing that can drift.
  */
 function token(name: string): string {
   const resolve = ({ opacityValue }: { opacityValue?: string }): string => {
-    // 🪤 U třídy BEZ modifikátoru nepřijde ``undefined``, ale řetězec
-    // ``"var(--tw-bg-opacity)"``. První verze tohohle helperu ho hnala
-    // rovnou do ``Number()`` a vyrobila ``color-mix(… NaN%, transparent)``
-    // — tedy neplatné CSS pro ÚPLNĚ KAŽDOU základní tokenovou třídu.
-    // Zachytil to až build; z configu se to nepozná.
+    // For a class WITHOUT a modifier the value is not ``undefined`` but the
+    // string ``"var(--tw-bg-opacity)"``. The first version of this helper
+    // pushed it straight into ``Number()`` and produced
+    // ``color-mix(… NaN%, transparent)`` — invalid CSS for EVERY base token
+    // class. Only the build caught it; the config gives no sign.
     const alpha = opacityValue === undefined ? NaN : Number(opacityValue);
     if (!Number.isFinite(alpha)) return `var(${name})`;
     return `color-mix(in srgb, var(${name}) ${alpha * 100}%, transparent)`;
   };
-  // Přetypování je záměr, ne obcházení kontroly. Tailwind funkční tvar
-  // barvy dokumentuje a za běhu ho podporuje, ale v ``types/config.d.ts``
-  // má hodnotu barvy jako ``string`` — ``satisfies Config`` by ji jinak
-  // odmítl. Že to opravdu funguje, drží ``tests/tailwindTokens.test.ts``
-  // na skutečně vygenerovaném CSS, ne na typech.
+  // The cast is intent, not a way around the check. Tailwind documents the
+  // functional colour form and supports it at runtime, but its
+  // ``types/config.d.ts`` types a colour value as ``string`` —
+  // ``satisfies Config`` would otherwise refuse it. That it really works is
+  // held by a test over the generated CSS, not by the types.
   return resolve as unknown as string;
 }
 
@@ -61,9 +61,9 @@ export default {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
-      // ⚠️ Každá barva MUSÍ jít přes ``token()``. Holý ``"var(--x)"``
-      // sem nepiš — modifikátor ``/opacity`` by se u ní tiše zahazoval.
-      // Hlídá to ``tests/tailwindTokens.test.ts``.
+      // Every colour MUST go through ``token()``. Do not write a bare
+      // ``"var(--x)"`` here — its ``/opacity`` modifier would be dropped
+      // silently.
       colors: {
         bg: token("--bg"),
         surface: token("--surface"),
@@ -78,10 +78,10 @@ export default {
           4: token("--ink-4"),
           5: token("--ink-5"),
         },
-        // Role zvýrazněné syntaxe. Nejsou to nové barvy palety, ale
-        // jména pro ``IngotCode`` — proto vlastní rodina a ne přetížení
-        // ``accent``/``ok``/``danger``, které v tmavém motivu slouží
-        // jinému účelu a hýbaly by se z jiných důvodů.
+        // Syntax-highlighting roles. Not new palette colours but names for
+        // ``IngotCode`` — hence a family of their own rather than overloading
+        // ``accent`` / ``ok`` / ``danger``, which serve another purpose in the
+        // dark theme and would move for other reasons.
         code: {
           comment: token("--code-comment"),
           keyword: token("--code-keyword"),
@@ -123,15 +123,15 @@ export default {
           border: token("--plan-border"),
         },
       },
-      // Rádiusová škála Ingot handoffu v0.1 (``--r-xs``…``--r-lg``).
-      // Jména jsou Tailwindová, hodnoty handoffové: ``sm`` = r-xs 4,
-      // DEFAULT = r-sm 6, ``md`` = r-md 10, ``lg`` = r-lg 14. ``xl``
-      // v handoffu protějšek nemá a zůstává, jak bylo.
+      // The radius scale of the Ingot v0.1 handoff (``--r-xs``…``--r-lg``).
+      // Names are Tailwind's, values the handoff's: ``sm`` = r-xs 4,
+      // DEFAULT = r-sm 6, ``md`` = r-md 10, ``lg`` = r-lg 14. ``xl`` has no
+      // handoff counterpart and stays as it was.
       //
-      // Hodnoty jdou přes tokeny z ``tokens.css`` (rozhodnutí vlastníka
-      // 2026-09-02, bod 09) — doc stránky je vypisují, tak musí
-      // existovat. Px fallback drží strom vykreslený bez tokens.css
-      // (izolované testy, cizí host).
+      // Values go through the tokens in ``tokens.css`` (owner's decision,
+      // 2026-09-02, point 09) — the doc pages list them, so they must exist.
+      // The px fallback keeps a tree rendered without tokens.css working
+      // (isolated tests, a foreign host).
       borderRadius: {
         sm: "var(--r-xs, 4px)",
         DEFAULT: "var(--r-sm, 6px)",
@@ -139,10 +139,10 @@ export default {
         lg: "var(--r-lg, 14px)",
         xl: "16px",
       },
-      // Typografická škála handoffu (sekce 3 TYPE v ``ingot.css``).
-      // V handoffu jsou to třídy ``.t-display``…``.t-eyebrow``; tady
-      // jde o Tailwind ``fontSize``, protože kit staví na utilitách —
-      // nepoužitý krok se do CSS nevygeneruje vůbec.
+      // The handoff's type scale (section 3 TYPE in ``ingot.css``). In the
+      // handoff these are the classes ``.t-display``…``.t-eyebrow``; here
+      // they are Tailwind ``fontSize`` entries because the kit builds on
+      // utilities — an unused step is not generated into the CSS at all.
       fontSize: {
         display: [
           "clamp(40px, 5.4vw, 64px)",

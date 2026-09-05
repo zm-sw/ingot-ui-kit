@@ -11,51 +11,52 @@ import { IngotEyebrow } from "./IngotEyebrow";
 import { IngotIcon } from "./IngotIcon";
 
 /**
- * Sbalitelná sekce postranního panelu — popisek, počet a obsah, který
- * se schová.
+ * Collapsible section of a side panel — a caption, a count and content
+ * that hides.
  *
- * 🚨 **Není to `IngotSection`.** Ta sází nadpis (`h2`/`h3`) a drží osnovu
- * stránky pro odečítač. Tahle sekce nadpis NENÍ: je to mono uppercase
- * popisek bloku v panelu vedle obsahu, a kdyby se sázel jako nadpis,
- * lhal by o osnově stránky přesně tak, jak `IngotSection` zakazuje.
- * Dvě různé sazby pod jedním propem by z jedné komponenty udělaly dvě
- * schované za přepínačem.
+ * **Not `IngotSection`.** That one sets a heading (`h2`/`h3`) and holds the
+ * page outline for a screen reader. This section is NOT a heading: it is a
+ * mono uppercase caption of a block in a panel next to the content, and
+ * set as a heading it would lie about the page outline in exactly the way
+ * `IngotSection` forbids. Two typesettings under one prop would turn one
+ * component into two hidden behind a switch.
  *
- * 🪤 **Stav drží `<details>`, ne React.** Vypadá to jako místo pro
- * `useState`, ale prohlížeč to umí líp:
+ * **`<details>` holds the state, not React.** It looks like a place for
+ * `useState`, but the browser does it better:
  *
- * - odečítač hlásí sbaleno/rozbaleno a Enter přepíná bez naší pomoci,
- * - `open` se dá nastavit z markupu, takže server i test vidí totéž,
- *   co uživatel,
- * - hledání na stránce (Ctrl+F) sbalený obsah v moderních prohlížečích
- *   najde a sekci samo rozbalí — vlastní stav by ho schoval nadobro,
- * - tisk stránky sbalený obsah nevynechá.
+ * - a screen reader announces collapsed/expanded and Enter toggles without
+ *   our help,
+ * - `open` can be set from markup, so the server and a test see what the
+ *   user sees,
+ * - find-in-page (Ctrl+F) finds collapsed content in modern browsers and
+ *   expands the section itself — our own state would hide it for good,
+ * - printing does not skip collapsed content.
  *
- * Chevron se otáčí CSS přes `group-open`. Žádný JavaScript tu není a to
- * je záměr, ne úspora.
+ * The chevron rotates via CSS `group-open`. There is no JavaScript here,
+ * and that is intent, not thrift.
  */
 
 /**
- * Jméno skupiny, ve které je otevřená vždy jen jedna sekce.
+ * Name of the group in which only one section is open at a time.
  *
- * Prázdný řetězec = žádná skupina; `<details name="">` se chová jako
- * `<details>` bez jména, takže se ta větev nemusí psát dvakrát.
+ * Empty string = no group; `<details name="">` behaves like `<details>`
+ * without a name, so that branch need not be written twice.
  */
 const DisclosureGroupContext = createContext<string>("");
 
 /**
- * Skupina, ve které je otevřená vždy nejvýš jedna sekce (accordion).
+ * A group in which at most one section is open at a time (accordion).
  *
- * 🪤 Exkluzivitu drží **prohlížeč** přes `name` na `<details>`, ne náš
- * stav. Jméno se generuje (`useId`), takže dvě skupiny na jedné stránce
- * se nemůžou proplést — ručně psané jméno je přesně ten druh kolize,
- * kterou nikdo nehledá, dokud se dva panely nesejdou na jedné obrazovce.
+ * Exclusivity is held by the BROWSER through `name` on `<details>`, not by
+ * our state. The name is generated (`useId`), so two groups on one page
+ * cannot interleave — a hand-written name is exactly the kind of collision
+ * nobody looks for until two panels meet on one screen.
  *
- * Prohlížeč, který `name` neumí, skupinu ignoruje a sekce se chovají
- * samostatně. Nic se nerozbije — jen se jich může otevřít víc.
+ * A browser without `name` support ignores the group and the sections
+ * behave independently. Nothing breaks — more of them may just be open.
  *
- * Sekce ve skupině MUSÍ být přímí potomci: `defaultOpen` na dvou z nich
- * je spor, který za tebe rozsoudí prohlížeč (nechá otevřenou poslední).
+ * Sections in a group MUST be direct children: `defaultOpen` on two of
+ * them is a dispute the browser settles for you (the last one stays open).
  */
 export function IngotDisclosureGroup({
   children,
@@ -73,7 +74,7 @@ export function IngotDisclosureGroup({
 }
 
 /**
- * Ingot **nemá vlastní i18n namespace** — `title` dodává volající.
+ * The kit has no i18n namespace of its own — `title` comes from the caller.
  */
 export function IngotDisclosure({
   title,
@@ -83,24 +84,24 @@ export function IngotDisclosure({
   className,
   testId,
 }: {
-  /** Popisek bloku — už přeložený. Ne nadpis stránky. */
+  /** Caption of the block — already translated. Not a page heading. */
   title: ReactNode;
   /**
-   * Kolik toho uvnitř je. Smysl má tam, kde se to dá spočítat (3 soubory),
-   * ne jako ozdoba — sbalená sekce s počtem říká, co v ní čeká.
+   * How much is inside. Meaningful where it can be counted (3 files), not
+   * as decoration — a collapsed section with a count says what awaits.
    */
   count?: number;
-  /** Rozbalená hned po vykreslení. Výchozí false. */
+  /** Expanded right after render. Defaults to false. */
   defaultOpen?: boolean;
   children: ReactNode;
-  /** Průchozí třída — panel určuje šířku a okraje, vzhled primitivum. */
+  /** Pass-through class — the panel sets width and margins, the primitive the look. */
   className?: string;
   testId?: string;
 }): JSX.Element {
   const group = useContext(DisclosureGroupContext);
   return (
     <details
-      // Prázdné `name` je pro prohlížeč totéž co žádné.
+      // An empty `name` is the same as none to the browser.
       name={group === "" ? undefined : group}
       open={defaultOpen}
       className={cx("group border-b border-border", className)}
@@ -108,8 +109,8 @@ export function IngotDisclosure({
     >
       <summary
         className={cx(
-          // Vlastní značku prohlížeče schováváme, protože chevron kreslíme
-          // sami — jinak by u sekce stály dva ukazatele téhož.
+          // The browser's own marker is hidden because we draw the chevron
+          // ourselves — otherwise two indicators of the same thing.
           "flex cursor-pointer list-none items-center gap-2 px-3 py-2.5",
           "[&::-webkit-details-marker]:hidden",
           "hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink",

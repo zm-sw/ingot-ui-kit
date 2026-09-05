@@ -4,87 +4,90 @@ import { cx } from "./cx";
 import { IngotCheckboxControl } from "./IngotCheckbox";
 
 /**
- * Tabulka — čtvrté primitivum Ingotu (KAN-585), rozšířené na v2 (KAN-654).
+ * Table — columns as data.
  *
- * Největší celkový výnos v celém programu (43 admin stránek si `<table>` píše
- * ručně) a zároveň **největší návrhová plocha a blast radius**: špatně
- * navrženou tabulku, na které visí 43 obrazovek, nelze levně vzít zpět.
+ * The largest return in the whole programme (dozens of admin pages wrote
+ * their own `<table>`) and at the same time **the largest design surface
+ * and blast radius**: a badly designed table with forty screens hanging
+ * on it cannot be taken back cheaply.
  *
  * ## v1 → v2
  *
- * v1 byla ZÁMĚRNĚ minimální: sloupce · prázdný stav (`IngotEmptyState`) ·
- * řádkové akce · loading · sticky hlavička · stav řádku (KAN-590). Řazení,
- * bulk-select a stránkování čekaly na konkrétního žadatele — a KAN-654 je
- * dodal (inventura: bulk select ~6 stránek, ruční pager 10 stránek).
+ * v1 was DELIBERATELY minimal: columns · empty state (`IngotEmptyState`) ·
+ * row actions · loading · sticky header · row state. Sorting, bulk select
+ * and pagination waited for a concrete requester — and the list screens
+ * delivered one.
  *
- * v2 přidává, **zpětně kompatibilně** (žádný dnešní konzument se nemusí
- * měnit):
+ * v2 adds, **backwards compatibly** (no existing consumer has to change):
  *
- * - **Výběr řádků + bulkbar** (`selectedKeys` + `onSelectedKeysChange`).
- *   Řízený zvenku: tabulka stav výběru nedrží, protože bulk akce ho stejně
- *   potřebuje volající. Checkbox sloupec je první, řádek nese
- *   `aria-selected` a nad tabulkou se s neprázdným výběrem ukáže `bulkbar`
- *   (obsah dodá volající — jen on umí říct „3 vybrané" přeloženě).
- * - **Řazení** (`sort` + `onSortChange`, sloupec `sortable`). Taky řízené:
- *   tabulka data NEřadí — často se řadí na serveru a klientský fallback by
- *   tiše lhal o celku. Aktivní hlavička nese `aria-sort`.
- *   Handoff CSS vizuál stavu řazení nemá; šipka v hlavičce (↑/↓, klidové ↕)
- *   je doplněk specu — zapsáno i na doc stránce.
- * - **`density`** `default | compact` — compact stáhne padding buňky na 8px
- *   pro obrazovky, kde se počet řádků na obrazovku počítá.
+ * - **Row selection + bulk bar** (`selectedKeys` + `onSelectedKeysChange`).
+ *   Controlled from outside: the table does not hold the selection
+ *   because the bulk action needs it in the caller anyway. The checkbox
+ *   column comes first, a row carries `aria-selected`, and a non-empty
+ *   selection shows the `bulkbar` above the table (the caller supplies
+ *   its content — only the caller can say "3 selected" translated).
+ * - **Sorting** (`sort` + `onSortChange`, column `sortable`). Also
+ *   controlled: the table does NOT sort the data — sorting often happens
+ *   on the server and a client-side fallback would lie about the whole.
+ *   The active header carries `aria-sort`. The handoff CSS has no visual
+ *   for the sort state; the arrow in the header (↑/↓, resting ↕) is an
+ *   addition to the spec — recorded on the doc page too.
+ * - **`density`** `default | compact` — compact pulls cell padding down
+ *   to 8px for screens where rows per screen are counted.
  *
- * Stránkování v tabulce **není ani ve v2** — je to samostatné
- * `IngotPagination` a stav stránky drží volající, stejně jako výběr a
- * řazení. Jeden vlastník stavu = žádná přetahovaná.
+ * Pagination is **not in the table, not even in v2** — it is a separate
+ * `IngotPagination` and the caller owns the page state, like selection and
+ * sort. One owner of state = no tug of war.
  *
- * ## Co tabulka opravuje strukturálně, ne domluvou
+ * ## What the table fixes structurally, not by agreement
  *
- * - **`colSpan` se počítá.** Ruční prázdné stavy v repu mají `colSpan={8}`
- *   natvrdo; přidání sloupce ten počet tiše rozejde a nikdo si toho
- *   nevšimne. Tady je to `columns.length + výběr + akce`.
- * - **`<th scope="col">` vždycky.** Ze 42 souborů s ručním `<thead>` má
- *   `scope` jen 12 — odečítač obrazovky ve zbytku neví, ke kterému sloupci
- *   buňka patří.
- * - **Řádkové akce se neschovávají za hover.** Primitivum na ně nedává
- *   `opacity-0 group-hover:…`; to je vzor, který je pro klávesnici past.
+ * - **`colSpan` is computed.** Hand-written empty states had `colSpan={8}`
+ *   hard-coded; adding a column silently broke the count and nobody
+ *   noticed. Here it is `columns.length + selection + actions`.
+ * - **`<th scope="col">` always.** Of 42 files with a hand-written
+ *   `<thead>` only 12 had `scope` — a screen reader in the rest did not
+ *   know which column a cell belonged to.
+ * - **Row actions do not hide behind hover.** The primitive never gives
+ *   them `opacity-0 group-hover:…`; that pattern is a trap for the
+ *   keyboard.
  *
- * Ingot **nemá vlastní i18n namespace** — `loadingLabel`, `actionsLabel`,
- * `selectAllLabel`, `selectRowLabel` i obsah prázdného stavu a bulkbaru
- * dodává volající už přeložené.
+ * The kit has no i18n namespace of its own — `loadingLabel`,
+ * `actionsLabel`, `selectAllLabel`, `selectRowLabel` and the content of
+ * the empty state and the bulk bar arrive translated.
  */
 
 export interface IngotColumn<Row> {
-  /** Stabilní klíč sloupce (React key, ne popisek). */
+  /** Stable column key (React key, not a label). */
   key: string;
-  /** Záhlaví — už přeložené. */
+  /** Header — already translated. */
   header: ReactNode;
   /**
-   * Obsah buňky. `index` je pořadí v právě vykreslované stránce dat —
-   * sloupec „pořadí" (`#1`, `#2`, …) ho jinak nemá odkud vzít a musel by si
-   * ho hledat `indexOf`em přes celé pole.
+   * Cell content. `index` is the position within the currently rendered
+   * page of data — an "order" column (`#1`, `#2`, …) has nowhere else to
+   * take it from and would have to `indexOf` across the whole array.
    */
   cell: (row: Row, index: number) => ReactNode;
-  /** `"end"` = číselný sloupec: doprava a `tabular-nums`. */
+  /** `"end"` = numeric column: right-aligned with `tabular-nums`. */
   align?: "start" | "end";
   /**
-   * Třídy navíc na `<td>` tohoto sloupce.
+   * Extra classes on this column's `<td>`.
    *
-   * Není to průchozí díra pro libovolný styl, ale nutnost: `max-w-md`,
-   * `whitespace-nowrap` nebo `mono` musí sedět na buňce, ne na obalu uvnitř
-   * ní — jinak neomezí šířku sloupce. Doloženo na konverzích v tomhle PR
-   * (AdminAuditLog, AdminQuality, UnmatchedInboundPanel).
+   * Not a pass-through hole for arbitrary style, but a necessity:
+   * `max-w-md`, `whitespace-nowrap` or `mono` must sit on the cell, not on
+   * a wrapper inside it — otherwise they do not constrain the column's
+   * width.
    */
   cellClassName?: string;
   /**
-   * Po sloupci se dá řadit — hlavička se stane tlačítkem. Vyžaduje `sort`
-   * a `onSortChange` na tabulce; bez nich se `sortable` ignoruje, protože
-   * tlačítko, které nic nedělá, je horší než žádné.
+   * The column can be sorted — the header becomes a button. Requires
+   * `sort` and `onSortChange` on the table; without them `sortable` is
+   * ignored, because a button that does nothing is worse than none.
    */
   sortable?: boolean;
 }
 
 export interface IngotSort {
-  /** `key` sloupce, podle kterého je seřazeno. */
+  /** `key` of the column the data is sorted by. */
   key: string;
   dir: "asc" | "desc";
 }
@@ -115,76 +118,81 @@ export function IngotTable<Row>({
 }: {
   columns: readonly IngotColumn<Row>[];
   rows: readonly Row[];
-  /** Stabilní identita řádku. */
+  /** Stable identity of a row. */
   rowKey: (row: Row) => string;
-  /** Volitelné `data-testid` řádku — E2E na některých stránkách na něm visí. */
+  /** Optional `data-testid` of a row — some pages' e2e tests hang on it. */
   rowTestId?: (row: Row) => string;
   /**
-   * Třídy navíc na `<tr>` — pro STAV řádku, ne pro jeho styl.
+   * Extra classes on the `<tr>` — for the row's STATE, not its style.
    *
-   * Odlišení od `cellClassName`: to je vlastnost sloupce (šířka, zarovnání) a
-   * je statické, kdežto tohle je vlastnost řádku a mění se s daty
-   * (nevybratelný, zvýrazněný). Přes `cellClassName` by ztmavení řádku
-   * nešlo — musela by ho nést každá buňka a hodnota by na sloupci nezávisela.
+   * Distinct from `cellClassName`: that is a column property (width,
+   * alignment) and static, while this is a row property that changes with
+   * the data (not selectable, highlighted). A dimmed row could not be done
+   * through `cellClassName` — every cell would have to carry it and the
+   * value would not depend on the column.
    */
   rowClassName?: (row: Row) => string | undefined;
-  /** Čeká se na data; tabulka dostane `aria-busy` a jeden `role="status"` řádek. */
+  /** Waiting for data; the table gets `aria-busy` and one `role="status"` row. */
   loading?: boolean;
-  /** Přeložené „Načítám…". Povinné, když `loading` může nastat. */
+  /** Translated "Loading…". Required whenever `loading` can happen. */
   loadingLabel?: string;
-  /** Co ukázat místo řádků, když žádné nejsou — typicky `<IngotEmptyState>`. */
+  /** What to show instead of rows when there are none — typically `<IngotEmptyState>`. */
   empty?: ReactNode;
-  /** Řádkové akce; přidá poslední sloupec. */
+  /** Row actions; adds a last column. */
   actions?: (row: Row) => ReactNode;
-  /** Přeložené záhlaví sloupce akcí — vykreslí se jen pro odečítač. */
+  /** Translated header of the actions column — rendered for screen readers only. */
   actionsLabel?: string;
-  /** Popis tabulky pro odečítač; vykreslí se jako `<caption>` mimo obraz. */
+  /** Description of the table for screen readers; rendered as an off-screen `<caption>`. */
   caption?: string;
-  /** Průchozí třída tabulky (typicky `min-w-[40rem]`). */
+  /** Pass-through class of the table (typically `min-w-[40rem]`). */
   className?: string;
   /**
-   * Hlavička zůstane vidět při rolování — jen když tabulku obaluje scrollbox
-   * (`max-h-*` + `overflow-y-auto`); mimo něj `sticky` nic nedělá.
+   * The header stays visible while scrolling — only when a scroll box
+   * wraps the table (`max-h-*` + `overflow-y-auto`); outside one `sticky`
+   * does nothing.
    */
   stickyHeader?: boolean;
   /**
-   * `"compact"` stáhne padding buňky na 8px (spec `density`). Výchozí
-   * hustota zůstává ta z v1, aby se konverze nemusely přepisovat.
+   * `"compact"` pulls cell padding down to 8px (spec `density`). The
+   * default density stays the v1 one so conversions need no rewrite.
    */
   density?: "default" | "compact";
   /**
-   * Aktuální řazení. Tabulka data NEřadí — jen kreslí stav a hlásí kliknutí
-   * přes `onSortChange`; pořadí určuje pole `rows` (server nebo volající).
+   * Current sort. The table does NOT sort the data — it only draws the
+   * state and reports clicks through `onSortChange`; the order is set by
+   * the `rows` array (server or caller).
    */
   sort?: IngotSort;
-  /** Klik na řaditelnou hlavičku: neaktivní → asc, asc ↔ desc. */
+  /** Click on a sortable header: inactive → asc, asc ↔ desc. */
   onSortChange?: (sort: IngotSort) => void;
   /**
-   * Klíče vybraných řádků (`rowKey`). Spolu s `onSelectedKeysChange` zapne
-   * checkbox sloupec; výběr drží volající, protože bulk akce je jeho.
+   * Keys of the selected rows (`rowKey`). Together with
+   * `onSelectedKeysChange` it turns on the checkbox column; the caller
+   * owns the selection because the bulk action is the caller's.
    */
   selectedKeys?: ReadonlySet<string>;
-  /** Nová množina po každé změně výběru (řádek i vybrat/zrušit vše). */
+  /** The new set after every change of selection (a row, or select / clear all). */
   onSelectedKeysChange?: (keys: ReadonlySet<string>) => void;
-  /** Přeložený popisek checkboxu „vybrat vše" v hlavičce. */
+  /** Translated label of the "select all" checkbox in the header. */
   selectAllLabel?: string;
-  /** Přeložený popisek checkboxu řádku („Vybrat {název}"). */
+  /** Translated label of a row's checkbox ("Select {name}"). */
   selectRowLabel?: (row: Row) => string;
   /**
-   * Obsah pruhu bulk akcí nad tabulkou; ukáže se jen s neprázdným výběrem.
-   * Počet („3 vybrané") i tlačítka skládá volající — jen on to umí přeložit.
+   * Content of the bulk-actions bar above the table; shown only with a
+   * non-empty selection. The count ("3 selected") and the buttons are
+   * composed by the caller — only the caller can translate them.
    */
   bulkbar?: ReactNode;
   testId?: string;
 }): JSX.Element {
   const selectable = selectedKeys != null && onSelectedKeysChange != null;
-  // Jediný zdroj pravdy pro šířku prázdného i loading řádku. Ruční
-  // `colSpan={8}` je přesně to, co se při přidání sloupce rozejde.
+  // The single source of truth for the width of the empty and loading rows.
+  // A hand-written `colSpan={8}` is exactly what drifts when a column is added.
   const span = columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0);
 
   const cellPad = density === "compact" ? "p-2" : "px-3 py-2";
-  // Sloupec s checkboxem je úzký schválně — `w-0` + padding, ať nekrade
-  // místo datovým sloupcům.
+  // The checkbox column is deliberately narrow — `w-0` + padding, so it
+  // does not steal room from the data columns.
   const checkPad = density === "compact" ? "w-0 p-2" : "w-0 px-3 py-2";
 
   const allKeys = selectable ? rows.map((row) => rowKey(row)) : [];
@@ -203,9 +211,9 @@ export function IngotTable<Row>({
 
   function toggleAll(): void {
     if (!selectable) return;
-    // „Vybrat vše" = všechny PRÁVĚ vykreslené řádky, ne celý dataset —
-    // tabulka jiné řádky nezná a tichý výběr neviditelných záznamů je
-    // přesně to překvapení, kvůli kterému bulk akce potřebují bulkbar.
+    // "Select all" = all CURRENTLY rendered rows, not the whole dataset —
+    // the table knows no other rows, and silently selecting invisible
+    // records is exactly the surprise bulk actions need a bulk bar for.
     onSelectedKeysChange(allSelected ? new Set() : new Set(allKeys));
   }
 
@@ -227,8 +235,8 @@ export function IngotTable<Row>({
       <thead
         className={
           stickyHeader
-            ? // ``bg-surface-2`` není kosmetika: bez neprůhledného pozadí
-              // prosvítají pod sticky hlavičkou rolující řádky.
+            ? // `bg-surface-2` is not cosmetic: without an opaque background
+              // the scrolling rows show through the sticky header.
               "sticky top-0 z-10 border-b border-border bg-surface-2 text-xs uppercase text-ink-3"
             : "border-b border-border text-xs uppercase text-ink-3"
         }
@@ -239,8 +247,8 @@ export function IngotTable<Row>({
               <IngotCheckboxControl
                 className="block"
                 checked={allSelected}
-                // `indeterminate` nemá HTML atribut, jde nastavit jen na
-                // elementu — proto ref, ne prop.
+                // `indeterminate` has no HTML attribute; it can only be set on
+                // the element — hence a ref, not a prop.
                 ref={(el) => {
                   if (el) el.indeterminate = someSelected;
                 }}
@@ -275,9 +283,10 @@ export function IngotTable<Row>({
                     )}
                   >
                     {col.header}
-                    {/* Handoff CSS stav řazení nekreslí — šipka je doplněk
-                        specu (KAN-654). Klidové ↕ říká „tady se dá řadit";
-                        pro odečítač je stav v aria-sort, šipka je dekor. */}
+                    {/* The handoff CSS draws no sort state — the arrow is an
+                        addition to the spec. The resting ↕ says "sortable";
+                        for a screen reader the state is in aria-sort, the
+                        arrow is decoration. */}
                     <span aria-hidden="true" className={dir != null ? "" : "text-ink-4"}>
                       {dir != null ? (dir === "asc" ? "↑" : "↓") : "↕"}
                     </span>
@@ -290,8 +299,8 @@ export function IngotTable<Row>({
           })}
           {actions && (
             <th scope="col" className={cx(cellPad, "text-right font-medium")}>
-              {/* Sloupec akcí popisek vidět nepotřebuje, odečítač ano —
-                  jinak je to bezejmenný sloupec. */}
+              {/* The actions column needs no visible label, a screen reader
+                  does — otherwise it is a nameless column. */}
               <span className="sr-only">{actionsLabel}</span>
             </th>
           )}
@@ -301,8 +310,9 @@ export function IngotTable<Row>({
         {loading ? (
           <tr>
             <td colSpan={span} className="px-3 py-8 text-center text-sm text-ink-3">
-              {/* Ne prázdné tělo se spinnerem: odečítač musí slyšet, že se
-                  čeká, ne mlčení, které zní jako „nic tu není". */}
+              {/* Not an empty body with a spinner: a screen reader must hear
+                  that we are waiting, not a silence that sounds like
+                  "nothing here". */}
               <span role="status">{loadingLabel}</span>
             </td>
           </tr>
@@ -316,8 +326,8 @@ export function IngotTable<Row>({
           rows.map((row, index) => {
             const key = rowKey(row);
             const selected = selectable && selectedKeys.has(key);
-            // Volá se JEDNOU za řádek: je to funkce volajícího a druhé
-            // zavolání by si klidně mohlo odpovědět jinak.
+            // Called ONCE per row: it is the caller's function and a second
+            // call might well answer differently.
             const extra = rowClassName?.(row);
             return (
               <tr
@@ -361,8 +371,8 @@ export function IngotTable<Row>({
 
   if (!selectable) return table;
 
-  // Obal jen s výběrem: bez něj zůstává kořenem `<table>` jako ve v1,
-  // takže se konzumentům nemění DOM, na kterém jim visí styly a testy.
+  // A wrapper only with selection: without it the root stays `<table>` as
+  // in v1, so consumers keep the DOM their styles and tests hang on.
   return (
     <div>
       {selectedKeys.size > 0 && bulkbar != null && (

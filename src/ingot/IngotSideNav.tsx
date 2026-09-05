@@ -5,43 +5,44 @@ import { IngotEyebrow } from "./IngotEyebrow";
 import { menuRowClass } from "./menuRow";
 
 /**
- * Boční menu (KAN-628) — pojmenovaná skupina odkazů, jeden z nich aktivní.
+ * Side menu — a named group of links, one of them active.
  *
- * Drží tři věci, které se ručně opisují špatně:
+ * It holds three things that are copied badly by hand:
  *
- * 1. **`<nav>` má popisek.** Na stránce s víc než jednou navigací je
- *    `aria-label` to jediné, čím je odečítač od sebe rozezná — jinak
- *    uživatel slyší „navigace" dvakrát a neví, která je která.
- * 2. **Aktivní položka nese `aria-current="page"`,** ne jen jinou barvu.
- *    Zvýraznění barvou je informace, kterou odečítač nevidí.
- * 3. **Odkaz je `<a>`,** ne `<div onClick>`. Prostřední tlačítko myši,
- *    „otevřít v novém panelu" i klávesnice pak fungují samy.
+ * 1. **`<nav>` has a label.** On a page with more than one navigation the
+ *    `aria-label` is the only thing a screen reader can tell them apart
+ *    by — otherwise the user hears "navigation" twice and does not know
+ *    which is which.
+ * 2. **The active item carries `aria-current="page"`,** not just another
+ *    colour. A colour highlight is information a screen reader does not
+ *    see.
+ * 3. **A link is an `<a>`,** not a `<div onClick>`. The middle mouse
+ *    button, "open in a new tab" and the keyboard then work by themselves.
  *
- * Routování si drží volající: `href` je hotová adresa. Primitivum tak
- * nezná router a nesmí ho přitáhnout do bundlu — což je celý důvod, proč
- * `IngotPageHeader` vedle něj vznikl.
+ * Routing stays with the caller: `href` is a finished address. The
+ * primitive knows no router and must not pull one into the bundle.
  *
- * Ingot **nemá vlastní i18n namespace** — `label` i popisky položek
- * dodává volající už přeložené.
+ * The kit has no i18n namespace of its own — `label` and the item labels
+ * arrive translated.
  */
 export interface IngotNavItem {
-  /** Hotová adresa. Primitivum ji nesestavuje ani nevaliduje. */
+  /** A finished address. The primitive neither builds nor validates it. */
   href: string;
   label: ReactNode;
-  /** Právě zobrazená položka. Dostane `aria-current="page"`. */
+  /** The currently shown item. Gets `aria-current="page"`. */
   current?: boolean;
   /**
-   * Pořadové číslo před popiskem — mono, tabulární, ne součást popisku.
-   * Odečítač ho čte jako součást odkazu, což je správně: „02 Komponenty"
-   * je i v řeči kratší orientace než samotné jméno.
+   * Ordinal before the label — mono, tabular, not part of the label. A
+   * screen reader reads it as part of the link, which is right: "02
+   * Components" is a shorter orientation in speech too than the name alone.
    */
   ordinal?: string;
   /**
-   * Podpoložky vnořené POD tuhle položku, ve vlastním `<ul>`.
+   * Sub-items nested UNDER this item, in their own `<ul>`.
    *
-   * Vnoření je struktura, ne odsazení: odečítač ohlásí druhý seznam
-   * a jeho počet položek, takže je z něj poznat, že patří k rodiči —
-   * což plochý seznam s větším `padding-left` neumí.
+   * Nesting is structure, not indentation: a screen reader announces the
+   * second list and its item count, so it is clear they belong to the
+   * parent — which a flat list with a bigger `padding-left` cannot do.
    */
   children?: readonly IngotNavItem[];
   testId?: string;
@@ -52,7 +53,7 @@ export function IngotSideNav({
   items,
   testId,
 }: {
-  /** `aria-label` navigace — povinný, viz docstring. */
+  /** `aria-label` of the navigation — required, see the docstring. */
   label: string;
   items: readonly IngotNavItem[];
   testId?: string;
