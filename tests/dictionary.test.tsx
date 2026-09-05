@@ -29,7 +29,7 @@ import {
 import { DictionaryTermsDemo } from "@/ingot-docs/DictionaryTermsDemo";
 import { DOC_LANGS } from "@/ingot-docs/lang";
 
-const STORAGE_KEY = "forgmatic.ingot-docs.dictionary";
+const STORAGE_KEY = "forgmatic.ingot.docs.dictionary";
 
 describe("termLabel", () => {
   const nesting = DICTIONARY_TERMS.nesting;

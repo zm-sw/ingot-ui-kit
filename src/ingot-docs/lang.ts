@@ -26,6 +26,8 @@
  */
 
 /** Jazyky, pro které tenhle bundle NESE text. Inventura, ne politika. */
+import { readStorage, writeStorage } from "@/lib/storage";
+
 export const DOC_LANGS = ["cs", "en"] as const;
 
 export type DocLang = (typeof DOC_LANGS)[number];
@@ -56,25 +58,14 @@ export const DOC_LANG_FALLBACK_LABELS: Localized<string> = {
   en: "English",
 };
 
-const LANG_STORAGE_KEY = "forgmatic.ingot-docs.lang";
-
-/** Uložená volba, nebo ``null``, když žádná (platná) není. */
+/** Stored choice, or ``null`` when there is no (valid) one. */
 export function readStoredLang(): DocLang | null {
-  try {
-    const raw = window.localStorage.getItem(LANG_STORAGE_KEY);
-    return isDocLang(raw) ? raw : null;
-  } catch {
-    // localStorage umí házet (privátní režim, zakázané cookies).
-    return null;
-  }
+  const raw = readStorage("docsLang");
+  return isDocLang(raw) ? raw : null;
 }
 
 export function writeStoredLang(lang: DocLang): void {
-  try {
-    window.localStorage.setItem(LANG_STORAGE_KEY, lang);
-  } catch {
-    // Nefatální — volba jen nepřežije reload.
-  }
+  writeStorage("docsLang", lang);
 }
 
 /**

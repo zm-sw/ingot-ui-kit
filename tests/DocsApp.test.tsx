@@ -50,9 +50,9 @@ import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import { ACCENT_CHOICES } from "@/lib/accent";
 
-const LANG_KEY = "forgmatic.ingot-docs.lang";
-const THEME_KEY = "forgmatic.theme";
-const ACCENT_KEY = "forgmatic.accent";
+const LANG_KEY = "forgmatic.ingot.docs.lang";
+const THEME_KEY = "forgmatic.ingot.theme";
+const ACCENT_KEY = "forgmatic.ingot.accent";
 
 /** Odpověď ``/public/languages`` — pokaždé NOVÁ, tělo se nedá číst dvakrát. */
 function languagesResponse(codes: readonly string[]): Response {

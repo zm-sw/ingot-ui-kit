@@ -34,7 +34,8 @@
  * 🪤 Kit sám nepřekládá nic (viz stránka Překlady) — proto tenhle modul
  * bydlí v ``ingot-docs``, ne v ``@/ingot``.
  */
-import { useSyncExternalStore } from "react";
+import { createStore } from "@/ingot/store";
+import { readStorage, writeStorage } from "@/lib/storage";
 
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 
@@ -122,17 +123,10 @@ export function termLabel(
   }
 }
 
-const DICTIONARY_STORAGE_KEY = "forgmatic.ingot-docs.dictionary";
-
-/** Uložená volba, nebo výchozí ``both``, když žádná (platná) není. */
+/** Stored choice, or the default ``both`` when there is no (valid) one. */
 export function readStoredDictionaryMode(): DictionaryMode {
-  try {
-    const raw = window.localStorage.getItem(DICTIONARY_STORAGE_KEY);
-    return isDictionaryMode(raw) ? raw : DEFAULT_DICTIONARY_MODE;
-  } catch {
-    // localStorage umí házet (privátní režim, zakázané cookies).
-    return DEFAULT_DICTIONARY_MODE;
-  }
+  const raw = readStorage("docsDictionary");
+  return isDictionaryMode(raw) ? raw : DEFAULT_DICTIONARY_MODE;
 }
 
 /**
@@ -143,30 +137,15 @@ export function readStoredDictionaryMode(): DictionaryMode {
  * přepnutí na jednom místě by se na druhém neprojevilo do reloadu —
  * proto jeden modulový stav a ``useSyncExternalStore``.
  */
-let currentMode: DictionaryMode | null = null;
-const listeners = new Set<() => void>();
-
-function getMode(): DictionaryMode {
-  if (currentMode === null) currentMode = readStoredDictionaryMode();
-  return currentMode;
-}
+// Lazy initial value: localStorage is read on first use, not at module load.
+const modeStore = createStore<DictionaryMode>(() => readStoredDictionaryMode());
 
 export function setDictionaryMode(mode: DictionaryMode): void {
-  currentMode = mode;
-  try {
-    window.localStorage.setItem(DICTIONARY_STORAGE_KEY, mode);
-  } catch {
-    // Nefatální — volba jen nepřežije reload.
-  }
-  for (const listener of listeners) listener();
+  modeStore.set(mode);
+  writeStorage("docsDictionary", mode);
 }
 
-function subscribe(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-/** Aktuální režim slovníku; překreslí se po každém ``setDictionaryMode``. */
+/** Current dictionary mode; re-renders after every ``setDictionaryMode``. */
 export function useDictionaryMode(): DictionaryMode {
-  return useSyncExternalStore(subscribe, getMode, getMode);
+  return modeStore.use();
 }

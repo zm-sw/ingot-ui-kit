@@ -7,7 +7,8 @@ export const IngotToastDoc: IngotDocPage = {
   name: "IngotToast",
   status: "beta",
   // 1.1 — class composition via cx(); no visible change.
-  version: "1.1",
+  // 1.2 — queue moved to the kit's shared store; no visible change.
+  version: "1.2",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   summary: {

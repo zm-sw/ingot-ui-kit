@@ -290,15 +290,6 @@ body {
   animation: forgmatic-drawer-in 0.25s ease-out both;
 }
 
-/* Backdrop dim used behind drawers, modals, command palette. */
-.drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(12, 10, 9, 0.4);
-  backdrop-filter: blur(2px);
-  z-index: 50;
-}
-
 /* Horizontal-scroll container that hides its own scrollbar.
  * Used by sub-nav tab strip on tablet — the row of tabs becomes
  * scrollable when there are more tabs than fit, but the visible

@@ -1,8 +1,9 @@
-import { useEffect, useSyncExternalStore, type JSX } from "react";
+import { useEffect, type JSX } from "react";
 import { createPortal } from "react-dom";
 
 import { cx } from "./cx";
 import { MENU_LAYER } from "./modalLayer";
+import { createStore } from "./store";
 
 /**
  * Imperativní toast (KAN-656) — spec Toast v1.0, ingot.css sekce 10.
@@ -62,32 +63,17 @@ interface ToastItem extends IngotToastOptions {
 }
 
 let nextId = 0;
-let items: readonly ToastItem[] = [];
-const listeners = new Set<() => void>();
-
-function emit(): void {
-  for (const listener of listeners) listener();
-}
-
-function subscribe(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-function getSnapshot(): readonly ToastItem[] {
-  return items;
-}
+const toasts = createStore<readonly ToastItem[]>([]);
 
 function dismiss(id: number): void {
-  items = items.filter((item) => item.id !== id);
-  emit();
+  toasts.set((items) => items.filter((item) => item.id !== id));
 }
 
 /** Ohlásí výsledek akce. Zobrazí ho jednou namountovaný ``<IngotToast />``. */
 export function toast(options: IngotToastOptions): void {
   nextId += 1;
-  items = [...items, { ...options, id: nextId }];
-  emit();
+  const item: ToastItem = { ...options, id: nextId };
+  toasts.set((items) => [...items, item]);
 }
 
 function ToastCard({ item }: { item: ToastItem }): JSX.Element {
@@ -131,7 +117,7 @@ export function IngotToast({
   /** `data-testid` regionu s toasty. */
   testId?: string;
 }): JSX.Element {
-  const current = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const current = toasts.use();
   const polite = current.filter((item) => item.tone !== "danger");
   const assertive = current.filter((item) => item.tone === "danger");
 
