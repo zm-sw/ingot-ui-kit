@@ -76,13 +76,39 @@ import "@forgmatic/ingot/tokens.css";
 
 **3. Dark mode without a flash.** The theme is a class on `<html>`, so it
 has to be set before the first paint — after React mounts is one frame too
-late and the page flashes light. Copy `public/theme-init.js` from this
-repository, serve it as a static file and load it in `<head>` before the
-app:
+late and the page flashes light. Copy the script out of the package, serve
+it as a static file and load it in `<head>` before the app. It must stay a
+plain, non-deferred `<script>`: a module is deferred, which is the flash it
+exists to prevent.
+
+```bash
+cp node_modules/@forgmatic/ingot/src/ingot/theme-init.js public/
+```
 
 ```html
 <script src="/theme-init.js"></script>
 ```
+
+The other half — reading the reader's choice, storing it, resolving it
+against the system and putting it on the document — ships as
+`@forgmatic/ingot/theme`. It is framework-free on purpose, so a shell wires
+it into whatever state it already has:
+
+```ts
+import { applyTheme, readStoredTheme, writeStoredTheme } from "@forgmatic/ingot/theme";
+```
+
+## What the package exports
+
+| Entry                              | What comes out of it                                     |
+| ---------------------------------- | -------------------------------------------------------- |
+| `@forgmatic/ingot`                 | The primitives.                                          |
+| `@forgmatic/ingot/marketing`       | The public-page blocks, without the rest of the kit.     |
+| `@forgmatic/ingot/theme`           | Theme and accent: read, store, resolve, apply. No React. |
+| `@forgmatic/ingot/theme-init.js`   | The anti-flash script, as a static file.                 |
+| `@forgmatic/ingot/tailwind-preset` | The Tailwind preset.                                     |
+| `@forgmatic/ingot/tokens.css`      | The token values, both themes, all five accents.         |
+| `@forgmatic/ingot/tokens.json`     | The same tokens as data.                                 |
 
 The kit has no translation namespace: every visible string arrives from
 the caller already translated. The few labels a primitive says itself (the

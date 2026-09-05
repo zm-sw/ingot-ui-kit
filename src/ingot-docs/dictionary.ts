@@ -36,7 +36,7 @@
  * why this module lives in ``ingot-docs``, not in ``@/ingot``.
  */
 import { createStore } from "@/ingot/store";
-import { readStorage, writeStorage } from "@/lib/storage";
+import { readDocsStorage, writeDocsStorage } from "@/ingot-docs/storage";
 
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 
@@ -126,7 +126,7 @@ export function termLabel(
 
 /** Stored choice, or the default ``both`` when there is no (valid) one. */
 export function readStoredDictionaryMode(): DictionaryMode {
-  const raw = readStorage("docsDictionary");
+  const raw = readDocsStorage("dictionary");
   return isDictionaryMode(raw) ? raw : DEFAULT_DICTIONARY_MODE;
 }
 
@@ -143,7 +143,7 @@ const modeStore = createStore<DictionaryMode>(() => readStoredDictionaryMode());
 
 export function setDictionaryMode(mode: DictionaryMode): void {
   modeStore.set(mode);
-  writeStorage("docsDictionary", mode);
+  writeDocsStorage("dictionary", mode);
 }
 
 /** Current dictionary mode; re-renders after every ``setDictionaryMode``. */

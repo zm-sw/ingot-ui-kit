@@ -55,7 +55,7 @@ import { DocsApp } from "@/ingot-docs/DocsApp";
 import { DOC_LANGS, type DocLang } from "@/ingot-docs/lang";
 import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
-import { ACCENT_CHOICES } from "@/lib/accent";
+import { ACCENT_CHOICES } from "@/ingot/theme";
 
 const LANG_KEY = "forgmatic.ingot.docs.lang";
 const THEME_KEY = "forgmatic.ingot.theme";

@@ -27,7 +27,7 @@
  */
 
 /** Languages this bundle CARRIES text for. Inventory, not policy. */
-import { readStorage, writeStorage } from "@/lib/storage";
+import { readDocsStorage, writeDocsStorage } from "@/ingot-docs/storage";
 
 export const DOC_LANGS = ["cs", "en"] as const;
 
@@ -59,12 +59,12 @@ export const DOC_LANG_FALLBACK_LABELS: Localized<string> = {
 
 /** Stored choice, or ``null`` when there is no (valid) one. */
 export function readStoredLang(): DocLang | null {
-  const raw = readStorage("docsLang");
+  const raw = readDocsStorage("lang");
   return isDocLang(raw) ? raw : null;
 }
 
 export function writeStoredLang(lang: DocLang): void {
-  writeStorage("docsLang", lang);
+  writeDocsStorage("lang", lang);
 }
 
 /**

@@ -5,13 +5,19 @@ import { act, render, screen } from "@testing-library/react";
 
 import { IngotMegaMenu, MENU_LAYER } from "@/ingot";
 import { createStore } from "@/ingot/store";
+import { readStored, writeStored } from "@/ingot/storage";
 import {
-  LEGACY_STORAGE_KEYS,
-  STORAGE_KEYS,
-  readStorage,
-  writeStorage,
-} from "@/lib/storage";
-import { readStoredTheme } from "@/lib/theme";
+  ACCENT_STORAGE_KEY,
+  LEGACY_THEME_STORAGE_KEY,
+  THEME_STORAGE_KEY,
+  readStoredTheme,
+} from "@/ingot/theme";
+import {
+  DOCS_STORAGE_KEYS,
+  LEGACY_DOCS_STORAGE_KEYS,
+  readDocsStorage,
+  writeDocsStorage,
+} from "@/ingot-docs/storage";
 
 describe("createStore", () => {
   it("initialises lazily and notifies subscribers on set", () => {
@@ -46,28 +52,56 @@ describe("createStore", () => {
 describe("storage keys", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("all keys share one scheme", () => {
-    for (const key of Object.values(STORAGE_KEYS)) {
+  it("all keys share one scheme, the kit's and the doc web's alike", () => {
+    const keys = [
+      THEME_STORAGE_KEY,
+      ACCENT_STORAGE_KEY,
+      ...Object.values(DOCS_STORAGE_KEYS),
+    ];
+    for (const key of keys) {
       expect(key).toMatch(/^forgmatic\.ingot\./);
     }
   });
 
   it("reads fall back to the legacy key, writes go to the new one", () => {
-    window.localStorage.setItem(LEGACY_STORAGE_KEYS.theme, "dark");
-    expect(readStorage("theme")).toBe("dark");
+    window.localStorage.setItem(LEGACY_THEME_STORAGE_KEY, "dark");
+    expect(readStored(THEME_STORAGE_KEY, LEGACY_THEME_STORAGE_KEY)).toBe("dark");
     expect(readStoredTheme()).toBe("dark");
-    writeStorage("theme", "light");
-    expect(window.localStorage.getItem(STORAGE_KEYS.theme)).toBe("light");
-    expect(readStorage("theme")).toBe("light");
+    writeStored(THEME_STORAGE_KEY, "light");
+    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
+    expect(readStored(THEME_STORAGE_KEY, LEGACY_THEME_STORAGE_KEY)).toBe("light");
   });
 
-  it("theme-init.js reads the same key as theme.ts, with the same legacy fallback", () => {
+  it("the doc web's own keys behave the same way", () => {
+    window.localStorage.setItem(LEGACY_DOCS_STORAGE_KEYS.lang, "en");
+    expect(readDocsStorage("lang")).toBe("en");
+    writeDocsStorage("lang", "cs");
+    expect(window.localStorage.getItem(DOCS_STORAGE_KEYS.lang)).toBe("cs");
+  });
+
+  it("storage that throws is not an error, it is 'no choice yet'", () => {
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(readStored(THEME_STORAGE_KEY)).toBeNull();
+    expect(readStoredTheme()).toBe("system");
+    expect(() => writeStored(THEME_STORAGE_KEY, "dark")).not.toThrow();
+    getItem.mockRestore();
+    setItem.mockRestore();
+  });
+
+  it("the shipped anti-flash script reads the same key as the theme module", () => {
+    // It cannot import them: it runs before any module loads. So the two
+    // spellings are pinned together here instead.
     const script = readFileSync(
-      join(__dirname, "..", "public", "theme-init.js"),
+      join(__dirname, "..", "src", "ingot", "theme-init.js"),
       "utf-8",
     );
-    expect(script).toContain(`"${STORAGE_KEYS.theme}"`);
-    expect(script).toContain(`"${LEGACY_STORAGE_KEYS.theme}"`);
+    expect(script).toContain(`"${THEME_STORAGE_KEY}"`);
+    expect(script).toContain(`"${LEGACY_THEME_STORAGE_KEY}"`);
   });
 });
 

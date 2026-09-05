@@ -301,6 +301,76 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
  * every release with an annotated tag. That is why the sentence belongs
  * here: a consumer reads this page, not the release script.
  */
+function EntryPoints({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  const rows = [
+    {
+      entry: "@forgmatic/ingot",
+      cs: "Primitiva. Tlačítko, tabulka, formulář, dialog — všechno, co má stránku v Komponentách.",
+      en: "The primitives. Button, table, form, dialog — everything with a page under Components.",
+    },
+    {
+      entry: "@forgmatic/ingot/marketing",
+      cs: "Bloky veřejných stránek. Hero, kroky, ceník, FAQ. Marketingový web si tak nenatáhne runtime formulářů.",
+      en: "The public-page blocks. Hero, steps, pricing, FAQ. A marketing site gets them without the form runtime.",
+    },
+    {
+      entry: "@forgmatic/ingot/theme",
+      cs: "Motiv a akcent: přečti volbu, ulož ji, přelož ji proti systému, pověs ji na dokument. Bez Reactu.",
+      en: "Theme and accent: read the choice, store it, resolve it against the system, put it on the document. No React.",
+    },
+    {
+      entry: "@forgmatic/ingot/theme-init.js",
+      cs: "Skript proti probliknutí. Patří do <head> jako obyčejný, neodložený <script> — modul by se odložil a problikne to.",
+      en: "The anti-flash script. Belongs in <head> as a plain, non-deferred <script> — a module is deferred, which is the flash.",
+    },
+    {
+      entry: "@forgmatic/ingot/tailwind-preset",
+      cs: "Preset pro Tailwind. Utility se jmenují po tokenech, takže bez něj polovina tříd nic neznamená.",
+      en: "The Tailwind preset. The utilities are named after the tokens, so without it half the classes mean nothing.",
+    },
+    {
+      entry: "@forgmatic/ingot/tokens.css",
+      cs: "Hodnoty tokenů. Jeden import, světlá i tmavá a všech pět akcentových rodin.",
+      en: "The token values. One import, light and dark and all five accent families.",
+    },
+    {
+      entry: "@forgmatic/ingot/tokens.json",
+      cs: "Tytéž tokeny jako data, pro nástroje mimo web.",
+      en: "The same tokens as data, for tools outside the web.",
+    },
+  ];
+
+  const columns: readonly IngotColumn<(typeof rows)[number]>[] = [
+    {
+      key: "entry",
+      header: cs ? "Vstup" : "Entry",
+      cell: (row) => <IngotCode>{row.entry}</IngotCode>,
+    },
+    {
+      key: "what",
+      header: cs ? "Co z něj chodí" : "What comes out of it",
+      cell: (row) => (cs ? row.cs : row.en),
+    },
+  ];
+
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Balíček má víc vstupů než jeden. Není to úklid: kdyby existoval jen hlavní, marketingová stránka by kvůli ceníku natáhla runtime formulářů, a motiv by si každý konzument napsal znovu — první, kdo klíč v úložišti napíše jinak, přijde o volbu čtenáře na půlce stránek."
+          : "The package has more than one entry. This is not tidiness: with only the main one, a marketing page would pull in the form runtime to get a pricing table, and every consumer would rewrite the theme plumbing — the first to spell a storage key differently loses the reader's choice on half their pages."}
+      </p>
+      <IngotTable columns={columns} rows={rows} rowKey={(row) => row.entry} />
+      <p>
+        {cs
+          ? "Motiv záměrně nezná React ani zdroj pravdy. V produktu volbu drží účet, aby operátora následovala mezi zařízeními; úložiště v prohlížeči je jen rychlá kopie, kterou čte skript proti probliknutí a první vykreslení."
+          : "The theme entry deliberately knows neither React nor where the choice really lives. In the product the account owns it, so it follows the operator across devices; browser storage is only the fast mirror the anti-flash script and the first render read."}
+      </p>
+    </div>
+  );
+}
+
 function Pinning({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
@@ -568,6 +638,11 @@ export const UsageGuide: IngotGuidePage = {
       id: "pinovani",
       title: { cs: "Připojení kitu", en: "Pinning the kit" },
       body: { cs: <Pinning lang="cs" />, en: <Pinning lang="en" /> },
+    },
+    {
+      id: "vstupy-balicku",
+      title: { cs: "Co balíček nabízí", en: "What the package offers" },
+      body: { cs: <EntryPoints lang="cs" />, en: <EntryPoints lang="en" /> },
     },
     {
       id: "udrzba",
