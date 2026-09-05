@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import type { IngotFieldSpec } from "./fields";
 
@@ -29,9 +29,7 @@ export function ingotFormPayload(
   fields: readonly IngotFieldSpec[],
   values: Record<string, unknown>,
 ): Record<string, unknown> {
-  const secretKeys = new Set(
-    fields.filter((f) => f.kind === "secret").map((f) => f.key),
-  );
+  const secretKeys = new Set(fields.filter((f) => f.kind === "secret").map((f) => f.key));
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(values)) {
     if (secretKeys.has(key) && !String(value ?? "").trim()) continue;
@@ -40,23 +38,55 @@ export function ingotFormPayload(
   return out;
 }
 
+/**
+ * ``fields`` describe the form, ``initial`` seeds it, ``resetKey`` says
+ * WHEN to seed it again.
+ *
+ * The reset used to hang on the identity of ``initial``: an effect copied
+ * it into state whenever the object changed. That is a data-loss bug, and
+ * an easy one to hit — a parent that builds the object inline, or a refetch
+ * that returns an equal but new object, threw away whatever the admin had
+ * typed. Nothing warned anyone; the form simply went back to the stored
+ * values mid-edit.
+ *
+ * So identity no longer resets anything. The form seeds itself once, when
+ * the data first arrives, and re-seeds only when ``resetKey`` changes —
+ * which is the caller saying "this is a different record now" (the record's
+ * id, or a counter bumped after a save). A caller that used to rely on the
+ * old behaviour passes the id it already has.
+ *
+ * Both the seeding and the reset happen during render, not in an effect:
+ * an effect would render one frame with the previous record's values, and
+ * that frame is exactly where a fast typist loses a keystroke.
+ */
 export function useIngotForm(
   fields: readonly IngotFieldSpec[],
   initial: Record<string, unknown> | undefined | null,
+  resetKey?: string | number,
 ): IngotFormState {
-  const [values, setValues] = useState<Record<string, unknown> | null>(null);
+  const [state, setState] = useState<{
+    values: Record<string, unknown> | null;
+    key: string | number | undefined;
+  }>(() => ({ values: initial ? { ...initial } : null, key: resetKey }));
 
-  // Re-seeded on every fresh load from the server (after a save too).
-  // Secret fields return to empty in the process — the server does not
-  // send them and the form must not remember them, otherwise a second save
-  // would send what the admin typed into the previous one.
-  useEffect(() => {
-    if (initial) setValues({ ...initial });
-  }, [initial]);
+  // Adjusting state during render is React's own pattern for "a prop
+  // changed and the state derived from it is stale". Two cases, and only
+  // two: the data arrived late (nothing was typed yet, because there was
+  // nothing to type into), or the caller says this is a different record.
+  const needsSeed = state.values === null && Boolean(initial);
+  const needsReset = state.key !== resetKey;
+  if (needsSeed || needsReset) {
+    setState({ values: initial ? { ...initial } : null, key: resetKey });
+  }
 
   const setValue = useCallback((key: string, value: unknown) => {
-    setValues((prev) => ({ ...(prev ?? {}), [key]: value }));
+    setState((prev) => ({
+      ...prev,
+      values: { ...(prev.values ?? {}), [key]: value },
+    }));
   }, []);
+
+  const values = needsSeed || needsReset ? (initial ? { ...initial } : null) : state.values;
 
   const payload = useCallback(
     () => ingotFormPayload(fields, values ?? {}),

@@ -25,7 +25,10 @@ export const IngotTopNavDoc: IngotDocPage = {
   // returns focus to the section button. This page had promised the focus
   // return since 2.0, but the code did not do it.
   // 2.8 — row states (current, open, muted, locked, hover) come from the kit's shared menu row.
-  version: "2.8",
+  // 2.9 (KAN-845) — a click on an OPEN section closes it. Hover has no
+  // meaning on a touch screen, where a tap somewhere else used to be the
+  // only way out.
+  version: "2.9",
   tag: ".topnav",
   tokens: [
     "--surface",

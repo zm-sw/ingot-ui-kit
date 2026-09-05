@@ -34,6 +34,8 @@ export type IngotLang = "cs" | "en";
 export interface IngotLabels {
   /** Label of the undo action on a toast. */
   toastUndo: string;
+  /** aria-label of the toast's close button. */
+  toastClose: string;
   /** aria-label of the page hint bulb. */
   pageHintBulb: string;
   /** aria-label of the page hint close button. */
@@ -47,6 +49,7 @@ export interface IngotLabels {
 export const INGOT_LABELS: Record<IngotLang, IngotLabels> = {
   en: {
     toastUndo: "Undo",
+    toastClose: "Close notification",
     pageHintBulb: "Highlight what this hint is about",
     pageHintDismiss: "Hide this hint on this page",
     secretSet: "set",
@@ -54,6 +57,7 @@ export const INGOT_LABELS: Record<IngotLang, IngotLabels> = {
   },
   cs: {
     toastUndo: "Zpět",
+    toastClose: "Zavřít oznámení",
     pageHintBulb: "Zvýraznit, čeho se nápověda týká",
     pageHintDismiss: "Skrýt nápovědu na této stránce",
     secretSet: "nastaveno",

@@ -66,25 +66,32 @@ describe("IngotTopNav", () => {
     );
   });
 
-  it("hover opens a section and click only opens — never closes", async () => {
+  it("hover opens a section and a click on the open one closes it", async () => {
     const user = userEvent.setup();
     const onOpen = vi.fn();
+    const onClose = vi.fn();
     render(
       <IngotTopNav
         brand="Forgmatic"
         sections={SECTIONS}
         openSection="provoz"
         onOpenSection={onOpen}
+        onCloseSection={onClose}
       />,
     );
 
     await user.hover(screen.getByRole("button", { name: "Sklad" }));
     expect(onOpen).toHaveBeenLastCalledWith("sklad");
-    // A click on an ALREADY open section reports open again, not close:
-    // hover opened it before the click landed, and a toggle would put it
-    // out right away.
+
+    // A click on an ALREADY open section closes it. Hover has no meaning on
+    // a touch screen, where this used to leave a tap somewhere else as the
+    // only way out.
     await user.click(screen.getByRole("button", { name: "Provoz" }));
-    expect(onOpen).toHaveBeenLastCalledWith("provoz");
+    expect(onClose).toHaveBeenCalled();
+
+    // A click on a closed one still opens it.
+    await user.click(screen.getByRole("button", { name: "Sklad" }));
+    expect(onOpen).toHaveBeenLastCalledWith("sklad");
   });
 
   // Real timers on purpose: the delay is 120 ms and fake timers stalled

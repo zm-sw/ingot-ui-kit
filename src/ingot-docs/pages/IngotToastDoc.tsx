@@ -10,7 +10,9 @@ export const IngotToastDoc: IngotDocPage = {
   // 1.2 — queue moved to the kit's shared store; no visible change.
   // 1.3 (KAN-841) — the undo label defaults to the IngotProvider
   // dictionary (English without a provider) instead of a Czech constant.
-  version: "1.3",
+  // 1.4 (KAN-845) — a close button, the countdown pauses under the pointer
+  // or focus, and duration: null keeps the toast until it is closed.
+  version: "1.4",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {
@@ -159,8 +161,8 @@ export const IngotToastDoc: IngotDocPage = {
           type: "number",
           required: false,
           note: {
-            cs: "Jak dlouho toast žije v ms. Výchozí 4000; se zpětnou akcí 8000.",
-            en: "How long the toast lives in ms. Defaults to 4000; with undo 8000.",
+            cs: "Jak dlouho toast žije v ms. Výchozí 4000; se zpětnou akcí 8000. null = zůstane, dokud ho někdo nezavře.",
+            en: "How long the toast lives in ms. Defaults to 4000; with undo 8000. null keeps it until somebody closes it.",
           },
         },
       ],

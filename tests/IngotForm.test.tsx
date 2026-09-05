@@ -51,7 +51,7 @@ function Harness({
 
 const payload = () => JSON.parse(screen.getByTestId("payload").textContent ?? "{}");
 
-describe("IngotForm — render podle popisu pole", () => {
+describe("IngotForm — render by field description", () => {
   const FIELDS: IngotFieldSpec[] = [
     { key: "enabled", kind: "boolean", label: "Zapnuto" },
     { key: "gap_mm", kind: "number", label: "Mezera", minimum: 0, maximum: 5 },

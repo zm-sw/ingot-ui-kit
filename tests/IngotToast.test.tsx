@@ -88,11 +88,62 @@ describe("IngotToast", () => {
     expect(screen.getByRole("button", { name: "Undo" })).toBeInTheDocument();
   });
 
-  it("without an undo action the toast has no button", () => {
+  it("without an undo action only the close button is left", () => {
     render(<IngotToast />);
     fire({ text: "Objednávka uložena." });
 
-    expect(screen.queryByRole("button")).toBeNull();
+    // The close button is always there: a timed message the reader cannot
+    // dismiss is exactly what WCAG 2.2.1 is about.
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.getByTestId("ingot-toast-close")).toBeInTheDocument();
+  });
+
+  it("the close button dismisses the toast before its time is up", () => {
+    render(<IngotToast />);
+    fire({ text: "Objednávka uložena." });
+
+    act(() => vi.advanceTimersByTime(500));
+    fireEvent.click(screen.getByTestId("ingot-toast-close"));
+    expect(screen.queryByText("Objednávka uložena.")).toBeNull();
+  });
+
+  it("the pointer pauses the countdown and leaving resumes what was left", () => {
+    render(<IngotToast />);
+    fire({ text: "Objednávka uložena." });
+    const card = screen.getByTestId("ingot-toast");
+
+    act(() => vi.advanceTimersByTime(3000));
+    fireEvent.mouseEnter(card);
+    // Ten seconds under the pointer: without the pause the toast would be
+    // long gone, and with a restart it would need four more seconds after.
+    act(() => vi.advanceTimersByTime(10000));
+    expect(screen.getByText("Objednávka uložena.")).toBeInTheDocument();
+
+    fireEvent.mouseLeave(card);
+    act(() => vi.advanceTimersByTime(999));
+    expect(screen.getByText("Objednávka uložena.")).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(2));
+    expect(screen.queryByText("Objednávka uložena.")).toBeNull();
+  });
+
+  it("focus inside the toast pauses it too", () => {
+    render(<IngotToast />);
+    fire({ text: "Objednávka uložena.", undo: vi.fn() });
+
+    fireEvent.focus(screen.getByTestId("ingot-toast"));
+    act(() => vi.advanceTimersByTime(20000));
+    expect(screen.getByText("Objednávka uložena.")).toBeInTheDocument();
+  });
+
+  it("duration null keeps the toast until somebody closes it", () => {
+    render(<IngotToast />);
+    fire({ text: "Uložení se nepovedlo.", tone: "danger", duration: null });
+
+    act(() => vi.advanceTimersByTime(60000));
+    expect(screen.getByText("Uložení se nepovedlo.")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("ingot-toast-close"));
+    expect(screen.queryByText("Uložení se nepovedlo.")).toBeNull();
   });
 
   it("the default tone announces polite, danger assertive", () => {
