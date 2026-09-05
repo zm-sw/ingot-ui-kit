@@ -105,6 +105,18 @@ export {
   type IngotPageHintLevel,
 } from "./IngotPageHint";
 export { IngotTabs, type IngotTabItem } from "./IngotTabs";
+// --- floating panels ---------------------------------------------------
+//
+// One answer to the four questions every panel used to answer for itself:
+// where it lands, what closes it, where focus goes, and which layer it sits
+// on. IngotMenu stands on the popover; IngotTooltip replaces the `title`
+// attribute, which a touch screen never shows and a screen reader may skip.
+export {
+  IngotPopover,
+} from "./IngotPopover";
+export { IngotMenu, type IngotMenuItem } from "./IngotMenu";
+export { IngotTooltip, INGOT_TOOLTIP_DELAY_MS } from "./IngotTooltip";
+export { type IngotPlacement } from "./placement";
 export {
   useModalLayer,
   MENU_LAYER,
