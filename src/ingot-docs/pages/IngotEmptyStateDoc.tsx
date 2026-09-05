@@ -9,6 +9,10 @@ export const IngotEmptyStateDoc: IngotDocPage = {
   version: "1.0",
   tag: ".empty",
   tokens: ["--ink-2", "--ink-3"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Prázdný stav: jedna věta, co tu není, volitelně proč a volitelně afordance, jak to změnit.",
     en: "Empty state: one sentence saying what is missing, optionally why, and optionally the affordance that changes it.",

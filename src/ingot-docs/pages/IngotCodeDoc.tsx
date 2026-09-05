@@ -21,6 +21,10 @@ export const IngotCodeDoc: IngotDocPage = {
     "--code-number",
     "--code-punct",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Výpis i kód ve větě mají jednu sazbu, aby se kód všude četl stejně.",
+    en: "Does not take `className`. A listing and inline code share one typesetting so code reads the same everywhere.",
+  },
   summary: {
     cs: "Kód v textu, nebo výpis přes celou šířku. Výpis se umí posunout do strany — což je ta jediná věc, na které ruční výpisy padají.",
     en: "Code inside a sentence, or a listing across the full width. The listing scrolls sideways — the one thing hand-rolled listings get wrong.",

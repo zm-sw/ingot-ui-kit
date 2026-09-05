@@ -9,6 +9,10 @@ export const ButtonDoc: IngotDocPage = {
   version: "1.1",
   tag: ".btn",
   tokens: ["--bg", "--surface", "--surface-2", "--border-strong", "--ink", "--ink-2", "--ink-4", "--accent", "--accent-ink", "--ok", "--danger", "--r-md"],
+  classNameNote: {
+    cs: "Bere `className` (a další atributy tlačítka) na rozvržení — šířku a zarovnání. Vzhled určují `variant` a `size`.",
+    en: "Takes `className` (and the other button attributes) for layout — width and alignment. `variant` and `size` decide the look.",
+  },
   summary: {
     cs: "Tlačítko se sedmi variantami, a s as=\"a\" i odkaz, který tak vypadá. Varianta nese význam akce, ne barvu — a v tmavém režimu drží kontrast, který opsané třídy ztrácejí.",
     en: "The button, in seven variants — and with as=\"a\" a link that looks like one. A variant carries the meaning of the action, not a colour, and in dark mode it holds a contrast that copied classes lose.",

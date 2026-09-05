@@ -15,6 +15,10 @@ export const IngotPageHintDoc: IngotDocPage = {
   version: "1.2",
   tag: ".pagehint",
   tokens: ["--ink", "--ink-2", "--ink-3", "--surface-2", "--accent", "--accent-ink", "--accent-bg", "--accent-border", "--r-sm", "--r-lg"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Nápověda stránky se žárovkou: klik jednorázově zvýrazní prvky, kterých se nápověda týká.",
     en: "A page hint with a bulb: a click highlights the elements the hint talks about, once.",

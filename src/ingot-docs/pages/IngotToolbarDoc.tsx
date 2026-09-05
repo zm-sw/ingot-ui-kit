@@ -9,6 +9,10 @@ export const IngotToolbarDoc: IngotDocPage = {
   version: "1.0",
   tag: ".toolbar",
   tokens: ["--ink-2", "--ink-3"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Filtr bar nad seznamem. Drží mezery, zalamování a pravý konec; čím se filtruje, dodává volající.",
     en: "A filter bar above a list. It owns spacing, wrapping and the right end; what filters, the caller supplies.",

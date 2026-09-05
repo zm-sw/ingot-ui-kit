@@ -13,6 +13,10 @@ export const IngotToastDoc: IngotDocPage = {
   version: "1.3",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
+  classNameNote: {
+    cs: "`className` nebere. Místo i vrstva jsou pevné, aby výsledek akce nikdy nezakryl hlavní akci stránky.",
+    en: "Does not take `className`. Position and layer are fixed so an action's result never covers the page's primary action.",
+  },
   summary: {
     cs: "Imperativní toast pro výsledek akce: toast({ text, undo }) ohlásí, co se stalo, a nezastaví práci.",
     en: "An imperative toast for the result of an action: toast({ text, undo }) announces what happened without stopping the work.",

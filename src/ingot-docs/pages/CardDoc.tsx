@@ -9,6 +9,10 @@ export const CardDoc: IngotDocPage = {
   version: "1.0",
   tag: ".card",
   tokens: ["--bg", "--surface", "--surface-2", "--border", "--border-strong", "--ink", "--r-md", "--shadow-sm", "--shadow-lg"],
+  classNameNote: {
+    cs: "Bere `className` na rozvržení — mezery a umístění karty. Rám, rádius a stín drží primitivum.",
+    en: "Takes `className` for layout — spacing and placement of the card. The frame, radius and shadow stay with the primitive.",
+  },
   summary: {
     cs: "Plocha, na které obsah stojí — ne rámeček, který se kreslí kolem něj. Umí se zvednout při najetí a jednou za obrazovku se obrátit do tmavé.",
     en: "The surface content sits on — not a border drawn around it. It can lift on hover, and once per screen it can invert to dark.",

@@ -11,6 +11,10 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
   version: "1.0",
   tag: ".seg-card",
   tokens: ["--border", "--surface", "--surface-2", "--ink", "--ink-3"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Karty „pro koho“ — titulek, věta a štítky provozu. Žádný štítek nenese akcent; ten patří hlavičce sekce.",
     en: "The “who it is for” cards — a title, a sentence and shop-floor tags. No tag carries the accent; that belongs to the section head.",

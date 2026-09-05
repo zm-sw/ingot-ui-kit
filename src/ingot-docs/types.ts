@@ -145,6 +145,17 @@ export interface IngotDocPage {
    * required, and hence its own section, not a sentence in accessibility.
    */
   tokens: readonly string[];
+  /**
+   * One sentence on what ``className`` may do here — layout only — or on
+   * why the primitive does not take it at all.
+   *
+   * Required, because "does it take className?" is the question every
+   * consumer asks first and the props table cannot answer it: a prop that
+   * does not exist has no row. Without this field the answer would be
+   * "read the source", which is exactly the barrier that makes the next
+   * person write their own component.
+   */
+  classNameNote: Localized<string>;
   /** One sentence for the menu and above the demo. */
   summary: Localized<string>;
   /** Live demo. MUST render the real component from ``@/ingot``. */

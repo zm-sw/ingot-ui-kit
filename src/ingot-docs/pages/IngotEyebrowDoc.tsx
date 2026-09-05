@@ -9,6 +9,10 @@ export const IngotEyebrowDoc: IngotDocPage = {
   version: "1.0",
   tag: ".eyebrow",
   tokens: ["--font-mono", "--ink-3", "--ink-4", "--accent-ink", "--ok"],
+  classNameNote: {
+    cs: "Bere `className` na rozvržení — odsazení a flex. Barvu a písmo určují `size` a `tone`.",
+    en: "Takes `className` for layout — margins and flex. `size` and `tone` decide colour and type.",
+  },
   summary: {
     cs: "Malý mono popisek verzálkami nad věcí, kterou pojmenovává — skupina v menu, metrika, krok. Jeden zápis pro idiom, který se dřív kreslil deseti způsoby.",
     en: "The small uppercase mono caption above the thing it names — a nav group, a metric, a step. One drawing for an idiom that used to be hand-drawn ten ways.",

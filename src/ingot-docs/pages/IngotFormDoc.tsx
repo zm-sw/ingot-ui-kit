@@ -10,6 +10,10 @@ export const IngotFormDoc: IngotDocPage = {
   version: "1.1",
   tag: ".form",
   tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Deklarativní formulář: dostane pole a hodnoty, vrací změny přes onChange. Tvar formuláře jsou data, ne JSX.",
     en: "Declarative form: it takes fields and values and reports changes through onChange. The shape of the form is data, not JSX.",

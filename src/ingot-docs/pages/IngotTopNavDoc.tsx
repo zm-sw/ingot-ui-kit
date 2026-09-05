@@ -28,6 +28,10 @@ export const IngotTopNavDoc: IngotDocPage = {
   version: "2.8",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Horní lišta aplikace — brand, sekce a účet v jednom řádku. Administrace nemá boční menu; obsah pod lištou jde na plnou šířku.",
     en: "The application's top bar — brand, sections and account in one row. The admin has no side menu; content below the bar runs full width.",

@@ -11,6 +11,10 @@ export const IngotAttentionPanelDoc: IngotDocPage = {
   version: "1.1",
   tag: ".attention",
   tokens: ["--ink", "--bg", "--warn", "--r-lg", "--shadow-md"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Tmavý panel „co po tobě obrazovka chce teď“ v hlavě přehledu. Jediné místo, kde je karta tmavší než pozadí — signál, který drží, jen dokud je vzácný.",
     en: "The dark “what this screen wants from you now” panel at the head of an overview. The one place where a card is darker than the page — a signal that holds only while it stays rare.",

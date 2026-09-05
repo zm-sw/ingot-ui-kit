@@ -9,6 +9,10 @@ export const IngotOpIconDoc: IngotDocPage = {
   version: "1.0",
   tag: "[data-op-icon]",
   tokens: ["currentColor"],
+  classNameNote: {
+    cs: "Bere `className` na umístění; barvu určuje kategorie procesu, velikost `size`.",
+    en: "Takes `className` for placement; the process category decides the colour and `size` the size.",
+  },
   summary: {
     cs: "Ikona výrobní operace. Kresbu bere z knihovny operací, barvu z kategorie procesu a klíč z databáze — sama si nevymýšlí nic.",
     en: "A manufacturing-operation icon. It takes the drawing from the operation library, the ink from the process category and the key from the database — it invents nothing.",

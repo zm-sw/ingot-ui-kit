@@ -13,6 +13,10 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
   version: "1.0",
   tag: ".swatches",
   tokens: ["--accent", "--ink", "--border-strong"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Volba akcentové rodiny — pět puntíků, každý obarvený tokenem, který nabízí. Žádný hex v kódu.",
     en: "The accent-family picker — five dots, each painted by the token it offers. No hex in the code.",

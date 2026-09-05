@@ -9,6 +9,10 @@ export const IngotConfirmDoc: IngotDocPage = {
   version: "1.0",
   tag: ".confirm",
   tokens: ["--bg", "--border", "--ink-2", "--warn", "--r-md"],
+  classNameNote: {
+    cs: "`className` nebere — dialog jede přes `IngotModal` a přebírá jeho geometrii i laťku.",
+    en: "Does not take `className` — the dialog runs through `IngotModal` and inherits its geometry and its bar.",
+  },
   summary: {
     cs: "Potvrzovací dialog nad IngotModal. Spočítaný dopad smí přes useConfirmVeto potvrzení odvolat.",
     en: "Confirmation dialog built on IngotModal. The computed impact may withdraw the confirmation through useConfirmVeto.",

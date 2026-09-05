@@ -9,6 +9,10 @@ export const IngotPageLayoutDoc: IngotDocPage = {
   version: "1.0",
   tag: ".page",
   tokens: ["--s-5", "--s-6"],
+  classNameNote: {
+    cs: "`className` nebere. Rozvržení JE jeho obsahem — sloupce a jejich prahy drží primitivum.",
+    en: "Does not take `className`. Layout IS its content — the primitive holds the columns and their thresholds.",
+  },
   summary: {
     cs: "Rytmus obsahu jedné stránky — mezera mezi bloky, šířka čtení a volitelný postranní rejstřík. Co si dřív každá obrazovka skládala sama.",
     en: "The rhythm of a page's content — the gap between blocks, a reading width, and an optional side index. What every screen used to assemble by hand.",

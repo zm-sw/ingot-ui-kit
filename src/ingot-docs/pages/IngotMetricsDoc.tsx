@@ -24,6 +24,10 @@ export const IngotMetricsDoc: IngotDocPage = {
     "--font-mono",
     "--r-md",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Čísla, podle kterých se obrazovka čte na první pohled. Dvě hustoty jedné komponenty: pruh pod hlavičkou a kompaktní shluk do hlavičky.",
     en: "The numbers by which a screen is read at a glance. Two densities of one component: a strip below the header and a compact cluster inside it.",

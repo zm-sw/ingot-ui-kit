@@ -1,4 +1,4 @@
-import { type JSX } from "react";
+import { forwardRef, type JSX } from "react";
 
 import { cx } from "./cx";
 import { inputChrome } from "./inputChrome";
@@ -18,6 +18,10 @@ import { inputChrome } from "./inputChrome";
  * always in some state and an empty value would claim it is not.
  *
  * The kit has no i18n namespace of its own — labels arrive translated.
+ *
+ * ``ref`` reaches the ``<select>`` itself: a screen that focuses a filter
+ * after clearing it, or scrolls it into view, must not have to reach into
+ * the primitive's insides with ``querySelector``.
  */
 
 export interface IngotSelectOption {
@@ -26,16 +30,9 @@ export interface IngotSelectOption {
   label: string;
 }
 
-export function IngotSelect({
-  value,
-  onChange,
-  options,
-  label,
-  disabled = false,
-  id,
-  className,
-  testId,
-}: {
+export const IngotSelect = forwardRef<
+  HTMLSelectElement,
+  {
   value: string;
   onChange: (next: string) => void;
   options: readonly IngotSelectOption[];
@@ -49,12 +46,17 @@ export function IngotSelect({
   label: string;
   disabled?: boolean;
   id?: string;
-  /** Pass-through class — the screen sets the width, the primitive the look. */
-  className?: string;
-  testId?: string;
-}): JSX.Element {
+    /** Layout only — the screen sets the width, the primitive the look. */
+    className?: string;
+    testId?: string;
+  }
+>(function IngotSelect(
+  { value, onChange, options, label, disabled = false, id, className, testId },
+  ref,
+): JSX.Element {
   return (
     <select
+      ref={ref}
       id={id}
       value={value}
       onChange={(event) => onChange(event.target.value)}
@@ -70,4 +72,4 @@ export function IngotSelect({
       ))}
     </select>
   );
-}
+});

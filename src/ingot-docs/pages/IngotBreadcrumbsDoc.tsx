@@ -10,6 +10,10 @@ export const IngotBreadcrumbsDoc: IngotDocPage = {
   version: "1.1",
   tag: ".crumbs",
   tokens: ["--ink", "--ink-3", "--ink-4", "--font-mono"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Drobečky nad hlavičkou stránky — kde jsem a jak zpátky. V aplikaci bez bočního menu nesou celou orientaci do hloubky.",
     en: "Breadcrumbs above the page header — where I am and how to get back. In an application without a side menu they carry all the orientation in depth.",

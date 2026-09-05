@@ -383,6 +383,80 @@ function Pinning({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+function ApiRules({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Komponenta kitu se pozná podle toho, co dovolí a co ne. Tahle čtyři pravidla platí pro každou z nich, takže se nemusíš u každé znovu ptát."
+          : "A kit component is recognised by what it allows and what it does not. These four rules hold for every one of them, so you do not have to ask again at each."}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>className</IngotCode> je rozvržení, nikdy vzhled.
+                  Šířka, mezery, umístění v mřížce — nic, co mění barvu,
+                  rádius, řez písma nebo vnitřní odsazení. Komponenta, jejímž
+                  smyslem je vypadat všude stejně, ho nebere vůbec; každá
+                  stránka komponenty to říká nad tabulkou vlastností.
+                </>,
+                <>
+                  Co má cíl v DOM, bere <IngotCode>ref</IngotCode>. Zaostřit
+                  pole, odrolovat řádek do výřezu, nastavit
+                  <IngotCode>indeterminate</IngotCode> — všechno přes API.
+                  Sáhnout dovnitř přes <IngotCode>querySelector</IngotCode>{" "}
+                  znamená přivázat obrazovku k vnitřku komponenty, který se
+                  smí přejmenovat.
+                </>,
+                <>
+                  Popisek, který potřebuje odečítač, je povinná vlastnost — ne
+                  nepovinná s výchozí hodnotou. Nepovinný popisek je popisek,
+                  na který se zapomene, a na obrazovce tu díru nikdo neuvidí.
+                </>,
+                <>
+                  Každý viditelný text přichází přeložený od volajícího. Pár
+                  popisků, které kit říká sám, bydlí ve slovníku{" "}
+                  <IngotCode>IngotProvider</IngotCode> a bez něj jsou anglicky.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>className</IngotCode> is layout, never look.
+                  Width, spacing, placement in a grid — nothing that changes
+                  colour, radius, weight or inner padding. A component whose
+                  whole point is to look the same everywhere does not take it
+                  at all; every component page says which it is, above the
+                  properties table.
+                </>,
+                <>
+                  Anything with a DOM target takes <IngotCode>ref</IngotCode>.
+                  Focusing a field, scrolling a row into view, setting{" "}
+                  <IngotCode>indeterminate</IngotCode> — all through the API.
+                  Reaching inside with <IngotCode>querySelector</IngotCode>{" "}
+                  ties the screen to the component's insides, which are free
+                  to be renamed.
+                </>,
+                <>
+                  A label a screen reader needs is a required property — not
+                  an optional one with a default. An optional label is a label
+                  somebody forgets, and nobody sees that hole on screen.
+                </>,
+                <>
+                  Every visible string arrives translated from the caller. The
+                  few labels the kit says itself live in the{" "}
+                  <IngotCode>IngotProvider</IngotCode> dictionary and are
+                  English without it.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 export const UsageGuide: IngotGuidePage = {
   slug: "pravidla-pouzivani",
   group: "rules",
@@ -392,6 +466,11 @@ export const UsageGuide: IngotGuidePage = {
     en: "The decisions that are not visible in the catalogue but hold the product together. When two designs disagree, this section decides.",
   },
   sections: [
+    // The four rules used to live nowhere, so every new primitive invented
+    // them again: className took layout on some components and looks on
+    // others, and only two components forwarded a ref. Written down here
+    // and in the repo's contributor notes; each component page states its
+    // own className policy above the properties table.
     {
       id: "skladba-obrazovky",
       title: { cs: "Skladba obrazovky", en: "The layout of a screen" },
@@ -415,6 +494,14 @@ export const UsageGuide: IngotGuidePage = {
         cs: <TextRules lang="cs" />,
         en: <TextRules lang="en" />,
       },
+    },
+    {
+      id: "api-pravidla",
+      title: {
+        cs: "Pravidla API komponent",
+        en: "The API rules of a component",
+      },
+      body: { cs: <ApiRules lang="cs" />, en: <ApiRules lang="en" /> },
     },
     {
       id: "pinovani",

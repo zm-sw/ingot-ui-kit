@@ -11,6 +11,10 @@ export const IngotDrawerDoc: IngotDocPage = {
   version: "1.2",
   tag: ".drawer",
   tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--shadow-lg"],
+  classNameNote: {
+    cs: "`className` nebere. Šířku řídí `width` s tvrdým stropem ze specifikace, hranu `side`.",
+    en: "Does not take `className`. `width` drives the width with the spec's hard cap, `side` the edge.",
+  },
   summary: {
     cs: "Boční panel pro editaci se stejnou a11y laťkou jako dialog: focus trap, ESC, scroll lock a návrat fokusu na spouštěč.",
     en: "A side panel for editing with the same accessibility floor as the dialog: focus trap, ESC, scroll lock and focus returned to the trigger.",

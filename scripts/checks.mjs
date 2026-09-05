@@ -192,6 +192,14 @@ function guardIngotDocPages() {
     if (!/tag:\s*"[^"]+"/.test(src)) {
       fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
     }
+    // Every page answers "may I pass className here?" — a primitive that
+    // does not take it has no props row to say so.
+    if (!/classNameNote:\s*\{/.test(src)) {
+      fail(guard, [
+        `${pageRel} does not declare its className policy (classNameNote).`,
+        "Layout only, or a sentence on why the primitive does not take it.",
+      ]);
+    }
     // An empty list is a statement too — "renders nothing, no token change
     // reaches it" — and the doc web prints it as that sentence.
     if (!/tokens:\s*\[[^\]]*\]/.test(src)) {

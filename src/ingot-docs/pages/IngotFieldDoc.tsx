@@ -11,6 +11,10 @@ export const IngotFieldDoc: IngotDocPage = {
   version: "1.1",
   tag: ".field",
   tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-2", "--ink-3", "--ink-4", "--accent", "--accent-bg", "--danger", "--font-mono", "--r-md", "--shadow-sm"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Popsané textové pole: popisek, nápověda, chyba, jednotka. Pro ruční formuláře, které pole nemají odkud odvodit.",
     en: "A labelled text field: label, hint, error, unit. For hand-written forms whose fields cannot be derived from anything.",

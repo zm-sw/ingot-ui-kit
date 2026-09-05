@@ -8,9 +8,14 @@ export const IngotSelectDoc: IngotDocPage = {
   status: "beta",
   // 1.1 — shared input chrome: accent focus ring instead of `focus:border-ink`,
   // Button-md height.
-  version: "1.1",
+  // 1.2 (KAN-842) — forwardRef to the <select>; callers touch nothing.
+  version: "1.2",
   tag: ".select",
   tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Výběr jedné hodnoty z krátké množiny — filtr nad seznamem, přepínač varianty v nastavení. Nativní select: klávesnice, odečítač i mobil zadarmo.",
     en: "Picking one value from a short set — a filter above a list, a variant switch in settings. A native select: keyboard, screen reader and mobile behaviour for free.",

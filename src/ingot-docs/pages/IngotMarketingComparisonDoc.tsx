@@ -20,6 +20,10 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
     "--ink",
     "--ink-3",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Řádkové srovnání „dnes / s platformou“. Dvojice patří k jednomu úkolu, takže ji nejde napsat rozpojenou.",
     en: "A row-wise “today / with the platform” comparison. The pair belongs to one task, so it cannot be written apart.",

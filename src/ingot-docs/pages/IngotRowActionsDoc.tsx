@@ -10,6 +10,10 @@ export const IngotRowActionsDoc: IngotDocPage = {
   version: "1.1",
   tag: ".rowactions",
   tokens: ["--surface-2", "--ink", "--ink-3", "--danger", "--danger-bg", "--accent-bg", "--r-sm"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Akce jednoho řádku tabulky — ikonová tlačítka 28×28 px na konci řádku, bez rámečku a bez viditelného popisku.",
     en: "The actions of a single table row — 28×28 px icon buttons at the end of the row, with no frame and no visible label.",

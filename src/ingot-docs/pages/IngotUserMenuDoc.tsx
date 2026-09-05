@@ -9,6 +9,10 @@ export const IngotUserMenuDoc: IngotDocPage = {
   version: "1.0",
   tag: ".usermenu",
   tokens: ["--surface", "--border", "--ink", "--ink-2", "--r-lg", "--shadow-lg"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Menu účtu — identita, organizace, předvolby, odhlášení. Primitivum drží strukturu, ne obsah: vrstvy oddělené linkou a řádek „popisek vlevo, ovládací prvek vpravo“.",
     en: "The account menu — identity, organisation, preferences, sign-out. The primitive holds the structure, not the content: layers separated by a rule, and a row of “label on the left, control on the right”.",

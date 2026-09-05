@@ -19,6 +19,10 @@ export const IngotIconDoc: IngotDocPage = {
   version: "1.3",
   tag: "[data-icon]",
   tokens: ["currentColor"],
+  classNameNote: {
+    cs: "Bere `className` na umístění a barvu — glyf kreslí `currentColor`, velikost je `size`.",
+    en: "Takes `className` for placement and colour — the glyph draws in `currentColor`, the size is `size`.",
+  },
   summary: {
     cs: "Ikony rozhraní — jedna sada, jedna technika. Kreslí se čárou v mřížce 24×24, barví se textem rodiče a škáluje se jedním číslem.",
     en: "Interface icons — one set, one technique. Line art on a 24×24 grid, inked by the parent's text colour, scaled by a single number.",

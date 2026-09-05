@@ -7,9 +7,14 @@ export const IngotCheckboxDoc: IngotDocPage = {
   name: "IngotCheckbox",
   status: "beta",
   // 1.1 — the box is the kit's single checkbox control, shared with IngotTable and IngotFieldInput.
-  version: "1.1",
+  // 1.2 (KAN-842) — forwardRef to the <input>; callers touch nothing.
+  version: "1.2",
   tag: ".check",
   tokens: ["--accent", "--ink-2", "--ink-4"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Zaškrtávátko s popiskem — filtr, souhlas, přepínač chování. Popisek je součást primitiva: klik na text zaškrtává a jméno pro odečítač jede zadarmo.",
     en: "A checkbox with a label — a filter, a consent, a behaviour toggle. The label is part of the primitive: clicking the text toggles, and the accessible name comes for free.",
