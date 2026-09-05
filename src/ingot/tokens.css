@@ -1,151 +1,124 @@
-/* Ingot UI Kit palette — the single definition of the tokens (:root,
- * :root.dark, accent families via data-accent). Split out of globals.css
- * so the app and the doc web take the same values from the package
- * (@forgmatic/ingot/tokens.css) and the palette cannot drift. */
+/*
+ * Ingot UI Kit palette — the source is ``tokens.json``, next to this file.
+ *
+ * Until KAN-850 the values lived here by hand, the Tailwind preset repeated
+ * every name beside them, and the Figma handoff was compared against both by
+ * eye: three copies of one palette drifting at three speeds. A consumer
+ * without React or Tailwind had no way to share the tokens at all.
+ *
+ * So the declarations moved into ``tokens.generated.css``, built from the
+ * JSON by ``scripts/build-tokens.mjs`` and imported below. This file keeps
+ * what a generator has no business owning — the reasoning behind the values,
+ * and the one behaviour rule the package ships (the hint highlight). The
+ * ``ingot-tokens-fresh`` guard fails when the generated file no longer
+ * matches the source, so the split cannot rot.
+ *
+ * The import needs a bundler, which every consumer already has: the package
+ * ships TypeScript sources and a Tailwind preset, so it is compiled by the
+ * consumer's own toolchain anyway.
+ */
+@import "./tokens.generated.css";
 
-:root {
-  color-scheme: light;
+/*
+ * Why the values are what they are.
+ *
+ * WHAT FOLLOWS IS NOT DEAD PROSE. Each note explains a decision the numbers
+ * cannot: a deliberate deviation from the design handoff, a contrast
+ * measurement, or a cascade rule that looks like an accident until it is
+ * read.
+ */
 
-  --bg: #f1f0ed;
-  --surface: #ffffff;
-  --surface-2: #f4f3f0;
-  /* surface-3 — slightly darker than surface-2; used for active
-   * pressed states (top-bar group highlight, drawer hover) where
-   * surface-2 would blend into adjacent inputs. From the Forgmatic
-   * Admin v2 reference (project-steel/Admin v2.html). */
-  --surface-3: #e6e4df;
-  --border: #ddd9d3;
-  --border-strong: #c4bfb8;
+/*
+ * surface-3 — slightly darker than surface-2; used for active
+ * pressed states (top-bar group highlight, drawer hover) where
+ * surface-2 would blend into adjacent inputs. From the Forgmatic
+ * Admin v2 reference (project-steel/Admin v2.html). 
+ */
 
-  --ink: #0c0a09;
-  --ink-2: #3f3b37;
-  /* ``ink-3`` and ``ink-4`` darkened from the original
-   * stone-500/400 (``#78716c``/``#a8a29e``) because axe-core
-   * flagged the ``how-it-works`` page for failing WCAG 2 AA
-   * 4.5:1 contrast — small mono labels in the step illustrations
-   * sat at ~4.39 against the ``#f5f5f4`` surface.
+/*
+ * ``ink-3`` and ``ink-4`` darkened from the original
+ * stone-500/400 (``#78716c``/``#a8a29e``) because axe-core
+ * flagged the ``how-it-works`` page for failing WCAG 2 AA
+ * 4.5:1 contrast — small mono labels in the step illustrations
+ * sat at ~4.39 against the ``#f5f5f4`` surface.
    *
-   * **Here we DEVIATE from the Ingot handoff (v0.1), by measurement.**
-   * The handoff wants ``--ink-3:#6d6862`` and ``--ink-4:#9a948d``; over
-   * the new ``--surface-3:#e6e4df`` that gives **4.34:1** and **2.36:1**
-   * respectively. Both are below AA and both have a resting (not hover)
-   * occurrence with small type in the repo: ``AdminItemDetail.tsx`` (the
-   * ``bg-surface-3 text-ink-3`` pill) and ``DateRangeFilter.tsx`` (9.5px
-   * ``text-ink-4`` on ``bg-surface-3``). ``ink-4`` is therefore only
-   * nudged by a hundredth against the darkened ``surface-3`` (4.47 →
-   * 4.60), ``ink-3`` stays. The handoff ``ink-4`` is practically the
-   * original stone-400 that axe already failed once — see the paragraph
-   * above. (KAN-647) */
-  --ink-3: #57534e;
-  --ink-4: #696460;
-  /* ``ink-5`` is the muted neutral used for inactive dots, decorative
-   * separators and "off" state indicators — lighter than ``ink-4``
-   * (which still has to clear WCAG AA against body text). Used by the
-   * email-template editor (per-language override dots) and the same
-   * pattern from the project-steel Sablony reference. */
-  --ink-5: #d6d3d1;
+ * **Here we DEVIATE from the Ingot handoff (v0.1), by measurement.**
+ * The handoff wants ``--ink-3:#6d6862`` and ``--ink-4:#9a948d``; over
+ * the new ``--surface-3:#e6e4df`` that gives **4.34:1** and **2.36:1**
+ * respectively. Both are below AA and both have a resting (not hover)
+ * occurrence with small type in the repo: ``AdminItemDetail.tsx`` (the
+ * ``bg-surface-3 text-ink-3`` pill) and ``DateRangeFilter.tsx`` (9.5px
+ * ``text-ink-4`` on ``bg-surface-3``). ``ink-4`` is therefore only
+ * nudged by a hundredth against the darkened ``surface-3`` (4.47 →
+ * 4.60), ``ink-3`` stays. The handoff ``ink-4`` is practically the
+ * original stone-400 that axe already failed once — see the paragraph
+ * above. (KAN-647) 
+ */
 
-  /* Default family (blue). The values live in ``--blue-*`` and ``--accent-*``
+/*
+ * ``ink-5`` is the muted neutral used for inactive dots, decorative
+ * separators and "off" state indicators — lighter than ``ink-4``
+ * (which still has to clear WCAG AA against body text). Used by the
+ * email-template editor (per-language override dots) and the same
+ * pattern from the project-steel Sablony reference. 
+ */
+
+/*
+ * Default family (blue). The values live in ``--blue-*`` and ``--accent-*``
      only references them, so the ``[data-accent="blue"]`` block below can
      point at them too without copying them — see the comment at the families. */
-  --blue-accent: #2563eb;
-  --blue-accent-ink: #1d4ed8;
-  --blue-accent-bg: #eff6ff;
-  --blue-accent-border: #bfdbfe;
 
-  --accent: var(--blue-accent);
-  --accent-ink: var(--blue-accent-ink);
-  --accent-bg: var(--blue-accent-bg);
-  --accent-border: var(--blue-accent-border);
+/*
+ * ``custom`` is the "tenant override" accent — used on the email-
+ * template editor to mark customised vs platform-default copy.
+ * Distinct hue from ``accent`` so the override badge can sit next
+ * to the primary CTA palette without confusion. 
+ */
 
-  --ok: #047454;
-  --ok-bg: #eaf7ee;
-  --ok-border: #a7dfba;
+/*
+ * ``plan`` is the "locked behind a higher tier" tone. Unlike every
+ * other tone above, it is INVERTED: the badge is a filled purple
+ * slab and the token named after it is the near-white TEXT that
+ * sits on top, not a saturated colour to be read on a tint. It is
+ * a filled badge on purpose — an upsell has to out-shout the chips
+ * around it, which a tint cannot do. Contrast on its own ``-bg``
+ * is ~8.1:1 light and ~5.0:1 dark, so it clears WCAG AA in both. 
+ */
 
-  --warn: #b05109;
-  --warn-bg: #fffbeb;
-  --warn-border: #fde68a;
+/*
+ * Syntax highlighting (``IngotCode block lang="tsx"``). A set of its own,
+ * not an adopted theme: the roles take tones the palette ALREADY HAS, so
+ * a code listing looks like the rest of the kit and not like a pasted-in
+ * editor. Light and dark DIFFER in values, not in roles — a colour tuned
+ * for white is muddy on a dark surface and vice versa; paired themes are
+ * common practice among highlighters. All seven hold WCAG AA 4.5:1 over
+ * ``--surface`` (the listing surface); ``ingotCode.test.tsx`` guards it. 
+ */
 
-  --danger: #b91c1c;
-  --danger-bg: #fef2f2;
-  --danger-border: #fecaca;
+/*
+ * Motion — a single duration and a single curve for the whole kit, so
+ * transitions do not drift component by component (Ingot handoff v0.1). 
+ */
 
-  /* ``custom`` is the "tenant override" accent — used on the email-
-   * template editor to mark customised vs platform-default copy.
-   * Distinct hue from ``accent`` so the override badge can sit next
-   * to the primary CTA palette without confusion. */
-  --custom: #6d28d9;
-  --custom-bg: #f5f3ff;
-  --custom-border: #ddd6fe;
+/*
+ * Spacing scale — 4/8/12/16/24/32/48/72. Tailwind has the same steps as
+ * utilities (``p-1``…``p-18``); these variables are for places where
+ * bare CSS is written (keyframes, ``calc()``, inline styles). 
+ */
 
-  /* ``plan`` is the "locked behind a higher tier" tone. Unlike every
-   * other tone above, it is INVERTED: the badge is a filled purple
-   * slab and the token named after it is the near-white TEXT that
-   * sits on top, not a saturated colour to be read on a tint. It is
-   * a filled badge on purpose — an upsell has to out-shout the chips
-   * around it, which a tint cannot do. Contrast on its own ``-bg``
-   * is ~8.1:1 light and ~5.0:1 dark, so it clears WCAG AA in both. */
-  --plan: #faf5ff;
-  --plan-bg: #6b21a8;
-  --plan-border: #7e22ce;
+/*
+ * Radius scale — r-xs/r-sm/r-md/r-lg from the Ingot handoff v0.1. The
+ * doc pages have listed these tokens from the start, but until
+ * 2026-09-02 nobody DEFINED them — the Tailwind preset carried the
+ * values hard-coded and the computed value of the tokens was empty
+ * (owner decision of 2026-09-02, item 09). The preset now reads these
+ * variables (with a px fallback for a tree rendered without
+ * tokens.css), so a radius change is a change of ONE line here.
+ * Theme-independent — ``.dark`` does not re-declare them. 
+ */
 
-  /* Syntax highlighting (``IngotCode block lang="tsx"``). A set of its own,
-   * not an adopted theme: the roles take tones the palette ALREADY HAS, so
-   * a code listing looks like the rest of the kit and not like a pasted-in
-   * editor. Light and dark DIFFER in values, not in roles — a colour tuned
-   * for white is muddy on a dark surface and vice versa; paired themes are
-   * common practice among highlighters. All seven hold WCAG AA 4.5:1 over
-   * ``--surface`` (the listing surface); ``ingotCode.test.tsx`` guards it. */
-  --code-comment: #696460;
-  --code-keyword: #6d28d9;
-  --code-string: #047454;
-  --code-tag: #2563eb;
-  --code-attr: #b05109;
-  --code-number: #b91c1c;
-  --code-punct: #57534e;
-
-  --shadow-sm: 0 1px 2px rgba(12, 10, 9, 0.05);
-  --shadow-md: 0 6px 18px -6px rgba(12, 10, 9, 0.12),
-    0 1px 2px rgba(12, 10, 9, 0.05);
-  --shadow-lg: 0 14px 40px -10px rgba(12, 10, 9, 0.18),
-    0 2px 6px rgba(12, 10, 9, 0.05);
-
-  --font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
-
-  /* Motion — a single duration and a single curve for the whole kit, so
-   * transitions do not drift component by component (Ingot handoff v0.1). */
-  --ease: cubic-bezier(0.2, 0.6, 0.3, 1);
-  --dur: 0.22s;
-
-  /* Spacing scale — 4/8/12/16/24/32/48/72. Tailwind has the same steps as
-   * utilities (``p-1``…``p-18``); these variables are for places where
-   * bare CSS is written (keyframes, ``calc()``, inline styles). */
-  --s-1: 4px;
-  --s-2: 8px;
-  --s-3: 12px;
-  --s-4: 16px;
-  --s-5: 24px;
-  --s-6: 32px;
-  --s-7: 48px;
-  --s-8: 72px;
-
-  /* Radius scale — r-xs/r-sm/r-md/r-lg from the Ingot handoff v0.1. The
-   * doc pages have listed these tokens from the start, but until
-   * 2026-09-02 nobody DEFINED them — the Tailwind preset carried the
-   * values hard-coded and the computed value of the tokens was empty
-   * (owner decision of 2026-09-02, item 09). The preset now reads these
-   * variables (with a px fallback for a tree rendered without
-   * tokens.css), so a radius change is a change of ONE line here.
-   * Theme-independent — ``.dark`` does not re-declare them. */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-}
-
-/* ============================================================
+/*
+ * ============================================================
  * Dark theme — the SAME token names re-declared. Applied by the
  * ``.dark`` class that ThemeProvider puts on <html>; dark mode is
  * offered on every shell (admin, tenant storefront AND marketing —
@@ -188,89 +161,50 @@
  * ``AdminNesting`` do not) — white on ``#ffb8b0`` is 1.65:1. The pastels
  * may therefore arrive only together with those component rules, which is
  * outside the scope of the token ticket.
- * ============================================================ */
-:root.dark {
-  color-scheme: dark;
+ * ============================================================ 
+ */
 
-  --bg: #0b0a09;
-  --surface: #2e2b27;
-  --surface-2: #3e3934;
-  --surface-3: #4e473f;
-  --border: #665d53;
-  --border-strong: #877c6f;
+/*
+ * ink-4 is tuned against surface-2 — the lightest surface muted text
+ * commonly sits on. The handoff's ``#a1988c`` lands 4.01:1 there
+ * (the dark surfaces got LIGHTER with this ramp), so it is raised to
+ * 4.58:1; ink-5 is decorative (off-state dots) and stays. 
+ */
 
-  --ink: #fffefd;
-  --ink-2: #eeeae3;
-  --ink-3: #cbc3b7;
-  /* ink-4 is tuned against surface-2 — the lightest surface muted text
-   * commonly sits on. The handoff's ``#a1988c`` lands 4.01:1 there
-   * (the dark surfaces got LIGHTER with this ramp), so it is raised to
-   * 4.58:1; ink-5 is decorative (off-state dots) and stays. */
-  --ink-4: #aba398;
-  --ink-5: #605c57;
+/*
+ * The ``-bg`` tints are deliberately deep (near-black with a hue
+ * cast) rather than mid-tone: the saturated token is used as the
+ * TEXT colour on its own tint (e.g. ``text-danger`` on
+ * ``bg-danger-bg`` badges), and a lighter tint dropped small-text
+ * contrast below WCAG AA 4.5:1 (axe-core flagged danger + accent).
+ * These values clear 4.5:1 for the token text at 11px. 
+ */
 
-  /* The ``-bg`` tints are deliberately deep (near-black with a hue
-   * cast) rather than mid-tone: the saturated token is used as the
-   * TEXT colour on its own tint (e.g. ``text-danger`` on
-   * ``bg-danger-bg`` badges), and a lighter tint dropped small-text
-   * contrast below WCAG AA 4.5:1 (axe-core flagged danger + accent).
-   * These values clear 4.5:1 for the token text at 11px. */
-  /* ``accent``/``danger`` double as text colours (text-accent /
-   * text-danger) on the neutral surfaces; the lifted surface ramp
-   * would have pushed their small-text contrast below the old
-   * palette's, so both are nudged one step brighter to compensate. */
-  --blue-accent: #5192f7;
-  --blue-accent-ink: #bfdbfe;
-  --blue-accent-bg: #0f1b30;
-  --blue-accent-border: #1e3a8a;
+/*
+ * ``accent``/``danger`` double as text colours (text-accent /
+ * text-danger) on the neutral surfaces; the lifted surface ramp
+ * would have pushed their small-text contrast below the old
+ * palette's, so both are nudged one step brighter to compensate. 
+ */
 
-  --accent: var(--blue-accent);
-  --accent-ink: var(--blue-accent-ink);
-  --accent-bg: var(--blue-accent-bg);
-  --accent-border: var(--blue-accent-border);
+/*
+ * The same roles a step lighter and less saturated — a saturated dark
+ * colour from the light set is invisible on ``--surface`` (#2e2b27). 
+ */
 
-  --ok: #22c55e;
-  --ok-bg: #0a2013;
-  --ok-border: #166534;
+/*
+ * The filled purple lifts on the dark canvas the same way the rest
+ * of the ramp does; the text token stays near-white in both themes
+ * because the slab stays a saturated purple in both. 
+ */
 
-  --warn: #f59e0b;
-  --warn-bg: #2a1e07;
-  --warn-border: #92400e;
+/*
+ * Shadows read as depth only against light surfaces; on a dark
+ * canvas they need heavier, near-black alpha to register at all. 
+ */
 
-  --danger: #f36464;
-  --danger-bg: #2a1010;
-  --danger-border: #991b1b;
-
-  /* The same roles a step lighter and less saturated — a saturated dark
-   * colour from the light set is invisible on ``--surface`` (#2e2b27). */
-  --code-comment: #aba398;
-  --code-keyword: #c4aefc;
-  --code-string: #5ddb99;
-  --code-tag: #7ab0fa;
-  --code-attr: #f5b74a;
-  --code-number: #f79a9a;
-  --code-punct: #cbc3b7;
-
-  --custom: #ae94fa;
-  --custom-bg: #1e1533;
-  --custom-border: #6d28d9;
-
-  /* The filled purple lifts on the dark canvas the same way the rest
-   * of the ramp does; the text token stays near-white in both themes
-   * because the slab stays a saturated purple in both. */
-  --plan: #faf5ff;
-  --plan-bg: #9333ea;
-  --plan-border: #a855f7;
-
-  /* Shadows read as depth only against light surfaces; on a dark
-   * canvas they need heavier, near-black alpha to register at all. */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.55);
-  --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 18px 44px -12px rgba(0, 0, 0, 0.85),
-    0 2px 6px rgba(0, 0, 0, 0.6);
-}
-
-/* ============================================================
+/*
+ * ============================================================
  * Accent families (KAN-648) — five families of four tokens each.
  *
  * ``blue`` is the default and has no VALUES of its own here: they live in
@@ -321,94 +255,20 @@
  *
  * The bar is guarded by ``tests/accentContrast.test.ts``: no family may be
  * worse than the default blue on any surface.
- * ============================================================ */
-:root:not(.dark)[data-accent="blue"],
-:root:not(.dark) [data-accent="blue"] {
-  --accent: var(--blue-accent);
-  --accent-ink: var(--blue-accent-ink);
-  --accent-bg: var(--blue-accent-bg);
-  --accent-border: var(--blue-accent-border);
-}
+ * ============================================================ 
+ */
 
-:root:not(.dark)[data-accent="emerald"],
-:root:not(.dark) [data-accent="emerald"] {
-  --accent: #047857;
-  --accent-ink: #065f46;
-  --accent-bg: #ecfdf5;
-  --accent-border: #a7f3d0;
-}
-
-:root:not(.dark)[data-accent="orange"],
-:root:not(.dark) [data-accent="orange"] {
-  --accent: #c2410c;
-  --accent-ink: #9a3412;
-  --accent-bg: #fff7ed;
-  --accent-border: #fed7aa;
-}
-
-:root:not(.dark)[data-accent="violet"],
-:root:not(.dark) [data-accent="violet"] {
-  --accent: #7c3aed;
-  --accent-ink: #6d28d9;
-  --accent-bg: #f5f3ff;
-  --accent-border: #ddd6fe;
-}
-
-:root:not(.dark)[data-accent="slate"],
-:root:not(.dark) [data-accent="slate"] {
-  --accent: #0f172a;
-  --accent-ink: #020617;
-  --accent-bg: #f1f5f9;
-  --accent-border: #cbd5e1;
-}
-
-/* The dark quartets follow the same recipe that produced the dark blue
+/*
+ * The dark quartets follow the same recipe that produced the dark blue
  * above: ``--accent`` is a lighter step of the same hue (reads as text on
  * a dark surface), ``--accent-ink`` is a light shade of the family (text
  * on its own tint), ``--accent-bg`` is a deep surface with a hint of the
  * hue and ``--accent-border`` a saturated middle. ``slate`` inverts in the
- * dark theme — a black accent would not be visible on a dark surface at all. */
-:root.dark[data-accent="blue"],
-:root.dark [data-accent="blue"] {
-  --accent: var(--blue-accent);
-  --accent-ink: var(--blue-accent-ink);
-  --accent-bg: var(--blue-accent-bg);
-  --accent-border: var(--blue-accent-border);
-}
+ * dark theme — a black accent would not be visible on a dark surface at all. 
+ */
 
-:root.dark[data-accent="emerald"],
-:root.dark [data-accent="emerald"] {
-  --accent: #10b981;
-  --accent-ink: #a7f3d0;
-  --accent-bg: #072019;
-  --accent-border: #065f46;
-}
-
-:root.dark[data-accent="orange"],
-:root.dark [data-accent="orange"] {
-  --accent: #f97316;
-  --accent-ink: #fed7aa;
-  --accent-bg: #2a1608;
-  --accent-border: #9a3412;
-}
-
-:root.dark[data-accent="violet"],
-:root.dark [data-accent="violet"] {
-  --accent: #ae94fa;
-  --accent-ink: #ddd6fe;
-  --accent-bg: #1e1533;
-  --accent-border: #6d28d9;
-}
-
-:root.dark[data-accent="slate"],
-:root.dark [data-accent="slate"] {
-  --accent: #cbd5e1;
-  --accent-ink: #f1f5f9;
-  --accent-bg: #1c1f24;
-  --accent-border: #475569;
-}
-
-/* ============================================================
+/*
+ * ============================================================
  * Highlighting of hint targets (KAN-659) — ingot.css section 12.
  *
  * The only behaviour CSS in this file, on purpose: ``IngotPageHint`` adds
@@ -423,7 +283,8 @@
  * time. Under ``prefers-reduced-motion`` the flash is switched off and a
  * static frame stays for the duration of the cycle; the ``.help-highlight``
  * of the doc web keeps the same idiom.
- * ============================================================ */
+ * ============================================================ 
+ */
 .is-hinted {
   outline: 2px solid var(--accent);
   outline-offset: 3px;

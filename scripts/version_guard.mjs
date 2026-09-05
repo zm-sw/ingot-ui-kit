@@ -84,6 +84,8 @@ function fileNow(file) {
   }
 }
 
+const STYLESHEETS = ["src/ingot/tokens.css", "src/ingot/tokens.generated.css"];
+
 const changed = git("diff", "--name-only", `${base}...HEAD`)
   .split("\n")
   .filter(Boolean);
@@ -155,8 +157,11 @@ const owed = pagesOwed({
   pages,
   bumpedPages,
   addedPages,
-  tokensBefore: fileAt(base, "src/ingot/tokens.css"),
-  tokensAfter: fileNow("src/ingot/tokens.css"),
+  // Every stylesheet at once: the declarations moved from the hand-written
+  // file into a generated one, and no colour a consumer sees changed with
+  // them. Comparing file by file would have called that fifty regressions.
+  tokensBefore: STYLESHEETS.map((file) => fileAt(base, file)).join("\n"),
+  tokensAfter: STYLESHEETS.map((file) => fileNow(file)).join("\n"),
 });
 
 if (owed.length === 0) {

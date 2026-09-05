@@ -6,7 +6,8 @@
  * its background — a class name says nothing about contrast. Hence the
  * classes the component really emitted are taken from the rendered badge,
  * translated to tokens, and the ratio is computed over the values from
- * `globals.css`, in BOTH themes: a token has two values and measuring one
+ * the generated stylesheet, in BOTH themes: a token has two values and
+ * measuring one
  * means measuring half.
  *
  * The rest is what can go wrong quietly on a badge:
@@ -38,12 +39,12 @@ const TONES: readonly IngotBadgeTone[] = [
 ];
 
 const GLOBALS = readFileSync(
-  path.resolve(__dirname, "../src/ingot/tokens.css"),
+  path.resolve(__dirname, "../src/ingot/tokens.generated.css"),
   "utf-8",
 );
 
 /**
- * Token values from one `:root` block of `globals.css`.
+ * Token values from one `:root` block of the generated stylesheet.
  *
  * A token need not carry a hex directly. The default accent family holds
  * its values in `--blue-*` and `--accent-*` only references them, so the
@@ -53,7 +54,7 @@ const GLOBALS = readFileSync(
  */
 function tokens(selector: string): Record<string, string> {
   const start = GLOBALS.indexOf(`${selector} {`);
-  if (start === -1) throw new Error(`globals.css has no ${selector} block`);
+  if (start === -1) throw new Error(`the stylesheet has no ${selector} block`);
   const body = GLOBALS.slice(start, GLOBALS.indexOf("\n}", start));
   const found: Record<string, string> = {};
   const aliases: Record<string, string> = {};
@@ -137,7 +138,10 @@ describe("IngotBadge", () => {
     for (const [theme, values] of Object.entries(THEMES)) {
       const background = values[bg];
       const foreground = values[text];
-      expect(background, `${theme}: globals.css nedeklaruje ${bg}`).toBeDefined();
+      expect(
+        background,
+        `${theme}: the stylesheet does not declare ${bg}`,
+      ).toBeDefined();
       expect(foreground, `${theme}: globals.css nedeklaruje ${text}`).toBeDefined();
       expect(
         contrast(background, foreground),
