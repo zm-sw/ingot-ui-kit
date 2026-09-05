@@ -9,7 +9,8 @@ export const IngotMetricsDoc: IngotDocPage = {
   // 1.1: buňka stripu umí volitelnou křivku vývoje (trend) — rozhodnutí
   // vlastníka 2026-09-02, bod 07. 1.2: testId na buňce. 1.3: okno bez
   // pohybu se kreslí čárkovaně — plná čára by tvrdila stabilní hodnotu.
-  version: "1.3",
+  // 1.4 — caption set by IngotEyebrow, the kit's shared mono label.
+  version: "1.4",
   tag: ".metricstrip",
   tokens: [
     "--surface",

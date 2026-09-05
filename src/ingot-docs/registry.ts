@@ -29,6 +29,7 @@ import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotDisclosureDoc } from "@/ingot-docs/pages/IngotDisclosureDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
 import { IngotEmptyStateDoc } from "@/ingot-docs/pages/IngotEmptyStateDoc";
+import { IngotEyebrowDoc } from "@/ingot-docs/pages/IngotEyebrowDoc";
 import { IngotFieldDoc } from "@/ingot-docs/pages/IngotFieldDoc";
 import { IngotFieldInputDoc } from "@/ingot-docs/pages/IngotFieldInputDoc";
 import { IngotFormDoc } from "@/ingot-docs/pages/IngotFormDoc";
@@ -127,6 +128,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotDisclosureDoc,
   IngotDrawerDoc,
   IngotEmptyStateDoc,
+  IngotEyebrowDoc,
   IngotFieldDoc,
   IngotFieldInputDoc,
   IngotFormDoc,

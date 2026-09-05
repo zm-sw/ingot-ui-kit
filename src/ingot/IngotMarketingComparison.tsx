@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+import { cx } from "./cx";
+import { eyebrowClass } from "./IngotEyebrow";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
@@ -81,7 +83,13 @@ export function IngotMarketingComparison({
           přestane být srovnáním. */}
       <div className="overflow-x-auto">
         <div className="min-w-[560px]" data-testid={testId}>
-          <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-border bg-surface-2 font-mono text-[11px] uppercase tracking-[0.06em] text-ink-3">
+          {/* The header row is one eyebrow-sized line over three cells. */}
+          <div
+            className={cx(
+              "grid grid-cols-[1.1fr_1fr_1fr] border-b border-border bg-surface-2",
+              eyebrowClass({ size: "md" }),
+            )}
+          >
             <div className="px-[18px] py-[11px]">{headers.task}</div>
             <div className="border-l border-border px-[18px] py-[11px]">
               {headers.before}

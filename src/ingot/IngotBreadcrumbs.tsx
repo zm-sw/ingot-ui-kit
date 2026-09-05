@@ -1,5 +1,8 @@
 import { type JSX } from "react";
 
+import { cx } from "./cx";
+import { eyebrowClass } from "./IngotEyebrow";
+
 /**
  * Drobečky nad hlavičkou stránky — kde jsem a jak zpátky.
  *
@@ -36,7 +39,9 @@ export function IngotBreadcrumbs({
   if (items.length < 2) return null;
   return (
     <nav aria-label={label} data-testid={testId}>
-      <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-3">
+      {/* The trail is one eyebrow-sized line; the `<ol>` cannot be an
+          IngotEyebrow itself, so it borrows the class list. */}
+      <ol className={cx("flex flex-wrap items-center gap-2", eyebrowClass({ size: "md" }))}>
         {items.map((item, index) => {
           const last = index === items.length - 1;
           return (

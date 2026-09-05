@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { cx } from "./cx";
+import { IngotEyebrow } from "./IngotEyebrow";
 import { IngotIcon } from "./IngotIcon";
 
 /**
@@ -119,9 +120,7 @@ export function IngotDisclosure({
           size={13}
           className="text-ink-4 transition-transform group-open:rotate-90"
         />
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3">
-          {title}
-        </span>
+        <IngotEyebrow as="span">{title}</IngotEyebrow>
         {count !== undefined && (
           <span className="font-mono text-[10.5px] tabular-nums text-ink-4">
             {count}

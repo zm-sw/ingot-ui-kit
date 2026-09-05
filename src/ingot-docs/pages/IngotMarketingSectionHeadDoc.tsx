@@ -12,7 +12,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotMarketingSectionHeadDoc: IngotDocPage = {
   name: "IngotMarketingSectionHead",
   status: "beta",
-  version: "1.0",
+  // 1.1 — eyebrow set by IngotEyebrow (size md, accent tone).
+  version: "1.1",
   tag: ".section-head",
   tokens: ["--accent", "--ink", "--ink-3"],
   summary: {

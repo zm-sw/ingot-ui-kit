@@ -1,6 +1,7 @@
 import { useId, useState, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotEyebrow } from "./IngotEyebrow";
 import { IngotIcon } from "./IngotIcon";
 
 /**
@@ -111,14 +112,7 @@ export function IngotStepCard({
           )}
         </span>
         <div className="min-w-0">
-          <p
-            className={cx(
-              "font-mono text-[10.5px] uppercase tracking-[0.09em]",
-              done ? "text-ok" : "text-ink-3",
-            )}
-          >
-            {kicker}
-          </p>
+          <IngotEyebrow tone={done ? "ok" : "neutral"}>{kicker}</IngotEyebrow>
           <p className="mb-1 mt-[3px] flex items-baseline gap-2 text-base font-semibold tracking-[-0.015em] text-ink">
             {title}
             {meta !== undefined && (

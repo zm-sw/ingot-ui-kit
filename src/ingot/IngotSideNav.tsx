@@ -1,5 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
+import { IngotEyebrow } from "./IngotEyebrow";
+
 /**
  * Boční menu (KAN-628) — pojmenovaná skupina odkazů, jeden z nich aktivní.
  *
@@ -55,9 +57,9 @@ export function IngotSideNav({
 }): JSX.Element {
   return (
     <nav aria-label={label} data-testid={testId}>
-      <p className="mb-2 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
+      <IngotEyebrow tone="muted" className="mb-2">
         {label}
-      </p>
+      </IngotEyebrow>
       <ul className="space-y-0.5">
         {items.map((item) => (
           <li key={item.href}>

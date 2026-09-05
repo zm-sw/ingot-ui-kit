@@ -8,7 +8,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotMarketingComparisonDoc: IngotDocPage = {
   name: "IngotMarketingComparison",
   status: "beta",
-  version: "1.0",
+  // 1.1 — header row set with the shared eyebrow type.
+  version: "1.1",
   tag: ".cmp",
   tokens: [
     "--border",

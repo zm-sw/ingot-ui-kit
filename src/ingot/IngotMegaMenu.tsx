@@ -1,6 +1,7 @@
 import { useId, useState, type JSX, type MouseEvent, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotEyebrow } from "./IngotEyebrow";
 import { IngotIcon } from "./IngotIcon";
 
 /**
@@ -126,9 +127,7 @@ export function IngotMegaMenu({
             className="mb-2 break-inside-avoid last:mb-0"
           >
             {group.title && (
-              <p className="px-2 pb-1 pt-1.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-ink-3">
-                {group.title}
-              </p>
+              <IngotEyebrow className="px-2 pb-1 pt-1.5">{group.title}</IngotEyebrow>
             )}
             <ul className="flex flex-col gap-0.5">
               {group.items.map((item) => {
