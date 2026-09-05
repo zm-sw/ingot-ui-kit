@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotCheckboxControl } from "./IngotCheckbox";
 
 /**
  * Tabulka — čtvrté primitivum Ingotu (KAN-585), rozšířené na v2 (KAN-654).
@@ -235,9 +236,8 @@ export function IngotTable<Row>({
         <tr>
           {selectable && (
             <th scope="col" className={checkPad}>
-              <input
-                type="checkbox"
-                className="block accent-accent"
+              <IngotCheckboxControl
+                className="block"
                 checked={allSelected}
                 // `indeterminate` nemá HTML atribut, jde nastavit jen na
                 // elementu — proto ref, ne prop.
@@ -328,9 +328,8 @@ export function IngotTable<Row>({
               >
                 {selectable && (
                   <td className={checkPad}>
-                    <input
-                      type="checkbox"
-                      className="block accent-accent"
+                    <IngotCheckboxControl
+                      className="block"
                       checked={selected}
                       onChange={() => toggleRow(key)}
                       aria-label={selectRowLabel?.(row)}

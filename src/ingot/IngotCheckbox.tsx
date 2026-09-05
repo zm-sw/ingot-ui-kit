@@ -1,6 +1,34 @@
-import { type JSX, type ReactNode } from "react";
+import {
+  forwardRef,
+  type InputHTMLAttributes,
+  type JSX,
+  type ReactNode,
+} from "react";
 
 import { cx } from "./cx";
+
+/**
+ * The one `<input type="checkbox">` in the kit.
+ *
+ * Internal, not exported from the barrel: `IngotCheckbox` wraps it in a
+ * label, `IngotTable` uses it bare in the selection column (with `ref` for
+ * `indeterminate`), `IngotFieldInput` uses it bare because `IngotForm`
+ * supplies the label. Before this existed the box was drawn three times
+ * and only one of them had the accent colour.
+ */
+export const IngotCheckboxControl = forwardRef<
+  HTMLInputElement,
+  Omit<InputHTMLAttributes<HTMLInputElement>, "type">
+>(function IngotCheckboxControl({ className, ...rest }, ref) {
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      className={cx("h-4 w-4 shrink-0 accent-accent disabled:cursor-not-allowed", className)}
+      {...rest}
+    />
+  );
+});
 
 /**
  * Zaškrtávátko s popiskem — filtr „jen vyžadující zásah“, souhlas ve
@@ -41,12 +69,10 @@ export function IngotCheckbox({
         className,
       )}
     >
-      <input
-        type="checkbox"
+      <IngotCheckboxControl
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
         disabled={disabled}
-        className="h-4 w-4 accent-accent disabled:cursor-not-allowed"
         data-testid={testId}
       />
       {label}

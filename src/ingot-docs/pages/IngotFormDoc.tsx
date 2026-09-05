@@ -6,9 +6,10 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotFormDoc: IngotDocPage = {
   name: "IngotForm",
   status: "stable",
-  version: "1.0",
+  // 1.1 — a boolean field renders IngotCheckbox instead of a hand-drawn label wrapper.
+  version: "1.1",
   tag: ".form",
-  tokens: ["--ink-2", "--ink-3"],
+  tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
   summary: {
     cs: "Deklarativní formulář: dostane pole a hodnoty, vrací změny přes onChange. Tvar formuláře jsou data, ne JSX.",
     en: "Declarative form: it takes fields and values and reports changes through onChange. The shape of the form is data, not JSX.",

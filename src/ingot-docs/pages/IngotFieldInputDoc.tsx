@@ -8,7 +8,8 @@ export const IngotFieldInputDoc: IngotDocPage = {
   status: "stable",
   // 1.1 — the frame comes from the kit's shared input chrome (focus ring,
   // `--r-md`, Button-md height) instead of its own smaller box.
-  version: "1.1",
+  // 1.2 — boolean is the shared checkbox control; options without renderOptions is a disabled IngotSelect, not a text input.
+  version: "1.2",
   tag: ".input",
   tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
   summary: {
@@ -142,8 +143,8 @@ export const IngotFieldInputDoc: IngotDocPage = {
       type: "(args) => ReactNode",
       required: false,
       note: {
-        cs: "Výběr z pojmenované množiny. Bez něj spadne kind options na text.",
-        en: "Picker over a named set. Without it an options field falls back to text.",
+        cs: "Výběr z pojmenované množiny. Bez něj se kind options vykreslí jako vypnutý select jen s aktuální hodnotou.",
+        en: "Picker over a named set. Without it an options field renders as a disabled select holding only the current value.",
       },
     },
     {
