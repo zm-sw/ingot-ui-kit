@@ -17,10 +17,10 @@
  *    `role="status"`.
  */
 
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { IngotEmptyState, IngotTable, type IngotColumn } from "@/ingot";
+import { IngotEmptyState, IngotTable, type IngotColumn, type IngotSort } from "@/ingot";
 
 interface Row {
   id: string;
@@ -192,5 +192,268 @@ describe("IngotEmptyState", () => {
     const box = screen.getByTestId("prazdno");
     expect(box).toHaveTextContent("Prázdno");
     expect(within(box).queryByRole("button")).toBeNull();
+  });
+});
+
+/**
+ * The rest of this file arrived from ``src/ingot/IngotTable.test.tsx``, where
+ * it sat next to the component. Two homes for the same component's tests
+ * meant the suite's own setup did not reach one of them, and neither did
+ * anybody looking for "the table's tests".
+ *
+ * What it measures: the two presentation props (``stickyHeader``,
+ * ``rowClassName``), row selection and sorting. Presentation props are
+ * exactly the kind that rot unnoticed — a `sticky` class dropped from the
+ * head, or a row class on the wrong ``<tr>``, changes nothing a type check
+ * or a smoke render would see.
+ */
+
+interface PropRow {
+  id: string;
+  label: string;
+  blocked: boolean;
+}
+
+const PROP_ROWS: PropRow[] = [
+  { id: "a", label: "Alpha", blocked: false },
+  { id: "b", label: "Bravo", blocked: true },
+];
+
+const PROP_COLUMNS: readonly IngotColumn<PropRow>[] = [
+  { key: "label", header: "Label", cell: (row) => row.label },
+];
+
+function renderPropTable(extra: Record<string, unknown> = {}) {
+  return render(
+    <IngotTable
+      columns={PROP_COLUMNS}
+      rows={PROP_ROWS}
+      rowKey={(row) => row.id}
+      rowTestId={(row) => `row-${row.id}`}
+      {...extra}
+    />,
+  );
+}
+
+describe("IngotTable rowClassName", () => {
+  it("puts the row's own classes on that row only", () => {
+    renderPropTable({
+      rowClassName: (row: PropRow) => (row.blocked ? "opacity-40" : undefined),
+    });
+
+    expect(screen.getByTestId("row-b").className).toContain("opacity-40");
+    expect(screen.getByTestId("row-a").className).not.toContain("opacity-40");
+  });
+
+  it("keeps the table's own row classes when it adds one", () => {
+    renderPropTable({ rowClassName: () => "opacity-40" });
+
+    // The primitive owns the row separator; a caller asking for state styling
+    // must not have to re-declare it (and must not be able to drop it).
+    expect(screen.getByTestId("row-a").className).toContain("border-b");
+  });
+
+  it("leaves rows untouched when the prop is absent", () => {
+    renderPropTable();
+
+    expect(screen.getByTestId("row-a").className).toBe("border-b border-border");
+  });
+});
+
+describe("IngotTable row selection (KAN-654)", () => {
+  const selectionProps = (
+    selected: ReadonlySet<string>,
+    onChange: (keys: ReadonlySet<string>) => void,
+  ) => ({
+    selectedKeys: selected,
+    onSelectedKeysChange: onChange,
+    selectAllLabel: "Vybrat vše",
+    selectRowLabel: (row: PropRow) => `Vybrat ${row.label}`,
+  });
+
+  it("without selection props nothing changes — the root stays <table>", () => {
+    const { container } = renderPropTable();
+
+    expect(container.firstElementChild!.tagName).toBe("TABLE");
+    expect(screen.queryByRole("checkbox")).toBeNull();
+  });
+
+  it("a row checkbox reports the new set and the row carries aria-selected", () => {
+    const onChange = vi.fn();
+    renderPropTable(selectionProps(new Set(["a"]), onChange));
+
+    expect(screen.getByTestId("row-a")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("row-b")).toHaveAttribute("aria-selected", "false");
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat Bravo" }));
+    expect(onChange).toHaveBeenCalledWith(new Set(["a", "b"]));
+  });
+
+  it("select all selects the rendered rows and clears the selection the second time", () => {
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <IngotTable
+        columns={PROP_COLUMNS}
+        rows={PROP_ROWS}
+        rowKey={(row) => row.id}
+        {...selectionProps(new Set(), onChange)}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat vše" }));
+    expect(onChange).toHaveBeenCalledWith(new Set(["a", "b"]));
+
+    rerender(
+      <IngotTable
+        columns={PROP_COLUMNS}
+        rows={PROP_ROWS}
+        rowKey={(row) => row.id}
+        {...selectionProps(new Set(["a", "b"]), onChange)}
+      />,
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: "Vybrat vše" }));
+    expect(onChange).toHaveBeenLastCalledWith(new Set());
+  });
+
+  it("the header checkbox is indeterminate with a partial selection", () => {
+    renderPropTable(selectionProps(new Set(["a"]), () => {}));
+
+    const all = screen.getByRole("checkbox", { name: "Vybrat vše" });
+    expect((all as HTMLInputElement).indeterminate).toBe(true);
+    expect((all as HTMLInputElement).checked).toBe(false);
+  });
+
+  it("the bulk bar shows only with a non-empty selection", () => {
+    const { rerender } = render(
+      <IngotTable
+        columns={PROP_COLUMNS}
+        rows={PROP_ROWS}
+        rowKey={(row) => row.id}
+        bulkbar={<span>2 vybrané</span>}
+        {...{
+          selectedKeys: new Set<string>(),
+          onSelectedKeysChange: () => {},
+        }}
+      />,
+    );
+    expect(screen.queryByText("2 vybrané")).toBeNull();
+
+    rerender(
+      <IngotTable
+        columns={PROP_COLUMNS}
+        rows={PROP_ROWS}
+        rowKey={(row) => row.id}
+        bulkbar={<span>2 vybrané</span>}
+        {...{
+          selectedKeys: new Set(["a", "b"]),
+          onSelectedKeysChange: () => {},
+        }}
+      />,
+    );
+    expect(screen.getByText("2 vybrané")).toBeInTheDocument();
+  });
+
+  it("the selection column raises the colSpan of the empty row", () => {
+    renderPropTable({
+      rows: [],
+      empty: <span>Nic tu není</span>,
+      selectedKeys: new Set<string>(),
+      onSelectedKeysChange: () => {},
+    });
+
+    expect(screen.getByText("Nic tu není").closest("td")).toHaveAttribute(
+      "colSpan",
+      "2",
+    );
+  });
+});
+
+describe("IngotTable sorting (KAN-654)", () => {
+  const sortableColumns: readonly IngotColumn<PropRow>[] = [
+    { key: "label", header: "Label", cell: (row) => row.label, sortable: true },
+    { key: "id", header: "Id", cell: (row) => row.id },
+  ];
+
+  it("without onSortChange the header stays plain — a button that does nothing is worse than none", () => {
+    renderPropTable({ columns: sortableColumns });
+
+    expect(screen.queryByRole("button", { name: /Label/ })).toBeNull();
+  });
+
+  it("the active header carries aria-sort and a click flips the direction", () => {
+    const onSortChange = vi.fn();
+    const sort: IngotSort = { key: "label", dir: "asc" };
+    renderPropTable({ columns: sortableColumns, sort, onSortChange });
+
+    const th = screen.getByRole("columnheader", { name: /Label/ });
+    expect(th).toHaveAttribute("aria-sort", "ascending");
+
+    fireEvent.click(screen.getByRole("button", { name: /Label/ }));
+    expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "desc" });
+  });
+
+  it("a click on an inactive sortable header starts ascending", () => {
+    const onSortChange = vi.fn();
+    renderPropTable({
+      columns: sortableColumns,
+      sort: { key: "id", dir: "desc" } as IngotSort,
+      onSortChange,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Label/ }));
+    expect(onSortChange).toHaveBeenCalledWith({ key: "label", dir: "asc" });
+  });
+
+  it("a non-sortable header carries no aria-sort", () => {
+    renderPropTable({
+      columns: sortableColumns,
+      sort: { key: "label", dir: "asc" } as IngotSort,
+      onSortChange: () => {},
+    });
+
+    expect(screen.getByRole("columnheader", { name: "Id" })).not.toHaveAttribute(
+      "aria-sort",
+    );
+  });
+});
+
+describe("IngotTable density (KAN-654)", () => {
+  it("the default density keeps the padding of the first version", () => {
+    renderPropTable();
+
+    const cell = screen.getByTestId("row-a").querySelector("td")!;
+    expect(cell.className).toContain("px-3 py-2");
+  });
+
+  it("compact pulls the cell padding down to 8px", () => {
+    renderPropTable({ density: "compact" });
+
+    const cell = screen.getByTestId("row-a").querySelector("td")!;
+    expect(cell.className).toContain("p-2");
+    expect(cell.className).not.toContain("px-3");
+  });
+});
+
+describe("IngotTable stickyHeader", () => {
+  it("is off by default", () => {
+    const { container } = renderPropTable();
+
+    expect(container.querySelector("thead")!.className).not.toContain("sticky");
+  });
+
+  it("pins the head and gives it an opaque background when asked", () => {
+    const { container } = renderPropTable({ stickyHeader: true });
+
+    const thead = container.querySelector("thead")!;
+    expect(thead.className).toContain("sticky");
+    // Without a background the rows scroll THROUGH the pinned head, which
+    // looks like a rendering bug rather than a missing class.
+    expect(thead.className).toContain("bg-surface-2");
+  });
+
+  it("keeps the a11y floor either way", () => {
+    const { container } = renderPropTable({ stickyHeader: true });
+
+    expect(container.querySelector("th")!.getAttribute("scope")).toBe("col");
   });
 });

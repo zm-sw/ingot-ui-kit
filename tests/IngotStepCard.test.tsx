@@ -17,7 +17,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { IngotStepCard } from "./IngotStepCard";
+import { IngotStepCard } from "@/ingot";
 
 function renderCard(extra: Record<string, unknown> = {}) {
   return render(
@@ -81,9 +81,10 @@ describe("IngotStepCard done", () => {
       doneLabel: "Hotovo",
     });
 
-    expect(
-      screen.getByRole("button", { name: "Rozbalit krok" }),
-    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Rozbalit krok" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
     expect(body()).toHaveAttribute("hidden");
 
     unmount();
