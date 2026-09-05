@@ -1,5 +1,5 @@
 /**
- * Tvar doc stránek Ingotu (KAN-581, obsah KAN-624, jazyky KAN-627).
+ * Shape of the Ingot doc pages.
  *
  * A page is NOT prose about a component — it is a module that really
  * renders it. ``Demo`` therefore returns a live tree built on an import
@@ -10,195 +10,202 @@
  * with an export from ``src/ingot/index.ts`` 1:1 and refuses a PR where a
  * primitive has no page — and a PR where a page has no primitive.
  *
- * 🚨 **Kontrakt na obsah je v TYPU, ne v próze** (KAN-624). ``useWhen``,
- * ``avoidWhen``, ``a11y`` a ``i18n`` jsou POVINNÁ pole, takže stránku bez
- * nich odmítne ``npm run typecheck`` — ne code review, které si té
- * chybějící sekce nemusí všimnout. Prázdné pole (``[]``) typecheck pustí;
- * druhé vynucení proto drží ``tests/ingot/DocsApp.test.tsx``.
+ * **The content contract is in the TYPE, not in prose.** ``useWhen``,
+ * ``avoidWhen``, ``a11y`` and ``i18n`` are REQUIRED fields, so a page
+ * without them is refused by ``npm run typecheck`` — not by a code review
+ * that may miss the missing section. An empty array (``[]``) passes the
+ * typecheck; the second enforcement is held by ``tests/DocsApp.test.tsx``.
  *
- * 🌍 **Co je text, je ``Localized``** (KAN-627). Přeložitelná pole nesou
- * ``Record<DocLang, …>``, takže přidání jazyka do ``DOC_LANGS`` shodí
- * typecheck všude, kde ten text chybí. Jazyk se nedá slíbit, aniž by se
- * napsal. Co text není — ``name``, ``Demo``, ``demoSource``, jméno a typ
- * vlastnosti — zůstává jedno pro všechny jazyky, protože se to nepřekládá
- * a duplikát by se rozešel.
+ * **What is text is ``Localized``.** Translatable fields carry
+ * ``Record<DocLang, …>``, so adding a language to ``DOC_LANGS`` fails the
+ * typecheck everywhere that text is missing. A language cannot be promised
+ * without being written. What is not text — ``name``, ``Demo``,
+ * ``demoSource``, a prop's name and type — stays single for all languages,
+ * because it is not translated and a duplicate would drift.
  */
 import type { JSX, ReactNode } from "react";
 
 import type { Localized } from "@/ingot-docs/lang";
 
 /**
- * Stránka doc webu, která NENÍ o komponentě (KAN-625).
+ * A doc web page that is NOT about a component.
  *
- * 🚨 Vlastní pojem, ne další ``IngotDocPage``. Registr komponent páruje
- * stránky s exporty z ``@/ingot`` **1 : 1 v obou směrech** a přesně tahle
- * obousměrnost je to, kvůli čemu guard vznikl: komponenta bez stránky je
- * lež stejně jako stránka bez komponenty. Kdyby se úvod nebo Překlady
- * přidaly do téhož seznamu, guard by je hlásil jako stránky o něčem, co
- * ``@/ingot`` neexportuje — a jediná cesta, jak ho umlčet, by bylo tu
- * obousměrnost rozvolnit. Tím by se ztratilo to jediné, co doc web nutí
- * zůstat úplný.
+ * A concept of its own, not another ``IngotDocPage``. The component
+ * registry pairs pages with exports from ``@/ingot`` **1 : 1 in both
+ * directions**, and exactly that bidirectionality is why the guard exists:
+ * a component without a page is a lie just like a page without a
+ * component. If the intro or Translations were added to the same list, the
+ * guard would report them as pages about something ``@/ingot`` does not
+ * export — and the only way to silence it would be to loosen that
+ * bidirectionality. That would lose the one thing that forces the doc web
+ * to stay complete.
  *
- * Dva seznamy tedy schválně: ``INGOT_DOC_PAGES`` zůstává přísně 1 : 1,
- * ``INGOT_GUIDE_PAGES`` je pro všechno ostatní.
+ * Two lists, then, on purpose: ``INGOT_DOC_PAGES`` stays strictly 1 : 1,
+ * ``INGOT_GUIDE_PAGES`` is for everything else.
  */
 export interface IngotGuideSection {
-  /** Kotva v pravém sloupci. Nepřekládá se — je to cíl odkazu. */
+  /** Anchor in the right column. Not translated — it is a link target. */
   id: string;
   title: Localized<string>;
   body: Localized<ReactNode>;
 }
 
 /**
- * Skupina v levém menu. Tři schválně: co kit JE (``system``), jak se
- * z něj staví obrazovky (``app``), a co se od autora čeká (``rules``).
- * Čtvrtá skupina by znamenala, že se některá z těch tří rozpadla.
+ * Group in the left menu. Three on purpose: what the kit IS (``system``),
+ * how screens are built from it (``app``), and what is expected of an
+ * author (``rules``). A fourth group would mean one of the three fell
+ * apart.
  */
 export type IngotGuideGroup = "system" | "app" | "rules";
 
 export interface IngotGuidePage {
-  /** Kus hashe za ``#/`` — ``uvod``, ``preklady``. Nepřekládá se: je to
-   *  routa, a přeložený slug by rozbil sdílené odkazy. */
+  /** The part of the hash after ``#/`` — ``uvod``, ``preklady``. Not
+   *  translated: it is a route, and a translated slug would break shared links. */
   slug: string;
   /**
-   * Do které části menu stránka patří. Povinné: průvodce bez skupiny by
-   * se v číslovaném menu neměl kam zařadit, a výchozí skupina by tu
-   * volbu jen tiše udělala za autora.
+   * Which part of the menu the page belongs to. Required: a guide without a
+   * group would have nowhere to go in the numbered menu, and a default
+   * group would just silently make that choice for the author.
    */
   group: IngotGuideGroup;
-  /** Nadpis stránky i popisek v menu. */
+  /** Page heading and menu label. */
   title: Localized<string>;
-  /** Jedna věta pod nadpis. */
+  /** One sentence under the heading. */
   summary: Localized<string>;
   sections: readonly IngotGuideSection[];
 }
 
 export interface IngotPropRow {
-  /** Jméno vlastnosti tak, jak se píše v JSX. Nepřekládá se — je to kód. */
+  /** Prop name as written in JSX. Not translated — it is code. */
   name: string;
-  /** Typ zkráceně — sloupec je pro orientaci, ne náhrada za `.tsx`. */
+  /** The type, abbreviated — the column is for orientation, not a substitute for `.tsx`. */
   type: string;
-  /** Nepovinné vlastnosti mají v tabulce jinou váhu než povinné. */
+  /** Optional props carry a different weight in the table than required ones. */
   required: boolean;
-  /** Jedna věta: k čemu to je, ne co to dělá. */
+  /** One sentence: what it is for, not what it does. */
   note: Localized<ReactNode>;
 }
 
 /**
- * Vlastnosti typu, který na komponentě SÁM nežije.
+ * Props of a type that does not live on the component ITSELF.
  *
- * ``IngotTable`` bere ``columns: readonly IngotColumn<Row>[]`` — a všechno,
- * čím se sloupec doopravdy nastavuje (``cell``, ``align``, ``cellClassName``),
- * je uvnitř toho typu. V tabulce vlastností komponenty by z toho zbyl jediný
- * řádek ``columns`` s jednou větou v poznámce, takže by ty vlastnosti na doc
- * webu nebyly dohledatelné vůbec.
+ * ``IngotTable`` takes ``columns: readonly IngotColumn<Row>[]`` — and
+ * everything a column is really configured with (``cell``, ``align``,
+ * ``cellClassName``) is inside that type. In the component's props table
+ * only a single ``columns`` row with one sentence in the note would remain,
+ * so those props would not be findable on the doc web at all.
  */
 export interface IngotExtraPropGroup {
-  /** Jméno typu tak, jak se píše (``IngotColumn<Row>``). */
+  /** Type name as written (``IngotColumn<Row>``). */
   name: string;
-  /** Jedna věta, kterou vlastností komponenty se ten typ předává. */
+  /** One sentence: through which component prop the type is passed. */
   note: Localized<ReactNode>;
   props: readonly IngotPropRow[];
 }
 
 export interface IngotDocPage {
   /**
-   * Jméno exportu z ``@/ingot``. Guard ho čte z registru i odsud —
-   * nesoulad shodí gate, takže menu a guard nemůžou rozejít.
+   * Export name from ``@/ingot``. The guard reads it from the registry and
+   * from here — a mismatch fails the gate, so the menu and the guard
+   * cannot drift apart.
    */
   name: string;
   /**
-   * Stav primitiva — badge vedle nadpisu (KAN-663). ``stable`` znamená
-   * „API se nemění bez ohlášení“, ``beta`` „ještě se hledá tvar“.
-   * Povinné schválně: stránka bez stavu by tiše slibovala stabilitu.
+   * Status of the primitive — a badge next to the heading. ``stable`` means
+   * "the API does not change without notice", ``beta`` "the shape is still
+   * being found". Required on purpose: a page without a status would
+   * silently promise stability.
    */
   status: "stable" | "beta";
   /**
-   * Verze primitiva — druhý badge vedle nadpisu. Nepřekládá se, je to
-   * číslo. Povinné ze stejného důvodu jako ``status``.
+   * Version of the primitive — the second badge next to the heading. Not
+   * translated, it is a number. Required for the same reason as ``status``.
    *
-   * 🚨 **Změna komponenty znamená zvednutí verze v témže commitu.**
-   * Změněné chování pod nezměněnou verzí je tichá lež vůči každému, kdo
-   * si komponentu zabudoval — a na rozdíl od chybějící verze ji nikdo
-   * neuvidí. Pravidlo je v ``CLAUDE.md``, tenhle komentář je jeho
-   * připomínka na místě, kde se hodnota píše.
+   * **Changing a component means bumping the version in the same commit.**
+   * Changed behaviour under an unchanged version is a silent lie to
+   * everyone who built the component in — and unlike a missing version,
+   * nobody sees it. The rule is in ``CLAUDE.md``; this comment is its
+   * reminder at the place where the value is written.
    */
   version: string;
   /**
-   * Selektor, pod kterým prvek vystupuje v návrhu (``.btn``, ``.badge``).
+   * Selector the element goes by in the design (``.btn``, ``.badge``).
    *
-   * Vypisuje se vedle nadpisu a na dlaždici rozcestníku, protože je to
-   * jediné jméno, kterým se o prvku dá bavit s designérem — jméno
-   * Reactového exportu zná jen kód.
+   * Shown next to the heading and on the overview tile, because it is the
+   * only name the element can be discussed under with a designer — the
+   * React export name is known only to code.
    */
   tag: string;
   /**
-   * Tokeny, na kterých komponenta stojí.
+   * Tokens the component stands on.
    *
-   * Nejde o výčet všeho, co se v souboru vyskytne, ale o smlouvu:
-   * změna kteréhokoli z nich se na téhle komponentě projeví všude
-   * v produktu. Podle toho se při review pozná, co změna tokenu rozbije
-   * — proto povinné a proto vlastní sekce, ne věta v přístupnosti.
+   * Not a list of everything that appears in the file, but a contract: a
+   * change to any of them shows on this component everywhere in the
+   * product. That is how a review tells what a token change breaks — hence
+   * required, and hence its own section, not a sentence in accessibility.
    */
   tokens: readonly string[];
-  /** Jedna věta do menu i nad ukázku. */
+  /** One sentence for the menu and above the demo. */
   summary: Localized<string>;
-  /** Živá ukázka. MUSÍ renderovat skutečnou komponentu z ``@/ingot``. */
+  /** Live demo. MUST render the real component from ``@/ingot``. */
   Demo: () => JSX.Element;
   /**
-   * Zdroj té ukázky, který se vypíše pod přepínačem „Ukaž kód“ (KAN-626).
+   * Source of that demo, printed under the "Show code" toggle.
    *
-   * 🚨 **Nikdy sem nepiš řetězec ručně.** Okopírovaný výpis vypadá v den
-   * zápisu stejně jako ukázka a od druhého dne tiše lže — je to táž třída
-   * chyby, kvůli které guard vynucuje, že ``Demo`` renderuje skutečnou
-   * komponentu.
+   * **Never write a string here by hand.** A copied listing looks like the
+   * demo on the day it is written and lies silently from the next day on —
+   * the same class of error that makes the guard enforce that ``Demo``
+   * renders the real component.
    *
-   * Jediný povolený zdroj je ``?raw`` import **téhož modulu**, ze kterého
-   * pochází ``Demo``:
+   * The only allowed source is a ``?raw`` import of **the same module**
+   * that ``Demo`` comes from:
    *
    * ```ts
    * import { Demo } from "@/ingot-docs/demos/IngotTableDemo";
    * import demoSource from "@/ingot-docs/demos/IngotTableDemo?raw";
    * ```
    *
-   * Tím odpadá otázka „co brání tomu, aby výpis a ukázka byly dvě různé
-   * věci“: nic je rozejít nemůže, protože je to jeden soubor přečtený
-   * dvakrát. Guard ``ingot-doc-pages`` obojí párování kontroluje, aby se
-   * ten pár nedal rozpojit potichu.
+   * That removes the question "what keeps the listing and the demo from
+   * being two different things": nothing can pull them apart, because it is
+   * one file read twice. The ``ingot-doc-pages`` guard checks both
+   * pairings so the pair cannot be disconnected quietly.
    *
-   * Nepřekládá se schválně — kód je kód.
+   * Not translated on purpose — code is code.
    */
   demoSource: string;
   /**
-   * Kdy po primitivu sáhnout. Situace, ne vlastnosti — čtenář se rozhoduje
-   * podle toho, co staví, ne podle toho, co komponenta umí.
+   * When to reach for the primitive. Situations, not features — the reader
+   * decides by what they are building, not by what the component can do.
    */
   useWhen: Localized<readonly ReactNode[]>;
   /**
-   * Kdy po něm NEsáhnout, a po čem místo toho. Tahle půlka je ta cennější:
-   * primitivum použité mimo svůj obor se z repa odstraňuje hůř, než se do
-   * něj přidává.
+   * When NOT to reach for it, and what to use instead. This half is the
+   * more valuable one: a primitive used outside its domain is harder to
+   * remove from the repo than it was to add.
    */
   avoidWhen: Localized<readonly ReactNode[]>;
   props: readonly IngotPropRow[];
-  /** Vlastnosti typů předávaných skrz ``props`` — viz `IngotExtraPropGroup`. */
+  /** Props of types passed through ``props`` — see `IngotExtraPropGroup`. */
   extraProps?: readonly IngotExtraPropGroup[];
   /**
-   * Co primitivum drží za volajícího a co po něm naopak chce. Ne seznam
-   * ``aria-*`` atributů, ale to, co konzument musí vědět, aby laťku nesnížil.
+   * What the primitive holds for the caller and what it wants from them in
+   * return. Not a list of ``aria-*`` attributes, but what a consumer must
+   * know so as not to lower the bar.
    */
   a11y: Localized<readonly ReactNode[]>;
   /**
-   * Které popisky komponenta žádá už přeložené. Ingot nemá vlastní i18n
-   * namespace — text vždycky dodává volající.
+   * Which labels the component asks for already translated. Ingot has no
+   * i18n namespace of its own — the caller always supplies the text.
    */
   i18n: Localized<readonly ReactNode[]>;
   /**
-   * Co první verze schválně NEUMÍ a čeká na konkrétního žadatele.
+   * What the first version deliberately CANNOT do and waits for a concrete
+   * requester.
    *
-   * Nepovinné: většina primitiv svůj obor pokrývá celý. Kde to neplatí
-   * (``IngotTable``), je výčet chybějících schopností součástí dokumentace —
-   * jinak si čtenář myslí, že narazil na chybu, a napíše si tabulku po svém.
+   * Optional: most primitives cover their whole domain. Where that does not
+   * hold (``IngotTable``), the list of missing capabilities is part of the
+   * documentation — otherwise the reader thinks they hit a bug and writes
+   * a table of their own.
    */
   limits?: Localized<readonly ReactNode[]>;
 }

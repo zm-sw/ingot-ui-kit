@@ -1,24 +1,25 @@
 /**
- * Jazyky platformy pro doc web (KAN-627).
+ * Platform languages for the doc web.
  *
- * Které jazyky se nabízejí, **není zabudované v bundlu** — rozhoduje o tom
- * vlastník v registru jazyků a čte se to za běhu z
- * ``GET /public/languages``. Ten endpoint je tenant-free schválně: doc web
- * nemá org ani session, takže na per-tenantní ``/public/orgs/…/branding``,
- * kde týž seznam taky jezdí, nemá jak dosáhnout.
+ * Which languages are offered is **not built into the bundle** — the owner
+ * decides it in the language registry and it is read at runtime from
+ * ``GET /public/languages``. That endpoint is tenant-free on purpose: the
+ * doc web has no org and no session, so it has no way to reach the
+ * per-tenant ``/public/orgs/…/branding`` where the same list also travels.
  *
- * ## Co se stane, když API neodpoví
+ * ## What happens when the API does not answer
  *
- * Nic dramatického, a je to záměr. Doc web je statická stránka a text má
- * v bundlu; jazyk je jediné, co si potřebuje vzít zvenčí. Když se to
- * nepovede, nabídne to, co má (``DOC_LANGS``), místo aby zmizel přepínač
- * nebo se ukázala chybová hláška o něčem, co čtenáře nezajímá.
+ * Nothing dramatic, and that is intended. The doc web is a static page and
+ * has its text in the bundle; the language is the only thing it needs to
+ * take from outside. When that fails, it offers what it has
+ * (``DOC_LANGS``) instead of the switch disappearing or an error message
+ * showing about something the reader does not care about.
  *
- * 🪤 **Fallback NENÍ „ten správný seznam“.** Je to poslední záchrana. Kdyby
- * se z něj stal běžný stav (třeba proto, že host doc webu nikdo nepustil do
- * CORS), přepínač by tiše přestal respektovat registr jazyků a nikdo by si
- * toho nevšiml — proto ``source`` v návratové hodnotě říká, odkud data jsou,
- * a test na to sahá.
+ * **The fallback is NOT "the right list".** It is the last resort. If it
+ * became the normal state (say because nobody let the doc web host through
+ * CORS), the switch would silently stop respecting the language registry
+ * and nobody would notice — hence ``source`` in the return value says where
+ * the data is from, and a test reaches for it.
  */
 import { DOC_LANGS, DOC_LANG_FALLBACK_LABELS, isDocLang, type DocLang } from "@/ingot-docs/lang";
 
@@ -29,7 +30,7 @@ export interface DocLanguageOption {
 
 export interface DocLanguages {
   options: readonly DocLanguageOption[];
-  /** ``platform`` = z API, ``fallback`` = API nedosažitelné. */
+  /** ``platform`` = from the API, ``fallback`` = API unreachable. */
   source: "platform" | "fallback";
 }
 
@@ -38,7 +39,7 @@ interface PublicLanguage {
   label: string;
 }
 
-/** Co se nabídne, když se platformy nejde zeptat. */
+/** What is offered when the platform cannot be asked. */
 export function fallbackLanguages(): DocLanguages {
   return {
     options: DOC_LANGS.map((code) => ({
@@ -55,10 +56,11 @@ function apiBaseUrl(): string {
 }
 
 /**
- * Průnik „co platforma zapnula“ × „pro co má doc web text“.
+ * Intersection of "what the platform enabled" × "what the doc web has text
+ * for".
  *
- * Pořadí i popisky určuje platforma — je to její registr. Doc web z něj
- * jen vyškrtne, co nemá čím naplnit.
+ * Order and labels are set by the platform — it is its registry. The doc
+ * web only strikes out what it has nothing to fill.
  */
 export async function fetchDocLanguages(
   signal?: AbortSignal,
@@ -73,15 +75,15 @@ export async function fetchDocLanguages(
     const payload = (await response.json()) as { languages?: PublicLanguage[] };
     const options: DocLanguageOption[] = [];
     for (const entry of payload.languages ?? []) {
-      // Jazyk, který platforma zapnula, ale doc web pro něj nemá text, se
-      // NENABÍDNE. Přepnout na prázdnou stránku je horší než ten jazyk
-      // nenabídnout.
+      // A language the platform enabled but the doc web has no text for is
+      // NOT offered. Switching to an empty page is worse than not offering
+      // the language.
       if (isDocLang(entry.code)) {
         options.push({ code: entry.code, label: entry.label || entry.code });
       }
     }
-    // Platforma může mít všechny naše jazyky vypnuté. Prázdný přepínač by
-    // znamenal stránku, na které se nedá číst nic — fallback je lepší.
+    // The platform may have all our languages disabled. An empty switch
+    // would mean a page where nothing can be read — the fallback is better.
     if (options.length === 0) return fallbackLanguages();
     return { options, source: "platform" };
   } catch {

@@ -3,21 +3,23 @@ import { Demo } from "@/ingot-docs/demos/IngotMegaMenuDemo";
 import demoSource from "@/ingot-docs/demos/IngotMegaMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// 2.0 (rozhodnutí vlastníka 2026-09-02, body 01–03): tvar přebírá
-// nasazenou administraci. Pevné tři sloupce nahradily skupiny tekoucí
-// do 1–2 sloupců, náhled sleduje položku pod kurzorem i fokusem a
-// odečítač čte popis z odkazu (aria-describedby) — kapitola Přístupnost
-// dřív tvrdila, že sledující náhled „pro klávesnici nefunguje vůbec",
-// což o implementaci s onFocus nebyla pravda.
-// 2.1: zamčené položky (locked + onLockedItemClick) — modul, který si
-// tenant nezapnul, je v menu vidět se zámkem a klik otevírá vysvětlení
-// místo navigace. Parita s nasazenou administrací. 2.2: testId na
-// položce (e2e kliká na konkrétní odkaz) a kotvení left-0 pod sekcí.
+// 2.0 (owner decision of 2026-09-02, items 01–03): the shape follows the
+// deployed admin. Fixed three columns replaced groups flowing into 1–2
+// columns, the preview follows the item under the cursor and under focus,
+// and a screen reader reads the description from the link
+// (aria-describedby) — the Accessibility chapter used to claim the
+// following preview "does not work for the keyboard at all", which was not
+// true of the onFocus implementation.
+// 2.1: locked items (locked + onLockedItemClick) — a module the tenant has
+// not enabled shows in the menu with a lock and a click opens an
+// explanation instead of navigating. Parity with the deployed admin. 2.2:
+// testId on the item (e2e clicks a concrete link) and left-0 anchoring
+// under the section.
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  // 2.3: muted + marker na položce — ztlumený odkaz s jiskrou, který
-  // NAVIGUJE (bránu kreslí cílová stránka); menu nezamyká.
+  // 2.3: muted + marker on the item — a dimmed link with a spark that
+  // NAVIGATES (the target page draws the gate); the menu does not lock.
   // 2.4 — caption set by IngotEyebrow, the kit's shared mono label.
   // 2.5 — row states come from the kit's shared menu row: current lifts to surface-2, hover goes to ink.
   // 2.6 — panel sits on MENU_LAYER instead of a fixed z-index, so it stays above every open dialog.

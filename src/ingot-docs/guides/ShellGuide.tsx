@@ -26,17 +26,17 @@ import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Shell a patterny“ — rám aplikace a bloky, ze kterých se
- * skládají konfigurační obrazovky.
+ * "Shell and patterns" page — the application frame and the blocks that
+ * configuration screens are composed of.
  *
- * 🪤 **Do dorovnání na návrh tahle stránka tvrdila, že rám má navigaci
- * vlevo.** Návrh říká opak — administrace boční menu nemá — takže
- * stránka vyučovala něco, co v návrhu není, a dělala to prózou bez
- * jediné ukázky. Obojí je tady opravené: text i ukázky vycházejí ze
- * skutečných primitiv rámu.
+ * **Until the alignment to the design this page claimed the frame has
+ * navigation on the left.** The design says the opposite — the admin has
+ * no side menu — so the page taught something not in the design, and did
+ * it in prose without a single demo. Both are fixed here: the text and the
+ * demos come from the real frame primitives.
  *
- * Ukázky jsou živé komponenty, ne obrázky. Rám, který se v dokumentaci
- * rozejde se skutečností, je horší než žádný.
+ * The demos are live components, not images. A frame that drifts from
+ * reality in the documentation is worse than none.
  */
 
 const STAGE = "overflow-x-auto rounded-md border border-border bg-surface-2 p-4";
@@ -474,18 +474,19 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Pattern skupinové karty — blok, který drží pojmenovanou skupinu
- * záznamů: hlavička s klíčem a počtem, tabulka obsahu, patička, kterou
- * se do skupiny přidává další položka.
+ * Group card pattern — a block holding a named group of records: a header
+ * with key and count, a table of contents, a footer through which another
+ * item is added to the group.
  *
- * 🪤 **Karta je bez vlastního odsazení a s `overflow-hidden`.** Tabulka
- * jde od kraje ke kraji, aby její vlastní záhlaví lícovalo s rámem
- * karty; vnitřní odsazení nese hlavička a patička, ne karta. Bez
- * `overflow-hidden` by rohy tabulky vylezly ze zaoblení rámu.
+ * **The card has no padding of its own and `overflow-hidden`.** The table
+ * runs edge to edge so its own header lines up with the card frame; the
+ * inner padding is carried by the header and footer, not the card. Without
+ * `overflow-hidden` the table corners would poke out of the frame's
+ * rounding.
  *
- * Skupin je na obrazovce víc pod sebou a KAŽDÁ má vlastní „přidat"
- * patičku. Jedno plovoucí tlačítko nad seznamem by se muselo ptát, do
- * které skupiny přidává — a ta otázka nemá dobrou odpověď.
+ * Several groups stack on the screen and EACH has its own "add" footer.
+ * One floating button above the list would have to ask which group it adds
+ * to — and that question has no good answer.
  */
 function GroupCard({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";

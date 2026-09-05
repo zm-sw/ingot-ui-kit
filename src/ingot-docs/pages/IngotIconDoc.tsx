@@ -6,16 +6,16 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotIconDoc: IngotDocPage = {
   name: "IngotIcon",
   status: "stable",
-  // 1.2 — přibyla pošta (``inbox``, ``send``, ``reply``, ``forward``,
-  // ``tag``), ``archive``, ``star``, ``user``, ``building`` a ``more``.
-  // Sada je širší, volající nemusí sáhnout na nic.
+  // 1.2 — mail arrived (``inbox``, ``send``, ``reply``, ``forward``,
+  // ``tag``), plus ``archive``, ``star``, ``user``, ``building`` and
+  // ``more``. The set is wider; callers touch nothing.
   //
-  // 1.3 (KAN-784) — přibyl ``star-filled``, první a zatím jediná výplň
-  // v sadě. Rozhodnutí vlastníka: dva TVARY se čtou i v šedotónu, dvě
-  // barvy ne, a označené vlákno se dnes od neoznačeného liší jen barvou.
-  // Slib „výplň v sadě není a nebude“ se proto změkčil na úzkou výjimku,
-  // ne zrušil — přepsaná sekce Limity ji drží. Volající nemusí sáhnout
-  // na nic.
+  // 1.3 (KAN-784) — ``star-filled`` arrived, the first and so far only fill
+  // in the set. Owner decision: two SHAPES read in greyscale too, two
+  // colours do not, and today a starred thread differs from an unstarred
+  // one only by colour. The promise "there is and will be no fill in the
+  // set" therefore softened to a narrow exception rather than being dropped
+  // — the rewritten Limits section holds it. Callers touch nothing.
   version: "1.3",
   tag: "[data-icon]",
   tokens: ["currentColor"],

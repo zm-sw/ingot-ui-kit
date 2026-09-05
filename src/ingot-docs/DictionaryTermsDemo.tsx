@@ -1,25 +1,28 @@
 /**
- * Živá ukázka slovníku Jednoduše/Expert na stránce Překlady (KAN-662).
+ * Live demo of the Simple/Expert dictionary on the Translations page.
  *
- * Tabulka tří termínů, které se překreslují podle volby přepínačem nad
- * nimi. Stav je sdílený modulem ``dictionary.ts``
- * (``useSyncExternalStore``), takže přepnutí se projeví okamžitě a bez
- * reloadu. To je celý smysl ukázky: čtenář vidí, že termíny řídí JEDNA
- * volba, ne každá obrazovka po svém.
+ * A table of three terms that re-render by the choice in the switch above
+ * them. The state is shared through the ``dictionary.ts`` module
+ * (``useSyncExternalStore``), so a switch shows immediately and without a
+ * reload. That is the whole point of the demo: the reader sees that ONE
+ * choice drives the terms, not every screen on its own.
  *
- * 🪤 **Přepínač stojí u tabulky, ne v horní liště.** Do dorovnání seděl
- * vedle motivu, jazyka a akcentu — tedy mezi volbami, které platí pro
- * celý web — jenže tahle jediná tabulka je všechno, co ovládá.
- * Dokumentace píše o rozhraní, ne o výrobě, takže odborné termíny, na
- * které je slovník stavěný, jinde na webu nejsou. Přepínač v liště tím
- * sliboval dopad, který nemá: čtenář ho přepnul, nic se nezměnilo a
- * usoudil, že je rozbitý. U tabulky slib odpovídá skutečnosti.
+ * **The switch stands by the table, not in the top bar.** Until the
+ * alignment it sat next to theme, language and accent — among choices that
+ * apply to the whole web — yet this single table is all it controls. The
+ * documentation writes about the interface, not about manufacturing, so
+ * the technical terms the dictionary is built for appear nowhere else on
+ * the web. A switch in the bar thus promised an effect it does not have:
+ * the reader flipped it, nothing changed, and concluded it was broken. By
+ * the table the promise matches reality.
  *
- * V aplikaci je to naopak volba účtu v menu účtu, protože tam ty termíny
- * doopravdy jsou — viz stránka Shell a patterny.
+ * In the application it is, by contrast, an account choice in the account
+ * menu, because the terms really are there — see the Shell and patterns
+ * page.
  *
- * Žije mimo ``demos/`` schválně: není to ukázka primitiva kitu (ty se
- * publikují doslovně pod přepínačem kódu), ale kus obsahu stránky.
+ * Lives outside ``demos/`` on purpose: it is not a demo of a kit primitive
+ * (those are published verbatim under the code toggle) but a piece of page
+ * content.
  */
 import {
   IngotCode,

@@ -3,8 +3,8 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingComparisonDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingComparisonDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Párování je vlastnost ŘÁDKU, ne sloupce — proto rows, ne
-// tři samostatné sloupce, které se dají o položku posunout.
+// KAN-664. Pairing is a property of the ROW, not the column — hence rows,
+// not three separate columns that can shift by an item.
 export const IngotMarketingComparisonDoc: IngotDocPage = {
   name: "IngotMarketingComparison",
   status: "beta",

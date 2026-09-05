@@ -3,7 +3,7 @@ import { Demo } from "@/ingot-docs/demos/IngotSegmentedDemo";
 import demoSource from "@/ingot-docs/demos/IngotSegmentedDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// Vzor ``.top .seg`` z handoffu (přepínače motivu a jazyka v liště).
+// The ``.top .seg`` pattern from the handoff (theme and language switches in the bar).
 export const IngotSegmentedDoc: IngotDocPage = {
   name: "IngotSegmented",
   status: "beta",

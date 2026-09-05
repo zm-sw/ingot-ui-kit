@@ -3,7 +3,7 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingStepsDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingStepsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Číslo se počítá z pořadí, aby nešlo napsat „01, 02, 04".
+// KAN-664. The number is computed from the order so "01, 02, 04" cannot be written.
 export const IngotMarketingStepsDoc: IngotDocPage = {
   name: "IngotMarketingSteps",
   status: "beta",

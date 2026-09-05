@@ -3,16 +3,16 @@ import { DictionaryTermsDemo } from "@/ingot-docs/DictionaryTermsDemo";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Překlady“ (KAN-625) — jedno místo pro pravidlo, které platí
- * pro celý kit.
+ * "Translations" page — one place for the rule that applies to the whole
+ * kit.
  *
- * Do KAN-625 se ta věta opakovala v poli ``i18n`` na všech stránkách
- * komponent. Opakované pravidlo se opravuje na šesti místech, takže se
- * dřív nebo později opraví na pěti; pole ``i18n`` na stránkách komponent
- * proto vypisuje jen KONKRÉTNÍ popisky té komponenty a obecné pravidlo
- * bydlí tady.
+ * That sentence used to be repeated in the ``i18n`` field on every
+ * component page. A repeated rule gets fixed in six places, so sooner or
+ * later it gets fixed in five; the ``i18n`` field on component pages
+ * therefore lists only the CONCRETE labels of that component and the
+ * general rule lives here.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka.
+ * The doc web is a PUBLIC page.
  */
 export const TranslationsGuide: IngotGuidePage = {
   slug: "preklady",
@@ -189,9 +189,9 @@ export const TranslationsGuide: IngotGuidePage = {
         ),
       },
     },
-    // Slovník Jednoduše/Expert (KAN-662). Rozhodnutí o formě režimu
-    // „Obojí“ (závorka, ne tooltip) je zapsané TADY, protože tohle je
-    // stránka, kterou si otevře ten, kdo bude termíny přidávat.
+    // Simple/Expert dictionary. The decision on the form of the "Both"
+    // mode (parentheses, not a tooltip) is recorded HERE, because this is
+    // the page whoever adds terms will open.
     {
       id: "slovnik",
       title: {

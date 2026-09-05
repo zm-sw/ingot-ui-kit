@@ -3,9 +3,10 @@ import { Demo } from "@/ingot-docs/demos/IngotAccentSwatchesDemo";
 import demoSource from "@/ingot-docs/demos/IngotAccentSwatchesDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-648. Puntíky neznají své barvy: každý nese ``data-accent`` a
-// maluje se ``var(--accent)``, takže vzorek kreslí ten blok, který
-// inzeruje. Seznam hexů by byl druhá pravda o tom, jak vypadá emerald.
+// The dots do not know their colours: each carries ``data-accent`` and is
+// painted with ``var(--accent)``, so a swatch is drawn by the block it
+// advertises. A list of hexes would be a second truth about what emerald
+// looks like.
 export const IngotAccentSwatchesDoc: IngotDocPage = {
   name: "IngotAccentSwatches",
   status: "beta",

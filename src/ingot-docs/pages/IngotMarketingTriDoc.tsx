@@ -3,8 +3,8 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingTriDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingTriDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Jeden zaoblený rám, panely oddělené vlasovou linkou:
-// ``gap:1px`` na podkladu ``--border``, takže mezera JE ta linka.
+// KAN-664. One rounded frame, panels separated by a hairline: ``gap:1px``
+// on a ``--border`` background, so the gap IS the line.
 export const IngotMarketingTriDoc: IngotDocPage = {
   name: "IngotMarketingTri",
   status: "beta",

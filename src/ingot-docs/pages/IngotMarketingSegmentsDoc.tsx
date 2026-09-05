@@ -3,8 +3,8 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingSegmentsDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingSegmentsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664. Štítek je hranatý mono minuskami — technický údaj o provozu,
-// ne stav entity. Kulatá pilulka s verzálkami je IngotBadge.
+// KAN-664. The tag is square mono in lowercase — a technical fact about the
+// workshop, not an entity state. A round uppercase pill is IngotBadge.
 export const IngotMarketingSegmentsDoc: IngotDocPage = {
   name: "IngotMarketingSegments",
   status: "beta",

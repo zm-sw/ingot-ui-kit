@@ -3,12 +3,13 @@ import { Demo } from "@/ingot-docs/demos/IngotMarketingSectionHeadDemo";
 import demoSource from "@/ingot-docs/demos/IngotMarketingSectionHeadDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// KAN-664, do kitu přesunuto rozhodnutím vlastníka: bloky bydlely v
-// ``src/marketing`` s odůvodněním „v adminu nemají konzumenta", jenže
-// ``files`` pouští z balíku ven jen ``src/ingot`` — veřejný web, pro
-// který vznikly, si je nemohl nainstalovat.
+// KAN-664, moved into the kit by owner decision: the blocks lived in
+// ``src/marketing`` with the reasoning "they have no consumer in the
+// admin", yet ``files`` lets only ``src/ingot`` out of the package — the
+// public web they were made for could not install them.
 //
-// ``beta``, protože se právě přejmenovaly: tvar API se hledá dál.
+// ``beta``, because they have just been renamed: the API shape is still
+// being found.
 export const IngotMarketingSectionHeadDoc: IngotDocPage = {
   name: "IngotMarketingSectionHead",
   status: "beta",

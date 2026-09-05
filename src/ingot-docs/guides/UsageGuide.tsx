@@ -3,17 +3,18 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Pravidla používání“ — skladba obrazovky, tabulka ano/ne,
- * pravidla textů a údržba systému (KAN-663).
+ * "Usage rules" page — screen composition, the do/don't table, text rules
+ * and system maintenance.
  *
- * 🚨 Obsah je převzatý z design handoffu (stránka Pravidla používání).
- * Tabulka ano/ne má tři sloupce schválně: bez sloupce „Situace“ je dvojice
- * ano/ne jen názor, se situací je to rozhodnutí. Sloupec „Ano“ je
- * zvýrazněný akcentem, aby se správná odpověď dala přečíst na první
- * pohled — v handoffu to dělá třída `hl`.
+ * The content is taken from the design handoff (the Usage rules page). The
+ * do/don't table has three columns on purpose: without the "Situation"
+ * column a do/don't pair is just an opinion, with the situation it is a
+ * decision. The "Do" column is highlighted with the accent so the right
+ * answer can be read at a glance — in the handoff the `hl` class does
+ * that.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka: klíče úkolů, cesty do repa ani jména
- * kontrol nesmí být v renderovaném textu. V komentářích ano.
+ * The doc web is a PUBLIC page: issue keys, repository paths and guard
+ * names must not be in rendered text. In comments they may.
  */
 
 interface YesNoRow {
@@ -23,9 +24,9 @@ interface YesNoRow {
 }
 
 const YES_NO: readonly YesNoRow[] = [
-  // Otočeno 2026-09-02 rozhodnutím vlastníka: delší editace potřebuje
-  // místo na vysvětlení a plné soustředění na jednu věc — modal.
-  // Boční panel zůstává rychlé úpravě, kde se pracuje se seznamem za ní.
+  // Flipped 2026-09-02 by the owner's decision: a longer edit needs room
+  // for explanation and full focus on one thing — a modal. The side panel
+  // stays for a quick edit that works with the list behind it.
   {
     situation: {
       cs: "Delší editace záznamu",
@@ -102,7 +103,7 @@ function yesNoColumns(lang: DocLang): readonly IngotColumn<YesNoRow>[] {
       key: "yes",
       header: lang === "cs" ? "Ano" : "Yes",
       cell: (row) => row.yes[lang],
-      // Správná odpověď se má dát přečíst bez čtení celého řádku.
+      // The right answer should be readable without reading the whole row.
       cellClassName: "bg-accent-bg text-accent-ink",
     },
   ];
@@ -288,21 +289,21 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Pinovací kontrakt (KAN-813, po planém poplachu KAN-790).
+ * The pinning contract (written after a false alarm).
  *
- * 🪤 **Číslo verze neidentifikuje obsah.** `package.json` píše release
- * automatika až při pushi do `main`, takže každý commit mezi dvěma
- * releasy nese verzi toho předchozího — jedno číslo, víc různých stromů.
- * npm si git závislost cachuje pod jménem a verzí, takže pod jednou
- * verzí mu může ležet kterýkoli z nich.
+ * **A version number does not identify content.** The release automation
+ * writes `package.json` only on a push to `main`, so every commit between
+ * two releases carries the previous release's version — one number, many
+ * different trees. npm caches a git dependency under name and version, so
+ * any of them may lie under one version.
  *
- * Tohle stálo den hledání „rozbité" větve, která rozbitá nebyla: shodu
- * hlásil `package.json`, `package-lock.json` i grep do `node_modules` —
- * jen to `node_modules` bylo jiné 1.0.1.
+ * This cost a day of hunting a "broken" branch that was not broken:
+ * `package.json`, `package-lock.json` and a grep into `node_modules` all
+ * reported a match — only that `node_modules` was a different 1.0.1.
  *
- * Tag je proti tomu jednoznačný, protože release automatika taguje každý
- * release anotovaným tagem. Proto sem ta věta patří: konzument čte tuhle
- * stránku, ne release skript.
+ * A tag, by contrast, is unambiguous, because the release automation tags
+ * every release with an annotated tag. That is why the sentence belongs
+ * here: a consumer reads this page, not the release script.
  */
 function Pinning({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";

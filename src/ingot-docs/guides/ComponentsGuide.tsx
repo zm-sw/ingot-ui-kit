@@ -6,18 +6,18 @@ import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Rozcestník komponent — stránka, pod kterou se v levém menu vnořují
- * jednotlivá primitiva.
+ * Components overview — the page the individual primitives nest under in
+ * the left menu.
  *
- * 🪤 **Dlaždice se generují z registru, ne z ručního výčtu.** Katalog
- * opsaný sem by byl druhá pravda o tom, co kit obsahuje, a rozešel by se
- * s první při prvním přidaném primitivu — přesně ta třída chyby, kvůli
- * které stránky renderují živé komponenty místo obrázků.
+ * **The tiles are generated from the registry, not from a hand-written
+ * list.** A catalogue copied here would be a second truth about what the
+ * kit contains and would drift from the first at the first added primitive
+ * — exactly the class of error that makes the pages render live
+ * components instead of images.
  *
- * ⚠️ ``INGOT_DOC_PAGES`` se čte AŽ PŘI VYKRESLENÍ, ne při načtení
- * modulu. Registr tenhle soubor importuje (je v jeho seznamu), takže
- * čtení na úrovni modulu by sáhlo na vazbu, kterou registr v tu chvíli
- * ještě nemá naplněnou.
+ * ``INGOT_DOC_PAGES`` is read AT RENDER TIME, not at module load. The
+ * registry imports this file (it is in its list), so a module-level read
+ * would touch a binding the registry has not filled yet at that moment.
  */
 
 function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
@@ -39,8 +39,8 @@ function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
                 ? CHROME.statusStable[lang]
                 : CHROME.statusBeta[lang]}
             </IngotBadge>
-            {/* Verze vpravo, jak ji řadí návrh — dlaždice nese čtyři
-                údaje, ne dva. */}
+            {/* Version on the right, as the design orders it — the tile
+                carries four facts, not two. */}
             <span className="ml-auto font-mono text-[11px] text-ink-4">
               {`v${page.version}`}
             </span>
@@ -127,11 +127,13 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Skladba stránky komponenty — pevné pořadí bloků a tři pohledy, které
- * z něj čtou (handoff „Komponenty“, sekce „Skladba stránky komponenty“).
+ * Anatomy of a component page — the fixed order of blocks and the three
+ * views that read from it (the "Components" handoff, section "Anatomy of a
+ * component page").
  *
- * Pořadí není estetika: drží se, aby se stránka dala číst napřeskáčku —
- * každý ví, kde jeho blok začíná, a nemusí ji projít celou.
+ * The order is not aesthetics: it is kept so the page can be read out of
+ * sequence — everyone knows where their block starts and does not have to
+ * go through the whole page.
  */
 function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
