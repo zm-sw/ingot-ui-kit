@@ -68,9 +68,20 @@ function withoutComments(src) {
     .trim();
 }
 
+/**
+ * The file's content at ``ref``, or "" when it did not exist there.
+ *
+ * ``git show`` writes its own "path exists on disk, but not in <ref>" to
+ * stderr, which is inherited and therefore lands in the CI log looking like
+ * a failure. A file being new is the normal case here, so the message is
+ * dropped rather than explained.
+ */
 function fileAt(ref, file) {
   try {
-    return git("show", `${ref}:${file}`);
+    return execFileSync("git", ["show", `${ref}:${file}`], {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
   } catch {
     return "";
   }
