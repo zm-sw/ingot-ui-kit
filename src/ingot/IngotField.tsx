@@ -31,11 +31,31 @@ import { INPUT_PAD, inputFrameChrome } from "./inputChrome";
  * `<input type="text">` would be shared; in exchange a fake
  * `IngotFieldSpec` would have to be built just to have something to pass,
  * and both components would be tied by a type one of them does not need.
+ *
+ * ## Why the value stays a string
+ *
+ * ``type="number"`` changes the keyboard on a phone and the input the
+ * browser accepts; it does not change what the field is FOR. Handing the
+ * caller a ``number | null`` would move the ambiguity of an empty field
+ * into the kit — is an empty box a zero, a null, or a value being typed? —
+ * and every screen would answer it differently. The field hands over the
+ * string it holds; the screen that knows what the value means converts it.
  */
+export type IngotFieldType =
+  | "text"
+  | "number"
+  | "password"
+  | "email"
+  | "url"
+  | "tel"
+  | "textarea";
+
 export function IngotField({
   label,
   value,
   onChange,
+  type = "text",
+  rows = 4,
   hint,
   error,
   affix,
@@ -48,8 +68,17 @@ export function IngotField({
 }: {
   /** A noun without a colon ("Quantity"), already translated. */
   label: ReactNode;
+  /** Always a string — see the note above on why the kit does not convert. */
   value: string;
   onChange: (next: string) => void;
+  /**
+   * What the browser should offer: a numeric keyboard on a phone, a
+   * password mask, a mail keyboard. ``textarea`` is the same field grown
+   * to several lines — a note, an address, a description.
+   */
+  type?: IngotFieldType;
+  /** Rows of a ``textarea``. Ignored by every other type. */
+  rows?: number;
   /** A full sentence with a full stop, under the field. */
   hint?: ReactNode;
   /** Error text. Its presence turns on the error state and `aria-invalid`. */
@@ -99,24 +128,49 @@ export function IngotField({
           same source as IngotSelect and IngotSearchInput, so a field next
           to a filter select has the same box. The frame is focus-within
           because the affix sits inside it. */}
-      <div className={cx("flex items-center", inputFrameChrome({ error: error != null }))}>
-        <input
-          id={id}
-          type="text"
-          value={value}
-          onChange={(ev) => onChange(ev.target.value)}
-          placeholder={placeholder}
-          required={required}
-          disabled={disabled}
-          aria-invalid={error != null || undefined}
-          aria-describedby={describedBy || undefined}
-          className={cx(
-            "w-full bg-transparent outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
-            INPUT_PAD,
-            mono && "font-mono tabular-nums",
-          )}
-          data-testid={testId}
-        />
+      <div
+        className={cx(
+          type === "textarea" ? "flex" : "flex items-center",
+          inputFrameChrome({ error: error != null }),
+        )}
+      >
+        {type === "textarea" ? (
+          <textarea
+            id={id}
+            rows={rows}
+            value={value}
+            onChange={(ev) => onChange(ev.target.value)}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            aria-invalid={error != null || undefined}
+            aria-describedby={describedBy || undefined}
+            className={cx(
+              "w-full resize-y bg-transparent outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
+              INPUT_PAD,
+              mono && "font-mono tabular-nums",
+            )}
+            data-testid={testId}
+          />
+        ) : (
+          <input
+            id={id}
+            type={type}
+            value={value}
+            onChange={(ev) => onChange(ev.target.value)}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            aria-invalid={error != null || undefined}
+            aria-describedby={describedBy || undefined}
+            className={cx(
+              "w-full bg-transparent outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
+              INPUT_PAD,
+              mono && "font-mono tabular-nums",
+            )}
+            data-testid={testId}
+          />
+        )}
         {affix != null && (
           <span id={affixId} className="shrink-0 pr-3 text-xs text-ink-3">
             {affix}
