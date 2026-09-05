@@ -122,7 +122,6 @@ export const Button = forwardRef<
     !props["aria-label"] &&
     !props["aria-labelledby"]
   ) {
-    // eslint-disable-next-line no-console
     console.warn(
       "[ingot] <Button iconOnly> without aria-label/aria-labelledby: " +
         'a screen reader announces just "button".',

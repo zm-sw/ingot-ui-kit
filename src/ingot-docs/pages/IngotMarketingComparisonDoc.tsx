@@ -33,33 +33,31 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Stránka staví „jak to je“ proti „jak to bude“ a k jednomu úkolu
-        patří právě jedna dvojice.
+        Stránka staví „jak to je“ proti „jak to bude“ a k jednomu úkolu patří právě
+        jedna dvojice.
       </>,
       <>
-        Na srovnání záleží natolik, že se nesmí rozejít: řádky drží
-        dvojici pohromadě, takže se jeden sloupec nemůže o položku
-        posunout a začít tiše lhát.
+        Na srovnání záleží natolik, že se nesmí rozejít: řádky drží dvojici pohromadě,
+        takže se jeden sloupec nemůže o položku posunout a začít tiše lhát.
       </>,
     ],
     en: [
       <>
-        The page sets “how it is” against “how it will be” and exactly
-        one pair belongs to one task.
+        The page sets “how it is” against “how it will be” and exactly one pair belongs
+        to one task.
       </>,
       <>
-        The comparison matters enough that it must not drift: rows hold
-        the pair together, so one column cannot slide by an item and
-        start lying quietly.
+        The comparison matters enough that it must not drift: rows hold the pair
+        together, so one column cannot slide by an item and start lying quietly.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Jsou to data administrace — tři sloupce, řazení, stránkování. Na
-        to je <IngotCode>IngotTable</IngotCode>; tohle srovnání je sazba
-        veřejné stránky bez chování tabulky.
+        Jsou to data administrace — tři sloupce, řazení, stránkování. Na to je{" "}
+        <IngotCode>IngotTable</IngotCode>; tohle srovnání je sazba veřejné stránky bez
+        chování tabulky.
       </>,
       <>
         Srovnávají se plány a u každého je cena a akce. Na to je{" "}
@@ -69,12 +67,12 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
     en: [
       <>
         It is admin data — three columns, sorting, pagination. That is{" "}
-        <IngotCode>IngotTable</IngotCode>; this comparison is public-page
-        typography without table behaviour.
+        <IngotCode>IngotTable</IngotCode>; this comparison is public-page typography
+        without table behaviour.
       </>,
       <>
-        Plans are being compared and each has a price and an action.
-        That is <IngotCode>IngotMarketingPricing</IngotCode>.
+        Plans are being compared and each has a price and an action. That is{" "}
+        <IngotCode>IngotMarketingPricing</IngotCode>.
       </>,
     ],
   },
@@ -101,7 +99,10 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
       name: "testId",
       type: "string",
       required: false,
-      note: { cs: "Kotva pro testy — na mřížce.", en: "An anchor for tests — on the grid." },
+      note: {
+        cs: "Kotva pro testy — na mřížce.",
+        en: "An anchor for tests — on the grid.",
+      },
     },
   ],
   extraProps: [
@@ -172,47 +173,39 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Rozdíl mezi sloupci nenese jen barva: zvýrazněný sloupec má
-        vlastní záhlaví a ikony, takže srovnání dává smysl i bez
-        vnímání barvy.
+        Rozdíl mezi sloupci nenese jen barva: zvýrazněný sloupec má vlastní záhlaví a
+        ikony, takže srovnání dává smysl i bez vnímání barvy.
       </>,
       <>
-        Na úzkém viewportu se mřížka roluje vodorovně a neskládá se do
-        sloupce. Složené srovnání přestane srovnávat — dvojice se
-        rozpadne na dva samostatné odstavce.
+        Na úzkém viewportu se mřížka roluje vodorovně a neskládá se do sloupce. Složené
+        srovnání přestane srovnávat — dvojice se rozpadne na dva samostatné odstavce.
       </>,
     ],
     en: [
       <>
-        Colour is not the only carrier of the difference: the
-        highlighted column has its own header and icons, so the
-        comparison holds without colour perception.
+        Colour is not the only carrier of the difference: the highlighted column has its
+        own header and icons, so the comparison holds without colour perception.
       </>,
       <>
-        On a narrow viewport the grid scrolls horizontally instead of
-        folding into a column. A folded comparison stops comparing — the
-        pair falls apart into two separate paragraphs.
+        On a narrow viewport the grid scrolls horizontally instead of folding into a
+        column. A folded comparison stops comparing — the pair falls apart into two
+        separate paragraphs.
       </>,
     ],
   },
   i18n: {
     cs: [
+      <>Záhlaví i buňky jsou obsah a dodává je volající přeložené.</>,
       <>
-        Záhlaví i buňky jsou obsah a dodává je volající přeložené.
-      </>,
-      <>
-        Delší překlad řádek nerozláme — mřížka roluje vodorovně, takže
-        se sloupce nezúží pod čitelnost.
+        Delší překlad řádek nerozláme — mřížka roluje vodorovně, takže se sloupce nezúží
+        pod čitelnost.
       </>,
     ],
     en: [
+      <>Headers and cells alike are content and arrive translated from the caller.</>,
       <>
-        Headers and cells alike are content and arrive translated from
-        the caller.
-      </>,
-      <>
-        A longer translation does not break a row — the grid scrolls
-        horizontally, so the columns never narrow below legibility.
+        A longer translation does not break a row — the grid scrolls horizontally, so
+        the columns never narrow below legibility.
       </>,
     ],
   },

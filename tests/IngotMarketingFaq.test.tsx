@@ -38,9 +38,10 @@ describe("IngotMarketingFaq", () => {
     await userEvent.click(screen.getByRole("button", { name: "Otázka A?" }));
     await userEvent.click(screen.getByRole("button", { name: "Otázka B?" }));
 
-    expect(
-      screen.getByRole("button", { name: "Otázka A?" }),
-    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Otázka A?" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
     expect(screen.queryByText("Odpověď A.")).not.toBeInTheDocument();
     expect(screen.getByText("Odpověď B.")).toBeInTheDocument();
   });

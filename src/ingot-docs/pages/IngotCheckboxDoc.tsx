@@ -24,64 +24,62 @@ export const IngotCheckboxDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Filtr typu ano/ne nad seznamem — „jen vyžadující zásah“, „včetně
-        zkušebních“. Vedle selectů v <IngotCode>IngotToolbar</IngotCode>.
+        Filtr typu ano/ne nad seznamem — „jen vyžadující zásah“, „včetně zkušebních“.
+        Vedle selectů v <IngotCode>IngotToolbar</IngotCode>.
       </>,
       <>
-        Nezávislé volby, kterých smí platit víc najednou. Řada zaškrtávátek
-        je množina, select je právě jedna.
+        Nezávislé volby, kterých smí platit víc najednou. Řada zaškrtávátek je množina,
+        select je právě jedna.
       </>,
       <>
-        Souhlas nebo potvrzení ve formuláři — stav se použije, až se
-        formulář odešle.
+        Souhlas nebo potvrzení ve formuláři — stav se použije, až se formulář odešle.
       </>,
     ],
     en: [
       <>
-        A yes/no filter above a list — “needs attention only”, “including
-        sandboxes”. Next to selects in <IngotCode>IngotToolbar</IngotCode>.
+        A yes/no filter above a list — “needs attention only”, “including sandboxes”.
+        Next to selects in <IngotCode>IngotToolbar</IngotCode>.
       </>,
       <>
-        Independent choices where several may hold at once. A row of
-        checkboxes is a set; a select is exactly one.
+        Independent choices where several may hold at once. A row of checkboxes is a
+        set; a select is exactly one.
       </>,
       <>
-        A consent or confirmation in a form — the state takes effect when
-        the form is submitted.
+        A consent or confirmation in a form — the state takes effect when the form is
+        submitted.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Přepínač s okamžitým účinkem („zapnout modul“). To je switch —
-        slibuje, že se věc stala hned, a bude to vlastní primitivum, až si
-        o něj obrazovka řekne.
+        Přepínač s okamžitým účinkem („zapnout modul“). To je switch — slibuje, že se
+        věc stala hned, a bude to vlastní primitivum, až si o něj obrazovka řekne.
       </>,
       <>
-        Výběr právě jedné z variant. To je <IngotCode>IngotSelect</IngotCode>{" "}
-        nebo <IngotCode>IngotOptionCard</IngotCode>, ne skupina zaškrtávátek,
-        která se navzájem vypínají.
+        Výběr právě jedné z variant. To je <IngotCode>IngotSelect</IngotCode> nebo{" "}
+        <IngotCode>IngotOptionCard</IngotCode>, ne skupina zaškrtávátek, která se
+        navzájem vypínají.
       </>,
       <>
-        Hromadný výběr řádků tabulky — ten kreslí{" "}
-        <IngotCode>IngotTable</IngotCode> sama a drží k němu bulk bar.
+        Hromadný výběr řádků tabulky — ten kreslí <IngotCode>IngotTable</IngotCode> sama
+        a drží k němu bulk bar.
       </>,
     ],
     en: [
       <>
-        A toggle with immediate effect (“enable module”). That is a switch —
-        it promises the thing already happened, and it will be its own
-        primitive once a screen asks for it.
+        A toggle with immediate effect (“enable module”). That is a switch — it promises
+        the thing already happened, and it will be its own primitive once a screen asks
+        for it.
       </>,
       <>
-        Picking exactly one variant. That is <IngotCode>IngotSelect</IngotCode>{" "}
-        or <IngotCode>IngotOptionCard</IngotCode>, not a group of checkboxes
-        unchecking each other.
+        Picking exactly one variant. That is <IngotCode>IngotSelect</IngotCode> or{" "}
+        <IngotCode>IngotOptionCard</IngotCode>, not a group of checkboxes unchecking
+        each other.
       </>,
       <>
-        Bulk row selection in a table — <IngotCode>IngotTable</IngotCode>{" "}
-        draws that itself and owns the bulk bar.
+        Bulk row selection in a table — <IngotCode>IngotTable</IngotCode> draws that
+        itself and owns the bulk bar.
       </>,
     ],
   },
@@ -144,37 +142,34 @@ export const IngotCheckboxDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Popisek je <IngotCode>label</IngotCode> obalující input: jméno pro
-        odečítač a klikací plocha přes celý text, žádné{" "}
-        <IngotCode>htmlFor</IngotCode> na hlídání.
+        Popisek je <IngotCode>label</IngotCode> obalující input: jméno pro odečítač a
+        klikací plocha přes celý text, žádné <IngotCode>htmlFor</IngotCode> na hlídání.
       </>,
       <>
-        Zaškrtávátko bez viditelného popisku neexistuje schválně — čtvereček
-        16 × 16 px beze jména je past pro myš i odečítač.
+        Zaškrtávátko bez viditelného popisku neexistuje schválně — čtvereček 16 × 16 px
+        beze jména je past pro myš i odečítač.
       </>,
     ],
     en: [
       <>
-        The label is a <IngotCode>label</IngotCode> wrapping the input: an
-        accessible name and a click target spanning the whole text, no{" "}
+        The label is a <IngotCode>label</IngotCode> wrapping the input: an accessible
+        name and a click target spanning the whole text, no{" "}
         <IngotCode>htmlFor</IngotCode> to keep in sync.
       </>,
       <>
-        A checkbox without a visible label does not exist on purpose — a
-        nameless 16 × 16 px square is a trap for mouse and screen reader
-        alike.
+        A checkbox without a visible label does not exist on purpose — a nameless 16 ×
+        16 px square is a trap for mouse and screen reader alike.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Popisek dodává volající už přeložený — kit vlastní jmenný prostor
-        překladů nemá.
+        Popisek dodává volající už přeložený — kit vlastní jmenný prostor překladů nemá.
       </>,
       <>
-        Popisek se zalamuje pod sebe, dlouhý překlad tedy volbu zvýší, ne
-        rozšíří. Přesto ho drž na několika slovech — je to volba, ne věta.
+        Popisek se zalamuje pod sebe, dlouhý překlad tedy volbu zvýší, ne rozšíří.
+        Přesto ho drž na několika slovech — je to volba, ne věta.
       </>,
     ],
     en: [
@@ -183,9 +178,8 @@ export const IngotCheckboxDoc: IngotDocPage = {
         translation namespace of its own.
       </>,
       <>
-        The label wraps, so a long translation makes the choice taller, not
-        wider. Keep it to a few words anyway — it is a choice, not a
-        sentence.
+        The label wraps, so a long translation makes the choice taller, not wider. Keep
+        it to a few words anyway — it is a choice, not a sentence.
       </>,
     ],
   },

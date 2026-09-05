@@ -25,35 +25,29 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
   demoSource,
   useWhen: {
     cs: [
+      <>Stránka končí a čtenáři se má nabídnout jeden zjevný další krok.</>,
       <>
-        Stránka končí a čtenáři se má nabídnout jeden zjevný další krok.
-      </>,
-      <>
-        Vedle hlavní akce dává smysl měkčí varianta (ukázka, kontakt)
-        pro toho, kdo se ještě nechce registrovat.
+        Vedle hlavní akce dává smysl měkčí varianta (ukázka, kontakt) pro toho, kdo se
+        ještě nechce registrovat.
       </>,
     ],
     en: [
+      <>The page ends and the reader is to be offered one obvious next step.</>,
       <>
-        The page ends and the reader is to be offered one obvious next
-        step.
-      </>,
-      <>
-        Beside the primary action a softer one (a demo, a contact) makes
-        sense for someone not ready to sign up.
+        Beside the primary action a softer one (a demo, a contact) makes sense for
+        someone not ready to sign up.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Akce něco spouští v aplikaci. Pak je to tlačítko —{" "}
-        <IngotCode>Button</IngotCode>; tenhle blok naviguje odkazy.
+        Akce něco spouští v aplikaci. Pak je to tlačítko — <IngotCode>Button</IngotCode>
+        ; tenhle blok naviguje odkazy.
       </>,
       <>
-        Na stránce už jsou dva tmavé bloky. Handoff jich připouští
-        nejvýš dva (tohle CTA a patičku) a třetí z tmavé plochy udělá
-        vzor, ne důraz.
+        Na stránce už jsou dva tmavé bloky. Handoff jich připouští nejvýš dva (tohle CTA
+        a patičku) a třetí z tmavé plochy udělá vzor, ne důraz.
       </>,
     ],
     en: [
@@ -62,9 +56,9 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
         <IngotCode>Button</IngotCode>; this block navigates with links.
       </>,
       <>
-        The page already has two dark blocks. The handoff allows at most
-        two (this CTA and the footer) and a third turns a dark field
-        into a pattern rather than emphasis.
+        The page already has two dark blocks. The handoff allows at most two (this CTA
+        and the footer) and a third turns a dark field into a pattern rather than
+        emphasis.
       </>,
     ],
   },
@@ -106,7 +100,10 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
       name: "testId",
       type: "string",
       required: false,
-      note: { cs: "Kotva pro testy — na bloku.", en: "An anchor for tests — on the block." },
+      note: {
+        cs: "Kotva pro testy — na bloku.",
+        en: "An anchor for tests — on the block.",
+      },
     },
   ],
   extraProps: [
@@ -138,62 +135,55 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Akce jsou odkazy, ne tlačítka. Odečítač je hlásí jako odkazy,
-        dají se otevřít v novém panelu a fungují bez JavaScriptu —
-        tlačítko by o všech třech věcech lhalo.
+        Akce jsou odkazy, ne tlačítka. Odečítač je hlásí jako odkazy, dají se otevřít v
+        novém panelu a fungují bez JavaScriptu — tlačítko by o všech třech věcech lhalo.
       </>,
       <>
-        Hlavní akce je akcentová schválně. Na tmavé ploše je světlé
-        neutrální tlačítko k nerozeznání od vedlejšího a závěrečná výzva
-        pak nemá kam poslat oko.
+        Hlavní akce je akcentová schválně. Na tmavé ploše je světlé neutrální tlačítko k
+        nerozeznání od vedlejšího a závěrečná výzva pak nemá kam poslat oko.
       </>,
       <>
         Obě akce jsou <IngotCode>Button</IngotCode> s{" "}
-        <IngotCode>as=&quot;a&quot;</IngotCode>, ne ručně psané odkazy.
-        Rozhodnutí o kontrastu akcentu v tmavém motivu tak zůstává na
-        jednom místě — opsané třídy by ho zdvojily a druhá kopie by
-        zestárla potichu.
+        <IngotCode>as=&quot;a&quot;</IngotCode>, ne ručně psané odkazy. Rozhodnutí o
+        kontrastu akcentu v tmavém motivu tak zůstává na jednom místě — opsané třídy by
+        ho zdvojily a druhá kopie by zestárla potichu.
       </>,
     ],
     en: [
       <>
-        The actions are links, not buttons. A screen reader announces
-        them as links, they open in a new tab and they work without
-        JavaScript — a button would lie about all three.
+        The actions are links, not buttons. A screen reader announces them as links,
+        they open in a new tab and they work without JavaScript — a button would lie
+        about all three.
       </>,
       <>
-        The primary action is accented on purpose. On a dark field a
-        light neutral button is indistinguishable from the secondary one
-        and the closing call then has nowhere to send the eye.
+        The primary action is accented on purpose. On a dark field a light neutral
+        button is indistinguishable from the secondary one and the closing call then has
+        nowhere to send the eye.
       </>,
       <>
         Both actions are <IngotCode>Button</IngotCode> with{" "}
-        <IngotCode>as=&quot;a&quot;</IngotCode>, not hand-written links.
-        The dark-mode accent contrast decision therefore stays in one
-        place — copied classes would duplicate it, and the second copy
-        would go stale quietly.
+        <IngotCode>as=&quot;a&quot;</IngotCode>, not hand-written links. The dark-mode
+        accent contrast decision therefore stays in one place — copied classes would
+        duplicate it, and the second copy would go stale quietly.
       </>,
     ],
   },
   i18n: {
     cs: [
+      <>Nadpis, text i popisky akcí jsou obsah a dodává je volající přeložené.</>,
       <>
-        Nadpis, text i popisky akcí jsou obsah a dodává je volající
-        přeložené.
-      </>,
-      <>
-        Akce se zalamují do druhého řádku, takže delší překlad popisku
-        blok nerozšíří ani neuřízne.
+        Akce se zalamují do druhého řádku, takže delší překlad popisku blok nerozšíří
+        ani neuřízne.
       </>,
     ],
     en: [
       <>
-        The heading, the text and both action labels are content and
-        arrive translated from the caller.
+        The heading, the text and both action labels are content and arrive translated
+        from the caller.
       </>,
       <>
-        The actions wrap to a second line, so a longer label translation
-        neither widens nor clips the block.
+        The actions wrap to a second line, so a longer label translation neither widens
+        nor clips the block.
       </>,
     ],
   },

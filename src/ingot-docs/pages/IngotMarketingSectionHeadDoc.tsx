@@ -30,55 +30,48 @@ export const IngotMarketingSectionHeadDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Sekce veřejné stránky začíná a potřebuje nadpis s uvozujícím
-        odstavcem. Dvousloupec drží pravidlo handoffu: nadpis nese levý
-        sloupec, kontext pravý.
+        Sekce veřejné stránky začíná a potřebuje nadpis s uvozujícím odstavcem.
+        Dvousloupec drží pravidlo handoffu: nadpis nese levý sloupec, kontext pravý.
       </>,
       <>
-        Sekce potřebuje krátký štítek nad nadpisem —{" "}
-        <IngotCode>eyebrow</IngotCode> je JEDINÝ akcentový prvek sekce
-        a tím určuje, kam padne oko první.
+        Sekce potřebuje krátký štítek nad nadpisem — <IngotCode>eyebrow</IngotCode> je
+        JEDINÝ akcentový prvek sekce a tím určuje, kam padne oko první.
       </>,
     ],
     en: [
       <>
-        A section of a public page opens and needs a heading with a lede.
-        The two-column split holds the handoff rule: the heading carries
-        the left column, the context the right one.
+        A section of a public page opens and needs a heading with a lede. The two-column
+        split holds the handoff rule: the heading carries the left column, the context
+        the right one.
       </>,
       <>
         The section needs a short label above the heading —{" "}
-        <IngotCode>eyebrow</IngotCode> is the ONLY accented element of the
-        section and so decides where the eye lands first.
+        <IngotCode>eyebrow</IngotCode> is the ONLY accented element of the section and
+        so decides where the eye lands first.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Je to sekce admin obrazovky. Na to je{" "}
-        <IngotCode>IngotSection</IngotCode>: menší rozestupy, jeden
-        sloupec a nadpis, který se zapíše do osnovy obrazovky.
+        Je to sekce admin obrazovky. Na to je <IngotCode>IngotSection</IngotCode>: menší
+        rozestupy, jeden sloupec a nadpis, který se zapíše do osnovy obrazovky.
       </>,
       <>
-        Je to nadpis celé stránky. Ten sází{" "}
-        <IngotCode>IngotPageHeader</IngotCode> a je{" "}
-        <IngotCode>h1</IngotCode>; tahle hlavička je{" "}
-        <IngotCode>h2</IngotCode> a předpokládá, že nad ní nějaký{" "}
-        <IngotCode>h1</IngotCode> stojí.
+        Je to nadpis celé stránky. Ten sází <IngotCode>IngotPageHeader</IngotCode> a je{" "}
+        <IngotCode>h1</IngotCode>; tahle hlavička je <IngotCode>h2</IngotCode> a
+        předpokládá, že nad ní nějaký <IngotCode>h1</IngotCode> stojí.
       </>,
     ],
     en: [
       <>
-        It is a section of an admin screen. That is{" "}
-        <IngotCode>IngotSection</IngotCode>: tighter spacing, one column
-        and a heading that enters the screen outline.
+        It is a section of an admin screen. That is <IngotCode>IngotSection</IngotCode>:
+        tighter spacing, one column and a heading that enters the screen outline.
       </>,
       <>
         It is the heading of the whole page. That is{" "}
-        <IngotCode>IngotPageHeader</IngotCode> and it is an{" "}
-        <IngotCode>h1</IngotCode>; this head is an{" "}
-        <IngotCode>h2</IngotCode> and assumes an{" "}
+        <IngotCode>IngotPageHeader</IngotCode> and it is an <IngotCode>h1</IngotCode>;
+        this head is an <IngotCode>h2</IngotCode> and assumes an{" "}
         <IngotCode>h1</IngotCode> stands above it.
       </>,
     ],
@@ -115,57 +108,56 @@ export const IngotMarketingSectionHeadDoc: IngotDocPage = {
       name: "testId",
       type: "string",
       required: false,
-      note: { cs: "Kotva pro testy — na mřížce.", en: "An anchor for tests — on the grid." },
+      note: {
+        cs: "Kotva pro testy — na mřížce.",
+        en: "An anchor for tests — on the grid.",
+      },
     },
   ],
   a11y: {
     cs: [
       <>
-        Nadpis je <IngotCode>h2</IngotCode>, ne odstavec obarvený na
-        velikost nadpisu. Osnova stránky je jedna z mála věcí, které se
-        čtou naslepo.
+        Nadpis je <IngotCode>h2</IngotCode>, ne odstavec obarvený na velikost nadpisu.
+        Osnova stránky je jedna z mála věcí, které se čtou naslepo.
       </>,
       <>
-        <IngotCode>eyebrow</IngotCode> je odstavec, ne nadpis vyšší
-        úrovně. Kdyby byl nadpisem, měla by sekce dva nadpisy nad sebou
-        a osnova by tvrdila, že jde o dvě sekce.
+        <IngotCode>eyebrow</IngotCode> je odstavec, ne nadpis vyšší úrovně. Kdyby byl
+        nadpisem, měla by sekce dva nadpisy nad sebou a osnova by tvrdila, že jde o dvě
+        sekce.
       </>,
     ],
     en: [
       <>
-        The heading is an <IngotCode>h2</IngotCode>, not a paragraph
-        coloured to heading size. The page outline is one of the few
-        things read blind.
+        The heading is an <IngotCode>h2</IngotCode>, not a paragraph coloured to heading
+        size. The page outline is one of the few things read blind.
       </>,
       <>
-        <IngotCode>eyebrow</IngotCode> is a paragraph, not a
-        higher-level heading. Were it a heading, the section would have
-        two stacked headings and the outline would claim two sections.
+        <IngotCode>eyebrow</IngotCode> is a paragraph, not a higher-level heading. Were
+        it a heading, the section would have two stacked headings and the outline would
+        claim two sections.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Všechny tři texty jsou obsah z brandingu nebo CMS a dodává je
-        volající už přeložené — kit vlastní jmenný prostor překladů nemá.
+        Všechny tři texty jsou obsah z brandingu nebo CMS a dodává je volající už
+        přeložené — kit vlastní jmenný prostor překladů nemá.
       </>,
       <>
-        Dvousloupec počítá s tím, že se délky textů mezi jazyky liší:
-        pod 1100 px se skládá na jeden sloupec, takže delší překlad
-        nadpis nerozláme.
+        Dvousloupec počítá s tím, že se délky textů mezi jazyky liší: pod 1100 px se
+        skládá na jeden sloupec, takže delší překlad nadpis nerozláme.
       </>,
     ],
     en: [
       <>
-        All three texts are content from branding or a CMS and arrive
-        already translated from the caller — the kit has no translation
-        namespace of its own.
+        All three texts are content from branding or a CMS and arrive already translated
+        from the caller — the kit has no translation namespace of its own.
       </>,
       <>
-        The two-column split expects text lengths to differ between
-        languages: below 1100 px it folds to one column, so a longer
-        translation does not break the heading apart.
+        The two-column split expects text lengths to differ between languages: below
+        1100 px it folds to one column, so a longer translation does not break the
+        heading apart.
       </>,
     ],
   },

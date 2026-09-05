@@ -116,6 +116,9 @@ export function IngotModal({
   );
 
   return createPortal(
+    // The backdrop is a mouse convenience; the keyboard path is ESC and the
+    // close button, both measured in tests/IngotModal.test.tsx.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/40 p-4"
       style={{ zIndex: layer }}

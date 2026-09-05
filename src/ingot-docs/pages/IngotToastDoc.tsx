@@ -26,13 +26,12 @@ export const IngotToastDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Akce doběhla a operátor to má vědět, aniž by přestal pracovat —
-        „Objednávka uložena.“
+        Akce doběhla a operátor to má vědět, aniž by přestal pracovat — „Objednávka
+        uložena.“
       </>,
       <>
-        Výsledek uložení se zpětnou akcí: toast s „Zpět“ místo modalu
-        „Hotovo“. Dělba překryvů: editace → drawer, potvrzení → dialog,
-        výsledek → toast.
+        Výsledek uložení se zpětnou akcí: toast s „Zpět“ místo modalu „Hotovo“. Dělba
+        překryvů: editace → drawer, potvrzení → dialog, výsledek → toast.
       </>,
       <>
         Chyba operace, kterou nejde opravit v místě děje —{" "}
@@ -41,13 +40,12 @@ export const IngotToastDoc: IngotDocPage = {
     ],
     en: [
       <>
-        An action finished and the operator should know without stopping
-        their work — "Order saved."
+        An action finished and the operator should know without stopping their work —
+        "Order saved."
       </>,
       <>
-        The result of a save with an undo: a toast with "Undo" instead of a
-        "Done" modal. Overlay roles: editing → drawer, confirmation →
-        dialog, result → toast.
+        The result of a save with an undo: a toast with "Undo" instead of a "Done"
+        modal. Overlay roles: editing → drawer, confirmation → dialog, result → toast.
       </>,
       <>
         An operation error that cannot be fixed where it happened —{" "}
@@ -58,17 +56,16 @@ export const IngotToastDoc: IngotDocPage = {
   avoidWhen: {
     cs: [
       <>
-        Validace formuláře. Chyba pole patří k poli (
-        <IngotCode>IngotField</IngotCode> má <IngotCode>error</IngotCode>), ne do
-        toastu, který za 4 sekundy zmizí.
+        Validace formuláře. Chyba pole patří k poli (<IngotCode>IngotField</IngotCode>{" "}
+        má <IngotCode>error</IngotCode>), ne do toastu, který za 4 sekundy zmizí.
       </>,
       <>
-        Sdělení, které vyžaduje rozhodnutí. Toast nejde „potvrdit“ — na to
-        je <IngotCode>IngotModal</IngotCode> nebo <IngotCode>IngotConfirm</IngotCode>.
+        Sdělení, které vyžaduje rozhodnutí. Toast nejde „potvrdit“ — na to je{" "}
+        <IngotCode>IngotModal</IngotCode> nebo <IngotCode>IngotConfirm</IngotCode>.
       </>,
       <>
-        Trvalý stav („3 položky čekají na schválení“). Toast je pomíjivý;
-        trvalé hlášení patří do stránky.
+        Trvalý stav („3 položky čekají na schválení“). Toast je pomíjivý; trvalé hlášení
+        patří do stránky.
       </>,
     ],
     en: [
@@ -78,12 +75,12 @@ export const IngotToastDoc: IngotDocPage = {
         toast that disappears in 4 seconds.
       </>,
       <>
-        A message that demands a decision. A toast cannot be "confirmed" —
-        that is <IngotCode>IngotModal</IngotCode> or <IngotCode>IngotConfirm</IngotCode>.
+        A message that demands a decision. A toast cannot be "confirmed" — that is{" "}
+        <IngotCode>IngotModal</IngotCode> or <IngotCode>IngotConfirm</IngotCode>.
       </>,
       <>
-        A persistent state ("3 items awaiting approval"). A toast is
-        ephemeral; a persistent message belongs in the page.
+        A persistent state ("3 items awaiting approval"). A toast is ephemeral; a
+        persistent message belongs in the page.
       </>,
     ],
   },
@@ -153,7 +150,7 @@ export const IngotToastDoc: IngotDocPage = {
           type: "string",
           required: false,
           note: {
-            cs: "Popisek zpětné akce. Výchozí ze slovníku IngotProvider („Undo“, s lang=\"cs\" „Zpět“).",
+            cs: 'Popisek zpětné akce. Výchozí ze slovníku IngotProvider („Undo“, s lang="cs" „Zpět“).',
             en: 'Label of the undo action. Defaults to the IngotProvider dictionary ("Undo"; "Zpět" with lang="cs").',
           },
         },
@@ -172,67 +169,61 @@ export const IngotToastDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Region je <IngotCode>aria-live=&quot;polite&quot;</IngotCode> — odečítač
-        toast přečte, až domluví. Chyba operace (
+        Region je <IngotCode>aria-live=&quot;polite&quot;</IngotCode> — odečítač toast
+        přečte, až domluví. Chyba operace (
         <IngotCode>tone=&quot;danger&quot;</IngotCode>) se hlásí{" "}
         <IngotCode>assertive</IngotCode>.
       </>,
+      <>Toast stojí vlevo dole, aby nepřekryl primární akci stránky.</>,
       <>
-        Toast stojí vlevo dole, aby nepřekryl primární akci stránky.
+        Toast se zpětnou akcí žije 8 sekund místo 4 — operátor musí stihnout přečíst,
+        pochopit a kliknout.
       </>,
       <>
-        Toast se zpětnou akcí žije 8 sekund místo 4 — operátor musí stihnout
-        přečíst, pochopit a kliknout.
-      </>,
-      <>
-        V tmavém motivu dostává toast border, aby se inverzní plocha
-        neztratila na tmavém pozadí.
+        V tmavém motivu dostává toast border, aby se inverzní plocha neztratila na
+        tmavém pozadí.
       </>,
     ],
     en: [
       <>
         The region is <IngotCode>aria-live=&quot;polite&quot;</IngotCode> — a screen
-        reader announces the toast once it finishes speaking. An operation
-        error (<IngotCode>tone=&quot;danger&quot;</IngotCode>) is announced{" "}
+        reader announces the toast once it finishes speaking. An operation error (
+        <IngotCode>tone=&quot;danger&quot;</IngotCode>) is announced{" "}
         <IngotCode>assertive</IngotCode>.
       </>,
+      <>The toast sits bottom-left so it never covers the page's primary action.</>,
       <>
-        The toast sits bottom-left so it never covers the page's primary
-        action.
+        A toast with an undo lives 8 seconds instead of 4 — the operator has to read,
+        understand and click in time.
       </>,
       <>
-        A toast with an undo lives 8 seconds instead of 4 — the operator has
-        to read, understand and click in time.
-      </>,
-      <>
-        In the dark theme the toast gets a border so its inverted surface
-        does not sink into the dark background.
+        In the dark theme the toast gets a border so its inverted surface does not sink
+        into the dark background.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        <IngotCode>text</IngotCode> dodává volající už přeložený — Ingot nemá
-        vlastní překlady.
+        <IngotCode>text</IngotCode> dodává volající už přeložený — Ingot nemá vlastní
+        překlady.
       </>,
       <>
-        Popisek zpětné akce bere toast ze slovníku{" "}
-        <IngotCode>IngotProvider</IngotCode> — bez providera „Undo“, s{" "}
-        <IngotCode>lang=&quot;cs&quot;</IngotCode> „Zpět“.{" "}
+        Popisek zpětné akce bere toast ze slovníku <IngotCode>IngotProvider</IngotCode>{" "}
+        — bez providera „Undo“, s <IngotCode>lang=&quot;cs&quot;</IngotCode> „Zpět“.{" "}
         <IngotCode>undoLabel</IngotCode> ho přebíjí pro jeden toast.
       </>,
     ],
     en: [
       <>
-        <IngotCode>text</IngotCode> arrives from the caller already translated —
-        the Ingot has no translations of its own.
+        <IngotCode>text</IngotCode> arrives from the caller already translated — the
+        Ingot has no translations of its own.
       </>,
       <>
-        The undo label comes from the <IngotCode>IngotProvider</IngotCode>{" "}
-        dictionary — “Undo” without a provider, “Zpět” with{" "}
-        <IngotCode>lang=&quot;cs&quot;</IngotCode>.{" "}
-        <IngotCode>undoLabel</IngotCode> overrides it for a single toast.
+        The undo label comes from the <IngotCode>IngotProvider</IngotCode> dictionary —
+        “Undo” without a provider, “Zpět” with{" "}
+        <IngotCode>lang=&quot;cs&quot;</IngotCode>. <IngotCode>undoLabel</IngotCode>{" "}
+        overrides it for a single toast.
       </>,
     ],
   },

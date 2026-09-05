@@ -21,12 +21,11 @@ export function Demo(): JSX.Element {
           testId="docs-modal"
         >
           <p className="text-sm text-ink-2">
-            ESC, kliknutí do pozadí i křížek zavírají. Fokus je uvnitř a po
-            zavření se vrací na tlačítko, které dialog otevřelo.
+            ESC, kliknutí do pozadí i křížek zavírají. Fokus je uvnitř a po zavření se
+            vrací na tlačítko, které dialog otevřelo.
           </p>
         </IngotModal>
       ) : null}
     </div>
   );
 }
-

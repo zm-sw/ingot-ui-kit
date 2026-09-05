@@ -81,38 +81,37 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Sekce je tlačítko, ne odkaz — rozbaluje menu a samo nikam
-                  nevede. Odkazy jsou až položky uvnitř.
+                  Sekce je tlačítko, ne odkaz — rozbaluje menu a samo nikam nevede.
+                  Odkazy jsou až položky uvnitř.
                 </>,
                 <>
-                  Zákaznická část má tutéž lištu, jen jiný obsah: jinou
-                  značku bez odznaku, jiné sekce a případně odznak zkušebního
-                  provozu. Dva produkty, jeden rám.
+                  Zákaznická část má tutéž lištu, jen jiný obsah: jinou značku bez
+                  odznaku, jiné sekce a případně odznak zkušebního provozu. Dva
+                  produkty, jeden rám.
                 </>,
                 <>
-                  Lišta se nezalamuje — co se nevejde, zmizí za okrajem.
-                  Měřítko není pevný počet, ale nejužší podporovaná šířka:
-                  všechny sekce se svými popisky se musí vejít na 1280 px.
-                  Administrace jich dnes nese osm; když se lišta láme,
-                  zkracuj popisky nebo spoj dvě sekce.
+                  Lišta se nezalamuje — co se nevejde, zmizí za okrajem. Měřítko není
+                  pevný počet, ale nejužší podporovaná šířka: všechny sekce se svými
+                  popisky se musí vejít na 1280 px. Administrace jich dnes nese osm;
+                  když se lišta láme, zkracuj popisky nebo spoj dvě sekce.
                 </>,
               ]
             : [
                 <>
-                  A section is a button, not a link — it opens a menu and
-                  goes nowhere on its own. The links are the items inside.
+                  A section is a button, not a link — it opens a menu and goes nowhere
+                  on its own. The links are the items inside.
                 </>,
                 <>
-                  The customer-facing product uses the same bar with
-                  different content: another brand without the badge, other
-                  sections, possibly a trial badge. Two products, one frame.
+                  The customer-facing product uses the same bar with different content:
+                  another brand without the badge, other sections, possibly a trial
+                  badge. Two products, one frame.
                 </>,
                 <>
-                  The bar does not wrap — whatever does not fit falls off the
-                  edge. The measure is not a fixed count but the narrowest
-                  supported width: every section with its label must fit at
-                  1280&nbsp;px. The admin carries eight today; when the bar
-                  breaks, shorten labels or merge two sections.
+                  The bar does not wrap — whatever does not fit falls off the edge. The
+                  measure is not a fixed count but the narrowest supported width: every
+                  section with its label must fit at 1280&nbsp;px. The admin carries
+                  eight today; when the bar breaks, shorten labels or merge two
+                  sections.
                 </>,
               ]
         }
@@ -181,79 +180,73 @@ function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Náhled sleduje položku pod kurzorem <strong>i pod
-                  fokusem</strong> — klávesnice není druhá kategorie. Popis
-                  navíc čte odečítač přímo z odkazu, takže náhledový sloupec
-                  je jen vizuální kopie.
+                  Náhled sleduje položku pod kurzorem <strong>i pod fokusem</strong> —
+                  klávesnice není druhá kategorie. Popis navíc čte odečítač přímo z
+                  odkazu, takže náhledový sloupec je jen vizuální kopie.
                 </>,
                 <>
                   Otevřená sekce se v liště značí plochou{" "}
-                  <IngotCode>--surface-3</IngotCode>, ne akcentem. Akcent
-                  znamená akci a rozbalené menu žádná akce není.
+                  <IngotCode>--surface-3</IngotCode>, ne akcentem. Akcent znamená akci a
+                  rozbalené menu žádná akce není.
                 </>,
                 <>
-                  Počet u položky je mono — je to číslo k porovnání
-                  s ostatními řádky.
+                  Počet u položky je mono — je to číslo k porovnání s ostatními řádky.
                 </>,
                 <>
-                  <strong>Sloupce rostou z obsahu</strong>, nemá je pevná
-                  mřížka. Skutečné sekce mají jednu až osm položek, takže
-                  natvrdo tři sloupce znamenají u většiny z nich dva prázdné
-                  — a prázdný sloupec čtenáři tvrdí, že mu něco chybí.
+                  <strong>Sloupce rostou z obsahu</strong>, nemá je pevná mřížka.
+                  Skutečné sekce mají jednu až osm položek, takže natvrdo tři sloupce
+                  znamenají u většiny z nich dva prázdné — a prázdný sloupec čtenáři
+                  tvrdí, že mu něco chybí.
                 </>,
                 <>
-                  <strong>Náhled sleduje čtenáře, nezůstává na první
-                  položce.</strong> Popis té, na které stojí, je odpověď na
-                  otázku, kterou si zrovna klade; popis první položky by u
-                  osmé odpovídal na otázku, kterou si položil před chvílí.
-                  Kresba sekce nad textem zůstává — je to znak sekce, ne
-                  ilustrace položky.
+                  <strong>Náhled sleduje čtenáře, nezůstává na první položce.</strong>{" "}
+                  Popis té, na které stojí, je odpověď na otázku, kterou si zrovna
+                  klade; popis první položky by u osmé odpovídal na otázku, kterou si
+                  položil před chvílí. Kresba sekce nad textem zůstává — je to znak
+                  sekce, ne ilustrace položky.
                 </>,
                 <>
-                  Z klávesnice panel obsluhuje šipka: otevře sekci a
-                  prochází položky. <IngotCode>Tab</IngotCode> z otevřeného
-                  panelu nevypadne, <IngotCode>Esc</IngotCode> ho zavře a
-                  vrátí fokus na tlačítko sekce.
+                  Z klávesnice panel obsluhuje šipka: otevře sekci a prochází položky.{" "}
+                  <IngotCode>Tab</IngotCode> z otevřeného panelu nevypadne,{" "}
+                  <IngotCode>Esc</IngotCode> ho zavře a vrátí fokus na tlačítko sekce.
                 </>,
               ]
             : [
                 <>
-                  The preview follows the item under the cursor <strong>and
-                  under focus</strong> — the keyboard is not a second-class
-                  citizen. A screen reader hears the description from the
-                  link itself, so the preview column is a visual copy.
+                  The preview follows the item under the cursor{" "}
+                  <strong>and under focus</strong> — the keyboard is not a second-class
+                  citizen. A screen reader hears the description from the link itself,
+                  so the preview column is a visual copy.
                 </>,
                 <>
-                  An open section is marked with the{" "}
-                  <IngotCode>--surface-3</IngotCode> surface, not the accent.
-                  The accent means an action, and an open menu is not one.
+                  An open section is marked with the <IngotCode>--surface-3</IngotCode>{" "}
+                  surface, not the accent. The accent means an action, and an open menu
+                  is not one.
                 </>,
                 <>
-                  The count next to an item is mono — it is a number meant to
-                  be compared with the rows around it.
+                  The count next to an item is mono — it is a number meant to be
+                  compared with the rows around it.
                 </>,
                 <>
-                  <strong>Columns grow from the content</strong>, they are not
-                  a fixed grid. Real sections hold one to eight items, so
-                  three hard-coded columns leave most of them with two empty
-                  ones — and an empty column tells the reader something is
-                  missing.
+                  <strong>Columns grow from the content</strong>, they are not a fixed
+                  grid. Real sections hold one to eight items, so three hard-coded
+                  columns leave most of them with two empty ones — and an empty column
+                  tells the reader something is missing.
                 </>,
                 <>
-                  <strong>The preview follows the reader; it does not stay on
-                  the first item.</strong> Describing the item they are on
-                  answers the question they are asking right now; describing
-                  the first item would, at the eighth, answer the one they
-                  asked a moment ago. The section's drawing above the text
-                  stays — it marks the section, it does not illustrate the
-                  item.
+                  <strong>
+                    The preview follows the reader; it does not stay on the first item.
+                  </strong>{" "}
+                  Describing the item they are on answers the question they are asking
+                  right now; describing the first item would, at the eighth, answer the
+                  one they asked a moment ago. The section's drawing above the text
+                  stays — it marks the section, it does not illustrate the item.
                 </>,
                 <>
-                  From the keyboard the arrow keys drive the panel: they open
-                  the section and walk its items.{" "}
-                  <IngotCode>Tab</IngotCode> does not fall out of an open
-                  panel, and <IngotCode>Esc</IngotCode> closes it and returns
-                  focus to the section button.
+                  From the keyboard the arrow keys drive the panel: they open the
+                  section and walk its items. <IngotCode>Tab</IngotCode> does not fall
+                  out of an open panel, and <IngotCode>Esc</IngotCode> closes it and
+                  returns focus to the section button.
                 </>,
               ]
         }
@@ -282,13 +275,9 @@ function AccountMenu({ lang }: { lang: DocLang }): JSX.Element {
               <IngotBadge>{cs ? "Podle systému" : "System"}</IngotBadge>
             </IngotUserMenuRow>
             <IngotUserMenuRow label={cs ? "Slovník" : "Vocabulary"}>
-              <IngotBadge tone="accent">
-                {cs ? "Jednoduše" : "Simple"}
-              </IngotBadge>
+              <IngotBadge tone="accent">{cs ? "Jednoduše" : "Simple"}</IngotBadge>
             </IngotUserMenuRow>
-            <IngotUserMenuRow
-              label={cs ? "Nápověda na stránkách" : "On-page help"}
-            >
+            <IngotUserMenuRow label={cs ? "Nápověda na stránkách" : "On-page help"}>
               <IngotBadge tone="ok">{cs ? "Zapnuto" : "On"}</IngotBadge>
             </IngotUserMenuRow>
           </IngotUserMenuSection>
@@ -299,37 +288,33 @@ function AccountMenu({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Předvolba se ukládá <strong>na účet</strong>, ne do
-                  prohlížeče — sleduje člověka i na druhý počítač.
+                  Předvolba se ukládá <strong>na účet</strong>, ne do prohlížeče —
+                  sleduje člověka i na druhý počítač.
                 </>,
                 <>
                   Vypnutá nápověda nesmí změnit rozvržení stránky. Skrývá se
-                  viditelnost, ne prostor; jinak se obrazovka pod čtenářem
-                  přeskládá a on přijde o místo, kam se díval.
+                  viditelnost, ne prostor; jinak se obrazovka pod čtenářem přeskládá a
+                  on přijde o místo, kam se díval.
                 </>,
                 <>
-                  Slovník řídí odborné termíny v celém produktu, ne jen na
-                  jedné obrazovce.
+                  Slovník řídí odborné termíny v celém produktu, ne jen na jedné
+                  obrazovce.
                 </>,
-                <>
-                  Pokročilé zobrazení surových dat není nikdy zapnuté
-                  výchozí.
-                </>,
+                <>Pokročilé zobrazení surových dat není nikdy zapnuté výchozí.</>,
               ]
             : [
                 <>
-                  A preference is stored <strong>on the account</strong>, not
-                  in the browser — it follows the person to another computer.
+                  A preference is stored <strong>on the account</strong>, not in the
+                  browser — it follows the person to another computer.
                 </>,
                 <>
-                  Turning help off must not change the page layout. What is
-                  hidden is visibility, not space; otherwise the screen
-                  reflows under the reader and they lose the spot they were
-                  looking at.
+                  Turning help off must not change the page layout. What is hidden is
+                  visibility, not space; otherwise the screen reflows under the reader
+                  and they lose the spot they were looking at.
                 </>,
                 <>
-                  The vocabulary drives domain terms across the whole
-                  product, not just on one screen.
+                  The vocabulary drives domain terms across the whole product, not just
+                  on one screen.
                 </>,
                 <>The advanced raw-data view is never on by default.</>,
               ]
@@ -427,44 +412,42 @@ function PageHead({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Primární akce je právě jedna a stojí vpravo v hlavičce.
-                  Nikdy neplave nad obsahem.
+                  Primární akce je právě jedna a stojí vpravo v hlavičce. Nikdy neplave
+                  nad obsahem.
                 </>,
                 <>
-                  Čísla v hlavičce a pruh pod ní jsou <strong>dvě hustoty
-                  téže komponenty</strong>, ne dvě komponenty. Do hlavičky
-                  se vejdou dvě až tři čísla, do pruhu čtyři až šest —
-                  a obojí naráz je z obrazovky přehled o přehledu.
+                  Čísla v hlavičce a pruh pod ní jsou{" "}
+                  <strong>dvě hustoty téže komponenty</strong>, ne dvě komponenty. Do
+                  hlavičky se vejdou dvě až tři čísla, do pruhu čtyři až šest — a obojí
+                  naráz je z obrazovky přehled o přehledu.
                 </>,
                 <>
-                  Poslední drobeček není odkaz — je to místo, kde stojíš. Na
-                  kořenové stránce sekce se drobečky nekreslí vůbec.
+                  Poslední drobeček není odkaz — je to místo, kde stojíš. Na kořenové
+                  stránce sekce se drobečky nekreslí vůbec.
                 </>,
                 <>
-                  Obarvené číslo znamená, že je to problém, ne že je
-                  nejdůležitější. Obarvená polovina pruhu nesděluje nic.
+                  Obarvené číslo znamená, že je to problém, ne že je nejdůležitější.
+                  Obarvená polovina pruhu nesděluje nic.
                 </>,
               ]
             : [
                 <>
-                  There is exactly one primary action and it sits at the top
-                  right of the header. It never floats above the content.
+                  There is exactly one primary action and it sits at the top right of
+                  the header. It never floats above the content.
                 </>,
                 <>
                   The numbers in the header and the strip below it are{" "}
-                  <strong>two densities of one component</strong>, not two
-                  components. Two or three numbers fit in the header, four to
-                  six in the strip — and both at once turns the screen into
-                  an overview of an overview.
+                  <strong>two densities of one component</strong>, not two components.
+                  Two or three numbers fit in the header, four to six in the strip — and
+                  both at once turns the screen into an overview of an overview.
                 </>,
                 <>
-                  The last breadcrumb is not a link — it is where you stand.
-                  On a section's root page breadcrumbs are not drawn at all.
+                  The last breadcrumb is not a link — it is where you stand. On a
+                  section's root page breadcrumbs are not drawn at all.
                 </>,
                 <>
-                  A coloured number means that number is a problem, not that
-                  it is the most important one. Half a coloured strip says
-                  nothing.
+                  A coloured number means that number is a problem, not that it is the
+                  most important one. Half a coloured strip says nothing.
                 </>,
               ]
         }
@@ -515,9 +498,7 @@ function GroupCard({ lang }: { lang: DocLang }): JSX.Element {
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2">
                 <IngotCode>material.ocel</IngotCode>
-                <IngotBadge>
-                  {cs ? "3 vlastnosti" : "3 attributes"}
-                </IngotBadge>
+                <IngotBadge>{cs ? "3 vlastnosti" : "3 attributes"}</IngotBadge>
               </p>
               <p className="mt-1 text-[13px] text-ink-3">
                 {cs
@@ -564,9 +545,7 @@ function GroupCard({ lang }: { lang: DocLang }): JSX.Element {
               {
                 key: "key",
                 header: cs ? "Klíč" : "Key",
-                cell: (row: (typeof rows)[number]) => (
-                  <IngotCode>{row.key}</IngotCode>
-                ),
+                cell: (row: (typeof rows)[number]) => <IngotCode>{row.key}</IngotCode>,
               },
               {
                 key: "unit",
@@ -605,43 +584,42 @@ function GroupCard({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Každý blok má vlastní hlavičku a vlastní „přidat“ patičku.
-                  Jedno plovoucí tlačítko nad seznamem skupin by se muselo
-                  ptát, do které skupiny přidává.
+                  Každý blok má vlastní hlavičku a vlastní „přidat“ patičku. Jedno
+                  plovoucí tlačítko nad seznamem skupin by se muselo ptát, do které
+                  skupiny přidává.
                 </>,
                 <>
-                  Patička je na <IngotCode>--surface-2</IngotCode>, takže se
-                  čte jako nástroj karty, ne jako další řádek tabulky.
+                  Patička je na <IngotCode>--surface-2</IngotCode>, takže se čte jako
+                  nástroj karty, ne jako další řádek tabulky.
                 </>,
                 <>
-                  Přidání ze seznamu, ne z prázdného pole: vlastnosti jsou
-                  výčet, který někdo jinde založil. Volné pole by tady
-                  zakládalo překlepy jako nové vlastnosti.
+                  Přidání ze seznamu, ne z prázdného pole: vlastnosti jsou výčet, který
+                  někdo jinde založil. Volné pole by tady zakládalo překlepy jako nové
+                  vlastnosti.
                 </>,
                 <>
-                  Klíč je kód, takže se sází jako kód — a nepřekládá se.
-                  Stav řádku nese tečka i slovo, ne jen barva.
+                  Klíč je kód, takže se sází jako kód — a nepřekládá se. Stav řádku nese
+                  tečka i slovo, ne jen barva.
                 </>,
               ]
             : [
                 <>
-                  Every block has its own header and its own “add” footer. A
-                  single floating button above the list of groups would have
-                  to ask which group it adds to.
+                  Every block has its own header and its own “add” footer. A single
+                  floating button above the list of groups would have to ask which group
+                  it adds to.
                 </>,
                 <>
-                  The footer sits on <IngotCode>--surface-2</IngotCode>, so it
-                  reads as a tool of the card rather than one more table row.
+                  The footer sits on <IngotCode>--surface-2</IngotCode>, so it reads as
+                  a tool of the card rather than one more table row.
                 </>,
                 <>
-                  Adding from a list, not an empty field: attributes are an
-                  enumeration someone established elsewhere. A free field
-                  here would establish typos as new attributes.
+                  Adding from a list, not an empty field: attributes are an enumeration
+                  someone established elsewhere. A free field here would establish typos
+                  as new attributes.
                 </>,
                 <>
-                  The key is code, so it is set as code — and not translated.
-                  A row's state is carried by a dot and a word, not colour
-                  alone.
+                  The key is code, so it is set as code — and not translated. A row's
+                  state is carried by a dot and a word, not colour alone.
                 </>,
               ]
         }
@@ -722,41 +700,41 @@ function SettingsPatterns({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Hotový krok je poznat tvarem, ne jen barvou — zelené
-                  záhlaví doprovází fajfka místo čísla.
+                  Hotový krok je poznat tvarem, ne jen barvou — zelené záhlaví doprovází
+                  fajfka místo čísla.
                 </>,
                 <>
-                  Patička kroku přidává další položku. Krok se nepotvrzuje
-                  tlačítkem: je hotový tehdy, když má, co potřebuje.
+                  Patička kroku přidává další položku. Krok se nepotvrzuje tlačítkem: je
+                  hotový tehdy, když má, co potřebuje.
                 </>,
                 <>
-                  Varianta s důsledkem se vybírá kartou s vysvětlující větou,
-                  ne položkou v rozbalovacím seznamu. Ta věta je půlka volby.
+                  Varianta s důsledkem se vybírá kartou s vysvětlující větou, ne
+                  položkou v rozbalovacím seznamu. Ta věta je půlka volby.
                 </>,
                 <>
-                  Hotový krok se sbalí sám a nechá po sobě záhlaví se
-                  shrnutím („3 / 3 aktivní“). Nastavení o osmi krocích jinak
-                  odsune ten rozdělaný pod okraj obrazovky.
+                  Hotový krok se sbalí sám a nechá po sobě záhlaví se shrnutím („3 / 3
+                  aktivní“). Nastavení o osmi krocích jinak odsune ten rozdělaný pod
+                  okraj obrazovky.
                 </>,
               ]
             : [
                 <>
-                  A finished step is recognisable by shape, not colour alone
-                  — the green header comes with a tick instead of a number.
+                  A finished step is recognisable by shape, not colour alone — the green
+                  header comes with a tick instead of a number.
                 </>,
                 <>
-                  A step's footer adds another item. A step is not confirmed
-                  by a button: it is done when it has what it needs.
+                  A step's footer adds another item. A step is not confirmed by a
+                  button: it is done when it has what it needs.
                 </>,
                 <>
-                  A choice with a consequence is made on a card with an
-                  explaining sentence, not an option in a dropdown. That
-                  sentence is half the choice.
+                  A choice with a consequence is made on a card with an explaining
+                  sentence, not an option in a dropdown. That sentence is half the
+                  choice.
                 </>,
                 <>
-                  A finished step collapses on its own and leaves a header
-                  with a summary behind (“3 / 3 active”). Otherwise a setup
-                  of eight steps pushes the unfinished one below the fold.
+                  A finished step collapses on its own and leaves a header with a
+                  summary behind (“3 / 3 active”). Otherwise a setup of eight steps
+                  pushes the unfinished one below the fold.
                 </>,
               ]
         }
@@ -780,46 +758,43 @@ function ListPattern({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  <IngotCode>IngotToolbar</IngotCode> — hledání a filtry nad
-                  seznamem.
+                  <IngotCode>IngotToolbar</IngotCode> — hledání a filtry nad seznamem.
                 </>,
                 <>
-                  <IngotCode>IngotTable</IngotCode> — záznamy; výběr řádků
-                  otevírá hromadné akce.
+                  <IngotCode>IngotTable</IngotCode> — záznamy; výběr řádků otevírá
+                  hromadné akce.
                 </>,
                 <>
-                  <IngotCode>IngotRowActions</IngotCode> — akce jednoho
-                  řádku, vždy na jeho konci.
+                  <IngotCode>IngotRowActions</IngotCode> — akce jednoho řádku, vždy na
+                  jeho konci.
                 </>,
                 <>
-                  <IngotCode>IngotEmptyState</IngotCode> — když záznamy
-                  nejsou, řekne proč a co udělat.
+                  <IngotCode>IngotEmptyState</IngotCode> — když záznamy nejsou, řekne
+                  proč a co udělat.
                 </>,
                 <>
-                  <IngotCode>IngotPagination</IngotCode> — stránkování pod
-                  seznamem.
+                  <IngotCode>IngotPagination</IngotCode> — stránkování pod seznamem.
                 </>,
               ]
             : [
                 <>
-                  <IngotCode>IngotToolbar</IngotCode> — search and filters
-                  above the list.
-                </>,
-                <>
-                  <IngotCode>IngotTable</IngotCode> — the records; selecting
-                  rows opens the bulk actions.
-                </>,
-                <>
-                  <IngotCode>IngotRowActions</IngotCode> — the actions of one
-                  row, always at its end.
-                </>,
-                <>
-                  <IngotCode>IngotEmptyState</IngotCode> — when there are no
-                  records, it says why and what to do.
-                </>,
-                <>
-                  <IngotCode>IngotPagination</IngotCode> — paging below the
+                  <IngotCode>IngotToolbar</IngotCode> — search and filters above the
                   list.
+                </>,
+                <>
+                  <IngotCode>IngotTable</IngotCode> — the records; selecting rows opens
+                  the bulk actions.
+                </>,
+                <>
+                  <IngotCode>IngotRowActions</IngotCode> — the actions of one row,
+                  always at its end.
+                </>,
+                <>
+                  <IngotCode>IngotEmptyState</IngotCode> — when there are no records, it
+                  says why and what to do.
+                </>,
+                <>
+                  <IngotCode>IngotPagination</IngotCode> — paging below the list.
                 </>,
               ]
         }

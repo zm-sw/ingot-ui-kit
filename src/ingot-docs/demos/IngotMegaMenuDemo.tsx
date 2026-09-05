@@ -2,10 +2,41 @@ import { IngotIcon, IngotMegaMenu } from "@/ingot";
 
 function SectionArt(): JSX.Element {
   return (
-    <svg width="88" height="56" viewBox="0 0 88 56" fill="none" aria-hidden="true" className="text-ink-4">
-      <rect x="1" y="1" width="24" height="54" rx="4" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="32" y="1" width="24" height="42" rx="4" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="63" y="1" width="24" height="48" rx="4" stroke="currentColor" strokeWidth="1.5" />
+    <svg
+      width="88"
+      height="56"
+      viewBox="0 0 88 56"
+      fill="none"
+      aria-hidden="true"
+      className="text-ink-4"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="24"
+        height="54"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="32"
+        y="1"
+        width="24"
+        height="42"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="63"
+        y="1"
+        width="24"
+        height="48"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
       <rect x="6" y="8" width="14" height="3" rx="1.5" fill="currentColor" />
       <rect x="37" y="8" width="14" height="3" rx="1.5" fill="currentColor" />
       <rect x="68" y="8" width="14" height="3" rx="1.5" fill="currentColor" />

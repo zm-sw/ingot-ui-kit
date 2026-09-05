@@ -29,9 +29,7 @@ describe("IngotPagination", () => {
   it("is a <nav> with a label and shows the composed state", () => {
     renderPager(2);
 
-    expect(
-      screen.getByRole("navigation", { name: "Stránkování" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Stránkování" })).toBeInTheDocument();
     expect(screen.getByText("Strana 2 z 3")).toBeInTheDocument();
   });
 

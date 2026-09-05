@@ -31,49 +31,47 @@ export const IngotMarketingStepsDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Sekce popisuje postup a na pořadí záleží: druhý krok nedává smysl
-        před prvním.
+        Sekce popisuje postup a na pořadí záleží: druhý krok nedává smysl před prvním.
       </>,
       <>
-        Kroků je tři, nebo čtyři u procesu —{" "}
-        <IngotCode>columns</IngotCode> nabízí jen tyhle dvě hodnoty,
-        protože „kolik chceš“ by z pravidla handoffu udělalo doporučení.
+        Kroků je tři, nebo čtyři u procesu — <IngotCode>columns</IngotCode> nabízí jen
+        tyhle dvě hodnoty, protože „kolik chceš“ by z pravidla handoffu udělalo
+        doporučení.
       </>,
     ],
     en: [
       <>
-        The section describes a procedure and the order matters: step two
-        makes no sense before step one.
+        The section describes a procedure and the order matters: step two makes no sense
+        before step one.
       </>,
       <>
-        There are three steps, or four for a process —{" "}
-        <IngotCode>columns</IngotCode> offers only those two values,
-        because “as many as you like” would turn the handoff rule into a
-        suggestion.
+        There are three steps, or four for a process — <IngotCode>columns</IngotCode>{" "}
+        offers only those two values, because “as many as you like” would turn the
+        handoff rule into a suggestion.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Položky jsou rovnocenné a pořadí je nahodilé. Pak je to výčet
-        featur — <IngotCode>IngotMarketingTri</IngotCode>.
+        Položky jsou rovnocenné a pořadí je nahodilé. Pak je to výčet featur —{" "}
+        <IngotCode>IngotMarketingTri</IngotCode>.
       </>,
       <>
         Je to průvodce v aplikaci, kterým uživatel prochází. Na to je{" "}
-        <IngotCode>IngotStepCard</IngotCode>: ta drží stav kroku
-        (hotovo, běží) a sbalí se; tyhle karty jsou statický popis.
+        <IngotCode>IngotStepCard</IngotCode>: ta drží stav kroku (hotovo, běží) a sbalí
+        se; tyhle karty jsou statický popis.
       </>,
     ],
     en: [
       <>
-        The items are equal and the order is arbitrary. Then it is a
-        feature list — <IngotCode>IngotMarketingTri</IngotCode>.
+        The items are equal and the order is arbitrary. Then it is a feature list —{" "}
+        <IngotCode>IngotMarketingTri</IngotCode>.
       </>,
       <>
         It is an in-app wizard the user walks through. That is{" "}
-        <IngotCode>IngotStepCard</IngotCode>: it holds step state (done,
-        in progress) and collapses; these cards are a static description.
+        <IngotCode>IngotStepCard</IngotCode>: it holds step state (done, in progress)
+        and collapses; these cards are a static description.
       </>,
     ],
   },
@@ -100,7 +98,10 @@ export const IngotMarketingStepsDoc: IngotDocPage = {
       name: "testId",
       type: "string",
       required: false,
-      note: { cs: "Kotva pro testy — na seznamu.", en: "An anchor for tests — on the list." },
+      note: {
+        cs: "Kotva pro testy — na seznamu.",
+        en: "An anchor for tests — on the list.",
+      },
     },
   ],
   extraProps: [
@@ -132,47 +133,45 @@ export const IngotMarketingStepsDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Kroky jsou <IngotCode>ol</IngotCode>, takže odečítač hlásí
-        pořadí i počet — pořadí je tu význam, ne vzhled.
+        Kroky jsou <IngotCode>ol</IngotCode>, takže odečítač hlásí pořadí i počet —
+        pořadí je tu význam, ne vzhled.
       </>,
       <>
-        Šipka k dalšímu kroku je dekorace a poslední karta ji nemá:
-        pořadí se čte ze seznamu, ne z ikony.
+        Šipka k dalšímu kroku je dekorace a poslední karta ji nemá: pořadí se čte ze
+        seznamu, ne z ikony.
       </>,
     ],
     en: [
       <>
-        The steps are an <IngotCode>ol</IngotCode>, so a screen reader
-        announces position and count — the order is meaning here, not
-        decoration.
+        The steps are an <IngotCode>ol</IngotCode>, so a screen reader announces
+        position and count — the order is meaning here, not decoration.
       </>,
       <>
-        The arrow to the next step is decoration and the last card has
-        none: the order is read from the list, not from an icon.
+        The arrow to the next step is decoration and the last card has none: the order
+        is read from the list, not from an icon.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        <IngotCode>title</IngotCode> i <IngotCode>text</IngotCode> chodí
-        přeložené od volajícího.
+        <IngotCode>title</IngotCode> i <IngotCode>text</IngotCode> chodí přeložené od
+        volajícího.
       </>,
       <>
-        Číslo se sází mono s <IngotCode>01</IngotCode> místo{" "}
-        <IngotCode>1</IngotCode>, takže je v každém jazyce stejně široké
-        a karty se nerozjedou.
+        Číslo se sází mono s <IngotCode>01</IngotCode> místo <IngotCode>1</IngotCode>,
+        takže je v každém jazyce stejně široké a karty se nerozjedou.
       </>,
     ],
     en: [
       <>
-        Both <IngotCode>title</IngotCode> and <IngotCode>text</IngotCode>{" "}
-        arrive translated from the caller.
+        Both <IngotCode>title</IngotCode> and <IngotCode>text</IngotCode> arrive
+        translated from the caller.
       </>,
       <>
-        The ordinal is set in mono as <IngotCode>01</IngotCode> rather
-        than <IngotCode>1</IngotCode>, so it is the same width in every
-        language and the cards do not drift.
+        The ordinal is set in mono as <IngotCode>01</IngotCode> rather than{" "}
+        <IngotCode>1</IngotCode>, so it is the same width in every language and the
+        cards do not drift.
       </>,
     ],
   },

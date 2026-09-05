@@ -93,6 +93,10 @@ export function IngotTabs({
 
   return (
     <div>
+      {/* The tablist itself is not a tab stop (ARIA practices): the roving
+          tabindex puts focus on the active tab, and the key handler sits on
+          the container so arrows work from any of them. */}
+      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
       <div
         ref={listRef}
         role="tablist"

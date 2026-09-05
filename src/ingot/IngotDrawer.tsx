@@ -106,6 +106,9 @@ export function IngotDrawer({
   );
 
   return createPortal(
+    // Same as IngotModal: the backdrop is a mouse convenience, the keyboard
+    // path is ESC and the close button.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={cx(
         "fixed inset-0 flex bg-black/40",

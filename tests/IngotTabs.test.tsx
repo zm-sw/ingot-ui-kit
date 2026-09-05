@@ -74,18 +74,9 @@ describe("IngotTabs — role a atributy", () => {
 
   it("roving tabindex: Tab stops only on the active tab", () => {
     render(<Controlled initial="items" />);
-    expect(screen.getByTestId("tabs-tab-items")).toHaveAttribute(
-      "tabindex",
-      "0",
-    );
-    expect(screen.getByTestId("tabs-tab-overview")).toHaveAttribute(
-      "tabindex",
-      "-1",
-    );
-    expect(screen.getByTestId("tabs-tab-history")).toHaveAttribute(
-      "tabindex",
-      "-1",
-    );
+    expect(screen.getByTestId("tabs-tab-items")).toHaveAttribute("tabindex", "0");
+    expect(screen.getByTestId("tabs-tab-overview")).toHaveAttribute("tabindex", "-1");
+    expect(screen.getByTestId("tabs-tab-history")).toHaveAttribute("tabindex", "-1");
   });
 });
 

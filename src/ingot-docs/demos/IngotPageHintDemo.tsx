@@ -17,8 +17,8 @@ export function Demo(): JSX.Element {
           onDismiss={() => setVisible(false)}
           testId="docs-pagehint"
         >
-          Přetáhněte zakázku myší a změňte její pořadí ve frontě. Filtrem
-          vpravo si zobrazíte jen svoje stroje.
+          Přetáhněte zakázku myší a změňte její pořadí ve frontě. Filtrem vpravo si
+          zobrazíte jen svoje stroje.
         </IngotPageHint>
       ) : (
         <p className="text-sm text-ink-3">Nápověda je skrytá.</p>

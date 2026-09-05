@@ -25,11 +25,7 @@ export function Demo(): JSX.Element {
             price: "X XXX Kč",
             period: "měsíčně",
             description: "Pro dílnu s obchodem.",
-            features: [
-              "Pět uživatelů",
-              "Vlastní sazby strojů",
-              "Historie nabídek",
-            ],
+            features: ["Pět uživatelů", "Vlastní sazby strojů", "Historie nabídek"],
             featured: true,
             badge: "Nejčastější",
             action: (

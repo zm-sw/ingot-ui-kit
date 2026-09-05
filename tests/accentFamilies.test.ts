@@ -22,10 +22,7 @@ import { describe, expect, it } from "vitest";
 
 import { ACCENT_CHOICES, DEFAULT_ACCENT } from "@/lib/accent";
 
-const CSS = readFileSync(
-  join(process.cwd(), "src/ingot/tokens.css"),
-  "utf-8",
-);
+const CSS = readFileSync(join(process.cwd(), "src/ingot/tokens.css"), "utf-8");
 
 /** Family blocks for the given surface — light (``:not(.dark)``) and dark. */
 function descendantBlocks(choice: string): readonly string[] {
@@ -58,9 +55,7 @@ describe("accent families", () => {
   it("the default family does not copy its values, it only references them", () => {
     // Two definitions of the same blue would drift sooner or later, so the
     // family block may contain only references to ``--blue-*``.
-    const block = CSS.split(`:root:not(.dark) [data-accent="blue"]`)[1]?.split(
-      "}",
-    )[0];
+    const block = CSS.split(`:root:not(.dark) [data-accent="blue"]`)[1]?.split("}")[0];
     expect(block).toBeTruthy();
     expect(block).toContain("var(--blue-accent)");
     // No hex inside the block — the value has one place, and that is :root.

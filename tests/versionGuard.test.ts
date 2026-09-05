@@ -56,8 +56,9 @@ function owed(input: Scenario) {
 
 describe("reading the kit's imports", () => {
   it("finds the local modules a file imports", () => {
-    expect(localImports('import { cx } from "./cx";\nimport "./tokens.css";').sort())
-      .toEqual(["cx", "tokens"]);
+    expect(
+      localImports('import { cx } from "./cx";\nimport "./tokens.css";').sort(),
+    ).toEqual(["cx", "tokens"]);
   });
 
   it("does not mistake a package import for a local one", () => {
@@ -85,7 +86,11 @@ describe("reading the kit's imports", () => {
 describe("a primitive owes a bump on its own page", () => {
   it("names the page when nothing moved", () => {
     expect(owed({ changedFiles: ["src/ingot/IngotTable.tsx"] })).toEqual([
-      { file: "src/ingot/IngotTable.tsx", reason: "its own page", pages: ["IngotTable"] },
+      {
+        file: "src/ingot/IngotTable.tsx",
+        reason: "its own page",
+        pages: ["IngotTable"],
+      },
     ]);
   });
 

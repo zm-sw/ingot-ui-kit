@@ -5,7 +5,12 @@ import { act, render, screen } from "@testing-library/react";
 
 import { IngotMegaMenu, MENU_LAYER } from "@/ingot";
 import { createStore } from "@/ingot/store";
-import { LEGACY_STORAGE_KEYS, STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
+import {
+  LEGACY_STORAGE_KEYS,
+  STORAGE_KEYS,
+  readStorage,
+  writeStorage,
+} from "@/lib/storage";
 import { readStoredTheme } from "@/lib/theme";
 
 describe("createStore", () => {
@@ -57,7 +62,10 @@ describe("storage keys", () => {
   });
 
   it("theme-init.js reads the same key as theme.ts, with the same legacy fallback", () => {
-    const script = readFileSync(join(__dirname, "..", "public", "theme-init.js"), "utf-8");
+    const script = readFileSync(
+      join(__dirname, "..", "public", "theme-init.js"),
+      "utf-8",
+    );
     expect(script).toContain(`"${STORAGE_KEYS.theme}"`);
     expect(script).toContain(`"${LEGACY_STORAGE_KEYS.theme}"`);
   });
@@ -65,7 +73,13 @@ describe("storage keys", () => {
 
 describe("layers", () => {
   it("the mega menu sits on MENU_LAYER, above every dialog", () => {
-    render(<IngotMegaMenu label="Menu" groups={[{ items: [{ href: "#a", label: "A" }] }]} testId="mm" />);
+    render(
+      <IngotMegaMenu
+        label="Menu"
+        groups={[{ items: [{ href: "#a", label: "A" }] }]}
+        testId="mm"
+      />,
+    );
     expect(screen.getByTestId("mm")).toHaveStyle({ zIndex: String(MENU_LAYER) });
     expect(screen.getByTestId("mm").className).not.toMatch(/z-\[/);
   });

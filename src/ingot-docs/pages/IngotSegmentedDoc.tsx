@@ -22,23 +22,20 @@ export const IngotSegmentedDoc: IngotDocPage = {
   demoSource,
   useWhen: {
     cs: [
+      <>Voleb je málo, jsou krátké a vejdou se vedle sebe — motiv, jazyk, hustota.</>,
       <>
-        Voleb je málo, jsou krátké a vejdou se vedle sebe — motiv,
-        jazyk, hustota.
-      </>,
-      <>
-        Volba se projeví okamžitě a nepotvrzuje se. Přepínač, po kterém
-        se ještě někam ukládá, je formulář, ne lišta.
+        Volba se projeví okamžitě a nepotvrzuje se. Přepínač, po kterém se ještě někam
+        ukládá, je formulář, ne lišta.
       </>,
     ],
     en: [
       <>
-        There are few choices, they are short and they fit side by side
-        — theme, language, density.
+        There are few choices, they are short and they fit side by side — theme,
+        language, density.
       </>,
       <>
-        The choice applies immediately and is not confirmed. A switch
-        that still has to be saved somewhere is a form, not a bar.
+        The choice applies immediately and is not confirmed. A switch that still has to
+        be saved somewhere is a form, not a bar.
       </>,
     ],
   },
@@ -46,34 +43,32 @@ export const IngotSegmentedDoc: IngotDocPage = {
     cs: [
       <>
         Přepínají se pohledy na obsah stránky. To jsou záložky —{" "}
-        <IngotCode>IngotTabs</IngotCode>; ty patří k obsahu pod nimi,
-        tenhle přepínač k liště nad ním.
+        <IngotCode>IngotTabs</IngotCode>; ty patří k obsahu pod nimi, tenhle přepínač k
+        liště nad ním.
       </>,
       <>
         Voleb je víc než tři nebo jsou dlouhé. Pak je to{" "}
-        <IngotCode>IngotSelect</IngotCode> — přepínač se jinak roztáhne
-        přes půl lišty.
+        <IngotCode>IngotSelect</IngotCode> — přepínač se jinak roztáhne přes půl lišty.
       </>,
       <>
-        Volí se barva. Na to je <IngotCode>IngotAccentSwatches</IngotCode>{" "}
-        — název rodiny neřekne, jak bude obrazovka vypadat.
+        Volí se barva. Na to je <IngotCode>IngotAccentSwatches</IngotCode> — název
+        rodiny neřekne, jak bude obrazovka vypadat.
       </>,
     ],
     en: [
       <>
         Views of the page content are being switched. Those are tabs —{" "}
-        <IngotCode>IngotTabs</IngotCode>; they belong to the content
-        below them, this switch to the bar above it.
+        <IngotCode>IngotTabs</IngotCode>; they belong to the content below them, this
+        switch to the bar above it.
       </>,
       <>
         There are more than three choices, or they are long. Then it is{" "}
-        <IngotCode>IngotSelect</IngotCode> — otherwise the switch spreads
-        across half the bar.
+        <IngotCode>IngotSelect</IngotCode> — otherwise the switch spreads across half
+        the bar.
       </>,
       <>
-        A colour is being chosen. That is{" "}
-        <IngotCode>IngotAccentSwatches</IngotCode> — a family name does
-        not say how the screen will look.
+        A colour is being chosen. That is <IngotCode>IngotAccentSwatches</IngotCode> — a
+        family name does not say how the screen will look.
       </>,
     ],
   },
@@ -142,7 +137,10 @@ export const IngotSegmentedDoc: IngotDocPage = {
           name: "label",
           type: "string",
           required: true,
-          note: { cs: "Popisek volby, dodaný přeložený.", en: "The choice's label, supplied translated." },
+          note: {
+            cs: "Popisek volby, dodaný přeložený.",
+            en: "The choice's label, supplied translated.",
+          },
         },
       ],
     },
@@ -150,37 +148,35 @@ export const IngotSegmentedDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Volby jsou přepínače v pojmenované skupině, ne tlačítka: odečítač
-        hlásí „vybráno“ a šipky mezi nimi chodí bez naší pomoci.
+        Volby jsou přepínače v pojmenované skupině, ne tlačítka: odečítač hlásí
+        „vybráno“ a šipky mezi nimi chodí bez naší pomoci.
       </>,
       <>
-        Vybraná volba se nepozná jen barvou textu — vystoupí na plochu
-        se stínem, takže rozdíl drží i bez vnímání barvy.
+        Vybraná volba se nepozná jen barvou textu — vystoupí na plochu se stínem, takže
+        rozdíl drží i bez vnímání barvy.
       </>,
     ],
     en: [
       <>
-        The choices are radios in a named group, not buttons: a screen
-        reader announces “selected” and arrow keys move between them
-        without our help.
+        The choices are radios in a named group, not buttons: a screen reader announces
+        “selected” and arrow keys move between them without our help.
       </>,
       <>
-        The selected choice is not marked by text colour alone — it
-        lifts onto the surface with a shadow, so the difference holds
-        without colour perception.
+        The selected choice is not marked by text colour alone — it lifts onto the
+        surface with a shadow, so the difference holds without colour perception.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        <IngotCode>label</IngotCode> volby i{" "}
-        <IngotCode>label</IngotCode> skupiny dodává volající přeložené.
+        <IngotCode>label</IngotCode> volby i <IngotCode>label</IngotCode> skupiny dodává
+        volající přeložené.
       </>,
       <>
-        <IngotCode>value</IngotCode> se nepřekládá — je to klíč, který se
-        vrací v <IngotCode>onChange</IngotCode>. Přeložená hodnota by
-        volbu rozbila při přepnutí jazyka.
+        <IngotCode>value</IngotCode> se nepřekládá — je to klíč, který se vrací v{" "}
+        <IngotCode>onChange</IngotCode>. Přeložená hodnota by volbu rozbila při přepnutí
+        jazyka.
       </>,
     ],
     en: [
@@ -189,9 +185,9 @@ export const IngotSegmentedDoc: IngotDocPage = {
         <IngotCode>label</IngotCode> arrive translated from the caller.
       </>,
       <>
-        <IngotCode>value</IngotCode> is not translated — it is the key
-        returned in <IngotCode>onChange</IngotCode>. A translated value
-        would break the choice on a language switch.
+        <IngotCode>value</IngotCode> is not translated — it is the key returned in{" "}
+        <IngotCode>onChange</IngotCode>. A translated value would break the choice on a
+        language switch.
       </>,
     ],
   },

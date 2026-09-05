@@ -27,11 +27,7 @@
  * Re-exported here so the app keeps ONE import for the whole accent
  * story — the list and the persistence that hangs off it.
  */
-import {
-  ACCENT_CHOICES,
-  DEFAULT_ACCENT,
-  type AccentChoice,
-} from "@/ingot/accent";
+import { ACCENT_CHOICES, DEFAULT_ACCENT, type AccentChoice } from "@/ingot/accent";
 
 import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
 
@@ -41,8 +37,7 @@ export const ACCENT_STORAGE_KEY = STORAGE_KEYS.accent;
 
 export function isAccentChoice(value: unknown): value is AccentChoice {
   return (
-    typeof value === "string" &&
-    (ACCENT_CHOICES as readonly string[]).includes(value)
+    typeof value === "string" && (ACCENT_CHOICES as readonly string[]).includes(value)
   );
 }
 

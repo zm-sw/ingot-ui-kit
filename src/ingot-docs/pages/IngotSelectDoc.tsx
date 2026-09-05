@@ -11,7 +11,17 @@ export const IngotSelectDoc: IngotDocPage = {
   // 1.2 (KAN-842) — forwardRef to the <select>; callers touch nothing.
   version: "1.2",
   tag: ".select",
-  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
+  tokens: [
+    "--surface",
+    "--surface-2",
+    "--border-strong",
+    "--ink",
+    "--ink-4",
+    "--accent",
+    "--accent-bg",
+    "--r-md",
+    "--shadow-sm",
+  ],
   classNameNote: {
     cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
     en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
@@ -25,41 +35,39 @@ export const IngotSelectDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Filtr nad seznamem s pevnou, krátkou množinou hodnot — stav, tarif,
-        region. První volba je „všechny“, protože filtr vždycky v nějakém
-        stavu je.
+        Filtr nad seznamem s pevnou, krátkou množinou hodnot — stav, tarif, region.
+        První volba je „všechny“, protože filtr vždycky v nějakém stavu je.
       </>,
       <>
-        Pole nastavení, kde se vybírá jedna z několika pojmenovaných
-        variant a varianty se nemění za běhu.
+        Pole nastavení, kde se vybírá jedna z několika pojmenovaných variant a varianty
+        se nemění za běhu.
       </>,
       <>
-        Vedle dalších filtrů v <IngotCode>IngotToolbar</IngotCode> — tam,
-        kde viditelný popisek nahrazuje srozumitelná první volba.
+        Vedle dalších filtrů v <IngotCode>IngotToolbar</IngotCode> — tam, kde viditelný
+        popisek nahrazuje srozumitelná první volba.
       </>,
     ],
     en: [
       <>
-        A filter above a list with a fixed, short set of values — status,
-        plan, region. The first option is “all”, because a filter is always
-        in some state.
+        A filter above a list with a fixed, short set of values — status, plan, region.
+        The first option is “all”, because a filter is always in some state.
       </>,
       <>
-        A settings field choosing one of a few named variants that do not
-        change at runtime.
+        A settings field choosing one of a few named variants that do not change at
+        runtime.
       </>,
       <>
-        Next to other filters in <IngotCode>IngotToolbar</IngotCode> — where
-        an intelligible first option stands in for a visible label.
+        Next to other filters in <IngotCode>IngotToolbar</IngotCode> — where an
+        intelligible first option stands in for a visible label.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Množina, ve které se hledá — desítky materiálů, stovky kontaktů.
-        Nativní select se v ní nedá prohledávat; takové pole si řekne
-        o vlastní primitivum s hledáním, až bude mít žadatele.
+        Množina, ve které se hledá — desítky materiálů, stovky kontaktů. Nativní select
+        se v ní nedá prohledávat; takové pole si řekne o vlastní primitivum s hledáním,
+        až bude mít žadatele.
       </>,
       <>
         Výběr více hodnot najednou. Na sadu nezávislých přepínačů je{" "}
@@ -72,9 +80,9 @@ export const IngotSelectDoc: IngotDocPage = {
     ],
     en: [
       <>
-        A set you search in — dozens of materials, hundreds of contacts. A
-        native select cannot be searched; such a field asks for its own
-        primitive with search, once it has a requester.
+        A set you search in — dozens of materials, hundreds of contacts. A native select
+        cannot be searched; such a field asks for its own primitive with search, once it
+        has a requester.
       </>,
       <>
         Picking several values at once. A row of independent toggles is{" "}
@@ -192,50 +200,48 @@ export const IngotSelectDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Je to nativní <IngotCode>select</IngotCode>: šipky, psaní počátečních
-        písmen, odečítač i mobilní kolečko fungují bez jediného řádku navíc —
-        a proto se nenahrazuje vlastním rozbalovacím seznamem.
+        Je to nativní <IngotCode>select</IngotCode>: šipky, psaní počátečních písmen,
+        odečítač i mobilní kolečko fungují bez jediného řádku navíc — a proto se
+        nenahrazuje vlastním rozbalovacím seznamem.
       </>,
       <>
-        Jméno nese <IngotCode>label</IngotCode> (aria-label), ne první volba.
-        „Všechny stavy“ říká, jaká je hodnota, ne čeho je to filtr.
+        Jméno nese <IngotCode>label</IngotCode> (aria-label), ne první volba. „Všechny
+        stavy“ říká, jaká je hodnota, ne čeho je to filtr.
       </>,
     ],
     en: [
       <>
-        It is a native <IngotCode>select</IngotCode>: arrows, type-ahead,
-        screen readers and the mobile wheel work without a single extra line —
-        which is exactly why it is not replaced by a custom dropdown.
+        It is a native <IngotCode>select</IngotCode>: arrows, type-ahead, screen readers
+        and the mobile wheel work without a single extra line — which is exactly why it
+        is not replaced by a custom dropdown.
       </>,
       <>
-        The name is carried by <IngotCode>label</IngotCode> (aria-label), not
-        by the first option. “All statuses” says what the value is, not what
-        the filter is of.
+        The name is carried by <IngotCode>label</IngotCode> (aria-label), not by the
+        first option. “All statuses” says what the value is, not what the filter is of.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Popisky voleb i <IngotCode>label</IngotCode> dodává volající už
-        přeložené — kit vlastní jmenný prostor překladů nemá.
+        Popisky voleb i <IngotCode>label</IngotCode> dodává volající už přeložené — kit
+        vlastní jmenný prostor překladů nemá.
       </>,
       <>
         Šířku pole neurčuje nejdelší volba, ale obrazovka přes{" "}
-        <IngotCode>className</IngotCode> — dlouhý překlad se zkrátí
-        trojtečkou prohlížeče, ne rozbitím filtr baru.
+        <IngotCode>className</IngotCode> — dlouhý překlad se zkrátí trojtečkou
+        prohlížeče, ne rozbitím filtr baru.
       </>,
     ],
     en: [
       <>
-        Option labels and <IngotCode>label</IngotCode> arrive already
-        translated from the caller — the kit has no translation namespace of
-        its own.
+        Option labels and <IngotCode>label</IngotCode> arrive already translated from
+        the caller — the kit has no translation namespace of its own.
       </>,
       <>
-        The field's width is set by the screen via{" "}
-        <IngotCode>className</IngotCode>, not by the longest option — a long
-        translation gets the browser's ellipsis, not a broken filter bar.
+        The field's width is set by the screen via <IngotCode>className</IngotCode>, not
+        by the longest option — a long translation gets the browser's ellipsis, not a
+        broken filter bar.
       </>,
     ],
   },

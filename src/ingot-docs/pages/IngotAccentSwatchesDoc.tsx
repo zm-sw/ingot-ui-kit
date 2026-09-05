@@ -26,22 +26,20 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Uživatel si volí akcentovou rodinu — v nastavení aplikace nebo
-        v liště doc webu.
+        Uživatel si volí akcentovou rodinu — v nastavení aplikace nebo v liště doc webu.
       </>,
       <>
-        Volba se má ukázat jako barva, ne jako název. Jméno „smaragdová“
-        nikomu neřekne, jak bude obrazovka vypadat.
+        Volba se má ukázat jako barva, ne jako název. Jméno „smaragdová“ nikomu neřekne,
+        jak bude obrazovka vypadat.
       </>,
     ],
     en: [
       <>
-        The user picks an accent family — in app settings or in the doc
-        web's top bar.
+        The user picks an accent family — in app settings or in the doc web's top bar.
       </>,
       <>
-        The choice should be shown as a colour, not a name. “Emerald”
-        tells nobody how the screen will look.
+        The choice should be shown as a colour, not a name. “Emerald” tells nobody how
+        the screen will look.
       </>,
     ],
   },
@@ -49,23 +47,21 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
     cs: [
       <>
         Vybírá se z pojmenovaných možností, které nejsou barvy. Na to je{" "}
-        <IngotCode>IngotSegmented</IngotCode> nebo{" "}
-        <IngotCode>IngotSelect</IngotCode>.
+        <IngotCode>IngotSegmented</IngotCode> nebo <IngotCode>IngotSelect</IngotCode>.
       </>,
       <>
-        Má se ukázat, JAK rodina vypadá napříč tokeny. To je ukázka
-        palety v průvodci Základy, ne přepínač.
+        Má se ukázat, JAK rodina vypadá napříč tokeny. To je ukázka palety v průvodci
+        Základy, ne přepínač.
       </>,
     ],
     en: [
       <>
         The options are named things that are not colours. That is{" "}
-        <IngotCode>IngotSegmented</IngotCode> or{" "}
-        <IngotCode>IngotSelect</IngotCode>.
+        <IngotCode>IngotSegmented</IngotCode> or <IngotCode>IngotSelect</IngotCode>.
       </>,
       <>
-        The point is to show HOW a family looks across tokens. That is
-        the palette demo in the Basics guide, not a picker.
+        The point is to show HOW a family looks across tokens. That is the palette demo
+        in the Basics guide, not a picker.
       </>,
     ],
   },
@@ -125,59 +121,54 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Puntíky jsou přepínače v pojmenované skupině, takže se mezi nimi
-        chodí šipkami a odečítač hlásí, který je vybraný.
+        Puntíky jsou přepínače v pojmenované skupině, takže se mezi nimi chodí šipkami a
+        odečítač hlásí, který je vybraný.
       </>,
       <>
-        Terč je 28×28, i když tečka zůstává 18×18 — sáhnout se musí dát
-        prstem. Zvětšit kolečko by rozbilo lištu, proto roste plocha
-        kolem něj.
+        Terč je 28×28, i když tečka zůstává 18×18 — sáhnout se musí dát prstem. Zvětšit
+        kolečko by rozbilo lištu, proto roste plocha kolem něj.
       </>,
       <>
-        Vybraný puntík má prstenec v barvě inkoustu, ne v barvě rodiny:
-        prstenec ve vlastní barvě není proti tečce, kterou obkružuje,
-        vidět.
+        Vybraný puntík má prstenec v barvě inkoustu, ne v barvě rodiny: prstenec ve
+        vlastní barvě není proti tečce, kterou obkružuje, vidět.
       </>,
     ],
     en: [
       <>
-        The dots are radios in a named group, so arrow keys move between
-        them and a screen reader announces which is selected.
+        The dots are radios in a named group, so arrow keys move between them and a
+        screen reader announces which is selected.
       </>,
       <>
-        The target is 28×28 even though the dot stays 18×18 — it has to
-        be reachable with a finger. Growing the circle would break the
-        bar, so the area around it grows instead.
+        The target is 28×28 even though the dot stays 18×18 — it has to be reachable
+        with a finger. Growing the circle would break the bar, so the area around it
+        grows instead.
       </>,
       <>
-        The selected dot has an ink-coloured ring, not a family-coloured
-        one: a ring in its own colour is invisible against the dot it
-        circles.
+        The selected dot has an ink-coloured ring, not a family-coloured one: a ring in
+        its own colour is invisible against the dot it circles.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Jména rodin dodává volající přes{" "}
-        <IngotCode>optionLabel</IngotCode>. Kit je nezná — ví jen, kolik
-        rodin existuje, protože jejich tokeny jsou jeho.
+        Jména rodin dodává volající přes <IngotCode>optionLabel</IngotCode>. Kit je
+        nezná — ví jen, kolik rodin existuje, protože jejich tokeny jsou jeho.
       </>,
       <>
-        <IngotCode>groupLabel</IngotCode> je jméno celé volby a je
-        povinné; bez něj odečítač neřekne, čeho se pět puntíků týká.
+        <IngotCode>groupLabel</IngotCode> je jméno celé volby a je povinné; bez něj
+        odečítač neřekne, čeho se pět puntíků týká.
       </>,
     ],
     en: [
       <>
-        The family names come from the caller through{" "}
-        <IngotCode>optionLabel</IngotCode>. The kit does not know them —
-        only how many families exist, because their tokens are its own.
+        The family names come from the caller through <IngotCode>optionLabel</IngotCode>
+        . The kit does not know them — only how many families exist, because their
+        tokens are its own.
       </>,
       <>
-        <IngotCode>groupLabel</IngotCode> names the whole choice and is
-        required; without it a screen reader cannot say what the five
-        dots are about.
+        <IngotCode>groupLabel</IngotCode> names the whole choice and is required;
+        without it a screen reader cannot say what the five dots are about.
       </>,
     ],
   },

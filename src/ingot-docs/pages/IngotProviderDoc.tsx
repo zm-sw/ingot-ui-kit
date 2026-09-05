@@ -21,8 +21,8 @@ export const IngotProviderDoc: IngotDocPage = {
     en: "Does not take `className` — it renders nothing, it only carries the label dictionary.",
   },
   summary: {
-    cs: "Slovník několika popisků, které kit říká sám — zpět, žárovka nápovědy, tajné pole. Bez providera anglicky; lang=\"cs\" přepne celou sadu.",
-    en: "The dictionary of the few labels the kit says itself — undo, the hint bulb, the secret field. English without a provider; lang=\"cs\" switches the whole set.",
+    cs: 'Slovník několika popisků, které kit říká sám — zpět, žárovka nápovědy, tajné pole. Bez providera anglicky; lang="cs" přepne celou sadu.',
+    en: 'The dictionary of the few labels the kit says itself — undo, the hint bulb, the secret field. English without a provider; lang="cs" switches the whole set.',
   },
   Demo,
   demoSource,
@@ -30,13 +30,12 @@ export const IngotProviderDoc: IngotDocPage = {
     cs: [
       <>
         Aplikace v češtině: obal celý strom{" "}
-        <IngotCode>&lt;IngotProvider lang=&quot;cs&quot;&gt;</IngotCode> a
-        toast, nápověda i tajné pole mluví česky bez dalších props.
+        <IngotCode>&lt;IngotProvider lang=&quot;cs&quot;&gt;</IngotCode> a toast,
+        nápověda i tajné pole mluví česky bez dalších props.
       </>,
       <>
-        Aplikace v jazyce, který kit nezná: <IngotCode>labels</IngotCode>{" "}
-        přepíše jednotlivé popisky a zbytek doplní zvolený{" "}
-        <IngotCode>lang</IngotCode>.
+        Aplikace v jazyce, který kit nezná: <IngotCode>labels</IngotCode> přepíše
+        jednotlivé popisky a zbytek doplní zvolený <IngotCode>lang</IngotCode>.
       </>,
       <>
         Vlastní primitivum, které potřebuje popisek říct samo — čte ho z{" "}
@@ -46,9 +45,8 @@ export const IngotProviderDoc: IngotDocPage = {
     en: [
       <>
         A Czech application: wrap the tree in{" "}
-        <IngotCode>&lt;IngotProvider lang=&quot;cs&quot;&gt;</IngotCode> and
-        the toast, the hint and the secret field speak Czech with no further
-        props.
+        <IngotCode>&lt;IngotProvider lang=&quot;cs&quot;&gt;</IngotCode> and the toast,
+        the hint and the secret field speak Czech with no further props.
       </>,
       <>
         An application in a language the kit does not know:{" "}
@@ -56,35 +54,33 @@ export const IngotProviderDoc: IngotDocPage = {
         <IngotCode>lang</IngotCode> fills in the rest.
       </>,
       <>
-        A primitive of your own that has to say a label itself — read it
-        from <IngotCode>useIngotLabels()</IngotCode>, not from a constant.
+        A primitive of your own that has to say a label itself — read it from{" "}
+        <IngotCode>useIngotLabels()</IngotCode>, not from a constant.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Text stránky, tlačítek, nadpisů — to je obsah, který dodává volající
-        přeložený. Provider nese jen popisky, které by jinak řekl kit.
+        Text stránky, tlačítek, nadpisů — to je obsah, který dodává volající přeložený.
+        Provider nese jen popisky, které by jinak řekl kit.
       </>,
       <>
-        Jedna komponenta má mluvit jinak než zbytek stránky: použij její
-        vlastní prop (<IngotCode>undoLabel</IngotCode>,{" "}
-        <IngotCode>bulbLabel</IngotCode>, <IngotCode>secretPlaceholder</IngotCode>
-        ) — ten má před providerem vždy přednost.
+        Jedna komponenta má mluvit jinak než zbytek stránky: použij její vlastní prop (
+        <IngotCode>undoLabel</IngotCode>, <IngotCode>bulbLabel</IngotCode>,{" "}
+        <IngotCode>secretPlaceholder</IngotCode>) — ten má před providerem vždy
+        přednost.
       </>,
     ],
     en: [
       <>
-        Page text, buttons, headings — that is content the caller supplies
-        translated. The provider carries only the labels the kit would
-        otherwise say itself.
+        Page text, buttons, headings — that is content the caller supplies translated.
+        The provider carries only the labels the kit would otherwise say itself.
       </>,
       <>
-        One component should speak differently from the rest of the page:
-        use its own prop (<IngotCode>undoLabel</IngotCode>,{" "}
-        <IngotCode>bulbLabel</IngotCode>, <IngotCode>secretPlaceholder</IngotCode>
-        ) — it always wins over the provider.
+        One component should speak differently from the rest of the page: use its own
+        prop (<IngotCode>undoLabel</IngotCode>, <IngotCode>bulbLabel</IngotCode>,{" "}
+        <IngotCode>secretPlaceholder</IngotCode>) — it always wins over the provider.
       </>,
     ],
   },
@@ -176,24 +172,19 @@ export const IngotProviderDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Většina popisků ve slovníku jsou <IngotCode>aria-label</IngotCode>{" "}
-        ikonových tlačítek — text, který vidí jen odečítač. Právě proto
-        nesmí zůstat v cizím jazyce: nikdo si toho na obrazovce nevšimne.
+        Většina popisků ve slovníku jsou <IngotCode>aria-label</IngotCode> ikonových
+        tlačítek — text, který vidí jen odečítač. Právě proto nesmí zůstat v cizím
+        jazyce: nikdo si toho na obrazovce nevšimne.
       </>,
-      <>
-        Provider nic nevykresluje a nemění strom — žádná role, žádný obal.
-      </>,
+      <>Provider nic nevykresluje a nemění strom — žádná role, žádný obal.</>,
     ],
     en: [
       <>
-        Most labels in the dictionary are the <IngotCode>aria-label</IngotCode>{" "}
-        of icon buttons — text only a screen reader sees. That is exactly why
-        they must not stay in a foreign language: nobody notices on screen.
+        Most labels in the dictionary are the <IngotCode>aria-label</IngotCode> of icon
+        buttons — text only a screen reader sees. That is exactly why they must not stay
+        in a foreign language: nobody notices on screen.
       </>,
-      <>
-        The provider renders nothing and changes no tree — no role, no
-        wrapper.
-      </>,
+      <>The provider renders nothing and changes no tree — no role, no wrapper.</>,
     ],
   },
   i18n: {
@@ -204,20 +195,19 @@ export const IngotProviderDoc: IngotDocPage = {
         <IngotCode>labels</IngotCode>, protože kit vlastní překlady nemá.
       </>,
       <>
-        Slovník je záměrně malý: jen to, co by primitivum jinak řeklo samo.
-        Vše ostatní zůstává obsahem volajícího.
+        Slovník je záměrně malý: jen to, co by primitivum jinak řeklo samo. Vše ostatní
+        zůstává obsahem volajícího.
       </>,
     ],
     en: [
       <>
         Without a provider the dictionary is English. The Czech set is{" "}
-        <IngotCode>INGOT_LABELS.cs</IngotCode>; another language is supplied
-        through <IngotCode>labels</IngotCode>, because the kit has no
-        translations of its own.
+        <IngotCode>INGOT_LABELS.cs</IngotCode>; another language is supplied through{" "}
+        <IngotCode>labels</IngotCode>, because the kit has no translations of its own.
       </>,
       <>
-        The dictionary is deliberately small: only what a primitive would
-        otherwise say itself. Everything else stays the caller's content.
+        The dictionary is deliberately small: only what a primitive would otherwise say
+        itself. Everything else stays the caller's content.
       </>,
     ],
   },

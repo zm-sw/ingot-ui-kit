@@ -72,6 +72,9 @@ function TokenDot({ token }: { token: string }): JSX.Element {
 function TokenValue({ token }: { token: string }): JSX.Element {
   const ref = useRef<HTMLSpanElement>(null);
   const [value, setValue] = useState("");
+  // No dependency array on purpose, see the docstring above: a theme switch
+  // changes the token value but no dependency of this component.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!ref.current) return;
     setValue(getComputedStyle(ref.current).getPropertyValue(token).trim());
@@ -476,10 +479,7 @@ function SpacesAndRadii({ lang }: { lang: DocLang }): JSX.Element {
           ? "Mezery jdou po čtyřech pixelech. Menší krok se nezavádí — dvě sousední hodnoty, které od oka nerozeznáš, nejsou dvě hodnoty. Čtverec vlevo má přesně tu velikost, kterou popisek jmenuje."
           : "Spacing runs in four-pixel steps. No smaller step exists — two adjacent values you cannot tell apart by eye are not two values. The square below is exactly the size its label names."}
       </p>
-      <div
-        className="flex flex-wrap items-end gap-4"
-        data-testid="docs-spaces"
-      >
+      <div className="flex flex-wrap items-end gap-4" data-testid="docs-spaces">
         {SPACE_STEPS.map((px, index) => (
           <div key={px} className="space-y-1 text-center">
             <span
@@ -618,68 +618,66 @@ export const BasicsGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Barva se v Ingotu nepíše hodnotou, ale rolí. Akcent má role
-              čtyři a každá odpovídá na jinou otázku:
+              Barva se v Ingotu nepíše hodnotou, ale rolí. Akcent má role čtyři a každá
+              odpovídá na jinou otázku:
             </p>
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — samotná barva. Akce,
-                  vyplněné tlačítko, ikona, focusový obrys; je to i barva
-                  textu, takže musí být čitelná na plochách.
+                  <IngotCode>--accent</IngotCode> — samotná barva. Akce, vyplněné
+                  tlačítko, ikona, focusový obrys; je to i barva textu, takže musí být
+                  čitelná na plochách.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — tmavší stupeň
-                  akcentu. Hover akcí a barva odkazů.
+                  <IngotCode>--accent-ink</IngotCode> — tmavší stupeň akcentu. Hover
+                  akcí a barva odkazů.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — tint pod vybraným
-                  řádkem, odznakem a calloutem. Nikdy ne text.
+                  <IngotCode>--accent-bg</IngotCode> — tint pod vybraným řádkem,
+                  odznakem a calloutem. Nikdy ne text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — linka akcentu,
-                  obrys toho tintu. Dekorativní, nenese informaci sama o sobě.
+                  <IngotCode>--accent-border</IngotCode> — linka akcentu, obrys toho
+                  tintu. Dekorativní, nenese informaci sama o sobě.
                 </>,
               ]}
             />
             <p>
-              Obrazovka sáhne po proměnné, ne po hodnotě. Tím se rodina i
-              motiv dají vyměnit bez toho, aby se do obrazovek sahalo.
+              Obrazovka sáhne po proměnné, ne po hodnotě. Tím se rodina i motiv dají
+              vyměnit bez toho, aby se do obrazovek sahalo.
             </p>
           </div>
         ),
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              In Ingot a colour is not written as a value but as a role. The
-              accent has four, and each answers a different question:
+              In Ingot a colour is not written as a value but as a role. The accent has
+              four, and each answers a different question:
             </p>
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — the colour itself.
-                  Actions, filled buttons, icons, the focus ring; it is also a
-                  text colour, so it has to stay readable on surfaces.
+                  <IngotCode>--accent</IngotCode> — the colour itself. Actions, filled
+                  buttons, icons, the focus ring; it is also a text colour, so it has to
+                  stay readable on surfaces.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — the darker step of
-                  the accent. Hover on actions, and the colour of links.
+                  <IngotCode>--accent-ink</IngotCode> — the darker step of the accent.
+                  Hover on actions, and the colour of links.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — the tint under a
-                  selected row, a badge and a callout. Never text.
+                  <IngotCode>--accent-bg</IngotCode> — the tint under a selected row, a
+                  badge and a callout. Never text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — the accent line,
-                  the outline of that tint. Decorative; it carries no
-                  information on its own.
+                  <IngotCode>--accent-border</IngotCode> — the accent line, the outline
+                  of that tint. Decorative; it carries no information on its own.
                 </>,
               ]}
             />
             <p>
-              A screen reaches for the variable, never the value. That is what
-              makes both the family and the theme swappable without touching
-              screens.
+              A screen reaches for the variable, never the value. That is what makes
+              both the family and the theme swappable without touching screens.
             </p>
           </div>
         ),

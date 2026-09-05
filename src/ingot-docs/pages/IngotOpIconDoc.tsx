@@ -22,46 +22,42 @@ export const IngotOpIconDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Ukazuješ operaci, kterou má proces uloženou v{" "}
-        <IngotCode>icon_key</IngotCode> — v koši, na kartě procesu,
-        v přehledu technologií.
+        Ukazuješ operaci, kterou má proces uloženou v <IngotCode>icon_key</IngotCode> —
+        v koši, na kartě procesu, v přehledu technologií.
       </>,
       <>
-        Ikona stojí <strong>vedle názvu operace</strong>. To je její
-        normální tvar; sama je zkratka, ne popisek.
+        Ikona stojí <strong>vedle názvu operace</strong>. To je její normální tvar; sama
+        je zkratka, ne popisek.
       </>,
     ],
     en: [
       <>
         You are showing an operation the process has stored in{" "}
-        <IngotCode>icon_key</IngotCode> — in the cart, on a process card,
-        in a technology overview.
+        <IngotCode>icon_key</IngotCode> — in the cart, on a process card, in a
+        technology overview.
       </>,
       <>
-        The icon sits <strong>next to the operation name</strong>. That is
-        its normal shape; on its own it is shorthand, not a label.
+        The icon sits <strong>next to the operation name</strong>. That is its normal
+        shape; on its own it is shorthand, not a label.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Je to ikona rozhraní — nahrání, hledání, koš.{" "}
-        <IngotCode>IngotIcon</IngotCode>.
+        Je to ikona rozhraní — nahrání, hledání, koš. <IngotCode>IngotIcon</IngotCode>.
       </>,
       <>
-        Vedle už svítí <IngotCode>opdot</IngotCode>, barevná tečka
-        kategorie. Tečka a ikona říkají totéž a vedle sebe si protiřečí —
-        vyber jedno.
+        Vedle už svítí <IngotCode>opdot</IngotCode>, barevná tečka kategorie. Tečka a
+        ikona říkají totéž a vedle sebe si protiřečí — vyber jedno.
       </>,
       <>
-        Klíč bys skládal z názvu operace nebo ze slugu. Ikonu vybírá admin
-        ručně; žádné párování slug→ikona v repu není a dohadovat ho
-        znamená ukázat cizí technologii.
+        Klíč bys skládal z názvu operace nebo ze slugu. Ikonu vybírá admin ručně; žádné
+        párování slug→ikona v repu není a dohadovat ho znamená ukázat cizí technologii.
       </>,
       <>
-        Chybí ti technologie. Přidej <strong>ikonu</strong> do knihovny
-        operací — <strong>nikdy emoji</strong>.
+        Chybí ti technologie. Přidej <strong>ikonu</strong> do knihovny operací —{" "}
+        <strong>nikdy emoji</strong>.
       </>,
     ],
     en: [
@@ -70,18 +66,18 @@ export const IngotOpIconDoc: IngotDocPage = {
         <IngotCode>IngotIcon</IngotCode>.
       </>,
       <>
-        An <IngotCode>opdot</IngotCode>, the category colour dot, is already
-        showing next to it. The dot and the icon say the same thing and
-        contradict each other side by side — pick one.
+        An <IngotCode>opdot</IngotCode>, the category colour dot, is already showing
+        next to it. The dot and the icon say the same thing and contradict each other
+        side by side — pick one.
       </>,
       <>
-        You would build the key from the operation name or slug. The admin
-        picks the icon by hand; there is no slug→icon matching in this repo
-        and guessing one shows the wrong technology.
+        You would build the key from the operation name or slug. The admin picks the
+        icon by hand; there is no slug→icon matching in this repo and guessing one shows
+        the wrong technology.
       </>,
       <>
-        Your technology is missing. Add an <strong>icon</strong> to the
-        operation library — <strong>never an emoji</strong>.
+        Your technology is missing. Add an <strong>icon</strong> to the operation
+        library — <strong>never an emoji</strong>.
       </>,
     ],
   },
@@ -141,84 +137,80 @@ export const IngotOpIconDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Výchozí stav je dekorativní. Vedle názvu operace je to správně —
-        název už ten význam nese.
+        Výchozí stav je dekorativní. Vedle názvu operace je to správně — název už ten
+        význam nese.
       </>,
       <>
-        Bez viditelného názvu MUSÍ přijít <IngotCode>title</IngotCode>;
-        komponenta z něj udělá <IngotCode>role=&quot;img&quot;</IngotCode>{" "}
-        a <IngotCode>aria-label</IngotCode>. Ikona operace bez jména je
-        jinak nečitelná i pro vidícího.
+        Bez viditelného názvu MUSÍ přijít <IngotCode>title</IngotCode>; komponenta z něj
+        udělá <IngotCode>role=&quot;img&quot;</IngotCode> a{" "}
+        <IngotCode>aria-label</IngotCode>. Ikona operace bez jména je jinak nečitelná i
+        pro vidícího.
       </>,
       <>
-        Varianta <IngotCode>:white</IngotCode> je bílá čára — potřebuje pod
-        sebou tmavou plochu od volajícího, jinak zmizí. Kontrast tady kit
-        neuhlídá, protože pozadí nezná.
+        Varianta <IngotCode>:white</IngotCode> je bílá čára — potřebuje pod sebou tmavou
+        plochu od volajícího, jinak zmizí. Kontrast tady kit neuhlídá, protože pozadí
+        nezná.
       </>,
     ],
     en: [
       <>
-        The default is decorative. Next to the operation name that is
-        correct — the name already carries the meaning.
+        The default is decorative. Next to the operation name that is correct — the name
+        already carries the meaning.
       </>,
       <>
-        Without a visible name a <IngotCode>title</IngotCode> is REQUIRED;
-        the component turns it into{" "}
-        <IngotCode>role=&quot;img&quot;</IngotCode> and{" "}
-        <IngotCode>aria-label</IngotCode>. An unnamed operation icon is
-        unreadable even to a sighted user.
+        Without a visible name a <IngotCode>title</IngotCode> is REQUIRED; the component
+        turns it into <IngotCode>role=&quot;img&quot;</IngotCode> and{" "}
+        <IngotCode>aria-label</IngotCode>. An unnamed operation icon is unreadable even
+        to a sighted user.
       </>,
       <>
-        The <IngotCode>:white</IngotCode> variant is white line art — it
-        needs a dark surface from the caller or it disappears. The kit
-        cannot police that contrast because it does not know the background.
+        The <IngotCode>:white</IngotCode> variant is white line art — it needs a dark
+        surface from the caller or it disappears. The kit cannot police that contrast
+        because it does not know the background.
       </>,
     ],
   },
   i18n: {
     cs: [
-      <>
-        Název operace dodává volající přeložený, stejně jako u ostatních
-        primitiv.
-      </>,
+      <>Název operace dodává volající přeložený, stejně jako u ostatních primitiv.</>,
       <>
         <IngotCode>icon_key</IngotCode> je identifikátor a{" "}
-        <strong>nepřekládá se</strong>. Přeložený klíč by ukazoval jinou
-        operaci nebo nic.
+        <strong>nepřekládá se</strong>. Přeložený klíč by ukazoval jinou operaci nebo
+        nic.
       </>,
     ],
     en: [
       <>
-        The caller supplies the operation name already translated, as with
-        every other primitive.
+        The caller supplies the operation name already translated, as with every other
+        primitive.
       </>,
       <>
         <IngotCode>icon_key</IngotCode> is an identifier and is{" "}
-        <strong>not translated</strong>. A translated key would show a
-        different operation, or none.
+        <strong>not translated</strong>. A translated key would show a different
+        operation, or none.
       </>,
     ],
   },
   limits: {
     cs: [
       <>
-        Kresby tady nebydlí — komponenta je obálka nad knihovnou operací.
-        Nová technologie se přidává tam, ne sem.
+        Kresby tady nebydlí — komponenta je obálka nad knihovnou operací. Nová
+        technologie se přidává tam, ne sem.
       </>,
       <>
-        Barvu volí token a kategorie procesu. Libovolnou barvu zvenčí
-        komponenta schválně nebere: barva operace něco znamená.
+        Barvu volí token a kategorie procesu. Libovolnou barvu zvenčí komponenta
+        schválně nebere: barva operace něco znamená.
       </>,
     ],
     en: [
       <>
-        The drawings do not live here — the component wraps the operation
-        library. A new technology is added there, not here.
+        The drawings do not live here — the component wraps the operation library. A new
+        technology is added there, not here.
       </>,
       <>
-        The ink is chosen by the token and the process category. The
-        component deliberately takes no arbitrary colour from outside: an
-        operation's colour means something.
+        The ink is chosen by the token and the process category. The component
+        deliberately takes no arbitrary colour from outside: an operation's colour means
+        something.
       </>,
     ],
   },

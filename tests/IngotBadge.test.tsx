@@ -67,7 +67,9 @@ function tokens(selector: string): Record<string, string> {
   for (const [name, target] of Object.entries(aliases)) {
     const resolved = found[target];
     if (resolved === undefined) {
-      throw new Error(`${selector}: ${name} references ${target}, which the block does not have`);
+      throw new Error(
+        `${selector}: ${name} references ${target}, which the block does not have`,
+      );
     }
     found[name] = resolved;
   }
@@ -81,22 +83,16 @@ const THEMES = {
 
 function relativeLuminance(hex: string): number {
   const full =
-    hex.length === 4
-      ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
-      : hex;
+    hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex;
   const channels = [1, 3, 5].map((at) => {
     const srgb = parseInt(full.slice(at, at + 2), 16) / 255;
     return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
   });
-  return (
-    0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
-  );
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
 }
 
 function contrast(a: string, b: string): number {
-  const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort(
-    (x, y) => y - x,
-  );
+  const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
   return (hi + 0.05) / (lo + 0.05);
 }
 
@@ -115,8 +111,8 @@ function tokenOf(className: string, prefix: string): string {
     .filter((rest) => /^[a-z]+(-[a-z0-9]+)*$/.test(rest));
   if (hits.length !== 1) {
     throw new Error(
-      `the badge should emit exactly one '${prefix}-*' token class, it emitted `
-        + `${hits.length}: ${className}`,
+      `the badge should emit exactly one '${prefix}-*' token class, it emitted ` +
+        `${hits.length}: ${className}`,
     );
   }
   return `--${hits[0]}`;
@@ -141,14 +137,8 @@ describe("IngotBadge", () => {
     for (const [theme, values] of Object.entries(THEMES)) {
       const background = values[bg];
       const foreground = values[text];
-      expect(
-        background,
-        `${theme}: globals.css nedeklaruje ${bg}`,
-      ).toBeDefined();
-      expect(
-        foreground,
-        `${theme}: globals.css nedeklaruje ${text}`,
-      ).toBeDefined();
+      expect(background, `${theme}: globals.css nedeklaruje ${bg}`).toBeDefined();
+      expect(foreground, `${theme}: globals.css nedeklaruje ${text}`).toBeDefined();
       expect(
         contrast(background, foreground),
         `tón ${tone} v motivu ${theme} (${text} na ${bg})`,
@@ -202,16 +192,14 @@ describe("IngotBadge", () => {
         Ve výrobě
       </IngotBadge>,
     );
-    const dots = screen
-      .getByTestId("badge")
-      .querySelectorAll("[aria-hidden]");
+    const dots = screen.getByTestId("badge").querySelectorAll("[aria-hidden]");
     expect(dots).toHaveLength(1);
     unmount();
 
     render(<IngotBadge testId="plain">Ve výrobě</IngotBadge>);
-    expect(
-      screen.getByTestId("plain").querySelectorAll("[aria-hidden]"),
-    ).toHaveLength(0);
+    expect(screen.getByTestId("plain").querySelectorAll("[aria-hidden]")).toHaveLength(
+      0,
+    );
   });
 
   it("takes no className, so the tone cannot be overridden from outside", () => {

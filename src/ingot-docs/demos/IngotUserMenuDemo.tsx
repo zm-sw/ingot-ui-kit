@@ -1,4 +1,10 @@
-import { Button, IngotBadge, IngotUserMenu, IngotUserMenuRow, IngotUserMenuSection } from "@/ingot";
+import {
+  Button,
+  IngotBadge,
+  IngotUserMenu,
+  IngotUserMenuRow,
+  IngotUserMenuSection,
+} from "@/ingot";
 export function Demo(): JSX.Element {
   return (
     <IngotUserMenu label="Menu účtu" testId="docs-usermenu">
@@ -7,7 +13,10 @@ export function Demo(): JSX.Element {
         <p className="text-[13px] text-ink-3">petr@strojirny-kladno.cz</p>
       </IngotUserMenuSection>
       <IngotUserMenuSection>
-        <a className="block py-1.5 text-sm font-semibold text-ink" href="#/IngotUserMenu">
+        <a
+          className="block py-1.5 text-sm font-semibold text-ink"
+          href="#/IngotUserMenu"
+        >
           Otevřít Strojírny Kladno →
         </a>
       </IngotUserMenuSection>

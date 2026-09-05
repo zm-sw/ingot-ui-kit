@@ -403,10 +403,7 @@ describe("IngotMegaMenu", () => {
         groups={[
           {
             title: "Denní provoz",
-            items: [
-              GROUPS[0]!.items[0]!,
-              { ...GROUPS[0]!.items[1]!, locked: true },
-            ],
+            items: [GROUPS[0]!.items[0]!, { ...GROUPS[0]!.items[1]!, locked: true }],
           },
         ]}
         onLockedItemClick={onLocked}
@@ -430,10 +427,7 @@ describe("IngotMegaMenu", () => {
   it("a screen reader hears the description from the link — the preview column is aria-hidden", () => {
     render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 
-    expect(screen.getByTestId("mega-preview")).toHaveAttribute(
-      "aria-hidden",
-      "true",
-    );
+    expect(screen.getByTestId("mega-preview")).toHaveAttribute("aria-hidden", "true");
     const first = screen.getByRole("link", { name: /Objednávky/ });
     const descId = first.getAttribute("aria-describedby");
     expect(descId).toBeTruthy();
@@ -523,9 +517,7 @@ describe("IngotMetrics", () => {
       <IngotMetrics items={items} label="Souhrn" testId="m" />,
     );
     expect(screen.getByTestId("m")).toHaveTextContent("skupiny");
-    rerender(
-      <IngotMetrics items={items} variant="inline" label="Souhrn" testId="m" />,
-    );
+    rerender(<IngotMetrics items={items} variant="inline" label="Souhrn" testId="m" />);
     expect(screen.getByTestId("m")).toHaveTextContent("skupiny");
   });
 });

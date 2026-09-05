@@ -106,9 +106,7 @@ if (substantive.length === 0) {
   process.exit(0);
 }
 
-const subjects = git("log", `${base}..HEAD`, "--format=%s")
-  .split("\n")
-  .filter(Boolean);
+const subjects = git("log", `${base}..HEAD`, "--format=%s").split("\n").filter(Boolean);
 if (subjects.some((subject) => subject.startsWith("release!:"))) {
   console.log("[version-guard] OK: kit epoch declared by a 'release!:' commit");
   process.exit(0);
@@ -131,8 +129,9 @@ for (const entry of readdirSync(PAGES_DIR)) {
   if (!entry.endsWith("Doc.tsx")) continue;
   const src = readFileSync(join(PAGES_DIR, entry), "utf-8");
   const name = src.match(/name:\s*"([^"]+)"/)?.[1] ?? entry.replace(/Doc\.tsx$/, "");
-  const tokens = [...(src.match(/tokens:\s*\[([^\]]*)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)]
-    .map((match) => match[1]);
+  const tokens = [
+    ...(src.match(/tokens:\s*\[([^\]]*)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g),
+  ].map((match) => match[1]);
   pages[name] = tokens;
 }
 

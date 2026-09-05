@@ -1,9 +1,4 @@
-import {
-  IngotCode,
-  IngotList,
-  IngotTable,
-  type IngotColumn,
-} from "@/ingot";
+import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -33,57 +28,50 @@ function LengthAndPlurals({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Německý překlad je až o 35 % delší než česká předloha.
-                  Rozvržení tu délku musí unést beze změny počtu řádků, do
-                  kterých se vejde.
+                  Německý překlad je až o 35 % delší než česká předloha. Rozvržení tu
+                  délku musí unést beze změny počtu řádků, do kterých se vejde.
                 </>,
                 <>
-                  Text se nezkracuje třemi tečkami. Uříznuté slovo vypadá jako
-                  chyba dat a čtenář nemá jak zjistit, co v něm bylo.
+                  Text se nezkracuje třemi tečkami. Uříznuté slovo vypadá jako chyba dat
+                  a čtenář nemá jak zjistit, co v něm bylo.
                 </>,
                 <>
-                  Tlačítka a hlavičky tabulek nemají pevnou šířku — šířka
-                  vzniká z obsahu, jinak ji delší jazyk přeteče.
+                  Tlačítka a hlavičky tabulek nemají pevnou šířku — šířka vzniká z
+                  obsahu, jinak ji delší jazyk přeteče.
                 </>,
                 <>
-                  Věta se nelepí z fragmentů. Celá věta je jeden klíč s
-                  proměnnou: <IngotCode>{"{count} položek ve skladu"}</IngotCode>
-                  . Jiný jazyk poskládá slova v jiném pořadí, a to lepení
-                  neumí.
+                  Věta se nelepí z fragmentů. Celá věta je jeden klíč s proměnnou:{" "}
+                  <IngotCode>{"{count} položek ve skladu"}</IngotCode>. Jiný jazyk
+                  poskládá slova v jiném pořadí, a to lepení neumí.
                 </>,
                 <>
-                  Čeština má tři tvary množného čísla: 1 / 2–4 / 5+. Každý
-                  počítaný řetězec má všechny tři varianty; tvar „položek(y)“
-                  se nepoužívá.
+                  Čeština má tři tvary množného čísla: 1 / 2–4 / 5+. Každý počítaný
+                  řetězec má všechny tři varianty; tvar „položek(y)“ se nepoužívá.
                 </>,
               ]
             : [
                 <>
-                  A German translation runs up to 35 % longer than the Czech
-                  original. The layout has to take that length without
-                  changing how many lines it fits.
+                  A German translation runs up to 35 % longer than the Czech original.
+                  The layout has to take that length without changing how many lines it
+                  fits.
                 </>,
                 <>
-                  Text is never truncated with an ellipsis. A cut-off word
-                  looks like a data error, and the reader has no way to find
-                  out what was in it.
+                  Text is never truncated with an ellipsis. A cut-off word looks like a
+                  data error, and the reader has no way to find out what was in it.
                 </>,
                 <>
-                  Buttons and table headers carry no fixed width — the width
-                  comes from the content, otherwise a longer language
-                  overflows it.
+                  Buttons and table headers carry no fixed width — the width comes from
+                  the content, otherwise a longer language overflows it.
                 </>,
                 <>
-                  A sentence is never glued from fragments. The whole sentence
-                  is one key with a variable:{" "}
-                  <IngotCode>{"{count} items in stock"}</IngotCode>. Another
-                  language assembles the words in another order, and gluing
+                  A sentence is never glued from fragments. The whole sentence is one
+                  key with a variable: <IngotCode>{"{count} items in stock"}</IngotCode>
+                  . Another language assembles the words in another order, and gluing
                   cannot do that.
                 </>,
                 <>
-                  Czech has three plural forms: 1 / 2–4 / 5+. Every counted
-                  string carries all three; a shape like “item(s)” is not
-                  used.
+                  Czech has three plural forms: 1 / 2–4 / 5+. Every counted string
+                  carries all three; a shape like “item(s)” is not used.
                 </>,
               ]
         }
@@ -179,51 +167,49 @@ function NumbersAndCodes({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Čísla, měny a data formátuje{" "}
-                  <IngotCode>Intl.NumberFormat</IngotCode> a spol. podle
-                  jazyka uživatele — nikdy ruční záměna tečky za čárku, která
-                  se rozejde s prvním dalším jazykem.
+                  Čísla, měny a data formátuje <IngotCode>Intl.NumberFormat</IngotCode>{" "}
+                  a spol. podle jazyka uživatele — nikdy ruční záměna tečky za čárku,
+                  která se rozejde s prvním dalším jazykem.
                 </>,
                 <>
-                  Mezi číslem a jednotkou stojí nezlomitelná mezera
-                  (<IngotCode>&amp;nbsp;</IngotCode>), aby se „12 kg“
-                  nerozdělilo přes konec řádku.
+                  Mezi číslem a jednotkou stojí nezlomitelná mezera (
+                  <IngotCode>&amp;nbsp;</IngotCode>), aby se „12 kg“ nerozdělilo přes
+                  konec řádku.
                 </>,
                 <>
-                  Mono text používá tabulární číslice, takže číslice mají
-                  stejnou šířku a čísla ve sloupci sedí pod sebou.
+                  Mono text používá tabulární číslice, takže číslice mají stejnou šířku
+                  a čísla ve sloupci sedí pod sebou.
                 </>,
                 <>
-                  Kódy se nepřekládají a zůstávají v monu beze změny:
-                  identifikátory typu <IngotCode>materials</IngotCode>, čísla
-                  záznamů typu <IngotCode>OBJ-2418</IngotCode> a kódy zemí
-                  typu <IngotCode>CZ</IngotCode>. Přeložený identifikátor
-                  přestane odpovídat tomu, co je v datech.
+                  Kódy se nepřekládají a zůstávají v monu beze změny: identifikátory
+                  typu <IngotCode>materials</IngotCode>, čísla záznamů typu{" "}
+                  <IngotCode>OBJ-2418</IngotCode> a kódy zemí typu{" "}
+                  <IngotCode>CZ</IngotCode>. Přeložený identifikátor přestane odpovídat
+                  tomu, co je v datech.
                 </>,
               ]
             : [
                 <>
                   Numbers, currencies and dates are formatted by{" "}
-                  <IngotCode>Intl.NumberFormat</IngotCode> and friends
-                  according to the user's language — never by swapping a point
-                  for a comma by hand, which breaks with the next language
-                  added.
+                  <IngotCode>Intl.NumberFormat</IngotCode> and friends according to the
+                  user's language — never by swapping a point for a comma by hand, which
+                  breaks with the next language added.
                 </>,
                 <>
-                  A non-breaking space (<IngotCode>&amp;nbsp;</IngotCode>)
-                  stands between a number and its unit, so “12 kg” does not
-                  split across a line break.
+                  A non-breaking space (<IngotCode>&amp;nbsp;</IngotCode>) stands
+                  between a number and its unit, so “12 kg” does not split across a line
+                  break.
                 </>,
                 <>
-                  Mono text uses tabular figures, so every digit has the same
-                  width and numbers line up down a column.
+                  Mono text uses tabular figures, so every digit has the same width and
+                  numbers line up down a column.
                 </>,
                 <>
-                  Codes are not translated and stay in mono unchanged:
-                  identifiers such as <IngotCode>materials</IngotCode>, record
-                  numbers such as <IngotCode>OBJ-2418</IngotCode> and country
-                  codes such as <IngotCode>CZ</IngotCode>. A translated
-                  identifier stops matching what is in the data.
+                  Codes are not translated and stay in mono unchanged: identifiers such
+                  as <IngotCode>materials</IngotCode>, record numbers such as{" "}
+                  <IngotCode>OBJ-2418</IngotCode> and country codes such as{" "}
+                  <IngotCode>CZ</IngotCode>. A translated identifier stops matching what
+                  is in the data.
                 </>,
               ]
         }

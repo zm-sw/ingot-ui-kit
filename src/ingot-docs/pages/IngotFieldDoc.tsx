@@ -10,7 +10,21 @@ export const IngotFieldDoc: IngotDocPage = {
   // instead of `--bg`, `--border-strong`, `--r-md`, same height as Button md.
   version: "1.1",
   tag: ".field",
-  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-2", "--ink-3", "--ink-4", "--accent", "--accent-bg", "--danger", "--font-mono", "--r-md", "--shadow-sm"],
+  tokens: [
+    "--surface",
+    "--surface-2",
+    "--border-strong",
+    "--ink",
+    "--ink-2",
+    "--ink-3",
+    "--ink-4",
+    "--accent",
+    "--accent-bg",
+    "--danger",
+    "--font-mono",
+    "--r-md",
+    "--shadow-sm",
+  ],
   classNameNote: {
     cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
     en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
@@ -24,103 +38,97 @@ export const IngotFieldDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Formulář se píše rukou a má pár daných polí — název tokenu, počet kusů,
-        e-mail. Přesně tam, kde by jinak vznikl další ruční pár{" "}
-        <IngotCode>&lt;label&gt;</IngotCode> +{" "}
-        <IngotCode>&lt;input&gt;</IngotCode>.
+        Formulář se píše rukou a má pár daných polí — název tokenu, počet kusů, e-mail.
+        Přesně tam, kde by jinak vznikl další ruční pár{" "}
+        <IngotCode>&lt;label&gt;</IngotCode> + <IngotCode>&lt;input&gt;</IngotCode>.
       </>,
       <>
-        K hodnotě patří jednotka nebo měna. Ta jde do{" "}
-        <IngotCode>affix</IngotCode>, nikdy do{" "}
-        <IngotCode>placeholder</IngotCode> — placeholder zmizí, jakmile
+        K hodnotě patří jednotka nebo měna. Ta jde do <IngotCode>affix</IngotCode>,
+        nikdy do <IngotCode>placeholder</IngotCode> — placeholder zmizí, jakmile
         uživatel začne psát, a s ním i to, v čem se ta hodnota měří.
       </>,
       <>
-        Pole má validaci, kterou uživatel uvidí. <IngotCode>error</IngotCode>{" "}
-        zapne error stav i <IngotCode>aria-invalid</IngotCode> jedním textem,
-        takže se nedá udělat červené pole bez vysvětlení.
+        Pole má validaci, kterou uživatel uvidí. <IngotCode>error</IngotCode> zapne
+        error stav i <IngotCode>aria-invalid</IngotCode> jedním textem, takže se nedá
+        udělat červené pole bez vysvětlení.
       </>,
       <>
-        Hodnota se čte po sloupcích nebo je to kód —{" "}
-        <IngotCode>mono</IngotCode> přepne na mono a{" "}
-        <IngotCode>tabular-nums</IngotCode>.
+        Hodnota se čte po sloupcích nebo je to kód — <IngotCode>mono</IngotCode> přepne
+        na mono a <IngotCode>tabular-nums</IngotCode>.
       </>,
     ],
     en: [
       <>
-        The form is written by hand and has a handful of fixed fields — token
-        name, quantity, e-mail. Exactly where another hand-rolled{" "}
-        <IngotCode>&lt;label&gt;</IngotCode> +{" "}
-        <IngotCode>&lt;input&gt;</IngotCode> pair would otherwise appear.
+        The form is written by hand and has a handful of fixed fields — token name,
+        quantity, e-mail. Exactly where another hand-rolled{" "}
+        <IngotCode>&lt;label&gt;</IngotCode> + <IngotCode>&lt;input&gt;</IngotCode> pair
+        would otherwise appear.
       </>,
       <>
         The value comes with a unit or a currency. That goes into{" "}
-        <IngotCode>affix</IngotCode>, never into{" "}
-        <IngotCode>placeholder</IngotCode> — a placeholder disappears the
-        moment the user starts typing, and takes the unit with it.
+        <IngotCode>affix</IngotCode>, never into <IngotCode>placeholder</IngotCode> — a
+        placeholder disappears the moment the user starts typing, and takes the unit
+        with it.
       </>,
       <>
-        The field has validation the user will see. <IngotCode>error</IngotCode>{" "}
-        turns on the error state and <IngotCode>aria-invalid</IngotCode> from a
-        single text, so a red field without an explanation cannot happen.
+        The field has validation the user will see. <IngotCode>error</IngotCode> turns
+        on the error state and <IngotCode>aria-invalid</IngotCode> from a single text,
+        so a red field without an explanation cannot happen.
       </>,
       <>
-        The value is read down a column, or it is a code —{" "}
-        <IngotCode>mono</IngotCode> switches to mono and{" "}
-        <IngotCode>tabular-nums</IngotCode>.
+        The value is read down a column, or it is a code — <IngotCode>mono</IngotCode>{" "}
+        switches to mono and <IngotCode>tabular-nums</IngotCode>.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Pole vznikají ze schématu (konfigurace integrace, per-uzlové nastavení
-        operace). Tam patří <IngotCode>IngotForm</IngotCode> nad{" "}
-        <IngotCode>IngotFieldSpec[]</IngotCode>: pole, která nikdo neopsal
-        rukou, se nemůžou se schématem rozejít. Tahle komponenta je opačná
-        větev — rukou psaný formulář, kde žádné schéma není.
+        Pole vznikají ze schématu (konfigurace integrace, per-uzlové nastavení operace).
+        Tam patří <IngotCode>IngotForm</IngotCode> nad{" "}
+        <IngotCode>IngotFieldSpec[]</IngotCode>: pole, která nikdo neopsal rukou, se
+        nemůžou se schématem rozejít. Tahle komponenta je opačná větev — rukou psaný
+        formulář, kde žádné schéma není.
       </>,
       <>
-        Potřebuješ jen samotný vstup bez popisku, protože si popisek stránka
-        skládá sama. To je <IngotCode>IngotFieldInput</IngotCode>.
+        Potřebuješ jen samotný vstup bez popisku, protože si popisek stránka skládá
+        sama. To je <IngotCode>IngotFieldInput</IngotCode>.
       </>,
       <>
-        Hodnota se jen ukazuje a nejde měnit. Zamčený vstup tvrdí „tohle je
-        pole“ a uživatel do něj bude klikat; použij popis a hodnotu (
+        Hodnota se jen ukazuje a nejde měnit. Zamčený vstup tvrdí „tohle je pole“ a
+        uživatel do něj bude klikat; použij popis a hodnotu (
         <IngotCode>&lt;dl&gt;</IngotCode> / <IngotCode>&lt;dt&gt;</IngotCode> /{" "}
-        <IngotCode>&lt;dd&gt;</IngotCode>), ne <IngotCode>disabled</IngotCode>.
-        To je pro pole, které se ODEMKNE — dočasně, ne navždy.
+        <IngotCode>&lt;dd&gt;</IngotCode>), ne <IngotCode>disabled</IngotCode>. To je
+        pro pole, které se ODEMKNE — dočasně, ne navždy.
       </>,
       <>
-        Vstup není text: zaškrtávátko, výběr z množiny, datum. První verze je
-        schválně jen textová — primitivum bez konzumenta je nezapojený slib.
+        Vstup není text: zaškrtávátko, výběr z množiny, datum. První verze je schválně
+        jen textová — primitivum bez konzumenta je nezapojený slib.
       </>,
     ],
     en: [
       <>
-        The fields come from a schema (integration config, per-node operation
-        settings). That is <IngotCode>IngotForm</IngotCode> over{" "}
-        <IngotCode>IngotFieldSpec[]</IngotCode>: fields nobody typed out by
-        hand cannot drift from the schema. This component is the opposite
-        branch — a hand-written form where there is no schema.
+        The fields come from a schema (integration config, per-node operation settings).
+        That is <IngotCode>IngotForm</IngotCode> over{" "}
+        <IngotCode>IngotFieldSpec[]</IngotCode>: fields nobody typed out by hand cannot
+        drift from the schema. This component is the opposite branch — a hand-written
+        form where there is no schema.
       </>,
       <>
-        You only need the input itself without a label, because the page
-        composes the label on its own. That is{" "}
-        <IngotCode>IngotFieldInput</IngotCode>.
+        You only need the input itself without a label, because the page composes the
+        label on its own. That is <IngotCode>IngotFieldInput</IngotCode>.
       </>,
       <>
-        The value is only displayed and cannot be changed. A locked input
-        claims &quot;this is a field&quot; and users will keep clicking it; use
-        a term and its value (<IngotCode>&lt;dl&gt;</IngotCode> /{" "}
-        <IngotCode>&lt;dt&gt;</IngotCode> / <IngotCode>&lt;dd&gt;</IngotCode>),
-        not <IngotCode>disabled</IngotCode>. That one is for a field that will
-        UNLOCK — temporarily, not forever.
+        The value is only displayed and cannot be changed. A locked input claims
+        &quot;this is a field&quot; and users will keep clicking it; use a term and its
+        value (<IngotCode>&lt;dl&gt;</IngotCode> / <IngotCode>&lt;dt&gt;</IngotCode> /{" "}
+        <IngotCode>&lt;dd&gt;</IngotCode>), not <IngotCode>disabled</IngotCode>. That
+        one is for a field that will UNLOCK — temporarily, not forever.
       </>,
       <>
-        The input is not text: a checkbox, a choice from a set, a date. The
-        first version is deliberately text-only — a primitive without a
-        consumer is an unwired promise.
+        The input is not text: a checkbox, a choice from a set, a date. The first
+        version is deliberately text-only — a primitive without a consumer is an unwired
+        promise.
       </>,
     ],
   },
@@ -238,53 +246,48 @@ export const IngotFieldDoc: IngotDocPage = {
     cs: [
       <>
         <IngotCode>label for</IngotCode> ↔ <IngotCode>input id</IngotCode> drží
-        komponenta přes <IngotCode>useId</IngotCode>. Vazba proto nemůže
-        vzniknout špatně ani u dvou stejných polí na jedné stránce a volající
-        žádné <IngotCode>id</IngotCode> nevymýšlí.
+        komponenta přes <IngotCode>useId</IngotCode>. Vazba proto nemůže vzniknout
+        špatně ani u dvou stejných polí na jedné stránce a volající žádné{" "}
+        <IngotCode>id</IngotCode> nevymýšlí.
       </>,
       <>
-        Placeholder popisek NENÍ. Zmizí, jakmile uživatel začne psát, a
-        odečítač ho nečte jako jméno pole.
+        Placeholder popisek NENÍ. Zmizí, jakmile uživatel začne psát, a odečítač ho
+        nečte jako jméno pole.
       </>,
       <>
-        Chyba se hlásí textem a <IngotCode>aria-invalid</IngotCode>, ne jen
-        červenou barvou. <IngotCode>hint</IngotCode>,{" "}
-        <IngotCode>affix</IngotCode> i <IngotCode>error</IngotCode> jsou
-        navázané přes <IngotCode>aria-describedby</IngotCode> v pořadí, v jakém
-        se čtou.
+        Chyba se hlásí textem a <IngotCode>aria-invalid</IngotCode>, ne jen červenou
+        barvou. <IngotCode>hint</IngotCode>, <IngotCode>affix</IngotCode> i{" "}
+        <IngotCode>error</IngotCode> jsou navázané přes{" "}
+        <IngotCode>aria-describedby</IngotCode> v pořadí, v jakém se čtou.
       </>,
       <>
-        Fokus je vidět na celém rámečku (
-        <IngotCode>focus-within</IngotCode>): border{" "}
-        <IngotCode>accent</IngotCode> a ring 3px{" "}
-        <IngotCode>accent-bg</IngotCode>. Kdyby seděl jen na{" "}
-        <IngotCode>&lt;input&gt;</IngotCode>, přípona by z něj vypadla.
+        Fokus je vidět na celém rámečku (<IngotCode>focus-within</IngotCode>): border{" "}
+        <IngotCode>accent</IngotCode> a ring 3px <IngotCode>accent-bg</IngotCode>. Kdyby
+        seděl jen na <IngotCode>&lt;input&gt;</IngotCode>, přípona by z něj vypadla.
       </>,
     ],
     en: [
       <>
-        <IngotCode>label for</IngotCode> ↔ <IngotCode>input id</IngotCode> is
-        held by the component via <IngotCode>useId</IngotCode>. The binding
-        therefore cannot be made wrong, not even with two identical fields on
-        one page, and the caller invents no <IngotCode>id</IngotCode>.
+        <IngotCode>label for</IngotCode> ↔ <IngotCode>input id</IngotCode> is held by
+        the component via <IngotCode>useId</IngotCode>. The binding therefore cannot be
+        made wrong, not even with two identical fields on one page, and the caller
+        invents no <IngotCode>id</IngotCode>.
       </>,
       <>
-        The placeholder is NOT a label. It disappears as soon as the user
-        starts typing, and screen readers do not read it as the field&apos;s
-        name.
+        The placeholder is NOT a label. It disappears as soon as the user starts typing,
+        and screen readers do not read it as the field&apos;s name.
       </>,
       <>
-        An error is announced by text and <IngotCode>aria-invalid</IngotCode>,
-        not by red alone. <IngotCode>hint</IngotCode>,{" "}
-        <IngotCode>affix</IngotCode> and <IngotCode>error</IngotCode> are all
-        wired through <IngotCode>aria-describedby</IngotCode> in reading order.
+        An error is announced by text and <IngotCode>aria-invalid</IngotCode>, not by
+        red alone. <IngotCode>hint</IngotCode>, <IngotCode>affix</IngotCode> and{" "}
+        <IngotCode>error</IngotCode> are all wired through{" "}
+        <IngotCode>aria-describedby</IngotCode> in reading order.
       </>,
       <>
-        Focus is visible on the whole frame (
-        <IngotCode>focus-within</IngotCode>): an <IngotCode>accent</IngotCode>{" "}
-        border and a 3px <IngotCode>accent-bg</IngotCode> ring. On the{" "}
-        <IngotCode>&lt;input&gt;</IngotCode> alone the affix would fall outside
-        it.
+        Focus is visible on the whole frame (<IngotCode>focus-within</IngotCode>): an{" "}
+        <IngotCode>accent</IngotCode> border and a 3px <IngotCode>accent-bg</IngotCode>{" "}
+        ring. On the <IngotCode>&lt;input&gt;</IngotCode> alone the affix would fall
+        outside it.
       </>,
     ],
   },
@@ -293,63 +296,60 @@ export const IngotFieldDoc: IngotDocPage = {
       <>
         <IngotCode>label</IngotCode>, <IngotCode>hint</IngotCode>,{" "}
         <IngotCode>error</IngotCode>, <IngotCode>affix</IngotCode> i{" "}
-        <IngotCode>optionalLabel</IngotCode> dodává volající už přeložené —
-        Ingot nemá vlastní i18n namespace.
+        <IngotCode>optionalLabel</IngotCode> dodává volající už přeložené — Ingot nemá
+        vlastní i18n namespace.
       </>,
       <>
-        „— nepovinné“ je jediná vlastnost <IngotCode>optionalLabel</IngotCode>,
-        ne dvojice <IngotCode>optional</IngotCode> + text. Booleovské{" "}
-        <IngotCode>optional</IngotCode> bez textu by byl stav, který nejde
-        vykreslit, protože ten text Ingot nemá odkud vzít.
+        „— nepovinné“ je jediná vlastnost <IngotCode>optionalLabel</IngotCode>, ne
+        dvojice <IngotCode>optional</IngotCode> + text. Booleovské{" "}
+        <IngotCode>optional</IngotCode> bez textu by byl stav, který nejde vykreslit,
+        protože ten text Ingot nemá odkud vzít.
       </>,
       <>
-        <IngotCode>affix</IngotCode> je taky text: jednotky se v některých
-        jazycích píšou jinak a měna se liší podle tenanta.
+        <IngotCode>affix</IngotCode> je taky text: jednotky se v některých jazycích
+        píšou jinak a měna se liší podle tenanta.
       </>,
     ],
     en: [
       <>
         <IngotCode>label</IngotCode>, <IngotCode>hint</IngotCode>,{" "}
         <IngotCode>error</IngotCode>, <IngotCode>affix</IngotCode> and{" "}
-        <IngotCode>optionalLabel</IngotCode> arrive from the caller already
-        translated — Ingot has no i18n namespace of its own.
+        <IngotCode>optionalLabel</IngotCode> arrive from the caller already translated —
+        Ingot has no i18n namespace of its own.
       </>,
       <>
-        &quot;— optional&quot; is a single{" "}
-        <IngotCode>optionalLabel</IngotCode> prop, not an{" "}
-        <IngotCode>optional</IngotCode> boolean plus a text. A boolean without
-        the text would be a state that cannot be rendered, because Ingot has
-        nowhere to take that text from.
+        &quot;— optional&quot; is a single <IngotCode>optionalLabel</IngotCode> prop,
+        not an <IngotCode>optional</IngotCode> boolean plus a text. A boolean without
+        the text would be a state that cannot be rendered, because Ingot has nowhere to
+        take that text from.
       </>,
       <>
-        <IngotCode>affix</IngotCode> is text too: units are written differently
-        in some languages, and the currency differs per tenant.
+        <IngotCode>affix</IngotCode> is text too: units are written differently in some
+        languages, and the currency differs per tenant.
       </>,
     ],
   },
   limits: {
     cs: [
       <>
-        Jen text. Zaškrtávátko, výběr, datum ani{" "}
-        <IngotCode>&lt;textarea&gt;</IngotCode> první verze neumí a{" "}
-        <IngotCode>type</IngotCode> se schválně nedá nastavit — přibude to s
-        obrazovkou, která si o to řekne.
+        Jen text. Zaškrtávátko, výběr, datum ani <IngotCode>&lt;textarea&gt;</IngotCode>{" "}
+        první verze neumí a <IngotCode>type</IngotCode> se schválně nedá nastavit —
+        přibude to s obrazovkou, která si o to řekne.
       </>,
       <>
-        Neřeší stav formuláře (rozpracováno, odeslání, blokátory). To zůstává
-        na volajícím, resp. na <IngotCode>useIngotForm</IngotCode>.
+        Neřeší stav formuláře (rozpracováno, odeslání, blokátory). To zůstává na
+        volajícím, resp. na <IngotCode>useIngotForm</IngotCode>.
       </>,
     ],
     en: [
       <>
-        Text only. No checkbox, choice, date or{" "}
-        <IngotCode>&lt;textarea&gt;</IngotCode> in the first version, and{" "}
-        <IngotCode>type</IngotCode> is deliberately not settable — that arrives
-        with the screen that asks for it.
+        Text only. No checkbox, choice, date or <IngotCode>&lt;textarea&gt;</IngotCode>{" "}
+        in the first version, and <IngotCode>type</IngotCode> is deliberately not
+        settable — that arrives with the screen that asks for it.
       </>,
       <>
-        It does not handle form state (dirty, submit, blockers). That stays
-        with the caller, or with <IngotCode>useIngotForm</IngotCode>.
+        It does not handle form state (dirty, submit, blockers). That stays with the
+        caller, or with <IngotCode>useIngotForm</IngotCode>.
       </>,
     ],
   },

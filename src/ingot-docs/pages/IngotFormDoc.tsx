@@ -23,53 +23,52 @@ export const IngotFormDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Pole přicházejí za běhu — ze schématu modulu nebo z manifestu
-        integrace. <IngotCode>fieldsFromConfigSchema</IngotCode> a{" "}
+        Pole přicházejí za běhu — ze schématu modulu nebo z manifestu integrace.{" "}
+        <IngotCode>fieldsFromConfigSchema</IngotCode> a{" "}
         <IngotCode>fieldsFromIntegrationManifest</IngotCode> je převedou na{" "}
         <IngotCode>IngotFieldSpec[]</IngotCode>.
       </>,
       <>
-        Tvar formuláře jsou data: přidat pole znamená přidat řádek do pole,
-        ne napsat další <IngotCode>&lt;label&gt;</IngotCode> a vlastní{" "}
+        Tvar formuláře jsou data: přidat pole znamená přidat řádek do pole, ne napsat
+        další <IngotCode>&lt;label&gt;</IngotCode> a vlastní{" "}
         <IngotCode>onChange</IngotCode>.
       </>,
       <>
         Chceš, aby se převod hodnoty na typ (<IngotCode>integer</IngotCode>,{" "}
-        <IngotCode>number</IngotCode>, <IngotCode>boolean</IngotCode>, <IngotCode>secret</IngotCode>)
-        choval na všech obrazovkách stejně.
+        <IngotCode>number</IngotCode>, <IngotCode>boolean</IngotCode>,{" "}
+        <IngotCode>secret</IngotCode>) choval na všech obrazovkách stejně.
       </>,
     ],
     en: [
       <>
-        The fields arrive at runtime — from a module schema or an integration
-        manifest. <IngotCode>fieldsFromConfigSchema</IngotCode> and{" "}
+        The fields arrive at runtime — from a module schema or an integration manifest.{" "}
+        <IngotCode>fieldsFromConfigSchema</IngotCode> and{" "}
         <IngotCode>fieldsFromIntegrationManifest</IngotCode> turn them into{" "}
         <IngotCode>IngotFieldSpec[]</IngotCode>.
       </>,
       <>
-        The shape of the form is data: adding a field means adding an entry
-        to an array, not writing another <IngotCode>&lt;label&gt;</IngotCode> and its
-        own <IngotCode>onChange</IngotCode>.
+        The shape of the form is data: adding a field means adding an entry to an array,
+        not writing another <IngotCode>&lt;label&gt;</IngotCode> and its own{" "}
+        <IngotCode>onChange</IngotCode>.
       </>,
       <>
-        You want value coercion (<IngotCode>integer</IngotCode>, <IngotCode>number</IngotCode>,{" "}
-        <IngotCode>boolean</IngotCode>, <IngotCode>secret</IngotCode>) to behave the same on
-        every screen.
+        You want value coercion (<IngotCode>integer</IngotCode>,{" "}
+        <IngotCode>number</IngotCode>, <IngotCode>boolean</IngotCode>,{" "}
+        <IngotCode>secret</IngotCode>) to behave the same on every screen.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Rozvržení není svislý seznam — dvousloupcové sekce, pole vedle sebe,
-        taby. Formulář umí jen <IngotCode>space-y</IngotCode>; poskládej si{" "}
+        Rozvržení není svislý seznam — dvousloupcové sekce, pole vedle sebe, taby.
+        Formulář umí jen <IngotCode>space-y</IngotCode>; poskládej si{" "}
         <IngotCode>IngotFieldInput</IngotCode> sám.
       </>,
       <>
-        Potřebuješ validaci a chybové hlášky u jednotlivých polí. První verze
-        je nemá — hlášku vykresluje volající nad formulářem. Rukou psaný
-        formulář, který chybu u pole potřebuje, si ho složí z{" "}
-        <IngotCode>IngotField</IngotCode>.
+        Potřebuješ validaci a chybové hlášky u jednotlivých polí. První verze je nemá —
+        hlášku vykresluje volající nad formulářem. Rukou psaný formulář, který chybu u
+        pole potřebuje, si ho složí z <IngotCode>IngotField</IngotCode>.
       </>,
       <>
         Je to jediné pole. Pak je <IngotCode>IngotFieldInput</IngotCode> přímo levnější
@@ -78,15 +77,14 @@ export const IngotFormDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The layout is not a vertical list — two-column sections, fields side
-        by side, tabs. The form only does <IngotCode>space-y</IngotCode>; compose{" "}
+        The layout is not a vertical list — two-column sections, fields side by side,
+        tabs. The form only does <IngotCode>space-y</IngotCode>; compose{" "}
         <IngotCode>IngotFieldInput</IngotCode> yourself.
       </>,
       <>
-        You need per-field validation and error messages. The first version
-        has none — the caller renders the message above the form. A
-        hand-written form that needs a per-field error composes itself out of{" "}
-        <IngotCode>IngotField</IngotCode>.
+        You need per-field validation and error messages. The first version has none —
+        the caller renders the message above the form. A hand-written form that needs a
+        per-field error composes itself out of <IngotCode>IngotField</IngotCode>.
       </>,
       <>
         It is a single field. Then <IngotCode>IngotFieldInput</IngotCode> is cheaper
@@ -181,33 +179,34 @@ export const IngotFormDoc: IngotDocPage = {
     cs: [
       <>
         Popisek je <IngotCode>&lt;label&gt;</IngotCode> obalující vstup, takže vazba
-        drží bez <IngotCode>htmlFor</IngotCode> a <IngotCode>id</IngotCode> a klik na text
-        zaostří pole.
+        drží bez <IngotCode>htmlFor</IngotCode> a <IngotCode>id</IngotCode> a klik na
+        text zaostří pole.
       </>,
       <>
         Zaškrtávátko (<IngotCode>kind: &quot;boolean&quot;</IngotCode>) má popisek
-        vpravo od sebe. Je to jediná odchylka a drží ji formulář, aby ji
-        konzumenti neopisovali.
+        vpravo od sebe. Je to jediná odchylka a drží ji formulář, aby ji konzumenti
+        neopisovali.
       </>,
       <>
         <IngotCode>field.description</IngotCode> se vypisuje pod vstupem uvnitř téhož{" "}
         <IngotCode>&lt;label&gt;</IngotCode>, takže se čte spolu s popiskem.
       </>,
       <>
-        <IngotCode>testIdPrefix</IngotCode> je povinný: <IngotCode>data-testid</IngotCode> vstupu
-        se skládá z něj a z <IngotCode>field.key</IngotCode>, a E2E na tom visí.
+        <IngotCode>testIdPrefix</IngotCode> je povinný:{" "}
+        <IngotCode>data-testid</IngotCode> vstupu se skládá z něj a z{" "}
+        <IngotCode>field.key</IngotCode>, a E2E na tom visí.
       </>,
     ],
     en: [
       <>
         The label is a <IngotCode>&lt;label&gt;</IngotCode> wrapping the input, so the
-        association holds without <IngotCode>htmlFor</IngotCode> and <IngotCode>id</IngotCode>,
-        and clicking the text focuses the field.
+        association holds without <IngotCode>htmlFor</IngotCode> and{" "}
+        <IngotCode>id</IngotCode>, and clicking the text focuses the field.
       </>,
       <>
         A checkbox (<IngotCode>kind: &quot;boolean&quot;</IngotCode>) carries its label
-        to its right. It is the only deviation, and the form owns it so
-        consumers do not copy it.
+        to its right. It is the only deviation, and the form owns it so consumers do not
+        copy it.
       </>,
       <>
         <IngotCode>field.description</IngotCode> is rendered below the input inside the
@@ -216,16 +215,16 @@ export const IngotFormDoc: IngotDocPage = {
       </>,
       <>
         <IngotCode>testIdPrefix</IngotCode> is required: an input's{" "}
-        <IngotCode>data-testid</IngotCode> is built from it and <IngotCode>field.key</IngotCode>,
-        and the end-to-end tests hang off that.
+        <IngotCode>data-testid</IngotCode> is built from it and{" "}
+        <IngotCode>field.key</IngotCode>, and the end-to-end tests hang off that.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        <IngotCode>field.label</IngotCode> a <IngotCode>field.description</IngotCode> — formulář
-        je vypisuje tak, jak přijdou.
+        <IngotCode>field.label</IngotCode> a <IngotCode>field.description</IngotCode> —
+        formulář je vypisuje tak, jak přijdou.
       </>,
       <>
         <IngotCode>secretPlaceholder(field)</IngotCode>. Bez něj se u tajného pole
@@ -237,12 +236,12 @@ export const IngotFormDoc: IngotDocPage = {
     ],
     en: [
       <>
-        <IngotCode>field.label</IngotCode> and <IngotCode>field.description</IngotCode> — the
-        form prints them exactly as they arrive.
+        <IngotCode>field.label</IngotCode> and <IngotCode>field.description</IngotCode>{" "}
+        — the form prints them exactly as they arrive.
       </>,
       <>
-        <IngotCode>secretPlaceholder(field)</IngotCode>. Without it a secret field
-        falls back to the built-in Czech text.
+        <IngotCode>secretPlaceholder(field)</IngotCode>. Without it a secret field falls
+        back to the built-in Czech text.
       </>,
       <>
         <IngotCode>renderOptions</IngotCode> supplies its option labels entirely on its

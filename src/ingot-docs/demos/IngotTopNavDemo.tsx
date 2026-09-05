@@ -1,11 +1,6 @@
 import { useState } from "react";
 
-import {
-  IngotBadge,
-  IngotMegaMenu,
-  IngotTopNav,
-  IngotTopNavAccount,
-} from "@/ingot";
+import { IngotBadge, IngotMegaMenu, IngotTopNav, IngotTopNavAccount } from "@/ingot";
 
 export function Demo(): JSX.Element {
   const [open, setOpen] = useState<string | null>(null);
@@ -36,15 +31,13 @@ export function Demo(): JSX.Element {
                     {
                       href: "#objednavky",
                       label: "Objednávky",
-                      description:
-                        "Co je přijaté a co čeká na potvrzení výroby.",
+                      description: "Co je přijaté a co čeká na potvrzení výroby.",
                       count: 12,
                     },
                     {
                       href: "#poptavky",
                       label: "Poptávky",
-                      description:
-                        "Nacenění, která zákazník zatím nepotvrdil.",
+                      description: "Nacenění, která zákazník zatím nepotvrdil.",
                       count: 48,
                     },
                   ],
@@ -60,14 +53,12 @@ export function Demo(): JSX.Element {
                     {
                       href: "#operace",
                       label: "Operace",
-                      description:
-                        "Výrobní operace a jejich parametry.",
+                      description: "Výrobní operace a jejich parametry.",
                     },
                     {
                       href: "#stroje",
                       label: "Stroje",
-                      description:
-                        "Kapacity strojů a jejich směny.",
+                      description: "Kapacity strojů a jejich směny.",
                     },
                   ],
                 },

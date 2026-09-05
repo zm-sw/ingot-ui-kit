@@ -24,12 +24,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  IngotIcon,
-  IngotOpIcon,
-  INGOT_ICON_NAMES,
-  INGOT_OP_ICON_KEYS,
-} from "@/ingot";
+import { IngotIcon, IngotOpIcon, INGOT_ICON_NAMES, INGOT_OP_ICON_KEYS } from "@/ingot";
 import { resolveProcessIcon } from "@/ingot";
 
 const OP = INGOT_OP_ICON_KEYS[0];
@@ -72,9 +67,7 @@ describe("IngotIcon", () => {
     const { container } = render(<IngotIcon name={unknown} />);
 
     expect(container.querySelector("svg")).toBeNull();
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("rozhodne-neexistuje"),
-    );
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("rozhodne-neexistuje"));
     warn.mockRestore();
   });
 
@@ -113,9 +106,7 @@ describe("IngotOpIcon", () => {
   it("takes the drawing from the operations library, not from its own copy", () => {
     const { container } = render(<IngotOpIcon token={OP} />);
 
-    const { container: library } = render(
-      <span>{resolveProcessIcon(OP)?.icon}</span>,
-    );
+    const { container: library } = render(<span>{resolveProcessIcon(OP)?.icon}</span>);
 
     expect(container.querySelector("svg")?.innerHTML).toBe(
       library.querySelector("svg")?.innerHTML,
@@ -139,7 +130,9 @@ describe("IngotOpIcon", () => {
   });
 
   it("is decorative without title and a named image with it", () => {
-    const { container, rerender } = render(<IngotOpIcon token={OTHER_OP} testId="op" />);
+    const { container, rerender } = render(
+      <IngotOpIcon token={OTHER_OP} testId="op" />,
+    );
     expect(container.querySelector('[data-testid="op"]')).toHaveAttribute(
       "aria-hidden",
       "true",

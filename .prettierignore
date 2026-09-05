@@ -1,0 +1,12 @@
+dist
+node_modules
+package-lock.json
+
+# The kit itself is NOT reformatted, and that is a decision with a reason.
+# Prettier's rewrap of src/ingot changes ~30 component files without
+# changing a line of behaviour, and the version guard would then demand a
+# version bump on ~30 doc pages. A version that moves for a line break
+# stops meaning "behaviour changed", which is the one thing the release
+# automation stands on. The kit gets formatted with the next kit epoch (a
+# `release!:` commit), where one version move covers the whole tree.
+src/ingot

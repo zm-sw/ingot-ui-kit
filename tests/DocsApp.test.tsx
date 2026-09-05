@@ -260,18 +260,14 @@ describe("DocsApp", () => {
     window.location.hash = "#/komponenty";
     render(<DocsApp />);
 
-    const navs = [
-      CHROME.groupSystem.cs,
-      CHROME.groupApp.cs,
-      CHROME.groupRules.cs,
-    ].map((name) => screen.getByRole("navigation", { name }));
+    const navs = [CHROME.groupSystem.cs, CHROME.groupApp.cs, CHROME.groupRules.cs].map(
+      (name) => screen.getByRole("navigation", { name }),
+    );
 
     // The total has to add up: every guide in one group plus the components
     // nested under the overview page.
     const links = navs.flatMap((nav) => within(nav).getAllByRole("link"));
-    expect(links).toHaveLength(
-      INGOT_GUIDE_PAGES.length + INGOT_DOC_PAGES.length,
-    );
+    expect(links).toHaveLength(INGOT_GUIDE_PAGES.length + INGOT_DOC_PAGES.length);
     for (const guide of INGOT_GUIDE_PAGES) {
       expect(screen.getAllByTestId(`docs-nav-${guide.slug}`)).toHaveLength(1);
     }
@@ -367,13 +363,9 @@ describe("DocsApp", () => {
     await user.click(screen.getByTestId("docs-copy"));
 
     const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
-    expect(await window.navigator.clipboard.readText()).toBe(
-      page!.demoSource,
-    );
+    expect(await window.navigator.clipboard.readText()).toBe(page!.demoSource);
     // The confirmation shows in the button label and disappears again after a moment.
-    expect(screen.getByTestId("docs-copy")).toHaveTextContent(
-      CHROME.copiedCode.cs,
-    );
+    expect(screen.getByTestId("docs-copy")).toHaveTextContent(CHROME.copiedCode.cs);
   });
 
   it("renders the Tokens section with the component token list", () => {
@@ -405,9 +397,7 @@ describe("DocsApp", () => {
     const statusLabel =
       page!.status === "stable" ? CHROME.statusStable.cs : CHROME.statusBeta.cs;
     expect(screen.getByTestId("docs-status")).toHaveTextContent(statusLabel);
-    expect(screen.getByTestId("docs-version")).toHaveTextContent(
-      `v${page!.version}`,
-    );
+    expect(screen.getByTestId("docs-version")).toHaveTextContent(`v${page!.version}`);
   });
 
   it("a guide has neither a status nor a version badge", () => {
@@ -492,13 +482,9 @@ describe("DocsApp", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: CHROME.demo.en }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("tab", { name: CHROME.codeTab.en }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: CHROME.codeTab.en })).toBeInTheDocument();
 
-    const emptyState = INGOT_DOC_PAGES.find(
-      (page) => page.name === "IngotEmptyState",
-    );
+    const emptyState = INGOT_DOC_PAGES.find((page) => page.name === "IngotEmptyState");
     expect(screen.getByText(emptyState!.summary.en)).toBeInTheDocument();
 
     expect(window.localStorage.getItem(LANG_KEY)).toBe("en");
@@ -691,13 +677,9 @@ describe("DocsApp", () => {
     const table = screen.getByTestId("docs-accent-families");
     // The rows are generated from ACCENT_CHOICES — a family added to the kit
     // shows up on the page without anyone having to remember it.
-    expect(
-      table.querySelectorAll("tbody tr").length,
-    ).toBe(ACCENT_CHOICES.length);
+    expect(table.querySelectorAll("tbody tr").length).toBe(ACCENT_CHOICES.length);
     for (const choice of ACCENT_CHOICES) {
-      expect(table.querySelectorAll(`[data-accent="${choice}"]`).length).toBe(
-        4,
-      );
+      expect(table.querySelectorAll(`[data-accent="${choice}"]`).length).toBe(4);
     }
   });
 });
