@@ -2,7 +2,7 @@ import { useCallback, useId, useRef, type JSX, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { ModalDepthProvider } from "./ModalDepthContext";
-import { IngotIcon } from "./IngotIcon";
+import { OverlayHeader } from "./OverlayHeader";
 import { useModalLayer } from "./modalLayer";
 import {
   trapOverlayTab,
@@ -142,31 +142,16 @@ export function IngotModal({
         className="max-h-[90vh] w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none"
         data-testid={testId ? `${testId}-panel` : undefined}
       >
-        <header className="sticky top-0 z-10 flex items-start gap-2.5 border-b border-border bg-surface px-4 py-3">
-          <div className="min-w-0 flex-1">
-            <h2 id={titleId} className="m-0 text-[15px] font-semibold text-ink">
-              {title}
-            </h2>
-            {subtitle !== undefined && (
-              <div
-                id={subtitleId}
-                className="mt-1 text-xs text-ink-3"
-                data-testid={testId ? `${testId}-subtitle` : undefined}
-              >
-                {subtitle}
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={closeLabel}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-3 hover:text-ink"
-            data-testid={testId ? `${testId}-close` : undefined}
-          >
-            <IngotIcon name="close" size={14} />
-          </button>
-        </header>
+        <OverlayHeader
+          title={title}
+          subtitle={subtitle}
+          titleId={titleId}
+          subtitleId={subtitleId}
+          onClose={onClose}
+          closeLabel={closeLabel}
+          sticky
+          testId={testId}
+        />
         <ModalDepthProvider>
           <div className={bodyClassName}>{children}</div>
           {footer !== undefined && (

@@ -1,8 +1,9 @@
 import { useCallback, useId, useRef, type JSX, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { cx } from "./cx";
 import { ModalDepthProvider } from "./ModalDepthContext";
-import { IngotIcon } from "./IngotIcon";
+import { OverlayHeader } from "./OverlayHeader";
 import { useModalLayer } from "./modalLayer";
 import {
   trapOverlayTab,
@@ -104,9 +105,10 @@ export function IngotDrawer({
 
   return createPortal(
     <div
-      className={`fixed inset-0 flex bg-black/40 ${
-        side === "left" ? "justify-start" : "justify-end"
-      }`}
+      className={cx(
+        "fixed inset-0 flex bg-black/40",
+        side === "left" ? "justify-start" : "justify-end",
+      )}
       style={{ zIndex: layer }}
       // Zachytává se na overlayi, ne na dokumentu — stejný důvod jako u
       // IngotModal: dva otevřené překryvy nad sebou by jinak na jeden ESC
@@ -125,36 +127,21 @@ export function IngotDrawer({
         aria-describedby={subtitle === undefined ? undefined : subtitleId}
         tabIndex={-1}
         style={{ width: Math.min(width, MAX_DRAWER_WIDTH) }}
-        className={`flex h-full max-w-full flex-col bg-surface shadow-lg outline-none ${
-          side === "left" ? "border-r border-border" : "border-l border-border"
-        }`}
+        className={cx(
+          "flex h-full max-w-full flex-col border-border bg-surface shadow-lg outline-none",
+          side === "left" ? "border-r" : "border-l",
+        )}
         data-testid={testId ? `${testId}-panel` : undefined}
       >
-        <header className="flex shrink-0 items-start gap-2.5 border-b border-border bg-surface px-4 py-3">
-          <div className="min-w-0 flex-1">
-            <h2 id={titleId} className="m-0 text-[15px] font-semibold text-ink">
-              {title}
-            </h2>
-            {subtitle !== undefined && (
-              <div
-                id={subtitleId}
-                className="mt-1 text-xs text-ink-3"
-                data-testid={testId ? `${testId}-subtitle` : undefined}
-              >
-                {subtitle}
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={closeLabel}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-3 hover:text-ink"
-            data-testid={testId ? `${testId}-close` : undefined}
-          >
-            <IngotIcon name="close" size={14} />
-          </button>
-        </header>
+        <OverlayHeader
+          title={title}
+          subtitle={subtitle}
+          titleId={titleId}
+          subtitleId={subtitleId}
+          onClose={onClose}
+          closeLabel={closeLabel}
+          testId={testId}
+        />
         <ModalDepthProvider>
           <div className="min-h-0 flex-1 overflow-auto p-4">{children}</div>
           {footer !== undefined && (

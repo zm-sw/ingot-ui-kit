@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore, type JSX } from "react";
 import { createPortal } from "react-dom";
 
+import { cx } from "./cx";
 import { MENU_LAYER } from "./modalLayer";
 
 /**
@@ -100,9 +101,10 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
 
   return (
     <div
-      className={`pointer-events-auto flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm shadow-lg dark:border dark:border-border-strong ${
-        tone === "danger" ? "bg-danger text-white dark:text-bg" : "bg-ink text-bg"
-      }`}
+      className={cx(
+        "pointer-events-auto flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm shadow-lg dark:border dark:border-border-strong",
+        tone === "danger" ? "bg-danger text-white dark:text-bg" : "bg-ink text-bg",
+      )}
       data-testid="ingot-toast"
       data-tone={tone}
     >

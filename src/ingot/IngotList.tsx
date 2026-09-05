@@ -1,5 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
+import { cx } from "./cx";
+
 /**
  * Výčet (KAN-628) — odrážky, čísla, nebo holý seznam bez značek.
  *
@@ -27,7 +29,7 @@ export function IngotList({
   const shared = "space-y-1.5 text-sm text-ink-2";
   if (variant === "ordered") {
     return (
-      <ol className={`list-decimal pl-5 ${shared}`} data-testid={testId}>
+      <ol className={cx("list-decimal pl-5", shared)} data-testid={testId}>
         {items.map((item, index) => (
           // Položky jsou statický obsah bez identity; pole se za běhu
           // nepřeskládá, takže index je tu stabilní klíč.
@@ -38,9 +40,7 @@ export function IngotList({
   }
   return (
     <ul
-      className={
-        variant === "plain" ? shared : `list-disc pl-5 ${shared}`
-      }
+      className={cx(variant !== "plain" && "list-disc pl-5", shared)}
       data-testid={testId}
     >
       {items.map((item, index) => (
