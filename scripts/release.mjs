@@ -23,6 +23,8 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import { nextVersion, releaseChanges, releaseNotes } from "./releaseCore.mjs";
+
 const DRY = process.argv.includes("--dry-run");
 
 function git(...args) {
@@ -65,10 +67,6 @@ function lastTag() {
   return tags[0] ?? null;
 }
 
-function majorOf(version) {
-  return Number.parseInt(version.split(".")[0] ?? "0", 10);
-}
-
 const tag = lastTag();
 
 if (tag === null) {
@@ -93,46 +91,18 @@ if (commits.length === 0) {
 const before = componentVersions(tag);
 const now = componentVersions(null);
 
-const added = [...now.keys()].filter((name) => !before.has(name));
-const majorBumped = [...now.entries()]
-  .filter(([name, v]) => before.has(name) && majorOf(v) > majorOf(before.get(name)))
-  .map(([name]) => name);
-const changed = [...now.entries()]
-  .filter(([name, v]) => before.has(name) && before.get(name) !== v)
-  .map(([name]) => name);
-
 const epoch = commits.some((subject) => subject.startsWith("release!:"));
-const kind = epoch
-  ? "major"
-  : added.length > 0 || majorBumped.length > 0
-    ? "minor"
-    : "patch";
-
-const [x, y, z] = tag
-  .slice(1)
-  .split(".")
-  .map((n) => Number.parseInt(n, 10));
-const next =
-  kind === "major"
-    ? `${x + 1}.0.0`
-    : kind === "minor"
-      ? `${x}.${y + 1}.0`
-      : `${x}.${y}.${z + 1}`;
+const changes = releaseChanges({ before, now, epoch });
+const next = nextVersion(tag, changes.kind);
 
 // English, like every other document a consumer reads (the README, the
 // changelog, the doc web's English side). These lines ARE the changelog
 // entry as well as the release notes — one text, so there is one telling
 // to keep true.
-const noteLines = [
-  `Automatic release from the doc page registry (${tag} → v${next}).`,
-  added.length ? `New primitives: ${added.join(", ")}.` : null,
-  majorBumped.length ? `Major bump: ${majorBumped.join(", ")}.` : null,
-  changed.length ? `Changed components: ${changed.join(", ")}.` : null,
-  epoch ? "Kit epoch raised by a release!: commit." : null,
-].filter(Boolean);
+const noteLines = releaseNotes({ tag, next, changes, epoch });
 const notes = noteLines.join("\n");
 
-console.log(`${tag} -> v${next} (${kind})`);
+console.log(`${tag} -> v${next} (${changes.kind})`);
 console.log(notes);
 
 /**

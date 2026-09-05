@@ -32,6 +32,37 @@ screenshot and every consumer's assumption silently wrong.
 
 Promoting `beta` → `stable` is itself a version bump.
 
+## How a primitive leaves, and how it grows up
+
+The old rule — "a breaking change rewrites every call site in the same
+change" — assumed every caller lives in this repository. It does not any
+more: the public web installs the package from a tag, and third-party
+apps for Forgmatic will. For them a removal without notice is a build
+that stops on a Monday morning with nothing to read.
+
+**A primitive leaves in three steps.**
+
+1. `status: "deprecated"` on its doc page, with
+   `deprecated: { since, replacedBy?, removeIn }`. The badge turns red and
+   the page opens with the notice, before the demo.
+2. It keeps working, unchanged, for **at least two releases**. A
+   deprecation that removes the thing in the next version is a removal
+   with extra steps.
+3. It goes away in the version `removeIn` named — never sooner. Removing
+   a primitive is a MINOR bump, not a patch: the release script reads the
+   registry and treats a page that disappeared like a new one.
+
+The `ingot-doc-pages` guard refuses a deprecation without `removeIn`: a
+warning nobody can plan around is not a warning.
+
+**A primitive grows up on evidence, not on age.** `beta` → `stable` needs
+two things at once: **two consumers** using it (the doc web does not
+count — it demonstrates everything), and **no major bump for two
+releases**. Marking something `stable` because it looks finished is how a
+design system ends up unable to fix its own mistakes: `stable` is a
+promise that the next change will not be breaking, and that promise costs
+whoever holds it.
+
 ## The doc web is the contract
 
 A primitive without a doc page does not exist, and a doc page without a
