@@ -7,7 +7,10 @@ export const IngotRowActionsDoc: IngotDocPage = {
   name: "IngotRowActions",
   status: "stable",
   // 1.1 — actions are the kit's shared icon button (accent focus ring).
-  version: "1.1",
+  // 1.2 (KAN-847) — the label shows in IngotTooltip instead of the
+  // title attribute, which a touch screen never shows and a screen reader
+  // may skip.
+  version: "1.2",
   tag: ".rowactions",
   tokens: [
     "--surface-2",

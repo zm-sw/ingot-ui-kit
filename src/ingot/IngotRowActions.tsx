@@ -2,6 +2,7 @@ import { type JSX } from "react";
 
 import { IconButton } from "./IconButton";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
+import { IngotTooltip } from "./IngotTooltip";
 
 /**
  * Actions of one table row — icon buttons at the end of the row.
@@ -22,6 +23,12 @@ import { IngotIcon, type IngotIconName } from "./IngotIcon";
  * **An irreversible action is ``danger``, but does not delete by itself.**
  * The tone changes only how it looks on hover; confirmation is
  * ``IngotConfirm`` at the caller.
+ *
+ * The label is shown on hover and on focus by ``IngotTooltip``, not by the
+ * ``title`` attribute this used to carry. A browser tooltip appears after a
+ * delay it owns, never on a touch screen, and a screen reader may or may not
+ * read it — which for a row of unlabelled icons is the difference between a
+ * usable table and a guessing game.
  *
  * The kit has no i18n namespace of its own — labels arrive translated.
  */
@@ -51,17 +58,17 @@ export function IngotRowActions({
       data-testid={testId}
     >
       {actions.map((action) => (
-        <IconButton
-          key={action.label}
-          label={action.label}
-          title={action.label}
-          tone={action.tone === "danger" ? "danger" : "default"}
-          disabled={action.disabled}
-          onClick={action.onClick}
-          data-testid={action.testId}
-        >
-          <IngotIcon name={action.icon} size={15} />
-        </IconButton>
+        <IngotTooltip key={action.label} text={action.label}>
+          <IconButton
+            label={action.label}
+            tone={action.tone === "danger" ? "danger" : "default"}
+            disabled={action.disabled}
+            onClick={action.onClick}
+            data-testid={action.testId}
+          >
+            <IngotIcon name={action.icon} size={15} />
+          </IconButton>
+        </IngotTooltip>
       ))}
     </div>
   );
