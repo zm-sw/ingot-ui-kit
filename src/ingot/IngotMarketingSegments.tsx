@@ -1,20 +1,20 @@
 import type { JSX } from "react";
 
 /**
- * Segmenty „Pro koho" (KAN-664) — karty se štítky z handoffu Veřejné
- * stránky. Štítky jsou neutrální (surface-2), žádný z nich nenese
- * akcent — pravidlo „akcent jen na jednom prvku sekce" patří hlavičce
- * sekce, ne kartám.
+ * "Who it is for" segments — cards with tags from the "Public pages"
+ * handoff. The tags are neutral (surface-2), none carries the accent — the
+ * "accent on one element per section" rule belongs to the section header,
+ * not the cards.
  *
- * 🪤 **Štítek je hranatý mono, malými písmeny, ne kulatá pilulka
- * s kapitálkami.** Handoff drží ``.seg-tag`` blízko ke ``codetag``:
- * je to technický údaj o provozu, ne stav entity. Kulatá pilulka
- * s verzálkami je odznak stavu (``IngotBadge``) a plete si s ním role.
+ * **A tag is square mono in lowercase, not a round pill in small caps.**
+ * The handoff keeps ``.seg-tag`` close to ``codetag``: it is a technical
+ * fact about the workshop, not an entity state. A round uppercase pill is a
+ * status badge (``IngotBadge``) and would confuse roles with it.
  */
 export interface IngotMarketingSegmentItem {
   title: string;
   text: string;
-  /** Tag pilulky — krátké štítky, dodané přeložené. */
+  /** Tag texts — short labels, supplied translated. */
   tags: readonly string[];
 }
 

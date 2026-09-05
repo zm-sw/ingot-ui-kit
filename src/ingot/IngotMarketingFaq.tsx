@@ -3,30 +3,32 @@ import { useId, useState, type JSX, type ReactNode } from "react";
 import { IngotIcon } from "./IngotIcon";
 
 /**
- * FAQ (KAN-664) — ``.faq-item`` z handoffu Veřejné stránky, otázka jako
+ * FAQ — ``.faq-item`` from the "Public pages" handoff, the question as a
  * button.
  *
- * 🚨 Prototyp má a11y díru: otázka je button bez ``aria-expanded`` a
- * ``aria-controls`` a 2 ze 3 odpovědí jsou prázdné. Tady je obojí
- * dotažené kontraktem: button nese oba atributy (drží je tahle
- * komponenta, ne volající) a ``answer`` je POVINNÉ pole — položka bez
- * odpovědi neprojde typecheckem, takže prázdné FAQ nejde ani napsat.
+ * The prototype has an accessibility hole: the question is a button
+ * without ``aria-expanded`` and ``aria-controls`` and 2 of 3 answers are
+ * empty. Here both are closed by contract: the button carries both
+ * attributes (this component holds them, not the caller) and ``answer`` is
+ * a REQUIRED field — an item without an answer fails the typecheck, so an
+ * empty FAQ cannot even be written.
  *
- * Klávesnice zadarmo přes nativní ``<button>`` (Enter/mezerník);
- * rozbalený panel je ``role="region"`` pojmenovaný otázkou, aby se
- * v odečítači dal přeskočit jako celek.
+ * Keyboard for free through the native ``<button>`` (Enter / Space); the
+ * unfolded panel is a ``role="region"`` named by the question so a screen
+ * reader can skip it as a whole.
  *
- * Odpověď má VLASTNÍ horní odsazení. Spodní ``py-4`` otázky patří
- * tlačítku — na hoveru je podbarvené — takže odpověď bez ``pt`` začínala
- * přesně na hraně podbarveného řádku a četla se jako jeho pokračování,
- * ne jako odstavec. S ``s-2`` nahoře je nad odpovědí i pod ní stejných
- * 24 px a obě čísla stojí na krokové škále; původních 20 px na ní nebylo.
+ * The answer has its OWN top padding. The question's bottom ``py-4``
+ * belongs to the button — it is tinted on hover — so an answer without
+ * ``pt`` started exactly at the edge of the tinted row and read as its
+ * continuation, not as a paragraph. With ``s-2`` on top there is the same
+ * 24 px above and below the answer and both numbers sit on the spacing
+ * scale; the original 20 px did not.
  */
 export interface IngotMarketingFaqItem {
-  /** Stabilní klíč položky (obsah přijde z dat, index není klíč). */
+  /** Stable item key (content comes from data; an index is not a key). */
   id: string;
   question: string;
-  /** Odpověď je povinná — FAQ s prázdnou odpovědí je díra, ne obsah. */
+  /** The answer is required — an FAQ with an empty answer is a hole, not content. */
   answer: ReactNode;
 }
 

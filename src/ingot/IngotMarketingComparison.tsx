@@ -5,20 +5,21 @@ import { eyebrowClass } from "./IngotEyebrow";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
- * Srovnání (KAN-664) — ŘÁDKOVÁ tabulka z handoffu Veřejné stránky:
- * hlavička Úkol / Dnes / S platformou na ``--surface-2``, pak jeden
- * řádek na jeden úkol.
+ * Comparison — the ROW-based table from the "Public pages" handoff: a
+ * header Task / Today / With the platform on ``--surface-2``, then one row
+ * per task.
  *
- * 🪤 **Párování je vlastnost ŘÁDKU, ne sloupce.** Tři samostatné karty
- * vedle sebe vypadají skoro stejně, jenže čtenář v nich musí spárovat
- * n-tou odrážku s n-tou odrážkou vedle — a jakmile se jeden sloupec
- * o položku posune, srovnání tiše lže. Proto komponenta bere řádky
- * (``rows``), ne sloupce: dvojici „dnes / s platformou" k jednomu úkolu
- * nejde napsat rozpojenou.
+ * **Pairing is a property of the ROW, not the column.** Three separate
+ * cards side by side look almost the same, but the reader has to pair the
+ * n-th bullet with the n-th bullet next to it — and once one column
+ * shifts by an item, the comparison lies silently. Hence the component
+ * takes rows (``rows``), not columns: the "today / with the platform" pair
+ * for one task cannot be written disconnected.
  *
- * Třetí sloupec je zvýrazněný (``--accent-bg`` / ``--accent-ink``) a je
- * jediným akcentovým prvkem sekce. Na úzkém viewportu se tabulka roluje
- * vodorovně — mřížka se nesmí složit, protože složená přestane srovnávat.
+ * The third column is highlighted (``--accent-bg`` / ``--accent-ink``) and
+ * is the section's only accent element. On a narrow viewport the table
+ * scrolls horizontally — the grid must not collapse, because collapsed it
+ * stops comparing.
  */
 export interface IngotMarketingComparisonCell {
   icon?: IngotIconName;
@@ -26,13 +27,13 @@ export interface IngotMarketingComparisonCell {
 }
 
 export interface IngotMarketingComparisonRow {
-  /** Stabilní klíč řádku z dat (ne index — řádky se přeskládávají). */
+  /** Stable row key from the data (not an index — rows get reordered). */
   id: string;
-  /** Úkol, který se srovnává — první sloupec. */
+  /** The task being compared — the first column. */
   task: string;
-  /** Jak to vypadá dnes. */
+  /** What it looks like today. */
   before: IngotMarketingComparisonCell;
-  /** Jak to vypadá s platformou — zvýrazněný sloupec. */
+  /** What it looks like with the platform — the highlighted column. */
   after: IngotMarketingComparisonCell;
 }
 
@@ -72,15 +73,15 @@ export function IngotMarketingComparison({
   rows,
   testId,
 }: {
-  /** Záhlaví tří sloupců — obsah, dodaný přeložený. */
+  /** Headers of the three columns — content, supplied translated. */
   headers: IngotMarketingComparisonHeaders;
   rows: readonly IngotMarketingComparisonRow[];
   testId?: string;
 }): JSX.Element {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-surface">
-      {/* Vodorovný scroll, ne zlom do sloupce: řádek, který se rozpadne,
-          přestane být srovnáním. */}
+      {/* Horizontal scroll, not a break into a column: a row that falls
+          apart stops being a comparison. */}
       <div className="overflow-x-auto">
         <div className="min-w-[560px]" data-testid={testId}>
           {/* The header row is one eyebrow-sized line over three cells. */}

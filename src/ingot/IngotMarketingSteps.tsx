@@ -3,22 +3,23 @@ import type { JSX } from "react";
 import { IngotIcon } from "./IngotIcon";
 
 /**
- * Kroky „jak to funguje" (KAN-664) — karty se ``.step-num`` „01/02/03"
- * a šipkou k dalšímu kroku; poslední karta šipku nemá.
+ * "How it works" steps — cards with a ``.step-num`` "01/02/03" and an
+ * arrow to the next step; the last card has no arrow.
  *
- * 🪤 **Číslo je malá akcentová pilulka, ne velké šedé číslo.** Handoff
- * dává ``.step-num`` mono 11px, ``--accent-ink`` na ``--accent-bg``
- * a malý rádius: v kartě má nejvyšší váhu titulek kroku, ne jeho pořadí.
- * Velké číslo tu hierarchii obrací a čte se dřív než to, co se má udělat.
+ * **The number is a small accent pill, not a big grey numeral.** The
+ * handoff gives ``.step-num`` mono 11px, ``--accent-ink`` on
+ * ``--accent-bg`` and a small radius: the step's title has the highest
+ * weight in the card, not its order. A big numeral inverts that hierarchy
+ * and is read before what is to be done.
  *
- * Číslo se počítá z pořadí, aby nešlo napsat „01, 02, 04". Šipka je
- * dekorace (``aria-hidden`` uvnitř IngotIcon) — pořadí čte odečítač
- * z pořadí karet, ne z ikony.
+ * The number is computed from the order so "01, 02, 04" cannot be written.
+ * The arrow is decoration (``aria-hidden`` inside IngotIcon) — a screen
+ * reader reads the order from the order of cards, not from the icon.
  *
- * ``columns`` drží pravidlo handoffu: trojsloupcová mřížka je výchozí,
- * čtyři sloupce jen pro kroky procesu. Proto to nabízí jen tenhle blok
- * a jen jako dvě povolené hodnoty — „kolik chceš" by z pravidla udělalo
- * doporučení.
+ * ``columns`` holds the handoff rule: a three-column grid is the default,
+ * four columns only for process steps. Hence only this block offers it and
+ * only as two allowed values — "as many as you like" would turn the rule
+ * into a recommendation.
  */
 export interface IngotMarketingStepItem {
   title: string;
@@ -36,7 +37,7 @@ export function IngotMarketingSteps({
   testId,
 }: {
   items: readonly IngotMarketingStepItem[];
-  /** 3 je výchozí; 4 jen pro kroky procesu. */
+  /** 3 is the default; 4 only for process steps. */
   columns?: 3 | 4;
   testId?: string;
 }): JSX.Element {

@@ -3,20 +3,20 @@ import type { JSX } from "react";
 import { IngotEyebrow } from "./IngotEyebrow";
 
 /**
- * Hlavička marketingové sekce (KAN-664) — handoff Veřejné stránky,
- * ingot.css sekce 13.
+ * Header of a marketing section — "Public pages" handoff, ingot.css
+ * section 13.
  *
- * Dvousloupec: eyebrow + h2 vlevo, lede vpravo. Teze handoffu: žádné
- * gradienty a ilustrace — sekci nese typografie a linka. Akcent smí být
- * v sekci jen na JEDNOM prvku; tady ho nese eyebrow, takže nadpis ani
- * lede už akcentové nejsou.
+ * Two columns: eyebrow + h2 on the left, lede on the right. The handoff's
+ * thesis: no gradients and no illustrations — typography and a line carry
+ * the section. The accent may sit on ONE element per section; here the
+ * eyebrow carries it, so neither the heading nor the lede is accented.
  *
- * Responzivita dle handoffu: pod 1100 px se mřížka skládá na jeden
- * sloupec — proto arbitrary varianta ``min-[1100px]:``, ne ``lg:``
- * (Tailwind ``lg`` je 1024 px a s handoffem by se rozešel).
+ * Responsiveness per the handoff: below 1100 px the grid collapses to one
+ * column — hence the arbitrary variant ``min-[1100px]:``, not ``lg:``
+ * (Tailwind's ``lg`` is 1024 px and would diverge from the handoff).
  *
- * Texty jsou obsah (CMS/branding data), ne hardcode — komponenta je
- * proto bere výhradně přes props.
+ * Texts are content (CMS / branding data), not hard-coded — the component
+ * therefore takes them exclusively through props.
  */
 export function IngotMarketingSectionHead({
   eyebrow,
@@ -24,11 +24,11 @@ export function IngotMarketingSectionHead({
   lede,
   testId,
 }: {
-  /** Krátký štítek nad nadpisem — jediný akcentový prvek sekce. */
+  /** Short caption above the heading — the section's only accent element. */
   eyebrow?: string;
-  /** Nadpis sekce (h2). Dodaný přeložený — obsah, ne konstanta. */
+  /** Section heading (h2). Supplied translated — content, not a constant. */
   title: string;
-  /** Uvozující odstavec v pravém sloupci. */
+  /** Introductory paragraph in the right column. */
   lede?: string;
   testId?: string;
 }): JSX.Element {
