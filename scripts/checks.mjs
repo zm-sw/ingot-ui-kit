@@ -40,7 +40,20 @@ const ROOT = new URL("..", import.meta.url).pathname.replace(
   /^\/([A-Za-z]):\//,
   "$1:/",
 );
-const INGOT_INDEX = join(ROOT, "src/ingot/index.ts");
+/**
+ * The barrels a primitive may be exported from.
+ *
+ * There are two on purpose. The core is what any product installs; the
+ * Forgmatic entry carries what only this platform needs (the operation
+ * icons and their keys). A primitive is documented wherever it is exported
+ * from, and the guard must see both — otherwise the day the core stops
+ * re-exporting the domain layer, its doc pages become "orphaned" and the
+ * guard demands their deletion.
+ */
+const INGOT_BARRELS = [
+  join(ROOT, "src/ingot/index.ts"),
+  join(ROOT, "src/ingot/forgmatic/index.ts"),
+];
 const DOCS_DIR = join(ROOT, "src/ingot-docs");
 const REGISTRY = join(DOCS_DIR, "registry.ts");
 
@@ -99,7 +112,7 @@ const SUBCOMPONENTS = new Map([
 ]);
 
 function exportedComponents() {
-  const src = stripComments(read(INGOT_INDEX));
+  const src = INGOT_BARRELS.map((file) => stripComments(read(file))).join("\n");
   const names = new Set();
   for (const match of src.matchAll(/export\s*\{([^}]*)\}\s*from/gs)) {
     for (const raw of match[1].split(",")) {

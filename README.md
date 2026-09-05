@@ -100,15 +100,16 @@ import { applyTheme, readStoredTheme, writeStoredTheme } from "@forgmatic/ingot/
 
 ## What the package exports
 
-| Entry                              | What comes out of it                                     |
-| ---------------------------------- | -------------------------------------------------------- |
-| `@forgmatic/ingot`                 | The primitives.                                          |
-| `@forgmatic/ingot/marketing`       | The public-page blocks, without the rest of the kit.     |
-| `@forgmatic/ingot/theme`           | Theme and accent: read, store, resolve, apply. No React. |
-| `@forgmatic/ingot/theme-init.js`   | The anti-flash script, as a static file.                 |
-| `@forgmatic/ingot/tailwind-preset` | The Tailwind preset.                                     |
-| `@forgmatic/ingot/tokens.css`      | The token values, both themes, all five accents.         |
-| `@forgmatic/ingot/tokens.json`     | The same tokens as data.                                 |
+| Entry                              | What comes out of it                                                        |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| `@forgmatic/ingot`                 | The primitives.                                                             |
+| `@forgmatic/ingot/forgmatic`       | This platform's own layer: operation icons, schema adapters, product rules. |
+| `@forgmatic/ingot/marketing`       | The public-page blocks, without the rest of the kit.                        |
+| `@forgmatic/ingot/theme`           | Theme and accent: read, store, resolve, apply. No React.                    |
+| `@forgmatic/ingot/theme-init.js`   | The anti-flash script, as a static file.                                    |
+| `@forgmatic/ingot/tailwind-preset` | The Tailwind preset.                                                        |
+| `@forgmatic/ingot/tokens.css`      | The token values, both themes, all five accents.                            |
+| `@forgmatic/ingot/tokens.json`     | The same tokens as data.                                                    |
 
 The kit has no translation namespace: every visible string arrives from
 the caller already translated. The few labels a primitive says itself (the

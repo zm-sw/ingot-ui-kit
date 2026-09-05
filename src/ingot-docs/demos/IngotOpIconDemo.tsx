@@ -1,4 +1,5 @@
-import { IngotCode, IngotOpIcon, IngotSection, INGOT_OP_ICON_KEYS } from "@/ingot";
+import { IngotCode, IngotSection } from "@/ingot";
+import { IngotOpIcon, INGOT_OP_ICON_KEYS } from "@/ingot/forgmatic";
 
 const SAMPLE = INGOT_OP_ICON_KEYS.slice(0, 6);
 

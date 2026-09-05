@@ -154,6 +154,31 @@ suspect the install before the kit: compare the installed file against the
 tag rather than against a version number, and `npm cache clean --force`
 before re-measuring. A matching version number proves nothing.
 
+## What belongs in the kit, and what only looks like it does
+
+The package has two main entries and the line between them is one
+question, asked of every module: **would this still make sense in a
+product that is not Forgmatic?**
+
+- **Yes → `@forgmatic/ingot`.** A form field description, an icon of an
+  arrow, the count of open dialogs.
+- **No → `@forgmatic/ingot/forgmatic`.** The keys our backend stores, the
+  shape our API sends, the rule about how deep a quick-create may go.
+
+The question beats a list because it survives contact with a module
+nobody has written yet. A list has to be remembered; a question can be
+asked.
+
+Getting this wrong is not a tidiness problem. Domain code in the core
+means every consumer installs a translation for an API they never call
+and ships glyphs they will never draw — and none of them can tell,
+because it all arrives under one import.
+
+Both barrels are read by the doc-page guard, so a primitive is documented
+wherever it is exported from. The core still re-exports the domain layer
+marked `@deprecated`; those pass-throughs go away in the next major and a
+changed import path is the whole migration.
+
 ## The remote holds exactly two branches
 
 `main` and `dev` are the only long-lived branches. Everything else is a

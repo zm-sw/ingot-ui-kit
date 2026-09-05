@@ -3,6 +3,9 @@ import { Demo } from "@/ingot-docs/demos/IngotFieldInputDemo";
 import demoSource from "@/ingot-docs/demos/IngotFieldInputDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 2.1 (KAN-853): the component is untouched — the schema adapters left the field module; the spec itself did not move.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
 export const IngotFieldInputDoc: IngotDocPage = {
   name: "IngotFieldInput",
   status: "stable",
@@ -12,7 +15,7 @@ export const IngotFieldInputDoc: IngotDocPage = {
   // 2.0 (KAN-841) — the SECRET_PLACEHOLDER_* exports are gone; the secret
   // placeholders come from IngotProvider (English without one). A caller
   // that imported the constants reads INGOT_LABELS instead.
-  version: "2.0",
+  version: "2.1",
   tag: ".input",
   tokens: [
     "--surface",

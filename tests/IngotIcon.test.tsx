@@ -24,8 +24,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { IngotIcon, IngotOpIcon, INGOT_ICON_NAMES, INGOT_OP_ICON_KEYS } from "@/ingot";
-import { resolveProcessIcon } from "@/ingot";
+import { IngotIcon, INGOT_ICON_NAMES } from "@/ingot";
+import { IngotOpIcon, INGOT_OP_ICON_KEYS, resolveProcessIcon } from "@/ingot/forgmatic";
 
 const OP = INGOT_OP_ICON_KEYS[0];
 const OTHER_OP = INGOT_OP_ICON_KEYS[1];

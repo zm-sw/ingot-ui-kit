@@ -3,13 +3,16 @@ import { Demo } from "@/ingot-docs/demos/IngotModalDemo";
 import demoSource from "@/ingot-docs/demos/IngotModalDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.4 (KAN-853): the component is untouched — the quick-create rule left the module this dialog carries the depth for.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
 export const IngotModalDoc: IngotDocPage = {
   name: "IngotModal",
   status: "stable",
   // 1.1 — header markup shared with IngotDrawer (internal OverlayHeader); no visible change.
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
   // 1.3 (KAN-849) — the backdrop fades and the panel scales in, from the kit's motion tokens; motion-reduce turns the movement off, not the dialog.
-  version: "1.3",
+  version: "1.4",
   tag: ".modal",
   tokens: [
     "--surface",

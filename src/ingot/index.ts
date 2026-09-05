@@ -55,11 +55,6 @@ export {
   INGOT_ICON_NAMES,
   type IngotIconName,
 } from "./IngotIcon";
-export {
-  IngotOpIcon,
-  INGOT_OP_ICON_KEYS,
-  type IngotOpIconVariant,
-} from "./IngotOpIcon";
 
 // --- page shell -------------------------------------------------------
 //
@@ -146,37 +141,16 @@ export { IngotRadioGroup, type IngotRadioOption } from "./IngotRadioGroup";
 export { IngotCallout, type IngotCalloutTone } from "./IngotCallout";
 export { IngotFieldInput } from "./IngotFieldInput";
 export {
-  fieldsFromConfigSchema,
-  fieldsFromIntegrationManifest,
   isNumericKind,
   type IngotFieldSpec,
   type IngotFieldKind,
-  type IngotSchemaProperty,
 } from "./fields";
 export {
   ingotFormPayload,
   useIngotForm,
   type IngotFormState,
 } from "./useIngotForm";
-export {
-  MAX_QUICK_CREATE_DEPTH,
-  ModalDepthProvider,
-  useCanQuickCreate,
-  useModalDepth,
-} from "./ModalDepthContext";
-export {
-  PROCESS_ICON_CATEGORIES,
-  PROCESS_ICON_VARIANT_INKS,
-  ProcessIconGlyph,
-  parseProcessIconKey,
-  processIconInk,
-  processIconToken,
-  resolveProcessIcon,
-  type ProcessIconCategory,
-  type ProcessIconItem,
-  type ProcessIconVariant,
-  type ResolvedProcessIcon,
-} from "./processIconLibrary";
+export { ModalDepthProvider, useModalDepth } from "./ModalDepthContext";
 
 // --- shell and settings patterns (aligned to the handoff) -------------
 // The application frame: a top bar instead of a side menu, a section mega
@@ -271,3 +245,43 @@ export {
   IngotMarketingCta,
   type IngotMarketingCtaAction,
 } from "./IngotMarketingCta";
+
+// --- Forgmatic's own layer, kept here for one more major ---------------
+//
+// These moved to `@forgmatic/ingot/forgmatic` (KAN-853): they know things
+// only this platform knows — the icon keys the backend stores, the shape of
+// an operation configuration schema, how deep a quick-create may go. A
+// third-party product installs a translation for an API it never calls and
+// forty-three glyphs it will never draw.
+//
+// The re-exports stay so that nothing breaks the day the split lands. They
+// go away in the next major; changing the import path is the whole
+// migration.
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  IngotOpIcon,
+  INGOT_OP_ICON_KEYS,
+  type IngotOpIconVariant,
+} from "./forgmatic/IngotOpIcon";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  PROCESS_ICON_CATEGORIES,
+  PROCESS_ICON_VARIANT_INKS,
+  ProcessIconGlyph,
+  parseProcessIconKey,
+  processIconInk,
+  processIconToken,
+  resolveProcessIcon,
+  type ProcessIconCategory,
+  type ProcessIconItem,
+  type ProcessIconVariant,
+  type ResolvedProcessIcon,
+} from "./forgmatic/processIconLibrary";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  fieldsFromConfigSchema,
+  fieldsFromIntegrationManifest,
+  type IngotSchemaProperty,
+} from "./forgmatic/schemaFields";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export { MAX_QUICK_CREATE_DEPTH, useCanQuickCreate } from "./forgmatic/quickCreate";

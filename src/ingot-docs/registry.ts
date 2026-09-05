@@ -11,6 +11,7 @@
 import { A11yGuide } from "@/ingot-docs/guides/A11yGuide";
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
 import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
+import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
@@ -114,6 +115,10 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   // component.
   PublicPagesGuide,
   UsageGuide,
+  // What in the kit is not the kit. It belongs next to the usage rules
+  // because it answers the same kind of question: not "how do I call this"
+  // but "does this belong to me at all".
+  DomainLayerGuide,
   FormatsGuide,
   A11yGuide,
   TranslationsGuide,

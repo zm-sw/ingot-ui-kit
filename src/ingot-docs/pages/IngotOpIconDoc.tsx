@@ -3,10 +3,15 @@ import { Demo } from "@/ingot-docs/demos/IngotOpIconDemo";
 import demoSource from "@/ingot-docs/demos/IngotOpIconDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.1 (KAN-853): the component is unchanged, the import path is not. It
+// and the whole glyph library moved to the Forgmatic entry of the package,
+// because an operation icon key is this platform's, not the kit's. The core
+// barrel still re-exports it as deprecated, so the bump is a patch, not a
+// major — nobody's call site breaks yet.
 export const IngotOpIconDoc: IngotDocPage = {
   name: "IngotOpIcon",
   status: "stable",
-  version: "1.0",
+  version: "1.1",
   tag: "[data-op-icon]",
   tokens: ["currentColor"],
   classNameNote: {

@@ -3,13 +3,16 @@ import { Demo } from "@/ingot-docs/demos/IngotDrawerDemo";
 import demoSource from "@/ingot-docs/demos/IngotDrawerDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.4 (KAN-853): the component is untouched — the quick-create rule left the module this drawer carries the depth for.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
 export const IngotDrawerDoc: IngotDocPage = {
   name: "IngotDrawer",
   status: "beta",
   // 1.1 — header markup shared with IngotModal (internal OverlayHeader); no visible change.
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
   // 1.3 (KAN-849) — the panel slides in from its own edge, from the kit's motion tokens; motion-reduce turns the movement off.
-  version: "1.3",
+  version: "1.4",
   tag: ".drawer",
   tokens: [
     "--surface",

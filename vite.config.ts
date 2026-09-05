@@ -48,5 +48,18 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        // The Forgmatic layer in its own chunk. It is forty-three glyphs
+        // and the schema adapters — code the doc web draws on two pages and
+        // no consumer outside this platform wants at all. Splitting it here
+        // makes that visible as a number in the build output; making the doc
+        // web fetch it only on those two pages is a separate change.
+        manualChunks(id) {
+          if (id.includes("/src/ingot/forgmatic/")) return "forgmatic";
+          return undefined;
+        },
+      },
+    },
   },
 });

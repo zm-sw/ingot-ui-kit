@@ -18,13 +18,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { describe, expect, it } from "vitest";
 
+import { IngotForm, ingotFormPayload, type IngotFieldSpec } from "@/ingot";
 import {
-  IngotForm,
   fieldsFromConfigSchema,
   fieldsFromIntegrationManifest,
-  ingotFormPayload,
-  type IngotFieldSpec,
-} from "@/ingot";
+} from "@/ingot/forgmatic";
 
 function Harness({
   fields,
