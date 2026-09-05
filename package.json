@@ -10,6 +10,7 @@
   "type": "module",
   "exports": {
     ".": "./src/ingot/index.ts",
+    "./forgmatic": "./src/ingot/forgmatic/index.ts",
     "./marketing": "./src/ingot/marketing.ts",
     "./theme": "./src/ingot/theme.ts",
     "./theme-init.js": "./src/ingot/theme-init.js",

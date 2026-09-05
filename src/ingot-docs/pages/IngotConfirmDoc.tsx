@@ -3,10 +3,13 @@ import { Demo } from "@/ingot-docs/demos/IngotConfirmDemo";
 import demoSource from "@/ingot-docs/demos/IngotConfirmDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.1 (KAN-853): the component is untouched — the quick-create rule left the module this dialog carries the depth for.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
 export const IngotConfirmDoc: IngotDocPage = {
   name: "IngotConfirm",
   status: "stable",
-  version: "1.0",
+  version: "1.1",
   tag: ".confirm",
   tokens: ["--bg", "--border", "--ink-2", "--warn", "--r-md"],
   classNameNote: {

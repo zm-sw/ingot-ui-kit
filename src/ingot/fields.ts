@@ -6,10 +6,12 @@
  * schema, plus one extra kind of field (``secret``) the integration
  * config asked for.
  *
- * The description is **source-neutral**. It knows neither JSON Schema nor
- * an integration manifest — both are translated into it by an adapter
- * (``fieldsFromConfigSchema``, ``fieldsFromIntegrationManifest``). That
- * keeps one renderer; only adapters are added, not form variants.
+ * The description is **source-neutral**, and since KAN-853 that is
+ * enforced by where the code sits rather than by a promise: the adapters
+ * that translate a Forgmatic JSON schema or an integration manifest into
+ * these specs live in ``forgmatic/schemaFields.ts``, outside the core. A
+ * consumer who has their own shape of form data builds these specs
+ * themselves and never loads ours.
  */
 
 export type IngotFieldKind =
@@ -43,80 +45,3 @@ export interface IngotFieldSpec {
 
 export const isNumericKind = (kind: IngotFieldKind): boolean =>
   kind === "number" || kind === "integer";
-
-/** A property of the operation configuration schema as the API sends it. */
-export interface IngotSchemaProperty {
-  type?: "boolean" | "number" | "integer" | "string";
-  title?: string;
-  title_en?: string;
-  description?: string;
-  minimum?: number;
-  maximum?: number;
-  x_options?: string;
-  secret?: boolean;
-}
-
-/**
- * JSON-Schema ``properties`` → Ingot fields.
- *
- * ``preferEnglish`` resolves the title language the way both operation
- * configuration panels did before they merged: in English ``title_en``
- * falling back to ``title``, otherwise the other way round, and the key
- * itself as the last resort.
- */
-export function fieldsFromConfigSchema(
-  properties: Record<string, IngotSchemaProperty>,
-  options: { preferEnglish: boolean; configuredSecretKeys?: readonly string[] },
-): IngotFieldSpec[] {
-  const { preferEnglish, configuredSecretKeys = [] } = options;
-  return Object.keys(properties).map((key) => {
-    const prop = properties[key];
-    const label = preferEnglish
-      ? (prop.title_en ?? prop.title ?? key)
-      : (prop.title ?? prop.title_en ?? key);
-    let kind: IngotFieldKind = "text";
-    if (prop.secret) kind = "secret";
-    else if (prop.x_options) kind = "options";
-    else if (prop.type === "boolean") kind = "boolean";
-    else if (prop.type === "number" || prop.type === "integer") kind = prop.type;
-    return {
-      key,
-      kind,
-      label,
-      description: prop.description,
-      minimum: prop.minimum,
-      maximum: prop.maximum,
-      optionsSource: prop.x_options,
-      secretConfigured: configuredSecretKeys.includes(key),
-    };
-  });
-}
-
-/**
- * An integration manifest (and the identically shaped app manifest) →
- * Ingot fields.
- *
- * The manifest carries no types — it declares only two sets of keys:
- * ordinary and secret. An ordinary key is therefore text, a secret one is
- * ``secret``. Once the manifest starts carrying types, they are translated
- * here; the renderer will not change.
- */
-export function fieldsFromIntegrationManifest(manifest: {
-  required_config_keys: readonly string[];
-  secret_config_keys: readonly string[];
-  configured_secret_keys: readonly string[];
-}): IngotFieldSpec[] {
-  return [
-    ...manifest.required_config_keys.map(
-      (key): IngotFieldSpec => ({ key, kind: "text", label: key }),
-    ),
-    ...manifest.secret_config_keys.map(
-      (key): IngotFieldSpec => ({
-        key,
-        kind: "secret",
-        label: key,
-        secretConfigured: manifest.configured_secret_keys.includes(key),
-      }),
-    ),
-  ];
-}

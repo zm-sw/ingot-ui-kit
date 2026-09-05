@@ -3,6 +3,9 @@ import { Demo } from "@/ingot-docs/demos/IngotFormDemo";
 import demoSource from "@/ingot-docs/demos/IngotFormDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 2.1 (KAN-853): the component is untouched — the schema adapters left the field module; the spec itself did not move.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
 export const IngotFormDoc: IngotDocPage = {
   name: "IngotForm",
   status: "stable",
@@ -10,7 +13,7 @@ export const IngotFormDoc: IngotDocPage = {
   // 2.0 (KAN-845) — useIngotForm no longer resets on a new `initial`
   // object; it takes a `resetKey` instead. A caller that relied on the old
   // identity reset passes the record id it already has.
-  version: "2.0",
+  version: "2.1",
   tag: ".form",
   tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
   classNameNote: {

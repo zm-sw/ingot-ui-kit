@@ -2,15 +2,14 @@ import type { JSX } from "react";
 
 import {
   INGOT_ICON_NAMES,
-  INGOT_OP_ICON_KEYS,
   IngotBadge,
   IngotCode,
   IngotIcon,
   IngotList,
-  IngotOpIcon,
   IngotTable,
   type IngotColumn,
 } from "@/ingot";
+import { INGOT_OP_ICON_KEYS, IngotOpIcon } from "@/ingot/forgmatic";
 import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
