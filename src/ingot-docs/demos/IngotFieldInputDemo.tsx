@@ -23,32 +23,27 @@ export function Demo(): JSX.Element {
   const [token, setToken] = useState<unknown>("");
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <label className="block text-sm" htmlFor="docs-field-count">
-          {COUNT.label}
-        </label>
+      <label className="block space-y-2">
+        <span className="block text-sm">{COUNT.label}</span>
         <IngotFieldInput
           field={COUNT}
           value={count}
           onChange={setCount}
           testId="docs-field-count"
         />
-      </div>
-      <div className="space-y-2">
-        <label className="block text-sm" htmlFor="docs-field-token">
-          {TOKEN.label}
-        </label>
+      </label>
+      <label className="block space-y-2">
+        <span className="block text-sm">{TOKEN.label}</span>
         <IngotFieldInput
           field={TOKEN}
           value={token}
           onChange={setToken}
           testId="docs-field-token"
         />
-        <p className="text-xs text-ink-3">
-          Tajné pole hlásí jen to, že hodnota existuje — placeholder bere z
-          IngotProvider.
-        </p>
-      </div>
+      </label>
+      <p className="text-xs text-ink-3">
+        Tajné pole hlásí jen to, že hodnota existuje — placeholder bere z IngotProvider.
+      </p>
     </div>
   );
 }
