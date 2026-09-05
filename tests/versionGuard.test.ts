@@ -20,6 +20,7 @@ import {
   importers,
   localImports,
   pagesOwed,
+  type PagesOwedInput,
 } from "../scripts/versionGuardCore.mjs";
 
 const SOURCES = {
@@ -41,7 +42,9 @@ const PAGES = {
   IngotBadge: ["--ok", "--ok-bg"],
 };
 
-function owed(input: Record<string, unknown>) {
+type Scenario = Partial<PagesOwedInput> & Pick<PagesOwedInput, "changedFiles">;
+
+function owed(input: Scenario) {
   return pagesOwed({
     sources: SOURCES,
     pages: PAGES,
