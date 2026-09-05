@@ -9,7 +9,10 @@ export const IngotFieldInputDoc: IngotDocPage = {
   // 1.1 — the frame comes from the kit's shared input chrome (focus ring,
   // `--r-md`, Button-md height) instead of its own smaller box.
   // 1.2 — boolean is the shared checkbox control; options without renderOptions is a disabled IngotSelect, not a text input.
-  version: "1.2",
+  // 2.0 (KAN-841) — the SECRET_PLACEHOLDER_* exports are gone; the secret
+  // placeholders come from IngotProvider (English without one). A caller
+  // that imported the constants reads INGOT_LABELS instead.
+  version: "2.0",
   tag: ".input",
   tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
   summary: {
@@ -152,8 +155,8 @@ export const IngotFieldInputDoc: IngotDocPage = {
       type: "(field: IngotFieldSpec) => string",
       required: false,
       note: {
-        cs: "Přeložený text tajného pole místo českého výchozího.",
-        en: "Translated secret-field text instead of the built-in Czech default.",
+        cs: "Vlastní text tajného pole místo slovníku IngotProvider.",
+        en: "Custom secret-field text instead of the IngotProvider dictionary.",
       },
     },
   ],
@@ -204,10 +207,10 @@ export const IngotFieldInputDoc: IngotDocPage = {
         jen předává dál — vykresluje je až <IngotCode>IngotForm</IngotCode>.
       </>,
       <>
-        <IngotCode>secretPlaceholder(field)</IngotCode> nahrazuje český výchozí text.
-        Konstanty <IngotCode>SECRET_PLACEHOLDER_SET</IngotCode> a{" "}
-        <IngotCode>SECRET_PLACEHOLDER_UNSET</IngotCode> jsou exportované, aby se test
-        i volající shodli na jeho tvaru.
+        Placeholder tajného pole („nastaveno“ / „nenastaveno“) bere pole ze
+        slovníku <IngotCode>IngotProvider</IngotCode> — bez providera je
+        anglický. <IngotCode>secretPlaceholder(field)</IngotCode> ho přebíjí
+        pro jedno pole.
       </>,
       <>
         Popisky voleb u <IngotCode>kind: &quot;options&quot;</IngotCode> dodává{" "}
@@ -220,10 +223,10 @@ export const IngotFieldInputDoc: IngotDocPage = {
         passed through — <IngotCode>IngotForm</IngotCode> is what renders them.
       </>,
       <>
-        <IngotCode>secretPlaceholder(field)</IngotCode> replaces the built-in Czech
-        text. The constants <IngotCode>SECRET_PLACEHOLDER_SET</IngotCode> and{" "}
-        <IngotCode>SECRET_PLACEHOLDER_UNSET</IngotCode> are exported so tests and
-        callers agree on its shape.
+        The secret-field placeholder (“set” / “not set”) comes from the{" "}
+        <IngotCode>IngotProvider</IngotCode> dictionary — English without a
+        provider. <IngotCode>secretPlaceholder(field)</IngotCode> overrides it
+        for a single field.
       </>,
       <>
         Option labels for <IngotCode>kind: &quot;options&quot;</IngotCode> are supplied

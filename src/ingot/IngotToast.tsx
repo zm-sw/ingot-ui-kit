@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 
 import { cx } from "./cx";
 import { MENU_LAYER } from "./modalLayer";
+import { useIngotLabels } from "./IngotProvider";
 import { createStore } from "./store";
 
 /**
@@ -55,7 +56,10 @@ export interface IngotToastOptions {
   tone?: "default" | "danger";
   /** Undo action. Adds a button and extends the toast's life to 8 s. */
   undo?: () => void;
-  /** Translated label of the undo action — the kit has no translations. */
+  /**
+   * Label of the undo action. Defaults to the ``toastUndo`` entry of
+   * ``IngotProvider`` — English when no provider is mounted.
+   */
   undoLabel?: string;
   /** How long the toast lives, in ms. Default 4000; with ``undo`` 8000. */
   duration?: number;
@@ -80,7 +84,14 @@ export function toast(options: IngotToastOptions): void {
 }
 
 function ToastCard({ item }: { item: ToastItem }): JSX.Element {
-  const { id, text, tone = "default", undo, undoLabel = "Zpět" } = item;
+  const labels = useIngotLabels();
+  const {
+    id,
+    text,
+    tone = "default",
+    undo,
+    undoLabel = labels.toastUndo,
+  } = item;
   const duration = item.duration ?? (undo === undefined ? 4000 : 8000);
 
   useEffect(() => {

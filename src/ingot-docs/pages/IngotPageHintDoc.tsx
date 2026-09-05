@@ -10,7 +10,9 @@ export const IngotPageHintDoc: IngotDocPage = {
   name: "IngotPageHint",
   status: "beta",
   // 1.1 — bulb and dismiss are the kit's shared icon button.
-  version: "1.1",
+  // 1.2 (KAN-841) — bulb and dismiss labels default to the IngotProvider
+  // dictionary (English without a provider) instead of Czech constants.
+  version: "1.2",
   tag: ".pagehint",
   tokens: ["--ink", "--ink-2", "--ink-3", "--surface-2", "--accent", "--accent-ink", "--accent-bg", "--accent-border", "--r-sm", "--r-lg"],
   summary: {
@@ -161,8 +163,8 @@ export const IngotPageHintDoc: IngotDocPage = {
       type: "string",
       required: false,
       note: {
-        cs: "Přeložený aria-label žárovky.",
-        en: "Translated aria-label of the bulb.",
+        cs: "aria-label žárovky. Výchozí ze slovníku IngotProvider.",
+        en: "aria-label of the bulb. Defaults to the IngotProvider dictionary.",
       },
     },
     {
@@ -170,8 +172,8 @@ export const IngotPageHintDoc: IngotDocPage = {
       type: "string",
       required: false,
       note: {
-        cs: "Přeložený aria-label křížku.",
-        en: "Translated aria-label of the close button.",
+        cs: "aria-label křížku. Výchozí ze slovníku IngotProvider.",
+        en: "aria-label of the close button. Defaults to the IngotProvider dictionary.",
       },
     },
     {
@@ -221,17 +223,25 @@ export const IngotPageHintDoc: IngotDocPage = {
   i18n: {
     cs: [
       <>
-        <IngotCode>title</IngotCode>, <IngotCode>children</IngotCode>,{" "}
-        <IngotCode>bulbLabel</IngotCode> i <IngotCode>dismissLabel</IngotCode>{" "}
-        dodává volající už přeložené — Ingot překlady nemá.
+        <IngotCode>title</IngotCode> a <IngotCode>children</IngotCode> dodává
+        volající už přeložené — Ingot překlady nemá.
+      </>,
+      <>
+        <IngotCode>bulbLabel</IngotCode> a <IngotCode>dismissLabel</IngotCode>{" "}
+        mají výchozí hodnotu ze slovníku <IngotCode>IngotProvider</IngotCode>{" "}
+        (bez providera anglicky); vlastní prop ji přebíjí.
       </>,
     ],
     en: [
       <>
-        <IngotCode>title</IngotCode>, <IngotCode>children</IngotCode>,{" "}
+        <IngotCode>title</IngotCode> and <IngotCode>children</IngotCode> arrive
+        from the caller already translated — the Ingot has no translations of
+        its own.
+      </>,
+      <>
         <IngotCode>bulbLabel</IngotCode> and <IngotCode>dismissLabel</IngotCode>{" "}
-        arrive from the caller already translated — the Ingot has no
-        translations of its own.
+        default to the <IngotCode>IngotProvider</IngotCode> dictionary (English
+        without a provider); an explicit prop overrides them.
       </>,
     ],
   },

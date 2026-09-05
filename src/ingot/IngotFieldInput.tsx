@@ -3,6 +3,7 @@ import type { JSX, ReactNode } from "react";
 import { cx } from "./cx";
 import { isNumericKind, type IngotFieldSpec } from "./fields";
 import { IngotCheckboxControl } from "./IngotCheckbox";
+import { useIngotLabels } from "./IngotProvider";
 import { IngotSelect } from "./IngotSelect";
 import { inputChrome } from "./inputChrome";
 
@@ -31,9 +32,9 @@ export function IngotFieldInput({
   testId: string;
   className?: string;
   /**
-   * Translated placeholder text of a secret field. The kit has no i18n
-   * namespace; a consumer that has the translation supplies it, the others
-   * get the default text.
+   * Placeholder text of a secret field. Defaults to the ``secretSet`` /
+   * ``secretUnset`` entries of ``IngotProvider`` — English when no provider
+   * is mounted; a consumer with its own wording supplies it here.
    */
   secretPlaceholder?: (field: IngotFieldSpec) => string;
   /**
@@ -51,6 +52,7 @@ export function IngotFieldInput({
     className?: string;
   }) => ReactNode;
 }): JSX.Element {
+  const labels = useIngotLabels();
   // The frame is the kit's one input chrome; `className` replaces it whole
   // because callers that pass it lay the input into their own grid.
   const inputClass = className ?? cx("w-full max-w-xs", inputChrome());
@@ -109,8 +111,8 @@ export function IngotFieldInput({
           secretPlaceholder
             ? secretPlaceholder(field)
             : field.secretConfigured
-              ? SECRET_PLACEHOLDER_SET
-              : SECRET_PLACEHOLDER_UNSET
+              ? labels.secretSet
+              : labels.secretUnset
         }
         onChange={(ev) => onChange(ev.target.value)}
         className={inputClass}
@@ -142,13 +144,3 @@ export function IngotFieldInput({
     />
   );
 }
-
-/**
- * Placeholders of a secret field. The kit has no i18n namespace and the
- * text is a one-word state, not a sentence — consumers that have the
- * translated string supply it through ``secretPlaceholder``; this is the
- * default for the others. (Czech defaults are a known gap tracked for the
- * IngotProvider work.)
- */
-export const SECRET_PLACEHOLDER_SET = "nastaveno";
-export const SECRET_PLACEHOLDER_UNSET = "nenastaveno";

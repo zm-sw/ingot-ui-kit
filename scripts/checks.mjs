@@ -1,5 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit. Four guards:
+ * Repo checks for the Ingot UI Kit. Five guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -19,6 +19,11 @@
  *  - ingot-comments-english: every comment (JSDoc, `//`, JSX, HTML, CSS,
  *    workflow YAML) and every describe/it name is English. User-facing
  *    text is content, not a comment, so string literals are never read.
+ *
+ *  - ingot-no-hardcoded-text: the kit has no translation namespace, so no
+ *    file under `src/ingot/` carries Czech text outside comments. The two
+ *    exemptions are the IngotProvider dictionary and the bilingual
+ *    operation icon library.
  *
  * Exit code 0 = all green; 1 = at least one guard failed.
  */
@@ -187,11 +192,13 @@ function guardIngotDocPages() {
     if (!/tag:\s*"[^"]+"/.test(src)) {
       fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
     }
-    const tokens = src.match(/tokens:\s*\[([^\]]*)\]/);
-    if (!tokens || !tokens[1].trim()) {
+    // An empty list is a statement too — "renders nothing, no token change
+    // reaches it" — and the doc web prints it as that sentence.
+    if (!/tokens:\s*\[[^\]]*\]/.test(src)) {
       fail(guard, [
         `${pageRel} does not declare the tokens it stands on.`,
-        "The token list is what tells review what a token change breaks.",
+        "The token list is what tells review what a token change breaks;",
+        "a primitive that renders nothing declares an empty list.",
       ]);
     }
     const demoPath = join(DOCS_DIR, "demos", `${name}Demo.tsx`);
@@ -339,7 +346,7 @@ const INTERNAL_RE = new RegExp(
   [
     String.raw`KAN-\d+`,
     String.raw`\b(?:apps/(?:web|api)|scripts)/[\w/.-]+`,
-    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose|comments-english)\b`,
+    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose|comments-english|no-hardcoded-text)\b`,
   ].join("|"),
   "g",
 );
@@ -395,7 +402,7 @@ const COMMENT_FILES = [
 
 // First string argument of describe / it / test, including .each / .only / .skip.
 const TEST_NAME_RE =
-  /\b(?:describe|it|test)(?:\.(?:each|only|skip|todo|concurrent)(?:\([^)]*\))?)?\(\s*(["'`])((?:\\.|(?!\1)[^\\])*)\1/g;
+  /\b(?:describe|it|test)(?:\.(?:each|only|skip|todo|concurrent)(?:\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))?)?\(\s*(["'`])((?:\\.|(?!\1)[^\\])*)\1/g;
 
 function lineAt(src, index) {
   let line = 1;
@@ -467,12 +474,53 @@ function guardIngotCommentsEnglish() {
   }
 }
 
+// --- ingot-no-hardcoded-text ------------------------------------------------
+
+const KIT_DIR = join(ROOT, "src/ingot");
+
+// The provider IS the dictionary, and the operation library carries a
+// Czech label next to the English one by design (data, not UI text).
+const HARDCODED_TEXT_EXEMPT = new Set([
+  "IngotProvider.tsx",
+  "processIconLibrary.tsx",
+]);
+
+function guardIngotNoHardcodedText() {
+  const guard = "ingot-no-hardcoded-text";
+  const hits = [];
+  let files = 0;
+  for (const path of walk(KIT_DIR, /\.tsx?$/)) {
+    const name = rel(path).split("/").pop();
+    if (name.includes(".test.") || HARDCODED_TEXT_EXEMPT.has(name)) continue;
+    files += 1;
+    stripComments(read(path))
+      .split("\n")
+      .forEach((line, index) => {
+        if (CZECH_RE.test(line)) {
+          hits.push(`${rel(path)}:${index + 1}: ${line.trim().slice(0, 70)}`);
+        }
+      });
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} line(s) of Czech text in the kit outside comments:`,
+      ...hits.slice(0, 30),
+      "The kit has no translation namespace. A label a primitive has to say",
+      "itself belongs in the IngotProvider dictionary (English by default);",
+      "everything else arrives from the caller already translated.",
+    ]);
+  } else {
+    ok(guard, `${files} kit file(s) carry no Czech text outside comments`);
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 guardIngotDocPages();
 guardIngotDocsKitOnly();
 guardIngotDocsNoInternalProse();
 guardIngotCommentsEnglish();
+guardIngotNoHardcodedText();
 
 if (failures.length) {
   for (const failure of failures) console.error(`\n${failure}`);

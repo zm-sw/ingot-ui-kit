@@ -76,7 +76,7 @@ describe("IngotToast", () => {
     render(<IngotToast />);
     fire({ text: "Materiál odebrán.", undo });
 
-    fireEvent.click(screen.getByRole("button", { name: "Zpět" }));
+    fireEvent.click(screen.getByRole("button", { name: "Undo" }));
     expect(undo).toHaveBeenCalledTimes(1);
     expect(screen.queryByText("Materiál odebrán.")).toBeNull();
   });

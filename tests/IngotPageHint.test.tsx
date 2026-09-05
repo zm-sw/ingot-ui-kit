@@ -98,7 +98,7 @@ describe("IngotPageHint", () => {
     render(<Screen />);
     expect(
       screen.getByRole("button", {
-        name: "Zvýraznit, čeho se nápověda týká",
+        name: "Highlight what this hint is about",
       }),
     ).toBe(screen.getByTestId("hint-bulb"));
   });

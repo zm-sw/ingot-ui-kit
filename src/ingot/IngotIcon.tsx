@@ -403,7 +403,7 @@ export function IngotIcon({
     // stored choice in the admin). A silent nothing would be hunted across
     // half the app, so at least say it out loud in development.
     if (import.meta.env.DEV) {
-      console.warn(`[IngotIcon] neznámý název ikony: "${String(name)}"`);
+      console.warn(`[IngotIcon] unknown icon name: "${String(name)}"`);
     }
     return null;
   }

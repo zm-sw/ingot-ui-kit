@@ -119,7 +119,7 @@ describe("IngotForm — render podle popisu pole", () => {
     expect(screen.getByTestId("ingot-api_token")).toHaveValue("");
     expect(screen.getByTestId("ingot-api_token")).toHaveAttribute(
       "placeholder",
-      "nastaveno",
+      "set",
     );
   });
 
@@ -133,7 +133,7 @@ describe("IngotForm — render podle popisu pole", () => {
     );
     expect(screen.getByTestId("ingot-api_token")).toHaveAttribute(
       "placeholder",
-      "nenastaveno",
+      "not set",
     );
   });
 });

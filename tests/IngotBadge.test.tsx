@@ -53,7 +53,7 @@ const GLOBALS = readFileSync(
  */
 function tokens(selector: string): Record<string, string> {
   const start = GLOBALS.indexOf(`${selector} {`);
-  if (start === -1) throw new Error(`globals.css nemá blok ${selector}`);
+  if (start === -1) throw new Error(`globals.css has no ${selector} block`);
   const body = GLOBALS.slice(start, GLOBALS.indexOf("\n}", start));
   const found: Record<string, string> = {};
   const aliases: Record<string, string> = {};
@@ -67,7 +67,7 @@ function tokens(selector: string): Record<string, string> {
   for (const [name, target] of Object.entries(aliases)) {
     const resolved = found[target];
     if (resolved === undefined) {
-      throw new Error(`${selector}: ${name} odkazuje na ${target}, který blok nemá`);
+      throw new Error(`${selector}: ${name} references ${target}, which the block does not have`);
     }
     found[name] = resolved;
   }
@@ -115,7 +115,7 @@ function tokenOf(className: string, prefix: string): string {
     .filter((rest) => /^[a-z]+(-[a-z0-9]+)*$/.test(rest));
   if (hits.length !== 1) {
     throw new Error(
-      `štítek má vydat právě jednu tokenovou třídu '${prefix}-*', vydal `
+      `the badge should emit exactly one '${prefix}-*' token class, it emitted `
         + `${hits.length}: ${className}`,
     );
   }
