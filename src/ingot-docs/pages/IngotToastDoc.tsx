@@ -12,7 +12,8 @@ export const IngotToastDoc: IngotDocPage = {
   // dictionary (English without a provider) instead of a Czech constant.
   // 1.4 (KAN-845) — a close button, the countdown pauses under the pointer
   // or focus, and duration: null keeps the toast until it is closed.
-  version: "1.4",
+  // 1.5 (KAN-849) — the toast rises into place, from the kit's motion tokens; motion-reduce turns the movement off.
+  version: "1.5",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {

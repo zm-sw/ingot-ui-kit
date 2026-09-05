@@ -111,7 +111,7 @@ export function IngotDrawer({
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={cx(
-        "fixed inset-0 flex bg-black/40",
+        "fixed inset-0 flex animate-ingot-fade-in bg-black/40 motion-reduce:animate-none",
         side === "left" ? "justify-start" : "justify-end",
       )}
       style={{ zIndex: layer }}
@@ -133,8 +133,12 @@ export function IngotDrawer({
         tabIndex={-1}
         style={{ width: Math.min(width, MAX_DRAWER_WIDTH) }}
         className={cx(
-          "flex h-full max-w-full flex-col border-border bg-surface shadow-lg outline-none",
-          side === "left" ? "border-r" : "border-l",
+          "flex h-full max-w-full flex-col border-border bg-surface shadow-lg outline-none motion-reduce:animate-none",
+          // The panel slides in from the edge it belongs to; coming from
+          // the other side would say it belongs there instead.
+          side === "left"
+            ? "animate-ingot-slide-in-left border-r"
+            : "animate-ingot-slide-in-right border-l",
         )}
         data-testid={testId ? `${testId}-panel` : undefined}
       >

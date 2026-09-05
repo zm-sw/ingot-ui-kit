@@ -120,7 +120,7 @@ export function IngotModal({
     // close button, both measured in tests/IngotModal.test.tsx.
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 flex animate-ingot-fade-in items-center justify-center bg-black/40 p-4 motion-reduce:animate-none"
       style={{ zIndex: layer }}
       // Caught on the overlay, not on the document: two open dialogs on top
       // of each other would otherwise both close on one ESC. Focus is inside
@@ -140,7 +140,7 @@ export function IngotModal({
         aria-describedby={subtitle === undefined ? undefined : subtitleId}
         tabIndex={-1}
         style={{ maxWidth: width }}
-        className="max-h-[90vh] w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none"
+        className="max-h-[90vh] w-full animate-ingot-scale-in overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none motion-reduce:animate-none"
         data-testid={testId ? `${testId}-panel` : undefined}
       >
         <OverlayHeader
