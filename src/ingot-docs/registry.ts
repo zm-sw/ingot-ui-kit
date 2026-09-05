@@ -24,6 +24,7 @@ import { IngotAccentSwatchesDoc } from "@/ingot-docs/pages/IngotAccentSwatchesDo
 import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
+import { IngotCalloutDoc } from "@/ingot-docs/pages/IngotCalloutDoc";
 import { IngotCheckboxDoc } from "@/ingot-docs/pages/IngotCheckboxDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
@@ -56,6 +57,7 @@ import { IngotPageLayoutDoc } from "@/ingot-docs/pages/IngotPageLayoutDoc";
 import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
 import { IngotPopoverDoc } from "@/ingot-docs/pages/IngotPopoverDoc";
 import { IngotProviderDoc } from "@/ingot-docs/pages/IngotProviderDoc";
+import { IngotRadioGroupDoc } from "@/ingot-docs/pages/IngotRadioGroupDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
@@ -63,6 +65,7 @@ import { IngotSegmentedDoc } from "@/ingot-docs/pages/IngotSegmentedDoc";
 import { IngotSelectDoc } from "@/ingot-docs/pages/IngotSelectDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
 import { IngotStepCardDoc } from "@/ingot-docs/pages/IngotStepCardDoc";
+import { IngotSwitchDoc } from "@/ingot-docs/pages/IngotSwitchDoc";
 import { IngotTableDoc } from "@/ingot-docs/pages/IngotTableDoc";
 import { IngotTabsDoc } from "@/ingot-docs/pages/IngotTabsDoc";
 import { IngotToastDoc } from "@/ingot-docs/pages/IngotToastDoc";
@@ -130,6 +133,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotBadgeDoc,
   IngotBreadcrumbsDoc,
   ButtonDoc,
+  IngotCalloutDoc,
   CardDoc,
   IngotCheckboxDoc,
   IngotCodeDoc,
@@ -163,6 +167,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotPaginationDoc,
   IngotPopoverDoc,
   IngotProviderDoc,
+  IngotRadioGroupDoc,
   IngotRowActionsDoc,
   IngotSearchInputDoc,
   IngotSectionDoc,
@@ -170,6 +175,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotSelectDoc,
   IngotSideNavDoc,
   IngotStepCardDoc,
+  IngotSwitchDoc,
   IngotTableDoc,
   IngotTabsDoc,
   IngotToastDoc,

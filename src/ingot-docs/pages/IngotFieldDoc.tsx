@@ -8,7 +8,10 @@ export const IngotFieldDoc: IngotDocPage = {
   status: "stable",
   // 1.1 — the frame comes from the kit's shared input chrome: `--surface`
   // instead of `--bg`, `--border-strong`, `--r-md`, same height as Button md.
-  version: "1.1",
+  // 1.2 (KAN-848) — `type` (text, number, password, e-mail, url,
+  // tel) and `textarea` with `rows`. The value stays a string: an empty
+  // numeric box is ambiguous and only the screen knows what it means.
+  version: "1.2",
   tag: ".field",
   tokens: [
     "--surface",
@@ -133,6 +136,24 @@ export const IngotFieldDoc: IngotDocPage = {
     ],
   },
   props: [
+    {
+      name: "type",
+      type: '"text" | "number" | "password" | "email" | "url" | "tel" | "textarea"',
+      required: false,
+      note: {
+        cs: "Jakou klávesnici a masku nabídne prohlížeč. textarea je totéž pole na několik řádků.",
+        en: "Which keyboard and mask the browser offers. textarea is the same field grown to several lines.",
+      },
+    },
+    {
+      name: "rows",
+      type: "number",
+      required: false,
+      note: {
+        cs: "Výška textarea v řádcích. Ostatní typy ji ignorují.",
+        en: "Height of a textarea in rows. Every other type ignores it.",
+      },
+    },
     {
       name: "label",
       type: "ReactNode",

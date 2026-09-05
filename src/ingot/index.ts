@@ -134,7 +134,16 @@ export { IngotEmptyState } from "./IngotEmptyState";
 // the state.
 export { IngotToolbar } from "./IngotToolbar";
 export { IngotPagination } from "./IngotPagination";
-export { IngotField } from "./IngotField";
+export { IngotField, type IngotFieldType } from "./IngotField";
+// --- form controls beyond a text field ---------------------------------
+//
+// A switch is not a checkbox: it takes effect NOW, which is a promise, not
+// a shape. A radio group is the plain "read them and pick one" that sat
+// between the select and the option cards. A callout is the ordinary note
+// that every screen used to draw by hand, in three shades of amber.
+export { IngotSwitch } from "./IngotSwitch";
+export { IngotRadioGroup, type IngotRadioOption } from "./IngotRadioGroup";
+export { IngotCallout, type IngotCalloutTone } from "./IngotCallout";
 export { IngotFieldInput } from "./IngotFieldInput";
 export {
   fieldsFromConfigSchema,
