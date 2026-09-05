@@ -3,6 +3,7 @@ import { useId, useState, type JSX, type MouseEvent, type ReactNode } from "reac
 import { cx } from "./cx";
 import { IngotEyebrow } from "./IngotEyebrow";
 import { LockedRow, menuRowClass } from "./menuRow";
+import { MENU_LAYER } from "./modalLayer";
 
 /**
  * Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo
@@ -116,7 +117,11 @@ export function IngotMegaMenu({
     // okraji lišty by s hover-otevíráním nutilo kurzor přejíždět cizí
     // triggery a cestou je otvírat.
     <div
-      className="absolute left-0 top-[calc(100%+6px)] z-[60] flex gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg"
+      // MENU_LAYER, not a fixed z-index: a menu belongs above every open
+      // dialog (see modalLayer.ts); a hard-coded 60 ended up under the
+      // second dialog opened.
+      className="absolute left-0 top-[calc(100%+6px)] flex gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg"
+      style={{ zIndex: MENU_LAYER }}
       data-testid={testId}
     >
       <nav

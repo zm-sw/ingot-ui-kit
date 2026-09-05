@@ -13,13 +13,13 @@
  * shell only (see ``ThemeProvider`` + ``AdminLayout``). The marketing
  * site and the customer storefront never carry it and stay light.
  */
+import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
 
 export type ThemeChoice = "system" | "light" | "dark";
 export type ResolvedTheme = "light" | "dark";
 
-/** Kept in sync with the inline anti-flash script in ``index.html`` —
- * change both together. */
-export const THEME_STORAGE_KEY = "forgmatic.theme";
+/** The key `public/theme-init.js` reads before first paint — a test pins the two together. */
+export const THEME_STORAGE_KEY = STORAGE_KEYS.theme;
 
 const CHOICES: readonly ThemeChoice[] = ["system", "light", "dark"];
 
@@ -28,21 +28,12 @@ function isThemeChoice(value: unknown): value is ThemeChoice {
 }
 
 export function readStoredTheme(): ThemeChoice {
-  try {
-    const raw = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (isThemeChoice(raw)) return raw;
-  } catch {
-    // localStorage can throw (Safari private mode, disabled cookies).
-  }
-  return "system";
+  const raw = readStorage("theme");
+  return isThemeChoice(raw) ? raw : "system";
 }
 
 export function writeStoredTheme(choice: ThemeChoice): void {
-  try {
-    window.localStorage.setItem(THEME_STORAGE_KEY, choice);
-  } catch {
-    // Non-fatal — the account value is the source of truth anyway.
-  }
+  writeStorage("theme", choice);
 }
 
 export function systemPrefersDark(): boolean {

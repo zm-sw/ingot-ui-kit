@@ -35,10 +35,11 @@ import {
   type AccentChoice,
 } from "@/ingot/accent";
 
+import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
+
 export { ACCENT_CHOICES, DEFAULT_ACCENT, type AccentChoice };
 
-/** Kept in sync with ``theme-init.js`` (the anti-flash script) — change both together. */
-export const ACCENT_STORAGE_KEY = "forgmatic.accent";
+export const ACCENT_STORAGE_KEY = STORAGE_KEYS.accent;
 
 export function isAccentChoice(value: unknown): value is AccentChoice {
   return (
@@ -48,21 +49,12 @@ export function isAccentChoice(value: unknown): value is AccentChoice {
 }
 
 export function readStoredAccent(): AccentChoice {
-  try {
-    const raw = window.localStorage.getItem(ACCENT_STORAGE_KEY);
-    if (isAccentChoice(raw)) return raw;
-  } catch {
-    // localStorage can throw (Safari private mode, disabled cookies).
-  }
-  return DEFAULT_ACCENT;
+  const raw = readStorage("accent");
+  return isAccentChoice(raw) ? raw : DEFAULT_ACCENT;
 }
 
 export function writeStoredAccent(choice: AccentChoice): void {
-  try {
-    window.localStorage.setItem(ACCENT_STORAGE_KEY, choice);
-  } catch {
-    // Non-fatal — the account value is the source of truth anyway.
-  }
+  writeStorage("accent", choice);
 }
 
 /**

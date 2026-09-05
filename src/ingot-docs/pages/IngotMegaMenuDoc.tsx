@@ -20,7 +20,8 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   // NAVIGUJE (bránu kreslí cílová stránka); menu nezamyká.
   // 2.4 — caption set by IngotEyebrow, the kit's shared mono label.
   // 2.5 — row states come from the kit's shared menu row: current lifts to surface-2, hover goes to ink.
-  version: "2.5",
+  // 2.6 — panel sits on MENU_LAYER instead of a fixed z-index, so it stays above every open dialog.
+  version: "2.6",
   tag: ".megamenu",
   tokens: [
     "--surface",
