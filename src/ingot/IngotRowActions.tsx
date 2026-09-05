@@ -1,6 +1,6 @@
 import { type JSX } from "react";
 
-import { cx } from "./cx";
+import { IconButton } from "./IconButton";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
@@ -49,23 +49,17 @@ export function IngotRowActions({
       data-testid={testId}
     >
       {actions.map((action) => (
-        <button
+        <IconButton
           key={action.label}
-          type="button"
-          aria-label={action.label}
+          label={action.label}
           title={action.label}
+          tone={action.tone === "danger" ? "danger" : "default"}
           disabled={action.disabled}
           onClick={action.onClick}
-          className={cx(
-            "grid h-7 w-7 place-items-center rounded text-inherit disabled:cursor-not-allowed disabled:opacity-50",
-            action.tone === "danger"
-              ? "hover:bg-danger-bg hover:text-danger"
-              : "hover:bg-surface-2 hover:text-ink",
-          )}
           data-testid={action.testId}
         >
           <IngotIcon name={action.icon} size={15} />
-        </button>
+        </IconButton>
       ))}
     </div>
   );

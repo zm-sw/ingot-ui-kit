@@ -1,5 +1,6 @@
 import { useEffect, useRef, type JSX, type ReactNode } from "react";
 
+import { IconButton } from "./IconButton";
 import { IngotIcon } from "./IngotIcon";
 
 /**
@@ -136,15 +137,15 @@ export function IngotPageHint({
       data-testid={testId}
     >
       {targets.length > 0 ? (
-        <button
-          type="button"
+        <IconButton
+          label={bulbLabel}
+          tone="accent"
           onClick={flash}
-          aria-label={bulbLabel}
-          className="mt-0.5 shrink-0 rounded text-accent hover:text-accent-ink"
+          className="-my-1 -ml-1.5"
           data-testid={testId ? `${testId}-bulb` : undefined}
         >
           {bulb}
-        </button>
+        </IconButton>
       ) : (
         <span className="mt-0.5 shrink-0 text-accent">{bulb}</span>
       )}
@@ -153,15 +154,14 @@ export function IngotPageHint({
         <span className="text-ink-2">{children}</span>
       </div>
       {dismissible && (
-        <button
-          type="button"
+        <IconButton
+          label={dismissLabel}
           onClick={onDismiss}
-          aria-label={dismissLabel}
-          className="ml-auto mt-0.5 shrink-0 rounded text-ink-3 hover:text-ink"
+          className="-my-1 -mr-1.5 ml-auto"
           data-testid={testId ? `${testId}-dismiss` : undefined}
         >
           <IngotIcon name="close" size={14} />
-        </button>
+        </IconButton>
       )}
     </div>
   );

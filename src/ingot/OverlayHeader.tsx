@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IconButton } from "./IconButton";
 import { IngotIcon } from "./IngotIcon";
 
 /**
@@ -62,15 +63,13 @@ export function OverlayHeader({
           </div>
         )}
       </div>
-      <button
-        type="button"
+      <IconButton
+        label={closeLabel}
         onClick={onClose}
-        aria-label={closeLabel}
-        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-3 hover:text-ink"
         data-testid={testId ? `${testId}-close` : undefined}
       >
         <IngotIcon name="close" size={14} />
-      </button>
+      </IconButton>
     </header>
   );
 }

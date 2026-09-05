@@ -7,9 +7,10 @@ export const IngotModalDoc: IngotDocPage = {
   name: "IngotModal",
   status: "stable",
   // 1.1 — header markup shared with IngotDrawer (internal OverlayHeader); no visible change.
-  version: "1.1",
+  // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
+  version: "1.2",
   tag: ".modal",
-  tokens: ["--surface", "--border", "--ink", "--ink-3", "--r-lg", "--shadow-lg"],
+  tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--r-lg", "--shadow-lg"],
   summary: {
     cs: "Skořápka dialogu s a11y laťkou: focus trap, ESC, scroll lock, aria-modal a návrat fokusu na spouštěč.",
     en: "Dialog shell with the accessibility floor built in: focus trap, ESC, scroll lock, aria-modal and focus returned to the trigger.",
