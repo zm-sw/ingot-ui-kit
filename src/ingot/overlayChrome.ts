@@ -1,21 +1,21 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 /**
- * Společná overlay logika dialogových primitiv (KAN-655).
+ * Shared overlay behaviour of the dialog primitives.
  *
- * Vzniklo vytažením z ``IngotModal.tsx``, když přibyl ``IngotDrawer`` a
- * a11y laťka (rozhodnutí vlastníka 2026-08-25) začala platit pro dva
- * překryvy najednou. Zámek scrollu je tu proto MODUL, ne stav komponenty:
- * drawer otevřený nad modalem (nebo obráceně) nesmí při svém zavření
- * odemknout scroll, pod kterým pořád stojí ten druhý překryv.
+ * Extracted from `IngotModal.tsx` when `IngotDrawer` arrived and the
+ * accessibility bar (owner's decision, 2026-08-25) started to apply to
+ * two overlays at once. The scroll lock is therefore a MODULE, not
+ * component state: a drawer opened above a modal (or the other way round)
+ * must not unlock the scroll the other overlay still stands on when it
+ * closes.
  *
- * 🚨 **Interní modul, ne veřejné API.** Nic odsud nevede přes
- * ``src/ingot/index.ts`` ven — konzument kitu skládá dialogy z
- * ``IngotModal``/``IngotDrawer``, ne z jejich vnitřností. Hranici hlídá
- * guard ``ingot-public-api`` (v monorepu); tady platí stejné pravidlo.
+ * **Internal module, not public API.** Nothing here is re-exported from
+ * `index.ts` — a consumer composes dialogs from `IngotModal` /
+ * `IngotDrawer`, not from their insides.
  */
 
-/** Co smí dostat fokus. `tabindex="-1"` je programový cíl, ne zastávka Tabu. */
+/** What may receive focus. `tabindex="-1"` is a programmatic target, not a Tab stop. */
 export const FOCUSABLE = [
   "a[href]",
   "area[href]",

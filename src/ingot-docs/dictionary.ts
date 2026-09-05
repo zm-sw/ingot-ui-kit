@@ -26,10 +26,10 @@
  *
  * ## Kde volba bydlí
  *
- * V aplikaci je zdrojem pravdy účet (``AuthMe.ui_dictionary``) — tutéž
- * volbu čte i ``IngotPageHint.level``, proto sdílejí hodnoty
- * ``simple|expert|both``. Doc web přihlášení nemá, takže volba žije jen
- * v prohlížeči, stejně jako motiv a akcent (viz ``DocsApp``).
+ * In the product the account is the source of truth and the same choice
+ * drives ``IngotPageHint.level``, which is why they share the values
+ * ``simple|expert|both``. The doc web has no login, so the choice lives
+ * only in the browser, like theme and accent (see ``DocsApp``).
  *
  * 🪤 Kit sám nepřekládá nic (viz stránka Překlady) — proto tenhle modul
  * bydlí v ``ingot-docs``, ne v ``@/ingot``.
@@ -41,7 +41,7 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 
 export const DICTIONARY_MODES = ["simple", "expert", "both"] as const;
 
-/** Táž množina hodnot jako ``AuthMe.ui_dictionary`` a ``IngotPageHint.level``. */
+/** The same set of values as ``IngotPageHint.level``. */
 export type DictionaryMode = (typeof DICTIONARY_MODES)[number];
 
 /** Výchozí režim podle specu: obojí. */

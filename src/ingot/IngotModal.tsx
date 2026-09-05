@@ -12,42 +12,39 @@ import {
 } from "./overlayChrome";
 
 /**
- * Sdílená skořápka dialogu — druhé primitivum Ingotu (KAN-580).
+ * The shared dialog shell.
  *
- * Vzniklo proto, že v repu byl **padesát** ručních `fixed inset-0` overlayů,
- * 33 souborů `*Modal*`/`*Dialog*`/`*Drawer*` a **ani jeden sdílený shell** —
- * a ta chybějící skořápka už jednou zablokovala centrální opravu:
- * `ModalDepthContext` (KAN-109) musel zůstat fail-open kontextem, který si
- * každý modal obaluje ručně, protože nebylo kde ho zapojit. Tenhle shell to
- * místo je: `ModalDepthProvider` je uvnitř, takže hloubka platí pro každý
- * dialog nad ním, aniž by si na ni volající musel vzpomenout.
+ * It exists because the product once had fifty hand-rolled
+ * `fixed inset-0` overlays and not one shared shell — and the missing
+ * shell blocked a central fix: `ModalDepthContext` had to stay a fail-open
+ * context that every modal wrapped by hand, because there was nowhere to
+ * plug it in. This shell is that place: `ModalDepthProvider` is inside, so
+ * depth applies to every dialog above it without the caller remembering.
  *
- * ## Návrh podle nejtěžších případů, ne podle prvního zákazníka
+ * ## Designed from the hardest cases, not the first customer
  *
- * Slovník vyzkoušený na nejsložitější stránce repa
- * (`pages/admin/platformProcessesUi.tsx` → `Modal`) sem přinesl dvě věci,
- * na které se nedá přijít od jednoduché obrazovky:
+ * Two things the most complex screen taught, which a simple one never
+ * would:
  *
- * - **Portál do `document.body`.** Renderovaný inline platí z-index overlaye
- *   jen uvnitř nejbližšího stacking kontextu — modal otevřený ze sticky buňky
- *   matice se schoval pod sticky buňky řádků pod sebou.
- * - **`max-h-[90vh]` + vlastní scroll panelu** se sticky hlavičkou, aby dlouhý
- *   obsah nescroloval stránkou pod overlayem.
+ * - **Portal into `document.body`.** Rendered inline, the overlay's
+ *   z-index only counts inside the nearest stacking context — a modal
+ *   opened from a sticky matrix cell hid under the sticky cells of the
+ *   rows below it.
+ * - **`max-h-[90vh]` + the panel's own scroll** with a sticky header, so
+ *   long content does not scroll the page under the overlay.
  *
- * ## A11y laťka (rozhodnutí vlastníka 2026-08-25)
+ * ## Accessibility bar (owner's decision, 2026-08-25)
  *
- * Platí od teď pro **každé** další primitivum, ne jen pro modal:
- * focus trap · ESC zavírá · scroll lock pozadí · `role="dialog"` +
- * `aria-modal` + popisek přes `aria-labelledby` · návrat fokusu na spouštěč.
+ * Applies to EVERY overlay primitive, not only the modal: focus trap · ESC
+ * closes · background scroll lock · `role="dialog"` + `aria-modal` +
+ * `aria-labelledby` · focus returned to the opener.
  *
- * Ingot **nemá vlastní i18n namespace** (totéž pravidlo jako
- * `IngotFieldInput`), takže přeložený popisek zavíracího tlačítka podstrčí
- * volající.
+ * The kit has no i18n namespace of its own, so the translated label of the
+ * close button comes from the caller.
  */
 
-// Trap/scroll lock/návrat fokusu bydlí v ``overlayChrome.ts`` — od KAN-655
-// je sdílí s ``IngotDrawer``, aby čítač zámku scrollu platil přes oba typy
-// překryvů najednou.
+// Trap, scroll lock and focus return live in overlayChrome.ts, shared with
+// IngotDrawer so the scroll-lock counter spans both kinds of overlay.
 
 export function IngotModal({
   title,

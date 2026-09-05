@@ -4,33 +4,33 @@ import { cx } from "./cx";
 import { INPUT_PAD, inputFrameChrome } from "./inputChrome";
 
 /**
- * Popsané textové pole (KAN-651) — ruční stavební kámen běžných formulářů.
+ * Labelled text field — the hand-written building block of ordinary forms.
  *
- * 🚨 **Není to `IngotFieldInput`.** Ten je schema-driven: dostane popis pole
- * (`IngotFieldSpec`) a vykreslí jen vstup, schválně bez popisku, protože
- * popisek nad ním skládá `IngotForm`. Tahle komponenta je opačná větev —
- * formulář, který se píše rukou a jehož pole nemají žádné schéma, protože
- * jsou tři a jsou dané (název tokenu, počet kusů, e-mail). Do KAN-651 si takové
- * formuláře skládaly `<label>` + `<input>` Tailwindem samy (`AdminApiTokens`),
- * a s tím se pokaždé skládala znovu i a11y — což znamená, že se pokaždé
- * mohla složit jinak.
+ * **Not `IngotFieldInput`.** That one is schema-driven: it takes a field
+ * description (`IngotFieldSpec`) and renders only the input, deliberately
+ * without a label, because `IngotForm` composes the label above it. This
+ * component is the opposite branch — a form written by hand whose fields
+ * have no schema because there are three of them and they are fixed
+ * (token name, quantity, e-mail). Before it existed such forms composed
+ * `<label>` + `<input>` with Tailwind themselves, and rebuilt the
+ * accessibility wiring each time — which means each time differently.
  *
- * Co komponenta drží za volajícího:
+ * What the component holds for the caller:
  *
- * * `label for` ↔ `input id` přes `useId`, takže vazba nemůže vzniknout
- *   špatně ani při dvou polích na jedné stránce. Placeholder popisek NENÍ.
- * * Chyba se hlásí textem a `aria-invalid`, ne jen červenou barvou, a je
- *   navázaná přes `aria-describedby` — stejně jako nápověda a přípona.
- * * Fokus je vidět na celém rámečku (`focus-within`), ne jen na `<input>`,
- *   protože přípona sedí uvnitř téhož rámečku.
+ * * `label for` ↔ `input id` through `useId`, so the binding cannot go
+ *   wrong even with two fields on one page. A placeholder is NOT a label.
+ * * An error is announced by text and `aria-invalid`, not by red alone,
+ *   and is bound through `aria-describedby` — like the hint and the affix.
+ * * Focus shows on the whole frame (`focus-within`), not only on the
+ *   `<input>`, because the affix sits inside the same frame.
  *
- * Ingot **nemá vlastní i18n namespace**: `label`, `hint`, `error`, `affix`
- * i `optionalLabel` dodává volající už přeložené.
+ * The kit has no i18n namespace of its own: `label`, `hint`, `error`,
+ * `affix` and `optionalLabel` arrive translated.
  *
- * ⚠️ `IngotFieldInput` se uvnitř schválně nepoužívá. Sdílelo by se jediné
- * `<input type="text">`; naopak by se muselo vyrobit falešné
- * `IngotFieldSpec` jen proto, aby bylo co předat, a obě komponenty by se
- * svázaly typem, který jedna z nich nepotřebuje.
+ * `IngotFieldInput` is deliberately not used inside. Only the bare
+ * `<input type="text">` would be shared; in exchange a fake
+ * `IngotFieldSpec` would have to be built just to have something to pass,
+ * and both components would be tied by a type one of them does not need.
  */
 export function IngotField({
   label,

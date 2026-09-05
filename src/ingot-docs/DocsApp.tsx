@@ -21,16 +21,17 @@
  * pravdivě. ``sectionsFor`` je proto jediný zdroj: sekce, která se
  * nevykreslí, se do kotev nedostane, a naopak.
  *
- * 🌍 **Jazyk, motiv i akcent drží skořápka** (KAN-627, KAN-648). Který
- * jazyk se nabídne, není v bundlu: čte se z platformy
- * (``platformLanguages.ts``) a protne se s tím, pro co doc web opravdu
- * má text. Motiv nasazuje ``.dark`` na ``<html>``, akcent
- * ``data-accent`` tamtéž — výchozí stav obojího už při načtení řeší
- * skript v ``ingot.html``, tady je jen přepínač a jeho uložená volba.
+ * 🌍 **Language, theme and accent are held by the shell** (KAN-627,
+ * KAN-648). Which languages are offered is not in the bundle: it is read
+ * from the platform (``platformLanguages.ts``) and intersected with what
+ * the doc web really has text for. The theme sets ``.dark`` on ``<html>``,
+ * the accent ``data-accent`` on the same element — the initial state of
+ * both is applied before first paint by ``public/theme-init.js``; here is
+ * only the switch and its stored choice.
  *
- * ⚠️ Doc web nemá přihlášení, takže obě volby žijí jen v prohlížeči.
- * V aplikaci je zdrojem pravdy účet (``AuthMe.ui_theme`` /
- * ``AuthMe.ui_accent``) a localStorage je tam jen zrcadlo proti bliknutí.
+ * The doc web has no login, so both choices live only in the browser. In
+ * the product the account is the source of truth and localStorage is a
+ * mirror against a flash on load.
  */
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -650,12 +651,12 @@ const ACCENT_LABELS: Record<AccentChoice, keyof typeof CHROME> = {
 };
 
 /**
- * Nasadí (nebo sundá) ``.dark`` na ``<html>``.
+ * Puts ``.dark`` on ``<html>`` (or takes it off).
  *
- * Doc web je vlastní entry, takže ``ThemeProvider`` z admin shellu tu
- * neběží. Výchozí stav při načtení řeší synchronní skript v
- * ``ingot.html`` — bez něj by studený load blikl světlá → tmavá. Tahle
- * funkce je jen ta druhá půlka: co se stane, když čtenář přepne.
+ * The initial state on load is applied by the synchronous
+ * ``public/theme-init.js`` — without it a cold load would flash light →
+ * dark. This function is the other half: what happens when the reader
+ * switches.
  */
 function applyTheme(choice: ThemeChoice): void {
   const dark = resolveTheme(choice, systemPrefersDark()) === "dark";
@@ -701,10 +702,9 @@ export function DocsApp(): JSX.Element {
     applyAccent(accent);
   }, [accent]);
 
-  // `ingot.html` má v kódu `lang="cs"`, protože v tu chvíli ještě žádná
-  // volba není. Po přepnutí by to ale byla lež, kterou nikdo neuvidí a
-  // odečítač obrazovky na ni doplatí: anglický text čtený českou
-  // výslovností je nesrozumitelný.
+  // `index.html` ships `lang="cs"` because no choice exists at that point.
+  // After a switch it would be a lie nobody sees and a screen reader pays
+  // for: English text read with Czech pronunciation is unintelligible.
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);

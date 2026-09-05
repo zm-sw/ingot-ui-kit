@@ -49,9 +49,9 @@ export const IngotBadgeDoc: IngotDocPage = {
   avoidWhen: {
     cs: [
       <>
-        Je to počet. Odznak s číslem je <IngotCode>CountBadge</IngotCode> a je
-        to jiná specifikace: kulatý, práh <IngotCode>99+</IngotCode>, povinný
-        popisek pro odečítač, nula se nekreslí. Číslo není stav a plést je
+        Je to počet. Odznak s číslem je jiné primitivum s jinou specifikací:
+        kulatý, práh <IngotCode>99+</IngotCode>, povinný popisek pro odečítač,
+        nula se nekreslí — a kit ho zatím nemá. Číslo není stav a plést je
         znamená, že jednou přibude štítek, který svítí pořád.
       </>,
       <>
@@ -72,11 +72,11 @@ export const IngotBadgeDoc: IngotDocPage = {
     ],
     en: [
       <>
-        It is a count. A badge with a number is <IngotCode>CountBadge</IngotCode>{" "}
-        and that is a different specification: round, a <IngotCode>99+</IngotCode>{" "}
-        threshold, a mandatory screen-reader label, zero is not drawn. A number
-        is not a state, and confusing the two ends with a badge that is always
-        lit.
+        It is a count. A badge with a number is a different primitive with a
+        different specification: round, a <IngotCode>99+</IngotCode> threshold,
+        a mandatory screen-reader label, zero is not drawn — and the kit does
+        not have it yet. A number is not a state, and confusing the two ends
+        with a badge that is always lit.
       </>,
       <>
         It is meant to be clicked. A filter you can switch on is a chip and has

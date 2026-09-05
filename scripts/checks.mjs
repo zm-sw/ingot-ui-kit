@@ -1,7 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit, ported from the Forgmatic monorepo's
- * `scripts/repo_checks.py` when the kit moved into its own repository.
- * Three guards, same semantics as the originals:
+ * Repo checks for the Ingot UI Kit. Three guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must

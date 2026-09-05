@@ -1,25 +1,20 @@
 import { type JSX, type ReactNode } from "react";
 
 /**
- * Hlavička obrazovky (KAN-628) — nadpis, věta pod ním, akce vpravo.
+ * Page header — title, one sentence under it, actions on the right.
  *
- * 🪤 **Vzniklo kvůli změřené pasti, ne kvůli eleganci.** Typografický spec
- * (`text-2xl font-semibold tracking-tight text-ink`) bydlel v
- * `components/admin/AdminPageHeader.tsx`, a ten si přes `Breadcrumb` táhne
- * `react-router-dom`. Kdokoli chtěl jen ty dvě třídy, zaplatil celý router:
- * doc web tím dostal `Breadcrumb-*.js` navíc (7 660 B změřeno na buildu).
- * Volba pak byla „opisovat třídy, nebo přitáhnout router" — a obojí je
- * špatně.
+ * Deliberately **router-free**. The typographic spec once lived in a
+ * header component that pulled in a router through its breadcrumbs, so
+ * anyone who wanted two classes paid for a whole dependency (measured:
+ * ~7.7 kB extra in the doc web build). Breadcrumbs are `IngotBreadcrumbs`
+ * and sit above this header in the caller's layout; the header itself
+ * knows nothing about routes.
  *
- * Tohle primitivum je proto **bez routeru**. `AdminPageHeader` ho skládá:
- * drobečky nad ním, hlavička z něj. Spec tak má jedno místo a nikdo za něj
- * neplatí závislostí, kterou nepotřebuje.
- *
- * Ingot **nemá vlastní i18n namespace** — `title` i `description` dodává
- * volající už přeložené.
+ * The kit has no i18n namespace of its own — `title` and `description`
+ * arrive translated.
  */
 
-/** Sdílený typografický spec. Jedno místo, na které smí guard ukázat. */
+/** The shared typographic spec, in one place a guard can point at. */
 export const INGOT_PAGE_TITLE_CLASS =
   "text-2xl font-semibold tracking-tight text-ink";
 export const INGOT_PAGE_DESC_CLASS = "mt-1 max-w-3xl text-sm text-ink-3";

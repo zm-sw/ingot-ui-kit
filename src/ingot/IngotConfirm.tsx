@@ -11,49 +11,49 @@ import { Button } from "./Button";
 import { IngotModal } from "./IngotModal";
 
 /**
- * Potvrzovací dialog — třetí primitivum Ingotu (KAN-583).
+ * Confirmation dialog.
  *
- * Postavené nad `IngotModal`, a to je celý důvod, proč vzniklo jako druhý
- * konzument shellu: confirm **je** modal, jen s pevně danou kostrou (titulek,
- * popis, volitelný dopad, dvě tlačítka). Tím, že tu kostru drží jedno místo,
- * dostane a11y laťku z KAN-580 — focus trap, ESC, scroll lock, `role="dialog"`
- * s popiskem, návrat fokusu na spouštěč — každá obrazovka, která se ptá
- * „opravdu?", aniž by na to musela sáhnout.
+ * Built on `IngotModal`, and that is the whole reason it exists as the
+ * shell's second consumer: a confirm IS a modal with a fixed skeleton
+ * (title, description, optional impact, two buttons). Because one place
+ * holds that skeleton, every screen that asks "really?" gets the
+ * accessibility bar — focus trap, ESC, scroll lock, labelled
+ * `role="dialog"`, focus returned to the opener — without touching it.
  *
- * ## Dvě věci navíc, které to není jen „modal se dvěma tlačítky"
+ * ## Two things beyond "a modal with two buttons"
  *
- * - **`impact`** — slot pro spočítaný dopad (typicky `<ImpactSummary>`).
- *   Renderuje se v ohraničeném boxu pod popisem; obsah dodává volající.
- * - **Veto (KAN-422)** — obsah `impact` slotu smí potvrzovací tlačítko
- *   **sundat** a říct proč. Bez toho dialog nabízel „Smazat trvale" i tam, kde
- *   server krok odmítne (409 `has_orders` / `has_blocking_refs`), a operátor
- *   se odpověď dozvěděl až z chybové hlášky pod kartou. Zašedlé tlačítko vedle
- *   důvodu čte operátor jako „ještě chvíli", proto se nenabídne vůbec.
+ * - **`impact`** — a slot for the computed consequence of the action,
+ *   rendered in a bordered box under the description; the caller supplies
+ *   the content.
+ * - **Veto** — the content of the `impact` slot may REMOVE the confirm
+ *   button and say why. Without it the dialog offered "Delete permanently"
+ *   even where the server would refuse the step, and the operator learned
+ *   the answer from an error message afterwards. A greyed-out button next
+ *   to the reason reads as "wait a moment", so it is not offered at all.
  *
- * Veto sem patří, ačkoli je to o krok víc než holá skořápka: je to obecná
- * schopnost potvrzení („obsah smí potvrzení odvolat"), ne znalost domény —
- * dialog sám o žádné entitě ani důvodu neví.
+ * The veto belongs here although it is a step beyond a bare shell: it is a
+ * general capability of a confirmation ("content may withdraw the
+ * confirmation"), not domain knowledge — the dialog knows no entity and
+ * no reason.
  *
- * ## Popisky dodává volající
+ * ## Labels come from the caller
  *
- * Ingot **nemá vlastní i18n namespace** (totéž pravidlo jako `IngotModal`
- * a `IngotFieldInput`), takže všechny texty včetně `confirmLabel` /
- * `cancelLabel` / `closeLabel` přicházejí už přeložené. Výchozí hodnoty přes
- * `common` namespace drží adaptér `components/admin/ConfirmDialog.tsx`.
+ * The kit has no i18n namespace of its own, so every text including
+ * `confirmLabel` / `cancelLabel` / `closeLabel` arrives translated.
  *
- * ## Tlačítka jedou přes sdílený `Button` (KAN-624)
+ * ## Buttons are the shared `Button`
  *
- * 🚨 Do KAN-624 měl dialog obě tlačítka opsaná z `@/components/ui/Button` —
- * a ta kopie zestárla přesně tam, kde to nejvíc bolí. Varianta `danger` má
- * v `Button` výjimku `dark:text-bg`, protože tmavá paleta `--danger`
- * ZESVĚTLUJE (`#b91c1c` → `#f36464`), aby se dala číst jako text; bílý text
- * na tom zesvětleném podkladu dává **3,08 : 1**, tedy pod WCAG AA 4,5 : 1.
- * Opsané třídy tu výjimku neměly, takže v tmavém režimu bylo nejrizikovější
- * tlačítko v aplikaci to nejhůř čitelné — a přes adaptér `ConfirmDialog` se
- * to týkalo ~40 obrazovek.
+ * The dialog once carried a copy of the button classes, and the copy aged
+ * exactly where it hurts most: `Button`'s `danger` variant has a
+ * `dark:text-bg` exception because the dark `--danger` token LIGHTENS
+ * (`#b91c1c` → `#f36464`) to stay readable as text, and white on that
+ * lighter ground gives 3.08:1, below WCAG AA 4.5:1. The copied classes did
+ * not have the exception, so the riskiest button in the product was the
+ * least readable one in dark mode.
  *
- * Nepiš ta tlačítka znovu ručně. Kontrast tokenu se s paletou mění a jedno
- * místo se opraví; kopie se opraví tam, kde si na ni někdo vzpomene.
+ * Do not redraw these buttons by hand. A token's contrast moves with the
+ * palette and one place gets fixed; a copy gets fixed wherever someone
+ * remembers it.
  */
 
 /**
@@ -103,13 +103,10 @@ export function IngotConfirm({
   /** Spočítaný dopad; smí přes `useConfirmVeto` potvrzení odvolat. */
   impact?: ReactNode;
 }): JSX.Element {
-  // Pole se jmenuje ``message``, ne ``reason``: identifier ratchet
-  // (test_admin_identifier_ratchet) počítá ``.reason`` jako syrový
-  // identifikátor v labelu — tady je to ale lokalizovaný ReactNode od
-  // volajícího, žádný klíč.
+  // Wrapped in an object: a bare ReactNode passed to a useState setter
+  // could be mistaken for an updater function. The setter's identity is
+  // stable so a caller's effect does not loop.
   const [veto, setVeto] = useState<{ message: ReactNode } | null>(null);
-  // Obal — ReactNode by se do ``useState`` setteru dal splést s updater
-  // funkcí; a stabilní identita drží efekt volajícího bez smyčky.
   const setVetoReason = useCallback((reason: ReactNode | null) => {
     setVeto(reason == null ? null : { message: reason });
   }, []);

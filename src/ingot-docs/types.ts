@@ -1,14 +1,14 @@
 /**
  * Tvar doc stránek Ingotu (KAN-581, obsah KAN-624, jazyky KAN-627).
  *
- * Stránka NENÍ próza o komponentě — je to modul, který tu komponentu
- * doopravdy vykreslí. ``Demo`` proto vrací živý strom postavený nad
- * importem z ``@/ingot``; okopírované JSX by bylo přesně ten drift, kvůli
- * kterému se v tomhle repu smazaly ``docs/specs``.
+ * A page is NOT prose about a component — it is a module that really
+ * renders it. ``Demo`` therefore returns a live tree built on an import
+ * from ``@/ingot``; copied JSX would be exactly the drift that made the
+ * product delete its hand-written spec documents.
  *
- * Guard ``ingot-doc-pages`` (``scripts/repo_checks.py``) páruje ``name``
- * s exportem z ``apps/web/src/ingot/index.ts`` 1:1 a odmítne PR, kde
- * primitivum stránku nemá — i PR, kde stránka nemá primitivum.
+ * The ``ingot-doc-pages`` guard (``scripts/checks.mjs``) pairs ``name``
+ * with an export from ``src/ingot/index.ts`` 1:1 and refuses a PR where a
+ * primitive has no page — and a PR where a page has no primitive.
  *
  * 🚨 **Kontrakt na obsah je v TYPU, ne v próze** (KAN-624). ``useWhen``,
  * ``avoidWhen``, ``a11y`` a ``i18n`` jsou POVINNÁ pole, takže stránku bez
