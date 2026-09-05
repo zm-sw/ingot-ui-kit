@@ -7,7 +7,10 @@ export const IngotFormDoc: IngotDocPage = {
   name: "IngotForm",
   status: "stable",
   // 1.1 — a boolean field renders IngotCheckbox instead of a hand-drawn label wrapper.
-  version: "1.1",
+  // 2.0 (KAN-845) — useIngotForm no longer resets on a new `initial`
+  // object; it takes a `resetKey` instead. A caller that relied on the old
+  // identity reset passes the record id it already has.
+  version: "2.0",
   tag: ".form",
   tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
   classNameNote: {
@@ -173,6 +176,44 @@ export const IngotFormDoc: IngotDocPage = {
         cs: "Popisek pole. Výchozí block text-sm.",
         en: "The field label. Defaults to block text-sm.",
       },
+    },
+  ],
+  extraProps: [
+    {
+      name: "useIngotForm(fields, initial, resetKey)",
+      note: {
+        cs: "Stav formuláře, který kit dodává s ním: drží hodnoty a skládá payload s write-only chováním tajných polí.",
+        en: "The form state the kit ships alongside it: it holds the values and builds the payload with the write-only behaviour of secret fields.",
+      },
+      props: [
+        {
+          name: "fields",
+          type: "readonly IngotFieldSpec[]",
+          required: true,
+          note: {
+            cs: "Táž pole, jaká dostane formulář — podle nich se pozná, co je tajné.",
+            en: "The same fields the form gets — they say which values are secret.",
+          },
+        },
+        {
+          name: "initial",
+          type: "Record<string, unknown> | null",
+          required: true,
+          note: {
+            cs: "Uložené hodnoty. Než dorazí (null), je values null a obrazovka nekreslí formulář.",
+            en: "The stored values. Until they arrive (null) values is null and the screen does not draw the form.",
+          },
+        },
+        {
+          name: "resetKey",
+          type: "string | number",
+          required: false,
+          note: {
+            cs: "Kdy formulář znovu naplnit — id záznamu, nebo čítač po uložení. Nový objekt initial sám o sobě reset NEDĚLÁ: rozepsaná editace se tím dřív ztrácela.",
+            en: "When to seed the form again — the record id, or a counter bumped after a save. A new initial object alone does NOT reset it any more: that is how a half-finished edit used to be lost.",
+          },
+        },
+      ],
     },
   ],
   a11y: {

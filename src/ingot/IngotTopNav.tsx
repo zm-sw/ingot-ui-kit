@@ -347,7 +347,20 @@ export function IngotTopNav({
               <button
                 type="button"
                 aria-expanded={open}
-                onClick={() => onOpenSection?.(section.key)}
+                onClick={() => {
+                  // A click TOGGLES. Hover opens too, so on a mouse the
+                  // click usually arrives at an already-open section and
+                  // closes it — which is what a second click on an open
+                  // menu means everywhere else. On a touch screen there is
+                  // no hover at all, and before this the only ways out were
+                  // a tap somewhere else or a keyboard nobody has.
+                  if (open) {
+                    cancelClose();
+                    onCloseSection?.();
+                  } else {
+                    onOpenSection?.(section.key);
+                  }
+                }}
                 onMouseEnter={() => {
                   cancelClose();
                   onOpenSection?.(section.key);

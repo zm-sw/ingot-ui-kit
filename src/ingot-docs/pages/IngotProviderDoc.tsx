@@ -11,7 +11,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotProviderDoc: IngotDocPage = {
   name: "IngotProvider",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-845) — toastClose, the label of the toast's close button.
+  version: "1.1",
   tag: ".provider",
   // Empty on purpose: the provider renders nothing, so no token change
   // reaches it. The doc web prints that as a sentence instead of a list.
@@ -128,6 +129,15 @@ export const IngotProviderDoc: IngotDocPage = {
           note: {
             cs: "Popisek zpětné akce na toastu.",
             en: "Label of the undo action on a toast.",
+          },
+        },
+        {
+          name: "toastClose",
+          type: "string",
+          required: true,
+          note: {
+            cs: "aria-label křížku, kterým se toast zavírá.",
+            en: "aria-label of the button that closes a toast.",
           },
         },
         {

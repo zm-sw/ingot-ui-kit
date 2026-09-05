@@ -167,6 +167,20 @@ export function pagesOwed({
     const dependents = [...(reach.get(name) ?? [])]
       .filter((dep) => pageNames.has(dep) && COMPONENT_RE.test(dep))
       .sort();
+    if (dependents.length === 0) {
+      // A module no primitive imports is still part of the package: an
+      // exported hook or helper, documented on the page of the primitive it
+      // belongs to. It owes A bump, and the author picks which page — the
+      // guard cannot know, and guessing would be worse than asking.
+      if (paid.size === 0) {
+        owed.push({
+          file,
+          reason: "no primitive imports it, so name the page it is documented on",
+          pages: ["any doc page"],
+        });
+      }
+      continue;
+    }
     const missing = dependents.filter((page) => !paid.has(page));
     if (missing.length > 0) {
       owed.push({ file, reason: "every primitive that imports it", pages: missing });

@@ -144,6 +144,23 @@ describe("a shared module owes every primitive that imports it", () => {
   });
 });
 
+describe("a module no primitive imports still owes a bump", () => {
+  it("asks for a page to be named when nothing moved", () => {
+    const result = owed({ changedFiles: ["src/ingot/useSomething.ts"] });
+    expect(result).toHaveLength(1);
+    expect(result[0].reason).toContain("no primitive imports it");
+  });
+
+  it("is satisfied by any bump — the author picks the page it is documented on", () => {
+    expect(
+      owed({
+        changedFiles: ["src/ingot/useSomething.ts"],
+        bumpedPages: ["IngotTable"],
+      }),
+    ).toEqual([]);
+  });
+});
+
 describe("tokens.css owes the pages that declare the changed token", () => {
   const before = ":root { --surface: #fff; --ok: #0a0; }";
 

@@ -1,7 +1,8 @@
-import { useEffect, type JSX } from "react";
+import { useEffect, useRef, useState, type JSX } from "react";
 import { createPortal } from "react-dom";
 
 import { cx } from "./cx";
+import { IngotIcon } from "./IngotIcon";
 import { MENU_LAYER } from "./modalLayer";
 import { useIngotLabels } from "./IngotProvider";
 import { createStore } from "./store";
@@ -61,8 +62,13 @@ export interface IngotToastOptions {
    * ``IngotProvider`` — English when no provider is mounted.
    */
   undoLabel?: string;
-  /** How long the toast lives, in ms. Default 4000; with ``undo`` 8000. */
-  duration?: number;
+  /**
+   * How long the toast lives, in ms. Default 4000; with ``undo`` 8000.
+   *
+   * ``null`` means it stays until somebody closes it — for a result the
+   * operator must acknowledge, not merely notice.
+   */
+  duration?: number | null;
 }
 
 interface ToastItem extends IngotToastOptions {
@@ -92,12 +98,25 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
     undo,
     undoLabel = labels.toastUndo,
   } = item;
-  const duration = item.duration ?? (undo === undefined ? 4000 : 8000);
+  const duration =
+    item.duration === undefined ? (undo === undefined ? 4000 : 8000) : item.duration;
 
+  // A countdown the reader can stop. WCAG 2.2.1 asks for a timed message to
+  // be dismissable or extendable; a toast that carries an undo action asks
+  // for it twice over, because the whole point is that the operator gets to
+  // decide. Pointer or focus inside pauses; leaving resumes with the time
+  // that was left, not with a fresh four seconds.
+  const [paused, setPaused] = useState(false);
+  const remaining = useRef(duration ?? 0);
   useEffect(() => {
-    const timer = setTimeout(() => dismiss(id), duration);
-    return () => clearTimeout(timer);
-  }, [id, duration]);
+    if (duration === null || paused) return;
+    const startedAt = Date.now();
+    const timer = setTimeout(() => dismiss(id), remaining.current);
+    return () => {
+      clearTimeout(timer);
+      remaining.current = Math.max(0, remaining.current - (Date.now() - startedAt));
+    };
+  }, [id, duration, paused]);
 
   return (
     <div
@@ -107,6 +126,11 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
       )}
       data-testid="ingot-toast"
       data-tone={tone}
+      data-paused={paused ? "" : undefined}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
     >
       <span>{text}</span>
       {undo !== undefined && (
@@ -121,6 +145,15 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
           {undoLabel}
         </button>
       )}
+      <button
+        type="button"
+        aria-label={labels.toastClose}
+        onClick={() => dismiss(id)}
+        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+        data-testid="ingot-toast-close"
+      >
+        <IngotIcon name="close" size={14} />
+      </button>
     </div>
   );
 }
