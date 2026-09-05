@@ -33,6 +33,14 @@ export interface ChromeStrings {
   tokensNote: Localized<string>;
   /** Shown instead of the list when a primitive renders nothing of its own. */
   tokensNone: Localized<string>;
+  searchOpen: Localized<string>;
+  searchTitle: Localized<string>;
+  searchLabel: Localized<string>;
+  searchPlaceholder: Localized<string>;
+  searchEmpty: Localized<string>;
+  searchHint: Localized<string>;
+  searchClose: Localized<string>;
+  sinceVersion: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -147,4 +155,21 @@ export const CHROME: ChromeStrings = {
   accentOrange: { cs: "oranžový", en: "orange" },
   accentViolet: { cs: "fialový", en: "violet" },
   accentSlate: { cs: "břidlicový", en: "slate" },
+  searchOpen: { cs: "Hledat", en: "Search" },
+  searchTitle: { cs: "Hledat na webu", en: "Search the site" },
+  searchLabel: { cs: "Hledat stránku", en: "Search for a page" },
+  searchPlaceholder: {
+    cs: "Název, značka, token nebo situace…",
+    en: "A name, a tag, a token or a situation…",
+  },
+  searchEmpty: {
+    cs: "Nic takového tu není. Zkuste kratší dotaz.",
+    en: "Nothing like that here. Try a shorter query.",
+  },
+  searchHint: {
+    cs: "Šipky procházejí, Enter otevře, Esc zavře",
+    en: "Arrows move, Enter opens, Esc closes",
+  },
+  searchClose: { cs: "Zavřít hledání", en: "Close the search" },
+  sinceVersion: { cs: "od", en: "since" },
 };

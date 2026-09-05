@@ -10,11 +10,13 @@
  */
 import { A11yGuide } from "@/ingot-docs/guides/A11yGuide";
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
+import { ChangesGuide } from "@/ingot-docs/guides/ChangesGuide";
 import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
 import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
+import { TokensGuide } from "@/ingot-docs/guides/TokensGuide";
 import { PublicPagesGuide } from "@/ingot-docs/guides/PublicPagesGuide";
 import { ShellGuide } from "@/ingot-docs/guides/ShellGuide";
 import { TranslationsGuide } from "@/ingot-docs/guides/TranslationsGuide";
@@ -104,6 +106,10 @@ import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
 export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   IntroGuide,
   BasicsGuide,
+  // The palette as data, right after the page that explains what a token
+  // is for. A reader who has just read "name the token, not the utility"
+  // is exactly the reader who wants the list.
+  TokensGuide,
   // Components overview — the individual primitives nest under it in the
   // menu, so it stands before Icons, not after them.
   ComponentsGuide,
@@ -119,6 +125,9 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   // because it answers the same kind of question: not "how do I call this"
   // but "does this belong to me at all".
   DomainLayerGuide,
+  // What shipped when. It sits with the rules because it answers the same
+  // kind of question: not how to call a thing, but what you may rely on.
+  ChangesGuide,
   FormatsGuide,
   A11yGuide,
   TranslationsGuide,

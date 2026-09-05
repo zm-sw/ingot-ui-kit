@@ -58,6 +58,8 @@ import {
   type IngotNavItem,
 } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
+import releases from "@/ingot-docs/releases.json";
+import { SearchDialog } from "@/ingot-docs/SearchDialog";
 import {
   initialLang,
   writeStoredLang,
@@ -324,6 +326,18 @@ function CapTitle({ children }: { children: ReactNode }): JSX.Element {
  * lands on the page has to see, before anything else, that building on
  * this is building on something with a removal date.
  */
+/**
+ * The release a primitive first appeared in.
+ *
+ * Written at build time from the tags themselves — for each tag, which doc
+ * pages it carried. A list maintained by hand would be a list that is one
+ * release behind, and it would be behind in the direction that matters:
+ * the newest primitive is the one a reader is least sure about.
+ */
+function sinceOf(name: string): string | null {
+  return (releases.since as Record<string, string>)[name] ?? null;
+}
+
 const STATUS_TONE = {
   stable: "neutral",
   beta: "warn",
@@ -715,6 +729,30 @@ export function DocsApp(): JSX.Element {
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
   /** Drawer with the menu and switches — only below ``md``, see the header. */
   const [navOpen, setNavOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  /**
+   * Ctrl/Cmd+K opens the search.
+   *
+   * On the window rather than on a field, because the point is that the
+   * reader does not have to reach for anything first. The default is
+   * prevented so the browser's own "search the page" does not open on top
+   * of it, and the shortcut is ignored while the reader is typing in a
+   * field — a search box that swallows a keystroke meant for a form is
+   * worse than no shortcut.
+   */
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "k" || !(event.metaKey || event.ctrlKey)) return;
+      const active = document.activeElement;
+      const tag = active?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      event.preventDefault();
+      setSearchOpen(true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   // Back and forward. The browser changes the address without asking; this
   // is the only place that reads it back.
@@ -751,6 +789,16 @@ export function DocsApp(): JSX.Element {
    * "copy link address" all need. This only spares the reader a full
    * reload when the destination is a page we already have.
    */
+  /** Go to one of our own paths without a reload. */
+  function goTo(path: string): void {
+    if (path === window.location.pathname) return;
+    const here = locationFromPath(path);
+    if (here === null) return;
+    window.history.pushState(null, "", path);
+    setLocation({ page: here.page, lang: here.lang });
+    window.scrollTo({ top: 0 });
+  }
+
   function onNavigate(event: MouseEvent<HTMLDivElement>): void {
     if (event.defaultPrevented || event.button !== 0) return;
     // A modified click means the reader asked for a new tab or a download.
@@ -762,10 +810,7 @@ export function DocsApp(): JSX.Element {
     const here = locationFromPath(href);
     if (here === null) return;
     event.preventDefault();
-    if (href === window.location.pathname) return;
-    window.history.pushState(null, "", href);
-    setLocation({ page: here.page, lang: here.lang });
-    window.scrollTo({ top: 0 });
+    goTo(href);
   }
 
   // Which languages are offered is decided by the platform — not the
@@ -931,6 +976,16 @@ export function DocsApp(): JSX.Element {
        only spares a mouse click a full page reload. */
     /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     <div className="min-h-screen" onClick={onNavigate}>
+      {searchOpen ? (
+        <SearchDialog
+          lang={lang}
+          onClose={() => setSearchOpen(false)}
+          onNavigate={(path) => {
+            setSearchOpen(false);
+            goTo(path);
+          }}
+        />
+      ) : null}
       {/* Top bar from the handoff: brand and version on the left, accent /
           theme / language on the right. Sticky so the switches do not run
           away with the scroll of a long page.
@@ -964,6 +1019,23 @@ export function DocsApp(): JSX.Element {
         {/* The version and brand moved to the mini footer at the bottom
             (owner instruction of 2026-09-02) — the header carries only controls. */}
         <span className="flex-1" aria-hidden="true" />
+
+        {/* The shortcut is the point, and a shortcut nobody is told about
+            is a shortcut nobody uses — so the button carries it as its
+            label. Below ``sm`` only the icon is left: the bar there has
+            room for controls, not for their names. */}
+        <Button
+          variant="secondary"
+          size="md"
+          leadingIcon={<IngotIcon name="search" />}
+          onClick={() => setSearchOpen(true)}
+          data-testid="docs-search-open"
+        >
+          <span className="hidden sm:inline">{pick(CHROME.searchOpen, lang)}</span>
+          <IngotEyebrow as="span" tone="muted" className="hidden md:inline">
+            ⌘K
+          </IngotEyebrow>
+        </Button>
 
         {/* From ``md`` in the bar, below ``md`` in the drawer. Five accents,
             three themes and two languages side by side need over 400 px; on
@@ -1052,6 +1124,18 @@ export function DocsApp(): JSX.Element {
                   <IngotBadge tone="accent" testId="docs-version">
                     {`v${page.doc.version}`}
                   </IngotBadge>
+                  {/* Which KIT release first carried this page — not the
+                    component's own version, which says how many times it
+                    has changed. The reader's question is whether the thing
+                    exists in the version they pinned, and only this
+                    answers it. Absent for a primitive that has not been in
+                    a release yet: a badge saying nothing is worse than no
+                    badge, because it looks like an answer. */}
+                  {sinceOf(page.doc.name) ? (
+                    <IngotBadge tone="neutral" testId="docs-since">
+                      {`${pick(CHROME.sinceVersion, lang)} ${sinceOf(page.doc.name)}`}
+                    </IngotBadge>
+                  ) : null}
                   {/* The selector is the only name the element can be
                     discussed under with a designer — only code knows the
                     export name. */}
