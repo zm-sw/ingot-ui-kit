@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotToastDemo";
-import demoSource from "@/ingot-docs/demos/IngotToastDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotToastDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotToastDemo?raw");
 
 export const IngotToastDoc: IngotDocPage = {
   name: "IngotToast",
@@ -24,7 +28,7 @@ export const IngotToastDoc: IngotDocPage = {
     cs: "Imperativní toast pro výsledek akce: toast({ text, undo }) ohlásí, co se stalo, a nezastaví práci.",
     en: "An imperative toast for the result of an action: toast({ text, undo }) announces what happened without stopping the work.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

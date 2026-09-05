@@ -1,12 +1,14 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/ButtonDemo";
-import demoSource from "@/ingot-docs/demos/ButtonDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.2 (KAN-854): the development-only warning no longer reaches for a bundler's field directly. A consumer's typecheck used to fail
 // inside our source, on a file they never wrote, unless their
 // tsconfig happened to include the bundler's types. Nothing a
 // caller passes or sees changed.
+const demo = () =>
+  import("@/ingot-docs/demos/ButtonDemo").then((module) => ({ default: module.Demo }));
+const demoSource = () => import("@/ingot-docs/demos/ButtonDemo?raw");
+
 export const ButtonDoc: IngotDocPage = {
   name: "Button",
   status: "stable",
@@ -34,7 +36,7 @@ export const ButtonDoc: IngotDocPage = {
     cs: 'Tlačítko se sedmi variantami, a s as="a" i odkaz, který tak vypadá. Varianta nese význam akce, ne barvu — a v tmavém režimu drží kontrast, který opsané třídy ztrácejí.',
     en: 'The button, in seven variants — and with as="a" a link that looks like one. A variant carries the meaning of the action, not a colour, and in dark mode it holds a contrast that copied classes lose.',
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

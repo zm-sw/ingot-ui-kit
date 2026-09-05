@@ -1,10 +1,14 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMenuDemo";
-import demoSource from "@/ingot-docs/demos/IngotMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-847. Stands on IngotPopover and adds what the menu ROLES promise:
 // arrows walk, Tab leaves, type-ahead finds, a disabled item stays.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMenuDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMenuDemo?raw");
+
 export const IngotMenuDoc: IngotDocPage = {
   name: "IngotMenu",
   status: "beta",
@@ -29,7 +33,7 @@ export const IngotMenuDoc: IngotDocPage = {
     cs: "Seznam akcí v popoveru: role menu, šipky, Home/End, psaní podle prvních písmen, oddělovače a tón danger.",
     en: "A list of actions in a popover: the menu roles, arrows, Home/End, type-ahead, separators and the danger tone.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -35,7 +35,15 @@
  * the product the account is the source of truth and localStorage is a
  * mirror against a flash on load.
  */
-import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useState,
+  type ComponentType,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 
 import {
   Button,
@@ -217,6 +225,22 @@ function ExtraProps({
  * The preview stage sits on ``--surface-2`` and centres the content — the
  * frame alone would blend into the page's white surface.
  */
+/**
+ * One lazy component per page, built once when this module loads.
+ *
+ * ``React.lazy`` returns a NEW component type on every call, and a new type
+ * means React throws the old tree away and mounts a fresh one — so building
+ * it during a render would remount the demo on every keystroke elsewhere on
+ * the page and lose whatever state the reader had set in it.
+ *
+ * Building all of them up front costs nothing: ``lazy`` imports nothing
+ * until something renders it. What is eager here is a wrapper; what is lazy
+ * is the demo.
+ */
+const DEMOS: ReadonlyMap<string, ComponentType<{ lang: DocLang }>> = new Map(
+  INGOT_DOC_PAGES.map((page) => [page.name, lazy(page.demo)] as const),
+);
+
 function DemoWithSource({
   page,
   lang,
@@ -226,15 +250,37 @@ function DemoWithSource({
 }): JSX.Element {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [copied, setCopied] = useState(false);
+  const [source, setSource] = useState<string | null>(null);
 
   useEffect(() => {
     setView("preview");
     setCopied(false);
+    setSource(null);
   }, [page.name]);
+
+  /**
+   * The listing arrives when the reader asks for it.
+   *
+   * It is behind a toggle most readers never open, so its text has no
+   * business in the first payload. ``cancelled`` is the usual guard for a
+   * reader who turns two pages quickly: without it the slower request
+   * lands last and the page shows another component's code.
+   */
+  useEffect(() => {
+    if (view !== "code" || source !== null) return;
+    let cancelled = false;
+    void page.demoSource().then((module) => {
+      if (!cancelled) setSource(module.default);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [view, source, page]);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(page.demoSource);
+      const text = source ?? (await page.demoSource()).default;
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -281,13 +327,26 @@ function DemoWithSource({
         <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
             <IngotProvider lang={lang}>
-              <page.Demo lang={lang} />
+              {/* The fallback is the word, not a spinner: the demo is a
+                  local module and arrives in a frame or two. A spinner for
+                  something that fast is a flicker the reader reads as a
+                  fault. */}
+              <Suspense
+                fallback={
+                  <p className="text-sm text-ink-3">{pick(CHROME.demoLoading, lang)}</p>
+                }
+              >
+                {(() => {
+                  const Demo = DEMOS.get(page.name);
+                  return Demo ? <Demo lang={lang} /> : null;
+                })()}
+              </Suspense>
             </IngotProvider>
           </div>
         </div>
       ) : (
         <IngotCode block lang="tsx" testId="docs-source">
-          {page.demoSource}
+          {source ?? pick(CHROME.demoLoading, lang)}
         </IngotCode>
       )}
     </div>

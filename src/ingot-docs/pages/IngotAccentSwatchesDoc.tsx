@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotAccentSwatchesDemo";
-import demoSource from "@/ingot-docs/demos/IngotAccentSwatchesDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // The dots do not know their colours: each carries ``data-accent`` and is
@@ -14,6 +12,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // unchanged; what changed is that a consumer can now wire it up without
 // rewriting the plumbing, which is exactly the sort of change that must
 // move a version even though no markup moved.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotAccentSwatchesDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotAccentSwatchesDemo?raw");
+
 export const IngotAccentSwatchesDoc: IngotDocPage = {
   name: "IngotAccentSwatches",
   status: "beta",
@@ -28,7 +32,7 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
     cs: "Volba akcentové rodiny — pět puntíků, každý obarvený tokenem, který nabízí. Žádný hex v kódu.",
     en: "The accent-family picker — five dots, each painted by the token it offers. No hex in the code.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotCheckboxDemo";
-import demoSource from "@/ingot-docs/demos/IngotCheckboxDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotCheckboxDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotCheckboxDemo?raw");
 
 export const IngotCheckboxDoc: IngotDocPage = {
   name: "IngotCheckbox",
@@ -19,7 +23,7 @@ export const IngotCheckboxDoc: IngotDocPage = {
     cs: "Zaškrtávátko s popiskem — filtr, souhlas, přepínač chování. Popisek je součást primitiva: klik na text zaškrtává a jméno pro odečítač jede zadarmo.",
     en: "A checkbox with a label — a filter, a consent, a behaviour toggle. The label is part of the primitive: clicking the text toggles, and the accessible name comes for free.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

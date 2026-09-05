@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotConfirmDemo";
-import demoSource from "@/ingot-docs/demos/IngotConfirmDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.1 (KAN-853): the component is untouched — the quick-create rule left the module this dialog carries the depth for.
 // Nothing a caller passes or sees changed; the version moves because
 // the module underneath it did.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotConfirmDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotConfirmDemo?raw");
+
 export const IngotConfirmDoc: IngotDocPage = {
   name: "IngotConfirm",
   status: "stable",
@@ -20,7 +24,7 @@ export const IngotConfirmDoc: IngotDocPage = {
     cs: "Potvrzovací dialog nad IngotModal. Spočítaný dopad smí přes useConfirmVeto potvrzení odvolat.",
     en: "Confirmation dialog built on IngotModal. The computed impact may withdraw the confirmation through useConfirmVeto.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

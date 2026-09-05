@@ -1,6 +1,10 @@
-import { Demo } from "@/ingot-docs/demos/IngotSwitchDemo";
-import demoSource from "@/ingot-docs/demos/IngotSwitchDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSwitchDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSwitchDemo?raw");
 
 export const IngotSwitchDoc: IngotDocPage = {
   name: "IngotSwitch",
@@ -24,7 +28,7 @@ export const IngotSwitchDoc: IngotDocPage = {
     cs: "Nastavení, které platí hned po přepnutí. Ne zaškrtávátko: to čeká na uložení formuláře.",
     en: "A setting that takes effect the moment it is flipped. Not a checkbox: that one waits for the form to be saved.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

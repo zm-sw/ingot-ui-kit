@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotDrawerDemo";
-import demoSource from "@/ingot-docs/demos/IngotDrawerDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.4 (KAN-853): the component is untouched — the quick-create rule left the module this drawer carries the depth for.
 // Nothing a caller passes or sees changed; the version moves because
 // the module underneath it did.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotDrawerDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotDrawerDemo?raw");
+
 export const IngotDrawerDoc: IngotDocPage = {
   name: "IngotDrawer",
   status: "beta",
@@ -32,7 +36,7 @@ export const IngotDrawerDoc: IngotDocPage = {
     cs: "Boční panel pro editaci se stejnou a11y laťkou jako dialog: focus trap, ESC, scroll lock a návrat fokusu na spouštěč.",
     en: "A side panel for editing with the same accessibility floor as the dialog: focus trap, ESC, scroll lock and focus returned to the trigger.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

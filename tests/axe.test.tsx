@@ -43,9 +43,14 @@ const OFF = {
 };
 
 describe("the doc web's demos pass axe", () => {
-  it.each(INGOT_DOC_PAGES.map((page) => [page.name, page.Demo] as const))(
+  it.each(INGOT_DOC_PAGES.map((page) => [page.name, page.demo] as const))(
     "%s",
-    async (_name, Demo) => {
+    async (_name, load) => {
+      // The demo arrives on demand now, so the sweep asks for it the way
+      // the page does. Awaiting it here also means a demo that fails to
+      // load fails this test rather than rendering as an empty container
+      // that passes every accessibility rule by having nothing in it.
+      const { default: Demo } = await load();
       // The provider is what a consumer mounts, so the sweep sees the
       // labels a real screen sees rather than the English fallbacks.
       const { container } = render(

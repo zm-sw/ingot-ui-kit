@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotTabsDemo";
-import demoSource from "@/ingot-docs/demos/IngotTabsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // Reference wiring of the value to the URL. The kit deliberately has no
@@ -14,6 +12,12 @@ const view = params.get("view") ?? "overview";
   value={view}
   onChange={(key) => setParams({ view: key }, { replace: true })}
 >`;
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotTabsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotTabsDemo?raw");
 
 export const IngotTabsDoc: IngotDocPage = {
   name: "IngotTabs",
@@ -29,7 +33,7 @@ export const IngotTabsDoc: IngotDocPage = {
     cs: "Přepínání pohledů na tentýž záznam: řízené value/onChange, role tablist a šipky mezi taby.",
     en: "Switching views of the same record: controlled value/onChange, the tablist role and arrow keys between tabs.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

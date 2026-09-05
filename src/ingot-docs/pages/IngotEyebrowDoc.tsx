@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotEyebrowDemo";
-import demoSource from "@/ingot-docs/demos/IngotEyebrowDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotEyebrowDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotEyebrowDemo?raw");
 
 export const IngotEyebrowDoc: IngotDocPage = {
   name: "IngotEyebrow",
@@ -17,7 +21,7 @@ export const IngotEyebrowDoc: IngotDocPage = {
     cs: "Malý mono popisek verzálkami nad věcí, kterou pojmenovává — skupina v menu, metrika, krok. Jeden zápis pro idiom, který se dřív kreslil deseti způsoby.",
     en: "The small uppercase mono caption above the thing it names — a nav group, a metric, a step. One drawing for an idiom that used to be hand-drawn ten ways.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

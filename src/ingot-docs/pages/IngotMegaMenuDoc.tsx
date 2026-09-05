@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMegaMenuDemo";
-import demoSource from "@/ingot-docs/demos/IngotMegaMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 2.0 (owner decision of 2026-09-02, items 01–03): the shape follows the
@@ -15,6 +13,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // explanation instead of navigating. Parity with the deployed admin. 2.2:
 // testId on the item (e2e clicks a concrete link) and left-0 anchoring
 // under the section.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMegaMenuDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMegaMenuDemo?raw");
+
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
@@ -49,7 +53,7 @@ export const IngotMegaMenuDoc: IngotDocPage = {
     cs: "Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo dvou sloupcích a náhledový sloupec, který popisuje položku pod kurzorem i pod fokusem.",
     en: "The opened section menu from the top bar — groups of links in one or two columns, plus a preview column describing the item under the cursor and under focus alike.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

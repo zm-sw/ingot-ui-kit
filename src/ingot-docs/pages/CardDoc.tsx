@@ -1,7 +1,9 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/CardDemo";
-import demoSource from "@/ingot-docs/demos/CardDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/CardDemo").then((module) => ({ default: module.Demo }));
+const demoSource = () => import("@/ingot-docs/demos/CardDemo?raw");
 
 export const CardDoc: IngotDocPage = {
   name: "Card",
@@ -27,7 +29,7 @@ export const CardDoc: IngotDocPage = {
     cs: "Plocha, na které obsah stojí — ne rámeček, který se kreslí kolem něj. Umí se zvednout při najetí a jednou za obrazovku se obrátit do tmavé.",
     en: "The surface content sits on — not a border drawn around it. It can lift on hover, and once per screen it can invert to dark.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

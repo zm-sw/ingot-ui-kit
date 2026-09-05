@@ -42,6 +42,7 @@ export interface ChromeStrings {
   searchHint: Localized<string>;
   searchClose: Localized<string>;
   sinceVersion: Localized<string>;
+  demoLoading: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -174,4 +175,5 @@ export const CHROME: ChromeStrings = {
   },
   searchClose: { cs: "Zavřít hledání", en: "Close the search" },
   sinceVersion: { cs: "od", en: "since" },
+  demoLoading: { cs: "Načítá se ukázka…", en: "Loading the demo…" },
 };

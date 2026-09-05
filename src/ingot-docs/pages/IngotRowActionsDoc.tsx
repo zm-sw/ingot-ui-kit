@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotRowActionsDemo";
-import demoSource from "@/ingot-docs/demos/IngotRowActionsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotRowActionsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotRowActionsDemo?raw");
 
 export const IngotRowActionsDoc: IngotDocPage = {
   name: "IngotRowActions",
@@ -29,7 +33,7 @@ export const IngotRowActionsDoc: IngotDocPage = {
     cs: "Akce jednoho řádku tabulky — ikonová tlačítka 28×28 px na konci řádku, bez rámečku a bez viditelného popisku.",
     en: "The actions of a single table row — 28×28 px icon buttons at the end of the row, with no frame and no visible label.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

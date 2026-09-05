@@ -1,6 +1,10 @@
-import { Demo } from "@/ingot-docs/demos/IngotCalloutDemo";
-import demoSource from "@/ingot-docs/demos/IngotCalloutDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotCalloutDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotCalloutDemo?raw");
 
 export const IngotCalloutDoc: IngotDocPage = {
   name: "IngotCallout",
@@ -32,7 +36,7 @@ export const IngotCalloutDoc: IngotDocPage = {
     cs: "Podbarvený blok s poznámkou, varováním nebo důsledkem u obsahu, ke kterému patří. Tón určuje i to, jestli ho odečítač ohlásí.",
     en: "A tinted block with a note, a warning or a consequence, next to the content it belongs to. The tone also decides whether a screen reader announces it.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

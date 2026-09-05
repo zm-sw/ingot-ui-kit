@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSideNavDemo";
-import demoSource from "@/ingot-docs/demos/IngotSideNavDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSideNavDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSideNavDemo?raw");
 
 export const IngotSideNavDoc: IngotDocPage = {
   name: "IngotSideNav",
@@ -31,7 +35,7 @@ export const IngotSideNavDoc: IngotDocPage = {
     cs: "Pojmenovaná skupina odkazů, jeden z nich aktivní. Popisek navigace a aria-current drží primitivum, ne domluva.",
     en: "A named group of links with one of them active. The primitive owns the navigation label and aria-current — not an agreement to remember them.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

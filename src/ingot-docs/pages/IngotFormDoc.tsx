@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotFormDemo";
-import demoSource from "@/ingot-docs/demos/IngotFormDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 2.1 (KAN-853): the component is untouched — the schema adapters left the field module; the spec itself did not move.
 // Nothing a caller passes or sees changed; the version moves because
 // the module underneath it did.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotFormDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotFormDemo?raw");
+
 export const IngotFormDoc: IngotDocPage = {
   name: "IngotForm",
   status: "stable",
@@ -24,7 +28,7 @@ export const IngotFormDoc: IngotDocPage = {
     cs: "Deklarativní formulář: dostane pole a hodnoty, vrací změny přes onChange. Tvar formuláře jsou data, ne JSX.",
     en: "Declarative form: it takes fields and values and reports changes through onChange. The shape of the form is data, not JSX.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

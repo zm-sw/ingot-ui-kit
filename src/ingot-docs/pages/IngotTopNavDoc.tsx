@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotTopNavDemo";
-import demoSource from "@/ingot-docs/demos/IngotTopNavDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 2.0 (owner decision of 2026-09-02, items 02 and 04): a section opens on
@@ -14,6 +12,15 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // (contentClassName) belongs to the shell, sections are a named <nav>
 // (sectionsLabel) with a responsive class (sectionsClassName) and a
 // sectionsEnd slot.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotTopNavDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotTopNavDemo?raw");
+
+// 2.10 (KAN-859): the brand sits at 600 rather than 700. The doc web
+// loaded a whole font face for that one weight, and 40 kB on a phone
+// for a difference nobody can point at is not a trade worth making.
 export const IngotTopNavDoc: IngotDocPage = {
   name: "IngotTopNav",
   status: "beta",
@@ -28,7 +35,7 @@ export const IngotTopNavDoc: IngotDocPage = {
   // 2.9 (KAN-845) — a click on an OPEN section closes it. Hover has no
   // meaning on a touch screen, where a tap somewhere else used to be the
   // only way out.
-  version: "2.9",
+  version: "2.10",
   tag: ".topnav",
   tokens: [
     "--surface",
@@ -47,7 +54,7 @@ export const IngotTopNavDoc: IngotDocPage = {
     cs: "Horní lišta aplikace — brand, sekce a účet v jednom řádku. Administrace nemá boční menu; obsah pod lištou jde na plnou šířku.",
     en: "The application's top bar — brand, sections and account in one row. The admin has no side menu; content below the bar runs full width.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

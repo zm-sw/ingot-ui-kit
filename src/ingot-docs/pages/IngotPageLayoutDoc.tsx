@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotPageLayoutDemo";
-import demoSource from "@/ingot-docs/demos/IngotPageLayoutDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotPageLayoutDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotPageLayoutDemo?raw");
 
 export const IngotPageLayoutDoc: IngotDocPage = {
   name: "IngotPageLayout",
@@ -17,7 +21,7 @@ export const IngotPageLayoutDoc: IngotDocPage = {
     cs: "Rytmus obsahu jedné stránky — mezera mezi bloky, šířka čtení a volitelný postranní rejstřík. Co si dřív každá obrazovka skládala sama.",
     en: "The rhythm of a page's content — the gap between blocks, a reading width, and an optional side index. What every screen used to assemble by hand.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

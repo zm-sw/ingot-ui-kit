@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotUserMenuDemo";
-import demoSource from "@/ingot-docs/demos/IngotUserMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotUserMenuDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotUserMenuDemo?raw");
 
 export const IngotUserMenuDoc: IngotDocPage = {
   name: "IngotUserMenu",
@@ -17,7 +21,7 @@ export const IngotUserMenuDoc: IngotDocPage = {
     cs: "Menu účtu — identita, organizace, předvolby, odhlášení. Primitivum drží strukturu, ne obsah: vrstvy oddělené linkou a řádek „popisek vlevo, ovládací prvek vpravo“.",
     en: "The account menu — identity, organisation, preferences, sign-out. The primitive holds the structure, not the content: layers separated by a rule, and a row of “label on the left, control on the right”.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingPricingDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingPricingDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. No amounts in code: pricing is platform data (plans,
 // entitlements KAN-499). The component cannot render anything it does not
 // receive through ``plans``.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingPricingDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingPricingDemo?raw");
+
 export const IngotMarketingPricingDoc: IngotDocPage = {
   name: "IngotMarketingPricing",
   status: "beta",
@@ -20,7 +24,7 @@ export const IngotMarketingPricingDoc: IngotDocPage = {
     cs: "Karty plánů — cena, výčet vlastností a akce na patě. Zvýrazněná karta má obrys a odznak, ne akcentový rámeček.",
     en: "Plan cards — a price, a feature list and an action at the foot. The featured card gets an outline and a badge, not an accent frame.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

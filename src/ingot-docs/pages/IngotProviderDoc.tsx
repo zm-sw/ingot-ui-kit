@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotProviderDemo";
-import demoSource from "@/ingot-docs/demos/IngotProviderDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-841. The kit has no translation namespace, yet a handful of labels
@@ -8,6 +6,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // default to Czech — a bug for the public web and for third-party apps.
 // The provider holds those defaults (English without one) and the
 // no-hardcoded-text guard keeps any other Czech out of src/ingot.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotProviderDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotProviderDemo?raw");
+
 export const IngotProviderDoc: IngotDocPage = {
   name: "IngotProvider",
   status: "beta",
@@ -25,7 +29,7 @@ export const IngotProviderDoc: IngotDocPage = {
     cs: 'Slovník několika popisků, které kit říká sám — zpět, žárovka nápovědy, tajné pole. Bez providera anglicky; lang="cs" přepne celou sadu.',
     en: 'The dictionary of the few labels the kit says itself — undo, the hint bulb, the secret field. English without a provider; lang="cs" switches the whole set.',
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

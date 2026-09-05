@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingSectionHeadDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingSectionHeadDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664, moved into the kit by owner decision: the blocks lived in
@@ -10,6 +8,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 //
 // ``beta``, because they have just been renamed: the API shape is still
 // being found.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingSectionHeadDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingSectionHeadDemo?raw");
+
 export const IngotMarketingSectionHeadDoc: IngotDocPage = {
   name: "IngotMarketingSectionHead",
   status: "beta",
@@ -25,7 +29,7 @@ export const IngotMarketingSectionHeadDoc: IngotDocPage = {
     cs: "Hlavička marketingové sekce — nadpis vlevo, uvozující odstavec vpravo. Akcent nese jediný prvek: eyebrow.",
     en: "A marketing section head — the heading on the left, the lede on the right. One element carries the accent: the eyebrow.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
