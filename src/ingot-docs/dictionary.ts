@@ -50,8 +50,7 @@ export const DEFAULT_DICTIONARY_MODE: DictionaryMode = "both";
 
 export function isDictionaryMode(value: unknown): value is DictionaryMode {
   return (
-    typeof value === "string" &&
-    (DICTIONARY_MODES as readonly string[]).includes(value)
+    typeof value === "string" && (DICTIONARY_MODES as readonly string[]).includes(value)
   );
 }
 

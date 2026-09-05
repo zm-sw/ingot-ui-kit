@@ -42,9 +42,7 @@ export type DocLang = (typeof DOC_LANGS)[number];
 export type Localized<T> = Readonly<Record<DocLang, T>>;
 
 export function isDocLang(value: unknown): value is DocLang {
-  return (
-    typeof value === "string" && (DOC_LANGS as readonly string[]).includes(value)
-  );
+  return typeof value === "string" && (DOC_LANGS as readonly string[]).includes(value);
 }
 
 /**

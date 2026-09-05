@@ -21,7 +21,12 @@
  * and nobody would notice — hence ``source`` in the return value says where
  * the data is from, and a test reaches for it.
  */
-import { DOC_LANGS, DOC_LANG_FALLBACK_LABELS, isDocLang, type DocLang } from "@/ingot-docs/lang";
+import {
+  DOC_LANGS,
+  DOC_LANG_FALLBACK_LABELS,
+  isDocLang,
+  type DocLang,
+} from "@/ingot-docs/lang";
 
 export interface DocLanguageOption {
   code: DocLang;
@@ -62,9 +67,7 @@ function apiBaseUrl(): string {
  * Order and labels are set by the platform — it is its registry. The doc
  * web only strikes out what it has nothing to fill.
  */
-export async function fetchDocLanguages(
-  signal?: AbortSignal,
-): Promise<DocLanguages> {
+export async function fetchDocLanguages(signal?: AbortSignal): Promise<DocLanguages> {
   try {
     const response = await fetch(`${apiBaseUrl()}/api/v1/public/languages`, {
       headers: { Accept: "application/json" },

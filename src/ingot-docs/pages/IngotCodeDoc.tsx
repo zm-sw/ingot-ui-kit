@@ -34,28 +34,27 @@ export const IngotCodeDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Ve větě je jméno vlastnosti, klíč, cesta k modulu nebo hodnota, kterou
-        uživatel opravdu napíše. Odlišit ji od prózy má význam: čtenář pozná,
-        co má opsat doslova.
+        Ve větě je jméno vlastnosti, klíč, cesta k modulu nebo hodnota, kterou uživatel
+        opravdu napíše. Odlišit ji od prózy má význam: čtenář pozná, co má opsat
+        doslova.
       </>,
       <>
-        Ukazuješ víc řádků kódu — <IngotCode>block</IngotCode>. Když je to
-        TSX, přidej <IngotCode>lang</IngotCode>: barva rozliší řetězec od
-        klíčového slova a atribut od značky, což je u delší ukázky rozdíl
-        mezi „přečtu" a „luštím".
+        Ukazuješ víc řádků kódu — <IngotCode>block</IngotCode>. Když je to TSX, přidej{" "}
+        <IngotCode>lang</IngotCode>: barva rozliší řetězec od klíčového slova a atribut
+        od značky, což je u delší ukázky rozdíl mezi „přečtu" a „luštím".
       </>,
     ],
     en: [
       <>
-        A sentence contains a property name, a key, a module path or a value
-        the user will really type. Setting it apart from prose carries
-        meaning: the reader can tell what to copy verbatim.
+        A sentence contains a property name, a key, a module path or a value the user
+        will really type. Setting it apart from prose carries meaning: the reader can
+        tell what to copy verbatim.
       </>,
       <>
-        You are showing several lines of code — <IngotCode>block</IngotCode>.
-        When it is TSX, add <IngotCode>lang</IngotCode>: colour tells a string
-        from a keyword and an attribute from a tag, which on a longer sample
-        is the difference between reading and decoding.
+        You are showing several lines of code — <IngotCode>block</IngotCode>. When it is
+        TSX, add <IngotCode>lang</IngotCode>: colour tells a string from a keyword and
+        an attribute from a tag, which on a longer sample is the difference between
+        reading and decoding.
       </>,
     ],
   },
@@ -63,25 +62,25 @@ export const IngotCodeDoc: IngotDocPage = {
     cs: [
       <>
         Chceš jen jiné písmo nebo zvýraznění. Na důraz je{" "}
-        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> říká „tohle je
-        kód", a když to kód není, je to lež o významu.
+        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> říká
+        „tohle je kód", a když to kód není, je to lež o významu.
       </>,
       <>
-        Je to identifikátor z našich vnitřností, který uživatel nikdy
-        neuvidí ani nenapíše — název sloupce, klíč tabulky. Takový text do
-        rozhraní pro zákazníka nepatří vůbec, ani v kódovém písmu.
+        Je to identifikátor z našich vnitřností, který uživatel nikdy neuvidí ani
+        nenapíše — název sloupce, klíč tabulky. Takový text do rozhraní pro zákazníka
+        nepatří vůbec, ani v kódovém písmu.
       </>,
     ],
     en: [
       <>
         You only want a different typeface or emphasis. For emphasis there is{" "}
-        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> says "this is
-        code", and when it is not, that is a lie about meaning.
+        <IngotCode>&lt;strong&gt;</IngotCode>; <IngotCode>&lt;code&gt;</IngotCode> says
+        "this is code", and when it is not, that is a lie about meaning.
       </>,
       <>
-        It is an internal identifier the user will never see or type — a
-        column name, a table key. That text does not belong in a
-        customer-facing interface at all, monospace or otherwise.
+        It is an internal identifier the user will never see or type — a column name, a
+        table key. That text does not belong in a customer-facing interface at all,
+        monospace or otherwise.
       </>,
     ],
   },
@@ -123,34 +122,33 @@ export const IngotCodeDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        <IngotCode>block</IngotCode> má <IngotCode>overflow-x-auto</IngotCode>, a je to ta
-        podstatná vlastnost: kód se nezalamuje, takže bez posunu buď přeteče
-        mimo stránku, nebo ho někdo „opraví" zalomením a rozbije odsazení,
-        podle kterého se v něm čte.
+        <IngotCode>block</IngotCode> má <IngotCode>overflow-x-auto</IngotCode>, a je to
+        ta podstatná vlastnost: kód se nezalamuje, takže bez posunu buď přeteče mimo
+        stránku, nebo ho někdo „opraví" zalomením a rozbije odsazení, podle kterého se v
+        něm čte.
       </>,
       <>
         Vykresluje se skutečný <IngotCode>&lt;code&gt;</IngotCode>, u výpisu uvnitř{" "}
-        <IngotCode>&lt;pre&gt;</IngotCode>. Odečítač podle toho pozná, že text nemá
-        číst jako větu.
+        <IngotCode>&lt;pre&gt;</IngotCode>. Odečítač podle toho pozná, že text nemá číst
+        jako větu.
       </>,
       <>
-        Bílé znaky uvnitř <IngotCode>&lt;pre&gt;</IngotCode> zůstávají — odsazení je
-        u kódu obsah, ne formátování.
+        Bílé znaky uvnitř <IngotCode>&lt;pre&gt;</IngotCode> zůstávají — odsazení je u
+        kódu obsah, ne formátování.
       </>,
       <>
-        Zvýraznění je jen barva navíc, nikdy jediný nositel významu:
-        obarvený výpis má týž text i pořadí jako neobarvený, takže
-        odečítač i kopírování dostanou totéž. Světlý a tmavý motiv mají
-        vlastní sadu barev a každá role drží kontrast 4,5:1 proti ploše
-        výpisu.
+        Zvýraznění je jen barva navíc, nikdy jediný nositel významu: obarvený výpis má
+        týž text i pořadí jako neobarvený, takže odečítač i kopírování dostanou totéž.
+        Světlý a tmavý motiv mají vlastní sadu barev a každá role drží kontrast 4,5:1
+        proti ploše výpisu.
       </>,
     ],
     en: [
       <>
-        <IngotCode>block</IngotCode> carries <IngotCode>overflow-x-auto</IngotCode>, and that is
-        the substantive part: code does not wrap, so without scrolling it
-        either overflows the page or someone "fixes" it by wrapping and
-        destroys the indentation the code is read by.
+        <IngotCode>block</IngotCode> carries <IngotCode>overflow-x-auto</IngotCode>, and
+        that is the substantive part: code does not wrap, so without scrolling it either
+        overflows the page or someone "fixes" it by wrapping and destroys the
+        indentation the code is read by.
       </>,
       <>
         It renders a real <IngotCode>&lt;code&gt;</IngotCode>, inside a{" "}
@@ -162,30 +160,28 @@ export const IngotCodeDoc: IngotDocPage = {
         indentation is content, not formatting.
       </>,
       <>
-        Highlighting is colour on top, never the only carrier of meaning: a
-        highlighted listing has the same text in the same order as a plain
-        one, so a screen reader and a copy both get the same thing. Light and
-        dark each have their own set of colours, and every role clears 4.5:1
-        against the listing's surface.
+        Highlighting is colour on top, never the only carrier of meaning: a highlighted
+        listing has the same text in the same order as a plain one, so a screen reader
+        and a copy both get the same thing. Light and dark each have their own set of
+        colours, and every role clears 4.5:1 against the listing's surface.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Obsah se <strong>nepřekládá</strong>. Přeložený identifikátor přestane
-        fungovat a čtenář to zjistí, až ho zkusí použít.
+        Obsah se <strong>nepřekládá</strong>. Přeložený identifikátor přestane fungovat
+        a čtenář to zjistí, až ho zkusí použít.
       </>,
       <>
-        Věta kolem kódu se překládá normálně — proto je{" "}
-        <IngotCode>IngotCode</IngotCode> vložka do textu, ne obal celého odstavce.
+        Věta kolem kódu se překládá normálně — proto je <IngotCode>IngotCode</IngotCode>{" "}
+        vložka do textu, ne obal celého odstavce.
       </>,
     ],
     en: [
       <>
-        The content is <strong>not</strong> translated. A translated
-        identifier stops working, and the reader finds out when they try to
-        use it.
+        The content is <strong>not</strong> translated. A translated identifier stops
+        working, and the reader finds out when they try to use it.
       </>,
       <>
         The sentence around the code is translated as usual — which is why{" "}

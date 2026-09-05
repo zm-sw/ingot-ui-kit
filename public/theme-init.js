@@ -11,7 +11,9 @@
       choice =
         localStorage.getItem("forgmatic.ingot.theme") ||
         localStorage.getItem("forgmatic.theme");
-    } catch (e) {}
+    } catch {
+      // No storage (private mode, blocked cookies): fall through to system.
+    }
     if (choice !== "light" && choice !== "dark" && choice !== "system")
       choice = "system";
     var dark =
@@ -20,5 +22,7 @@
         window.matchMedia &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
     if (dark) document.documentElement.classList.add("dark");
-  } catch (e) {}
+  } catch {
+    // Anything unexpected here must not stop the page from rendering.
+  }
 })();

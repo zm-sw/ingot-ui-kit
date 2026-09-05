@@ -68,56 +68,52 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  <IngotBadge>stabilní</IngotBadge> — rozhraní se nemění bez
-                  ohlášení. Změna, která by rozbila volající kód, je tu
-                  vzácná a záměrná: přijde s vyšší verzí a s upravenými
-                  místy použití.
+                  <IngotBadge>stabilní</IngotBadge> — rozhraní se nemění bez ohlášení.
+                  Změna, která by rozbila volající kód, je tu vzácná a záměrná: přijde s
+                  vyšší verzí a s upravenými místy použití.
                 </>,
                 <>
-                  <IngotBadge tone="warn">beta</IngotBadge> — tvar se ještě
-                  hledá. Změny, které rozbijí volající kód, se tady čekají —
-                  a přesně proto ten štítek je: říká, jestli už se na
-                  komponentu dá stavět.
+                  <IngotBadge tone="warn">beta</IngotBadge> — tvar se ještě hledá.
+                  Změny, které rozbijí volající kód, se tady čekají — a přesně proto ten
+                  štítek je: říká, jestli už se na komponentu dá stavět.
                 </>,
                 <>
-                  Verze se zvedá pokaždé, když se komponenta změní. Změněné
-                  chování pod nezměněnou verzí je tichá lež vůči každému,
-                  kdo si komponentu už zabudoval.
+                  Verze se zvedá pokaždé, když se komponenta změní. Změněné chování pod
+                  nezměněnou verzí je tichá lež vůči každému, kdo si komponentu už
+                  zabudoval.
                 </>,
                 <>
-                  Pořadí v menu jde od nejmenšího stavebního kamene ke
-                  složeným celkům, ne abecedně.
+                  Pořadí v menu jde od nejmenšího stavebního kamene ke složeným celkům,
+                  ne abecedně.
                 </>,
                 <>
-                  Chybí-li ti primitivum, přidá se do kitu — nevzniká uvnitř
-                  obrazovky.
+                  Chybí-li ti primitivum, přidá se do kitu — nevzniká uvnitř obrazovky.
                 </>,
               ]
             : [
                 <>
-                  <IngotBadge>stable</IngotBadge> — the interface does not
-                  change without notice. A change that would break callers is
-                  rare and deliberate: it arrives with a higher version and
-                  with the call sites already updated.
+                  <IngotBadge>stable</IngotBadge> — the interface does not change
+                  without notice. A change that would break callers is rare and
+                  deliberate: it arrives with a higher version and with the call sites
+                  already updated.
                 </>,
                 <>
-                  <IngotBadge tone="warn">beta</IngotBadge> — the shape is
-                  still being found. Breaking changes are expected here, and
-                  that is exactly what the badge is for: it says whether you
-                  can build on it yet.
+                  <IngotBadge tone="warn">beta</IngotBadge> — the shape is still being
+                  found. Breaking changes are expected here, and that is exactly what
+                  the badge is for: it says whether you can build on it yet.
                 </>,
                 <>
-                  The version moves every time the component changes. Changed
-                  behaviour under an unchanged version is a silent lie to
-                  everyone who already built on it.
+                  The version moves every time the component changes. Changed behaviour
+                  under an unchanged version is a silent lie to everyone who already
+                  built on it.
                 </>,
                 <>
-                  The order in the menu runs from the smallest building block
-                  to composed wholes, not alphabetically.
+                  The order in the menu runs from the smallest building block to
+                  composed wholes, not alphabetically.
                 </>,
                 <>
-                  If a primitive is missing, it is added to the kit — it is
-                  not born inside a screen.
+                  If a primitive is missing, it is added to the kit — it is not born
+                  inside a screen.
                 </>,
               ]
         }
@@ -212,9 +208,7 @@ function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
             <IngotEyebrow as="span" size="md">
               {view.eyebrow}
             </IngotEyebrow>
-            <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
-              {view.text}
-            </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-2">{view.text}</p>
           </div>
         ))}
       </div>

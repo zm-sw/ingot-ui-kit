@@ -113,9 +113,7 @@ function exportedComponents() {
 function documentedComponents(registrySrc) {
   const match = registrySrc.match(/INGOT_DOC_PAGES[^=]*=\s*\[([^\]]*)\]/s);
   if (!match) return new Set();
-  return new Set(
-    [...match[1].matchAll(/\b(\w+)Doc\b/g)].map((entry) => entry[1]),
-  );
+  return new Set([...match[1].matchAll(/\b(\w+)Doc\b/g)].map((entry) => entry[1]));
 }
 
 function registeredGuides(registrySrc) {
@@ -265,9 +263,7 @@ function guardIngotDocPages() {
       fail(guard, [`registry lists ${guide} but ${guideRel} does not exist.`]);
       continue;
     }
-    const found = stripComments(read(guidePath)).match(
-      /slug:\s*["']([^"']+)["']/,
-    );
+    const found = stripComments(read(guidePath)).match(/slug:\s*["']([^"']+)["']/);
     if (!found) {
       fail(guard, [`${guideRel} declares no slug.`]);
       continue;
@@ -314,10 +310,7 @@ const BANNED_TAGS = {
   button: "Button",
   section: "IngotSection",
 };
-const TAG_RE = new RegExp(
-  `<(${Object.keys(BANNED_TAGS).sort().join("|")})\\b`,
-  "g",
-);
+const TAG_RE = new RegExp(`<(${Object.keys(BANNED_TAGS).sort().join("|")})\\b`, "g");
 
 // The doc web today; whatever else this repository grows around the kit
 // (marketing pages, app screens) is held to the same rule the day it
@@ -339,8 +332,7 @@ function guardIngotDocsKitOnly() {
     });
   }
   if (hits.length) {
-    const tags = [...new Set(hits.map((h) => h.split("<")[1].replace(">", "")))]
-      .sort();
+    const tags = [...new Set(hits.map((h) => h.split("<")[1].replace(">", "")))].sort();
     fail(guard, [
       `${hits.length} hand-rolled tag(s) in the Ingot doc web:`,
       ...hits.slice(0, 20),
@@ -398,8 +390,7 @@ function guardIngotDocsNoInternalProse() {
 // --- ingot-comments-english -------------------------------------------------
 
 // Czech diacritics, both cases. A comment that carries one is not English.
-const CZECH_RE =
-  /[ěščřžýáíéúůťďňĚŠČŘŽÝÁÍÉÚŮŤĎŇ]/;
+const CZECH_RE = /[ěščřžýáíéúůťďňĚŠČŘŽÝÁÍÉÚŮŤĎŇ]/;
 
 const COMMENT_SCOPES = [
   ["src", /\.(?:tsx?|css)$/],
@@ -442,7 +433,8 @@ function commentSpans(src, path) {
   }
   for (const m of src.matchAll(/\/\*([\s\S]*?)\*\//g)) spans.push([m.index, m[1]]);
   if (path.endsWith(".css")) return spans;
-  for (const m of src.matchAll(/(?<![:"'`\\])\/\/([^\n]*)/g)) spans.push([m.index, m[1]]);
+  for (const m of src.matchAll(/(?<![:"'`\\])\/\/([^\n]*)/g))
+    spans.push([m.index, m[1]]);
   return spans;
 }
 
@@ -464,7 +456,11 @@ function guardIngotCommentsEnglish() {
     for (const [index, text] of commentSpans(src, path)) {
       comments += 1;
       if (CZECH_RE.test(text)) {
-        const first = text.trim().split("\n")[0].replace(/^\*\s*/, "").slice(0, 70);
+        const first = text
+          .trim()
+          .split("\n")[0]
+          .replace(/^\*\s*/, "")
+          .slice(0, 70);
         hits.push(`${rel(path)}:${lineAt(src, index)}: ${first}`);
       }
     }
@@ -498,10 +494,7 @@ const KIT_DIR = join(ROOT, "src/ingot");
 
 // The provider IS the dictionary, and the operation library carries a
 // Czech label next to the English one by design (data, not UI text).
-const HARDCODED_TEXT_EXEMPT = new Set([
-  "IngotProvider.tsx",
-  "processIconLibrary.tsx",
-]);
+const HARDCODED_TEXT_EXEMPT = new Set(["IngotProvider.tsx", "processIconLibrary.tsx"]);
 
 function guardIngotNoHardcodedText() {
   const guard = "ingot-no-hardcoded-text";

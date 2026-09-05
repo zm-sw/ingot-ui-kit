@@ -39,9 +39,7 @@ function Harness({
       <IngotForm
         fields={fields}
         values={values}
-        onChange={(key, next) =>
-          setValues((prev) => ({ ...prev, [key]: next }))
-        }
+        onChange={(key, next) => setValues((prev) => ({ ...prev, [key]: next }))}
         testIdPrefix="ingot"
       />
       <output data-testid="payload">
@@ -51,8 +49,7 @@ function Harness({
   );
 }
 
-const payload = () =>
-  JSON.parse(screen.getByTestId("payload").textContent ?? "{}");
+const payload = () => JSON.parse(screen.getByTestId("payload").textContent ?? "{}");
 
 describe("IngotForm — render podle popisu pole", () => {
   const FIELDS: IngotFieldSpec[] = [
@@ -66,18 +63,12 @@ describe("IngotForm — render podle popisu pole", () => {
   it("gives every field kind its own input", () => {
     render(<Harness fields={FIELDS} initial={{ enabled: true, gap_mm: 0.2 }} />);
 
-    expect(screen.getByTestId("ingot-enabled")).toHaveAttribute(
-      "type",
-      "checkbox",
-    );
+    expect(screen.getByTestId("ingot-enabled")).toHaveAttribute("type", "checkbox");
     expect(screen.getByTestId("ingot-enabled")).toBeChecked();
     expect(screen.getByTestId("ingot-gap_mm")).toHaveAttribute("type", "number");
     expect(screen.getByTestId("ingot-gap_mm")).toHaveValue(0.2);
     expect(screen.getByTestId("ingot-note")).toHaveAttribute("type", "text");
-    expect(screen.getByTestId("ingot-api_token")).toHaveAttribute(
-      "type",
-      "password",
-    );
+    expect(screen.getByTestId("ingot-api_token")).toHaveAttribute("type", "password");
     expect(screen.getByText("Poznámka")).toBeInTheDocument();
     expect(screen.getByText("volný text")).toBeInTheDocument();
   });
@@ -117,10 +108,7 @@ describe("IngotForm — render podle popisu pole", () => {
     render(<Harness fields={FIELDS} />);
 
     expect(screen.getByTestId("ingot-api_token")).toHaveValue("");
-    expect(screen.getByTestId("ingot-api_token")).toHaveAttribute(
-      "placeholder",
-      "set",
-    );
+    expect(screen.getByTestId("ingot-api_token")).toHaveAttribute("placeholder", "set");
   });
 
   it("an unset credential is told from a set one by the placeholder", () => {
@@ -193,7 +181,11 @@ describe("adapters — two classes of consumers, one field description", () => {
           maximum: 5,
           description: "v milimetrech",
         },
-        writer: { type: "integer", title: "Zapisovatel", x_options: "org_member_groups" },
+        writer: {
+          type: "integer",
+          title: "Zapisovatel",
+          x_options: "org_member_groups",
+        },
       },
       { preferEnglish: false },
     );

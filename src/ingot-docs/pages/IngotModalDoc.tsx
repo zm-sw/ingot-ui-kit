@@ -10,7 +10,17 @@ export const IngotModalDoc: IngotDocPage = {
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
   version: "1.2",
   tag: ".modal",
-  tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--r-lg", "--shadow-lg"],
+  tokens: [
+    "--surface",
+    "--surface-2",
+    "--border",
+    "--ink",
+    "--ink-3",
+    "--accent-bg",
+    "--r-sm",
+    "--r-lg",
+    "--shadow-lg",
+  ],
   classNameNote: {
     cs: "`className` nebere. Geometrie překryvu je součástí přístupnostní laťky (past fokusu, zámek rolování) — šířku řídí `size`.",
     en: "Does not take `className`. The overlay's geometry is part of the accessibility bar (focus trap, scroll lock) — `size` drives the width.",
@@ -23,45 +33,39 @@ export const IngotModalDoc: IngotDocPage = {
   demoSource,
   useWhen: {
     cs: [
+      <>Obsah má překrýt obrazovku a vyžádat si rozhodnutí, než se dá pokračovat.</>,
       <>
-        Obsah má překrýt obrazovku a vyžádat si rozhodnutí, než se dá
-        pokračovat.
+        Delší editace záznamu — tam, kde je co vysvětlovat, dává dialog místo i
+        soustředění na jednu věc. Rychlá úprava pár polí vedle seznamu zůstává v{" "}
+        <IngotCode>IngotDrawer</IngotCode>.
       </>,
-      <>
-        Delší editace záznamu — tam, kde je co vysvětlovat, dává dialog
-        místo i soustředění na jednu věc. Rychlá úprava pár polí vedle
-        seznamu zůstává v <IngotCode>IngotDrawer</IngotCode>.
-      </>,
-      <>
-        Dialog není jen „potvrď / zruš“ — je v něm formulář, náhled nebo
-        výběr.
-      </>,
+      <>Dialog není jen „potvrď / zruš“ — je v něm formulář, náhled nebo výběr.</>,
       <>
         Vždycky, když bys jinak psal{" "}
         <IngotCode>&lt;div className=&quot;fixed inset-0 …&quot;&gt;</IngotCode> znovu.
-        Dialog má být právě jeden způsob, ne tolik způsobů, kolik je
-        obrazovek — a tohle primitivum je ten způsob.
+        Dialog má být právě jeden způsob, ne tolik způsobů, kolik je obrazovek — a tohle
+        primitivum je ten způsob.
       </>,
     ],
     en: [
       <>
-        The content has to cover the screen and demand a decision before
-        anything else can happen.
+        The content has to cover the screen and demand a decision before anything else
+        can happen.
       </>,
       <>
-        A longer edit of a record — where there is explaining to do, the
-        dialog gives both room and focus. A quick edit of a few fields next
-        to a list stays in <IngotCode>IngotDrawer</IngotCode>.
+        A longer edit of a record — where there is explaining to do, the dialog gives
+        both room and focus. A quick edit of a few fields next to a list stays in{" "}
+        <IngotCode>IngotDrawer</IngotCode>.
       </>,
       <>
-        The dialog is more than "confirm / cancel" — it holds a form, a
-        preview or a selection.
+        The dialog is more than "confirm / cancel" — it holds a form, a preview or a
+        selection.
       </>,
       <>
         Any time you would otherwise write{" "}
         <IngotCode>&lt;div className=&quot;fixed inset-0 …&quot;&gt;</IngotCode> again.
-        A dialog should be exactly one thing, not as many things as there are
-        screens — and this primitive is that one thing.
+        A dialog should be exactly one thing, not as many things as there are screens —
+        and this primitive is that one thing.
       </>,
     ],
   },
@@ -73,12 +77,12 @@ export const IngotModalDoc: IngotDocPage = {
         tlačítka i veto.
       </>,
       <>
-        Sdělení nikoho neblokuje („uloženo“, „nepovedlo se“). Dialog je
-        nejtěžší afordance, kterou máš; hlášení v místě děje stačí.
+        Sdělení nikoho neblokuje („uloženo“, „nepovedlo se“). Dialog je nejtěžší
+        afordance, kterou máš; hlášení v místě děje stačí.
       </>,
       <>
-        Obsah je tak dlouhý, že se v panelu jenom posouvá. Pak je to
-        obrazovka, ne dialog.
+        Obsah je tak dlouhý, že se v panelu jenom posouvá. Pak je to obrazovka, ne
+        dialog.
       </>,
     ],
     en: [
@@ -88,13 +92,12 @@ export const IngotModalDoc: IngotDocPage = {
         adds the buttons and the veto.
       </>,
       <>
-        The message blocks nobody ("saved", "that did not work"). A dialog is
-        the heaviest affordance you have; a message where the action happened
-        is enough.
+        The message blocks nobody ("saved", "that did not work"). A dialog is the
+        heaviest affordance you have; a message where the action happened is enough.
       </>,
       <>
-        The content is long enough that it only scrolls inside the panel. Then
-        it is a screen, not a dialog.
+        The content is long enough that it only scrolls inside the panel. Then it is a
+        screen, not a dialog.
       </>,
     ],
   },
@@ -156,12 +159,12 @@ export const IngotModalDoc: IngotDocPage = {
       <>
         Laťku drží primitivum samo: <IngotCode>role=&quot;dialog&quot;</IngotCode>,{" "}
         <IngotCode>aria-modal=&quot;true&quot;</IngotCode> a{" "}
-        <IngotCode>aria-labelledby</IngotCode> mířící na <IngotCode>&lt;h2&gt;</IngotCode>{" "}
-        s titulkem.
+        <IngotCode>aria-labelledby</IngotCode> mířící na{" "}
+        <IngotCode>&lt;h2&gt;</IngotCode> s titulkem.
       </>,
       <>
-        Focus trap na Tab i Shift+Tab, ESC zavírá a po zavření se fokus vrací
-        na prvek, který dialog otevřel.
+        Focus trap na Tab i Shift+Tab, ESC zavírá a po zavření se fokus vrací na prvek,
+        který dialog otevřel.
       </>,
       <>
         Scroll lock pozadí se počítá podle hloubky: původní{" "}
@@ -178,12 +181,12 @@ export const IngotModalDoc: IngotDocPage = {
         The primitive holds the floor itself:{" "}
         <IngotCode>role=&quot;dialog&quot;</IngotCode>,{" "}
         <IngotCode>aria-modal=&quot;true&quot;</IngotCode> and{" "}
-        <IngotCode>aria-labelledby</IngotCode> pointing at the <IngotCode>&lt;h2&gt;</IngotCode>{" "}
-        that carries the title.
+        <IngotCode>aria-labelledby</IngotCode> pointing at the{" "}
+        <IngotCode>&lt;h2&gt;</IngotCode> that carries the title.
       </>,
       <>
-        A focus trap on both Tab and Shift+Tab, ESC closes, and on close the
-        focus returns to the element that opened the dialog.
+        A focus trap on both Tab and Shift+Tab, ESC closes, and on close the focus
+        returns to the element that opened the dialog.
       </>,
       <>
         The background scroll lock is depth-counted: the original{" "}
@@ -199,12 +202,13 @@ export const IngotModalDoc: IngotDocPage = {
   i18n: {
     cs: [
       <>
-        <IngotCode>closeLabel</IngotCode> je povinný. Je to <IngotCode>aria-label</IngotCode>{" "}
-        křížku a bez něj by ho odečítač přečetl jako „button“.
+        <IngotCode>closeLabel</IngotCode> je povinný. Je to{" "}
+        <IngotCode>aria-label</IngotCode> křížku a bez něj by ho odečítač přečetl jako
+        „button“.
       </>,
       <>
-        <IngotCode>title</IngotCode> a <IngotCode>children</IngotCode> dodává volající už
-        přeložené.
+        <IngotCode>title</IngotCode> a <IngotCode>children</IngotCode> dodává volající
+        už přeložené.
       </>,
     ],
     en: [
@@ -214,8 +218,8 @@ export const IngotModalDoc: IngotDocPage = {
         reader announces just "button".
       </>,
       <>
-        <IngotCode>title</IngotCode> and <IngotCode>children</IngotCode> arrive from the caller
-        already translated.
+        <IngotCode>title</IngotCode> and <IngotCode>children</IngotCode> arrive from the
+        caller already translated.
       </>,
     ],
   },

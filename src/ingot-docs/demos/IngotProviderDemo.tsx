@@ -41,15 +41,13 @@ export function Demo(): JSX.Element {
           onDismiss={() => undefined}
           testId="docs-provider-hint"
         >
-          Hover the bulb and the close button: their labels come from the
-          provider, not from this page.
+          Hover the bulb and the close button: their labels come from the provider, not
+          from this page.
         </IngotPageHint>
         <div className="flex flex-wrap items-center gap-3">
           <Button
             data-hint-target="docs-provider-save"
-            onClick={() =>
-              toast({ text: "Order saved.", undo: () => undefined })
-            }
+            onClick={() => toast({ text: "Order saved.", undo: () => undefined })}
           >
             Save order
           </Button>

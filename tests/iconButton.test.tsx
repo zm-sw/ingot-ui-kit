@@ -76,7 +76,13 @@ describe("icon button", () => {
       <IngotRowActions
         actions={[
           { icon: "copy", label: "Copy", onClick: () => {} },
-          { icon: "trash", label: "Delete", onClick: () => {}, tone: "danger", disabled: true },
+          {
+            icon: "trash",
+            label: "Delete",
+            onClick: () => {},
+            tone: "danger",
+            disabled: true,
+          },
         ]}
       />,
     );

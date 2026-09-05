@@ -1,11 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import {
-  IngotField,
-  IngotFieldInput,
-  IngotSearchInput,
-  IngotSelect,
-} from "@/ingot";
+import { IngotField, IngotFieldInput, IngotSearchInput, IngotSelect } from "@/ingot";
 import {
   INPUT_BORDER,
   INPUT_BORDER_ERROR,
@@ -86,7 +81,13 @@ describe("input chrome", () => {
 
   it("IngotField draws the frame on the wrapper and pads the input inside it", () => {
     render(
-      <IngotField label="Count" value="" onChange={() => {}} affix="pcs" testId="field" />,
+      <IngotField
+        label="Count"
+        value=""
+        onChange={() => {}}
+        affix="pcs"
+        testId="field"
+      />,
     );
     const input = screen.getByTestId("field");
     const frame = input.parentElement!;
@@ -97,7 +98,15 @@ describe("input chrome", () => {
   });
 
   it("an error swaps the resting border for the danger one, nothing else", () => {
-    render(<IngotField label="X" value="" onChange={() => {}} error="Required" testId="err" />);
+    render(
+      <IngotField
+        label="X"
+        value=""
+        onChange={() => {}}
+        error="Required"
+        testId="err"
+      />,
+    );
     const frame = screen.getByTestId("err").parentElement!;
     const have = classesOf(frame);
     expect(have.has(INPUT_BORDER_ERROR)).toBe(true);

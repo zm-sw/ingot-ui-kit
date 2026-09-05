@@ -22,31 +22,30 @@ export const IngotEmptyStateDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Seznam, tabulka nebo panel nemá co ukázat a ticho by čtenář přečetl
-        jako chybu načítání.
+        Seznam, tabulka nebo panel nemá co ukázat a ticho by čtenář přečetl jako chybu
+        načítání.
       </>,
       <>
-        Prázdno je legitimní počáteční stav a existuje jeden krok, kterým se
-        dá změnit. Ten krok patří do <IngotCode>action</IngotCode>.
+        Prázdno je legitimní počáteční stav a existuje jeden krok, kterým se dá změnit.
+        Ten krok patří do <IngotCode>action</IngotCode>.
       </>,
       <>
-        Jako <IngotCode>empty</IngotCode> pro <IngotCode>IngotTable</IngotCode>. Ty dvě se
-        dodávaly spolu právě proto, že tabulka bez prázdného stavu není
-        hotová.
+        Jako <IngotCode>empty</IngotCode> pro <IngotCode>IngotTable</IngotCode>. Ty dvě
+        se dodávaly spolu právě proto, že tabulka bez prázdného stavu není hotová.
       </>,
     ],
     en: [
       <>
-        A list, table or panel has nothing to show, and silence would read as
-        a loading failure.
+        A list, table or panel has nothing to show, and silence would read as a loading
+        failure.
       </>,
       <>
-        Empty is a legitimate starting state and there is one step that
-        changes it. That step belongs in <IngotCode>action</IngotCode>.
+        Empty is a legitimate starting state and there is one step that changes it. That
+        step belongs in <IngotCode>action</IngotCode>.
       </>,
       <>
-        As <IngotCode>empty</IngotCode> for <IngotCode>IngotTable</IngotCode>. The two shipped
-        together precisely because a table without an empty state is not
+        As <IngotCode>empty</IngotCode> for <IngotCode>IngotTable</IngotCode>. The two
+        shipped together precisely because a table without an empty state is not
         finished.
       </>,
     ],
@@ -55,35 +54,33 @@ export const IngotEmptyStateDoc: IngotDocPage = {
     cs: [
       <>
         Data se ještě načítají. Na to má <IngotCode>IngotTable</IngotCode> vlastní{" "}
-        <IngotCode>loading</IngotCode> s <IngotCode>aria-busy</IngotCode>; prázdný stav by tvrdil
-        „nic tu není“, zatímco odpověď je na cestě.
+        <IngotCode>loading</IngotCode> s <IngotCode>aria-busy</IngotCode>; prázdný stav
+        by tvrdil „nic tu není“, zatímco odpověď je na cestě.
       </>,
       <>
-        Dotaz selhal. Chyba a prázdno jsou dvě různá sdělení a čtenář podle
-        nich dělá dvě různé věci — u chyby chce vědět, co se stalo, ne že tu
-        nic není.
+        Dotaz selhal. Chyba a prázdno jsou dvě různá sdělení a čtenář podle nich dělá
+        dvě různé věci — u chyby chce vědět, co se stalo, ne že tu nic není.
       </>,
       <>
-        Prázdno je důsledek filtru. Věta pak má mluvit o filtru („nic
-        neodpovídá výběru“), ne o tom, že je zdroj prázdný.
+        Prázdno je důsledek filtru. Věta pak má mluvit o filtru („nic neodpovídá
+        výběru“), ne o tom, že je zdroj prázdný.
       </>,
     ],
     en: [
       <>
         The data is still loading. <IngotCode>IngotTable</IngotCode> has its own{" "}
-        <IngotCode>loading</IngotCode> with <IngotCode>aria-busy</IngotCode> for that; an empty
-        state would claim "there is nothing here" while the answer is still
-        on its way.
+        <IngotCode>loading</IngotCode> with <IngotCode>aria-busy</IngotCode> for that;
+        an empty state would claim "there is nothing here" while the answer is still on
+        its way.
       </>,
       <>
-        The request failed. An error and an empty result are two different
-        messages and the reader acts on them differently — on an error they
-        want to know what happened, not that there is nothing.
+        The request failed. An error and an empty result are two different messages and
+        the reader acts on them differently — on an error they want to know what
+        happened, not that there is nothing.
       </>,
       <>
-        The emptiness is the result of a filter. Then the sentence should
-        talk about the filter ("nothing matches your selection"), not about
-        the source being empty.
+        The emptiness is the result of a filter. Then the sentence should talk about the
+        filter ("nothing matches your selection"), not about the source being empty.
       </>,
     ],
   },
@@ -133,13 +130,13 @@ export const IngotEmptyStateDoc: IngotDocPage = {
         měl odečítač hlásit — čte se v pořadí, v jakém na něj přijde.
       </>,
       <>
-        Uvnitř <IngotCode>IngotTable</IngotCode> sedí v buňce, jejíž <IngotCode>colSpan</IngotCode>{" "}
-        se počítá ze sloupců. Ruční tabulky mají tohle číslo natvrdo a přidání
-        sloupce jim ho tiše rozejde.
+        Uvnitř <IngotCode>IngotTable</IngotCode> sedí v buňce, jejíž{" "}
+        <IngotCode>colSpan</IngotCode> se počítá ze sloupců. Ruční tabulky mají tohle
+        číslo natvrdo a přidání sloupce jim ho tiše rozejde.
       </>,
       <>
-        <IngotCode>action</IngotCode> je slot, ne popisek: dostane celou afordanci
-        i s jejím vlastním fokusem a popiskem.
+        <IngotCode>action</IngotCode> je slot, ne popisek: dostane celou afordanci i s
+        jejím vlastním fokusem a popiskem.
       </>,
     ],
     en: [
@@ -166,19 +163,19 @@ export const IngotEmptyStateDoc: IngotDocPage = {
         <IngotCode>action</IngotCode> dodává volající už přeložené.
       </>,
       <>
-        Popisek raději pojmenuj tu doménu („zatím žádné objednávky“) než ať
-        zůstane u obecného „nic tu není“ — čtenář se pak nemusí ptát, co
-        přesně chybí.
+        Popisek raději pojmenuj tu doménu („zatím žádné objednávky“) než ať zůstane u
+        obecného „nic tu není“ — čtenář se pak nemusí ptát, co přesně chybí.
       </>,
     ],
     en: [
       <>
-        <IngotCode>title</IngotCode>, <IngotCode>description</IngotCode> and the contents of{" "}
-        <IngotCode>action</IngotCode> arrive from the caller already translated.
+        <IngotCode>title</IngotCode>, <IngotCode>description</IngotCode> and the
+        contents of <IngotCode>action</IngotCode> arrive from the caller already
+        translated.
       </>,
       <>
-        Prefer naming the domain ("no orders yet") over a generic "nothing
-        here" — then the reader does not have to ask what exactly is missing.
+        Prefer naming the domain ("no orders yet") over a generic "nothing here" — then
+        the reader does not have to ask what exactly is missing.
       </>,
     ],
   },

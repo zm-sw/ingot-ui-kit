@@ -71,7 +71,9 @@ describe("IngotEyebrow", () => {
         X
       </IngotEyebrow>,
     );
-    expect(screen.getByTestId("e").className).not.toMatch(/text-ink|text-ok|text-accent/);
+    expect(screen.getByTestId("e").className).not.toMatch(
+      /text-ink|text-ok|text-accent/,
+    );
   });
 
   it("className is appended for layout without replacing the type", () => {
@@ -102,7 +104,9 @@ describe("components draw their captions with IngotEyebrow", () => {
   });
 
   it("metric label", () => {
-    render(<IngotMetrics label="Summary" items={[{ label: "In production", value: 18 }]} />);
+    render(
+      <IngotMetrics label="Summary" items={[{ label: "In production", value: 18 }]} />,
+    );
     for (const cls of SM) expect(screen.getByText("In production")).toHaveClass(cls);
   });
 

@@ -102,17 +102,17 @@ only when a release lands on `main`. Every commit between two releases
 therefore carries the PREVIOUS release's number, and one version string
 names many different trees:
 
-| commit | version | ships the `inbox` icon? |
-| --- | --- | --- |
-| before the icons landed | `1.0.1` | no |
-| the commit that added them | `1.0.1` | yes |
-| the commit after that | `1.0.1` | yes |
+| commit                     | version | ships the `inbox` icon? |
+| -------------------------- | ------- | ----------------------- |
+| before the icons landed    | `1.0.1` | no                      |
+| the commit that added them | `1.0.1` | yes                     |
+| the commit after that      | `1.0.1` | yes                     |
 
 npm caches a `github:` dependency under its name and version, so under
 `@forgmatic/ingot@1.0.1` it may hold any of those trees and hand back one
 that is not what the SHA points at. Nothing warns you: `package.json`,
 `package-lock.json` and `node_modules` all agree — `node_modules` is just
-a *different* `1.0.1`. Debugging that costs a day and ends in a bug report
+a _different_ `1.0.1`. Debugging that costs a day and ends in a bug report
 against code that was never broken.
 
 Every release is tagged with an annotated tag, so a tag is exactly one
@@ -211,10 +211,32 @@ test names (never string literals) and fails on Czech diacritics. If a
 comment has to point at a Czech UI string, describe it in English rather
 than quoting it.
 
+## Lint and formatting
+
+`npm run check` runs the guards, then ESLint, then Prettier. Two things
+about it are deliberate and would otherwise look like oversights.
+
+**`src/ingot` is outside Prettier's reach** (`.prettierignore`). Letting
+Prettier rewrap the kit changes about thirty component files without
+changing a line of behaviour, and the version guard would then demand a
+version bump on about thirty doc pages. A version that moves for a line
+break stops meaning "behaviour changed", and that meaning is the one
+thing the release automation stands on. The kit gets formatted with the
+next kit epoch — a `release!:` commit, where one version move covers the
+whole tree.
+
+**Two hook rules are warnings, not errors.** `react-hooks/refs` and
+`react-hooks/set-state-in-effect` point at four real places where the fix
+is a behaviour change rather than a formatting one. An error there leaves
+two options: rush those rewrites into an unrelated pull request, or switch
+the rule off and lose the finding. A warning keeps it in sight until the
+rewrite lands on its own.
+
 ## Before pushing
 
 ```bash
 npm run typecheck && npm run check && npm test && npm run build
 ```
 
-`npm run check` runs the repo guards; all four must be green.
+`npm run check` runs the repo guards, ESLint and Prettier; all four
+commands must be green.

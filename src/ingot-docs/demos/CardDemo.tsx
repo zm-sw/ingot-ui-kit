@@ -44,8 +44,8 @@ export function Demo(): JSX.Element {
       <Card tone="dark">
         <CardTitle>Nový modul: Kontrola kvality</CardTitle>
         <p className="mt-1 text-sm">
-          Zapíná se v Nastavení → Moduly. Takhle obrácená karta patří na
-          obrazovku nejvýš jedna.
+          Zapíná se v Nastavení → Moduly. Takhle obrácená karta patří na obrazovku
+          nejvýš jedna.
         </p>
       </Card>
     </div>

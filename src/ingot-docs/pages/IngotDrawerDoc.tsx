@@ -10,7 +10,16 @@ export const IngotDrawerDoc: IngotDocPage = {
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
   version: "1.2",
   tag: ".drawer",
-  tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--shadow-lg"],
+  tokens: [
+    "--surface",
+    "--surface-2",
+    "--border",
+    "--ink",
+    "--ink-3",
+    "--accent-bg",
+    "--r-sm",
+    "--shadow-lg",
+  ],
   classNameNote: {
     cs: "`className` nebere. Šířku řídí `width` s tvrdým stropem ze specifikace, hranu `side`.",
     en: "Does not take `className`. `width` drives the width with the spec's hard cap, `side` the edge.",
@@ -24,64 +33,62 @@ export const IngotDrawerDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Editace, u které operátor potřebuje vidět seznam za ní — panel
-        překryje jen část obrazovky.
+        Editace, u které operátor potřebuje vidět seznam za ní — panel překryje jen část
+        obrazovky.
       </>,
       <>
-        Rychlá úprava několika polí, u které se dál pracuje se seznamem.
-        Delší editace s vysvětlováním patří do{" "}
-        <IngotCode>IngotModal</IngotCode> — tam je místo i soustředění.
+        Rychlá úprava několika polí, u které se dál pracuje se seznamem. Delší editace s
+        vysvětlováním patří do <IngotCode>IngotModal</IngotCode> — tam je místo i
+        soustředění.
       </>,
       <>
-        Úprava záznamu z řádku tabulky: drawer se otevře vedle, kontext
-        řádku zůstává na očích.
+        Úprava záznamu z řádku tabulky: drawer se otevře vedle, kontext řádku zůstává na
+        očích.
       </>,
     ],
     en: [
       <>
-        Editing where the operator needs to keep seeing the list behind it —
-        the panel covers only part of the screen.
+        Editing where the operator needs to keep seeing the list behind it — the panel
+        covers only part of the screen.
       </>,
       <>
-        A quick edit of a few fields while the list stays in play. A longer
-        edit that needs explaining belongs in{" "}
-        <IngotCode>IngotModal</IngotCode> — that is where the room and the
-        focus are.
+        A quick edit of a few fields while the list stays in play. A longer edit that
+        needs explaining belongs in <IngotCode>IngotModal</IngotCode> — that is where
+        the room and the focus are.
       </>,
       <>
-        Editing a record from a table row: the drawer opens beside it and the
-        row's context stays in sight.
+        Editing a record from a table row: the drawer opens beside it and the row's
+        context stays in sight.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Obsah je delší než zhruba dvě obrazovky. Pak je to samostatná
-        stránka, ne boční panel.
+        Obsah je delší než zhruba dvě obrazovky. Pak je to samostatná stránka, ne boční
+        panel.
       </>,
       <>
-        Jde o rozhodnutí, které musí padnout hned („potvrď / zruš“) — na to
-        je <IngotCode>IngotModal</IngotCode>, případně{" "}
-        <IngotCode>IngotConfirm</IngotCode>.
+        Jde o rozhodnutí, které musí padnout hned („potvrď / zruš“) — na to je{" "}
+        <IngotCode>IngotModal</IngotCode>, případně <IngotCode>IngotConfirm</IngotCode>.
       </>,
       <>
-        Nad otevřeným drawerem nikdy neotvírej další překryv. Jeden překryv
-        v jednu chvíli; výsledek akce ohlas toastem.
+        Nad otevřeným drawerem nikdy neotvírej další překryv. Jeden překryv v jednu
+        chvíli; výsledek akce ohlas toastem.
       </>,
     ],
     en: [
       <>
-        The content runs longer than roughly two screens. Then it is a page
-        of its own, not a side panel.
+        The content runs longer than roughly two screens. Then it is a page of its own,
+        not a side panel.
       </>,
       <>
         The user must decide right now ("confirm / cancel") — that is{" "}
         <IngotCode>IngotModal</IngotCode>, or <IngotCode>IngotConfirm</IngotCode>.
       </>,
       <>
-        Never open another overlay on top of an open drawer. One overlay at a
-        time; announce the result of an action with a toast.
+        Never open another overlay on top of an open drawer. One overlay at a time;
+        announce the result of an action with a toast.
       </>,
     ],
   },
@@ -190,12 +197,11 @@ export const IngotDrawerDoc: IngotDocPage = {
         vrací na spouštěč.
       </>,
       <>
-        Scroll lock pozadí sdílí čítač s dialogem: drawer otevřený nad
-        dialogem (nebo obráceně) ho při zavření neuvolní předčasně.
+        Scroll lock pozadí sdílí čítač s dialogem: drawer otevřený nad dialogem (nebo
+        obráceně) ho při zavření neuvolní předčasně.
       </>,
       <>
-        Patka s akcemi je vždy viditelná — „Uložit“ se nikdy neschová pod
-        scroll těla.
+        Patka s akcemi je vždy viditelná — „Uložit“ se nikdy neschová pod scroll těla.
       </>,
     ],
     en: [
@@ -210,13 +216,12 @@ export const IngotDrawerDoc: IngotDocPage = {
         returns to the trigger.
       </>,
       <>
-        The background scroll lock shares its counter with the dialog: a
-        drawer open above a dialog (or the other way round) does not release
-        it early on close.
+        The background scroll lock shares its counter with the dialog: a drawer open
+        above a dialog (or the other way round) does not release it early on close.
       </>,
       <>
-        The action footer is always visible — "Save" never hides below the
-        body's scroll.
+        The action footer is always visible — "Save" never hides below the body's
+        scroll.
       </>,
     ],
   },
@@ -224,8 +229,8 @@ export const IngotDrawerDoc: IngotDocPage = {
     cs: [
       <>
         <IngotCode>closeLabel</IngotCode> je povinný. Je to{" "}
-        <IngotCode>aria-label</IngotCode> křížku a bez něj by ho odečítač přečetl
-        jako „button“.
+        <IngotCode>aria-label</IngotCode> křížku a bez něj by ho odečítač přečetl jako
+        „button“.
       </>,
       <>
         <IngotCode>title</IngotCode>, <IngotCode>subtitle</IngotCode> a obsah dodává

@@ -49,9 +49,7 @@ describe("highlightTsx", () => {
   it("outside a tag an identifier is plain text, not an attribute", () => {
     // ``Hotovo`` stands after ``>``, so already in content — if the tag
     // state did not close, it would be coloured as an attribute.
-    expect(kindOf('<IngotBadge tone="ok">Hotovo</IngotBadge>', "Hotovo")).toBe(
-      "plain",
-    );
+    expect(kindOf('<IngotBadge tone="ok">Hotovo</IngotBadge>', "Hotovo")).toBe("plain");
   });
 
   it("attributes are not looked for inside an expression in a tag", () => {
@@ -63,9 +61,7 @@ describe("highlightTsx", () => {
   it("a generic is not a JSX tag", () => {
     // This is the single ambiguity the scanner resolves: after an
     // identifier an angle bracket is a generic or a comparison.
-    expect(kindOf("const [a, b] = useState<string>(null);", "string")).toBe(
-      "plain",
-    );
+    expect(kindOf("const [a, b] = useState<string>(null);", "string")).toBe("plain");
     expect(kindOf("return <Demo />;", "Demo")).toBe("tag");
   });
 });
@@ -100,9 +96,7 @@ describe("IngotCode", () => {
     );
     const pre = screen.getByTestId("code");
     expect(pre.querySelector(".text-code-keyword")?.textContent).toBe("const");
-    expect(pre.querySelector(".text-code-string")?.textContent).toBe(
-      '"Hotovo"',
-    );
+    expect(pre.querySelector(".text-code-string")?.textContent).toBe('"Hotovo"');
   });
 
   it("lang on inline code draws nothing — only a listing is coloured", () => {

@@ -27,7 +27,15 @@ export const IngotTopNavDoc: IngotDocPage = {
   // 2.8 — row states (current, open, muted, locked, hover) come from the kit's shared menu row.
   version: "2.8",
   tag: ".topnav",
-  tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
+  tokens: [
+    "--surface",
+    "--surface-2",
+    "--surface-3",
+    "--border",
+    "--ink",
+    "--ink-2",
+    "--r-sm",
+  ],
   classNameNote: {
     cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
     en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
@@ -41,66 +49,64 @@ export const IngotTopNavDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Rám administrace. Je to jediná navigace, kterou obrazovka má —
-        sekce nahoře, obsah pod nimi přes celou šířku.
+        Rám administrace. Je to jediná navigace, kterou obrazovka má — sekce nahoře,
+        obsah pod nimi přes celou šířku.
       </>,
       <>
         Sekce, která má víc než jednu obrazovku. Tlačítko sekce rozbaluje{" "}
         <IngotCode>IngotMegaMenu</IngotCode>, kde teprve jsou odkazy.
       </>,
       <>
-        Odlišení režimu produktu — odznak vedle brandu řekne, že jsi
-        v administraci platformy, ne u zákazníka.
+        Odlišení režimu produktu — odznak vedle brandu řekne, že jsi v administraci
+        platformy, ne u zákazníka.
       </>,
     ],
     en: [
       <>
-        The frame of the admin. It is the only navigation a screen has —
-        sections on top, content below them at full width.
+        The frame of the admin. It is the only navigation a screen has — sections on
+        top, content below them at full width.
       </>,
       <>
         A section with more than one screen. The section button opens an{" "}
         <IngotCode>IngotMegaMenu</IngotCode>, which is where the links are.
       </>,
       <>
-        Telling the two products apart — a badge next to the brand says you
-        are in the platform admin, not in a customer account.
+        Telling the two products apart — a badge next to the brand says you are in the
+        platform admin, not in a customer account.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Rejstřík stránek uvnitř obsahu — dokumentace, nápověda, dlouhé
-        nastavení. Na to je <IngotCode>IngotSideNav</IngotCode>: je to
-        obsah stránky, ne rám aplikace.
+        Rejstřík stránek uvnitř obsahu — dokumentace, nápověda, dlouhé nastavení. Na to
+        je <IngotCode>IngotSideNav</IngotCode>: je to obsah stránky, ne rám aplikace.
       </>,
       <>
-        Sekce, která má jedinou obrazovku. Tlačítko, které rozbalí menu
-        s jednou položkou, je krok navíc — udělej z ní odkaz.
+        Sekce, která má jedinou obrazovku. Tlačítko, které rozbalí menu s jednou
+        položkou, je krok navíc — udělej z ní odkaz.
       </>,
       <>
-        Sada sekcí, která se i s popisky nevejde na 1280 px. Lišta se
-        nezalamuje a co přeteče, zmizí za okrajem — měřítkem je nejužší
-        podporovaná šířka, ne pevný počet. Když se lišta láme, zkracuj
-        popisky nebo spoj dvě sekce.
+        Sada sekcí, která se i s popisky nevejde na 1280 px. Lišta se nezalamuje a co
+        přeteče, zmizí za okrajem — měřítkem je nejužší podporovaná šířka, ne pevný
+        počet. Když se lišta láme, zkracuj popisky nebo spoj dvě sekce.
       </>,
     ],
     en: [
       <>
-        An index of pages inside the content — documentation, help, a long
-        settings flow. That is <IngotCode>IngotSideNav</IngotCode>: it is
-        page content, not the application frame.
+        An index of pages inside the content — documentation, help, a long settings
+        flow. That is <IngotCode>IngotSideNav</IngotCode>: it is page content, not the
+        application frame.
       </>,
       <>
-        A section with a single screen. A button that opens a menu with one
-        item is a step too many — make it a link.
+        A section with a single screen. A button that opens a menu with one item is a
+        step too many — make it a link.
       </>,
       <>
-        A set of sections that will not fit at 1280 px with their labels.
-        The bar does not wrap and whatever overflows falls off the edge —
-        the measure is the narrowest supported width, not a fixed count.
-        When the bar breaks, shorten labels or merge two sections.
+        A set of sections that will not fit at 1280 px with their labels. The bar does
+        not wrap and whatever overflows falls off the edge — the measure is the
+        narrowest supported width, not a fixed count. When the bar breaks, shorten
+        labels or merge two sections.
       </>,
     ],
   },
@@ -372,99 +378,90 @@ export const IngotTopNavDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Sekce je <strong>tlačítko</strong>, ne odkaz — sama nikam nevede,
-        jen rozbaluje menu. Nese proto <IngotCode>aria-expanded</IngotCode>,
-        ne <IngotCode>aria-current</IngotCode>; ta patří až odkazu uvnitř
-        menu.
+        Sekce je <strong>tlačítko</strong>, ne odkaz — sama nikam nevede, jen rozbaluje
+        menu. Nese proto <IngotCode>aria-expanded</IngotCode>, ne{" "}
+        <IngotCode>aria-current</IngotCode>; ta patří až odkazu uvnitř menu.
       </>,
       <>
-        Otevřenou sekci značí plocha <IngotCode>--surface-3</IngotCode>, ne
-        akcent. Akcent v téhle aplikaci znamená akci, a rozbalené menu
-        žádná akce není.
+        Otevřenou sekci značí plocha <IngotCode>--surface-3</IngotCode>, ne akcent.
+        Akcent v téhle aplikaci znamená akci, a rozbalené menu žádná akce není.
       </>,
       <>
-        Ikonové akce vpravo potřebují <IngotCode>aria-label</IngotCode> —
-        lupa bez popisku je pro odečítač jen „tlačítko“.
+        Ikonové akce vpravo potřebují <IngotCode>aria-label</IngotCode> — lupa bez
+        popisku je pro odečítač jen „tlačítko“.
       </>,
       <>
-        <IngotCode>Esc</IngotCode> zavírá menu a vrací fokus na tlačítko
-        sekce. Zavírání drží volající, protože jen on ví, jestli se má
-        menu zavřít i po prokliku. Návrat fokusu drží lišta — zmizelý
-        panel by ho jinak zahodil na začátek stránky.
+        <IngotCode>Esc</IngotCode> zavírá menu a vrací fokus na tlačítko sekce. Zavírání
+        drží volající, protože jen on ví, jestli se má menu zavřít i po prokliku. Návrat
+        fokusu drží lišta — zmizelý panel by ho jinak zahodil na začátek stránky.
       </>,
       <>
-        <IngotCode>ArrowDown</IngotCode> a <IngotCode>ArrowUp</IngotCode>{" "}
-        na tlačítku sekci otevřou a skočí na první, resp. poslední
-        položku; uvnitř panelu procházejí položky dokola. Menu, které se
-        otevírá najetím myší, je bez toho z klávesnice past: panel je
-        vidět, ale fokus zůstal na tlačítku.
+        <IngotCode>ArrowDown</IngotCode> a <IngotCode>ArrowUp</IngotCode> na tlačítku
+        sekci otevřou a skočí na první, resp. poslední položku; uvnitř panelu procházejí
+        položky dokola. Menu, které se otevírá najetím myší, je bez toho z klávesnice
+        past: panel je vidět, ale fokus zůstal na tlačítku.
       </>,
       <>
-        <IngotCode>Tab</IngotCode> z otevřeného panelu{" "}
-        <strong>nevypadne</strong> — obchází jeho položky. Odejít doprostřed
-        lišty a nechat si panel viset za zády je stav, ze kterého se čtenář
-        nedostane zpátky; ven vede <IngotCode>Esc</IngotCode>.
+        <IngotCode>Tab</IngotCode> z otevřeného panelu <strong>nevypadne</strong> —
+        obchází jeho položky. Odejít doprostřed lišty a nechat si panel viset za zády je
+        stav, ze kterého se čtenář nedostane zpátky; ven vede <IngotCode>Esc</IngotCode>
+        .
       </>,
     ],
     en: [
       <>
-        A section is a <strong>button</strong>, not a link — it goes nowhere
-        on its own, it opens a menu. So it carries{" "}
-        <IngotCode>aria-expanded</IngotCode>, not{" "}
-        <IngotCode>aria-current</IngotCode>; that belongs to the link inside
-        the menu.
+        A section is a <strong>button</strong>, not a link — it goes nowhere on its own,
+        it opens a menu. So it carries <IngotCode>aria-expanded</IngotCode>, not{" "}
+        <IngotCode>aria-current</IngotCode>; that belongs to the link inside the menu.
       </>,
       <>
-        An open section is marked with the <IngotCode>--surface-3</IngotCode>{" "}
-        surface, not the accent. The accent means an action in this
-        application, and an open menu is not an action.
+        An open section is marked with the <IngotCode>--surface-3</IngotCode> surface,
+        not the accent. The accent means an action in this application, and an open menu
+        is not an action.
       </>,
       <>
-        The icon actions on the right need an <IngotCode>aria-label</IngotCode>{" "}
-        — a magnifier without one is just “button” to a screen reader.
+        The icon actions on the right need an <IngotCode>aria-label</IngotCode> — a
+        magnifier without one is just “button” to a screen reader.
       </>,
       <>
-        <IngotCode>Esc</IngotCode> closes the menu and returns focus to the
-        section button. Closing is the caller's, because only they know
-        whether the menu should also close after a click-through. The
-        focus return is the bar's — a vanished panel would otherwise drop
-        focus at the top of the page.
+        <IngotCode>Esc</IngotCode> closes the menu and returns focus to the section
+        button. Closing is the caller's, because only they know whether the menu should
+        also close after a click-through. The focus return is the bar's — a vanished
+        panel would otherwise drop focus at the top of the page.
       </>,
       <>
-        <IngotCode>ArrowDown</IngotCode> and <IngotCode>ArrowUp</IngotCode>{" "}
-        on the button open the section and jump to its first or last item;
-        inside the panel they walk the items and wrap around. Without that,
-        a menu that opens on hover is a keyboard trap: the panel is
-        visible, but focus stayed on the button.
+        <IngotCode>ArrowDown</IngotCode> and <IngotCode>ArrowUp</IngotCode> on the
+        button open the section and jump to its first or last item; inside the panel
+        they walk the items and wrap around. Without that, a menu that opens on hover is
+        a keyboard trap: the panel is visible, but focus stayed on the button.
       </>,
       <>
-        <IngotCode>Tab</IngotCode> does <strong>not</strong> fall out of an
-        open panel — it cycles through its items. Walking off into the
-        middle of the bar with the panel left hanging behind you is a state
-        there is no way back from; <IngotCode>Esc</IngotCode> is the way
-        out.
+        <IngotCode>Tab</IngotCode> does <strong>not</strong> fall out of an open panel —
+        it cycles through its items. Walking off into the middle of the bar with the
+        panel left hanging behind you is a state there is no way back from;{" "}
+        <IngotCode>Esc</IngotCode> is the way out.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Popisky sekcí dodává volající přeložené — kit vlastní jmenný
-        prostor překladů nemá.
+        Popisky sekcí dodává volající přeložené — kit vlastní jmenný prostor překladů
+        nemá.
       </>,
       <>
-        Sekce mají v překladu delší jména. Lišta se nezalamuje, takže
-        popisky drž na jednom až dvou slovech i v nejdelším jazyce.
+        Sekce mají v překladu delší jména. Lišta se nezalamuje, takže popisky drž na
+        jednom až dvou slovech i v nejdelším jazyce.
       </>,
     ],
     en: [
       <>
-        Section labels are passed in already translated — the kit has no
-        translation namespace of its own.
+        Section labels are passed in already translated — the kit has no translation
+        namespace of its own.
       </>,
       <>
-        Section names get longer in translation. The bar does not wrap, so
-        keep labels to one or two words even in the longest language.
+        Section names get longer in translation. The bar does not wrap, so keep labels
+        to one or two words even in the longest language.
       </>,
     ],
   },

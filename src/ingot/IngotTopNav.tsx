@@ -229,6 +229,9 @@ export function IngotTopNav({
   }, [openSection, onCloseSection]);
 
   return (
+    // Hover only opens what a click opens too, so nothing here is reachable
+    // by mouse alone.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={wrapperRef}
       className="relative"
@@ -291,6 +294,10 @@ export function IngotTopNav({
           }
           const open = section.key === openSection;
           return (
+            // The key handler belongs to the section wrapper because the
+            // panel it drives is its sibling; what takes focus is the button
+            // and the menu items inside.
+            // eslint-disable-next-line jsx-a11y/no-static-element-interactions
             <div
               key={section.key}
               className="relative"

@@ -37,8 +37,8 @@ export function Demo(): JSX.Element {
         testId="docs-stepcard-open"
       >
         <p className="text-sm text-ink-2">
-          Materiály a povrchové úpravy. <IngotBadge>kanonická</IngotBadge> skupina
-          se do nabídek propíše všem partnerům.
+          Materiály a povrchové úpravy. <IngotBadge>kanonická</IngotBadge> skupina se do
+          nabídek propíše všem partnerům.
         </p>
       </IngotStepCard>
     </div>

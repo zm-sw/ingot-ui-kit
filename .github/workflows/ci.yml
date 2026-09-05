@@ -20,7 +20,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Repo checks (doc-pages, kit-only, no-internal-prose, comments-english)
+      - name: Repo checks (guards, lint, formatting)
         run: npm run check
       - name: Typecheck
         run: npm run typecheck

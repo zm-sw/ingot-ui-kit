@@ -1,4 +1,10 @@
-import { IngotCode, IngotEyebrow, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import {
+  IngotCode,
+  IngotEyebrow,
+  IngotList,
+  IngotTable,
+  type IngotColumn,
+} from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -176,58 +182,52 @@ function TextRules({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Tlačítko pojmenovává výsledek: <strong>Přidat zemi</strong>,
-                  ne <strong>OK</strong>. Čtenář se rozhoduje podle toho, co
-                  se stane, ne podle toho, že něco potvrzuje. Zrušení je vždy{" "}
-                  <strong>Zrušit</strong>.
+                  Tlačítko pojmenovává výsledek: <strong>Přidat zemi</strong>, ne{" "}
+                  <strong>OK</strong>. Čtenář se rozhoduje podle toho, co se stane, ne
+                  podle toho, že něco potvrzuje. Zrušení je vždy <strong>Zrušit</strong>
+                  .
                 </>,
                 <>
-                  Popisek pole je podstatné jméno bez dvojtečky; nápověda pod
-                  polem je celá věta s tečkou. Dvě různé role textu se tak
-                  poznají i bez čtení.
+                  Popisek pole je podstatné jméno bez dvojtečky; nápověda pod polem je
+                  celá věta s tečkou. Dvě různé role textu se tak poznají i bez čtení.
                 </>,
                 <>
-                  Chyba říká, co udělat: „IČO musí mít 8 číslic“, ne
-                  „Neplatná hodnota“. Hláška, ze které nejde poznat další
-                  krok, uživatele zastaví stejně jako žádná.
+                  Chyba říká, co udělat: „IČO musí mít 8 číslic“, ne „Neplatná hodnota“.
+                  Hláška, ze které nejde poznat další krok, uživatele zastaví stejně
+                  jako žádná.
                 </>,
                 <>
-                  Odborný termín se používá jen tam, kde ho výroba sama
-                  používá. Přepínač slovníku v menu účtu (Jednoduše / Expert)
-                  přepíná mezi lidovou a odbornou variantou — každý termín
-                  proto potřebuje obě.
+                  Odborný termín se používá jen tam, kde ho výroba sama používá.
+                  Přepínač slovníku v menu účtu (Jednoduše / Expert) přepíná mezi
+                  lidovou a odbornou variantou — každý termín proto potřebuje obě.
                 </>,
-                <>
-                  Bez vykřičníků, bez emoji a bez „Ups!“. Chyba je fakt, ne
-                  omluva.
-                </>,
+                <>Bez vykřičníků, bez emoji a bez „Ups!“. Chyba je fakt, ne omluva.</>,
               ]
             : [
                 <>
-                  A button names the outcome: <strong>Add country</strong>,
-                  not <strong>OK</strong>. A reader decides by what will
-                  happen, not by the fact that something is being confirmed.
-                  Cancelling is always <strong>Cancel</strong>.
+                  A button names the outcome: <strong>Add country</strong>, not{" "}
+                  <strong>OK</strong>. A reader decides by what will happen, not by the
+                  fact that something is being confirmed. Cancelling is always{" "}
+                  <strong>Cancel</strong>.
                 </>,
                 <>
-                  A field label is a noun without a colon; the hint below the
-                  field is a full sentence with a full stop. The two roles of
-                  the text are then distinguishable without reading them.
+                  A field label is a noun without a colon; the hint below the field is a
+                  full sentence with a full stop. The two roles of the text are then
+                  distinguishable without reading them.
                 </>,
                 <>
-                  An error says what to do: “The company number must have 8
-                  digits”, not “Invalid value”. A message that does not reveal
-                  the next step stops the user just as surely as no message.
+                  An error says what to do: “The company number must have 8 digits”, not
+                  “Invalid value”. A message that does not reveal the next step stops
+                  the user just as surely as no message.
                 </>,
                 <>
-                  A technical term is used only where production itself uses
-                  it. The vocabulary switch in the account menu (Plain /
-                  Expert) toggles between the everyday and the technical
-                  variant — so every term needs both.
+                  A technical term is used only where production itself uses it. The
+                  vocabulary switch in the account menu (Plain / Expert) toggles between
+                  the everyday and the technical variant — so every term needs both.
                 </>,
                 <>
-                  No exclamation marks, no emoji and no “Oops”. An error is a
-                  fact, not an apology.
+                  No exclamation marks, no emoji and no “Oops”. An error is a fact, not
+                  an apology.
                 </>,
               ]
         }
@@ -244,42 +244,38 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Nová komponenta vzniká v systému, ne v obrazovce — dostane
-                  název, pravidlo použití a stránku v téhle dokumentaci, a
-                  teprve pak se použije. Komponenta poskládaná uvnitř jedné
-                  obrazovky je ostrůvek: příště ji nikdo nenajde a napíše si
-                  vlastní.
+                  Nová komponenta vzniká v systému, ne v obrazovce — dostane název,
+                  pravidlo použití a stránku v téhle dokumentaci, a teprve pak se
+                  použije. Komponenta poskládaná uvnitř jedné obrazovky je ostrůvek:
+                  příště ji nikdo nenajde a napíše si vlastní.
                 </>,
                 <>
-                  Vlastní barva, mezera nebo rádius v obrazovce znamená
-                  chybějící token. Řeší se v systému, ne v obrazovce — jinak
-                  ta hodnota zůstane jediná svého druhu a nikdo ji při další
-                  změně palety nenajde.
+                  Vlastní barva, mezera nebo rádius v obrazovce znamená chybějící token.
+                  Řeší se v systému, ne v obrazovce — jinak ta hodnota zůstane jediná
+                  svého druhu a nikdo ji při další změně palety nenajde.
                 </>,
                 <>
-                  Změna tokenu je změna produktu: prochází stejným review jako
-                  změna kódu. Projeví se všude naráz, takže se nedá vrátit
-                  jednou obrazovkou.
+                  Změna tokenu je změna produktu: prochází stejným review jako změna
+                  kódu. Projeví se všude naráz, takže se nedá vrátit jednou obrazovkou.
                 </>,
               ]
             : [
                 <>
-                  A new component is born in the system, not in a screen — it
-                  gets a name, a rule of use and a page in this documentation,
-                  and only then is used. A component assembled inside one
-                  screen is an island: nobody finds it next time, and writes
-                  their own.
+                  A new component is born in the system, not in a screen — it gets a
+                  name, a rule of use and a page in this documentation, and only then is
+                  used. A component assembled inside one screen is an island: nobody
+                  finds it next time, and writes their own.
                 </>,
                 <>
-                  A custom colour, spacing or radius in a screen means a
-                  missing token. It is settled in the system, not in the
-                  screen — otherwise that value stays one of a kind and nobody
-                  finds it at the next change of the palette.
+                  A custom colour, spacing or radius in a screen means a missing token.
+                  It is settled in the system, not in the screen — otherwise that value
+                  stays one of a kind and nobody finds it at the next change of the
+                  palette.
                 </>,
                 <>
-                  Changing a token is changing the product: it goes through
-                  the same review as a change of code. It lands everywhere at
-                  once, so it cannot be undone by one screen.
+                  Changing a token is changing the product: it goes through the same
+                  review as a change of code. It lands everywhere at once, so it cannot
+                  be undone by one screen.
                 </>,
               ]
         }
@@ -322,59 +318,55 @@ function Pinning({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  <strong>Commit vypadá přesněji, ale je méně
-                  bezpečný.</strong> Číslo verze se hne až s vydáním, takže
-                  každý commit mezi dvěma vydáními nese číslo toho
-                  předchozího — jedno číslo verze označuje víc různých
+                  <strong>Commit vypadá přesněji, ale je méně bezpečný.</strong> Číslo
+                  verze se hne až s vydáním, takže každý commit mezi dvěma vydáními nese
+                  číslo toho předchozího — jedno číslo verze označuje víc různých
                   stromů.
                 </>,
                 <>
-                  Správce balíčků si závislost z gitu ukládá do mezipaměti
-                  pod jménem a verzí. Pod jedním číslem tam proto může ležet
-                  jiný strom, než na který pin ukazuje — a nic to
-                  neohlásí: <IngotCode>package.json</IngotCode>,{" "}
+                  Správce balíčků si závislost z gitu ukládá do mezipaměti pod jménem a
+                  verzí. Pod jedním číslem tam proto může ležet jiný strom, než na který
+                  pin ukazuje — a nic to neohlásí: <IngotCode>package.json</IngotCode>,{" "}
                   <IngotCode>package-lock.json</IngotCode> i{" "}
                   <IngotCode>node_modules</IngotCode> spolu souhlasí.
                 </>,
                 <>
-                  Vydání se tagují, takže <strong>tag je právě jedna verze a
-                  právě jeden strom</strong>. To je jediný pin, který drží.
+                  Vydání se tagují, takže{" "}
+                  <strong>tag je právě jedna verze a právě jeden strom</strong>. To je
+                  jediný pin, který drží.
                 </>,
                 <>
-                  Když typová kontrola nenajde symbol, který ve zdrojích kitu
-                  vidíš, podezřívej instalaci dřív než kit: porovnej
-                  nainstalovaný soubor proti <strong>tagu</strong>, ne proti
-                  číslu verze, a napřed vyčisti mezipaměť. Shoda čísel
-                  nedokazuje nic.
+                  Když typová kontrola nenajde symbol, který ve zdrojích kitu vidíš,
+                  podezřívej instalaci dřív než kit: porovnej nainstalovaný soubor proti{" "}
+                  <strong>tagu</strong>, ne proti číslu verze, a napřed vyčisti
+                  mezipaměť. Shoda čísel nedokazuje nic.
                 </>,
               ]
             : [
                 <>
-                  <strong>A commit looks more precise and is in fact less
-                  safe.</strong> The version number moves only at a release,
-                  so every commit between two releases carries the previous
-                  one's number — a single version string names many
-                  different trees.
+                  <strong>A commit looks more precise and is in fact less safe.</strong>{" "}
+                  The version number moves only at a release, so every commit between
+                  two releases carries the previous one's number — a single version
+                  string names many different trees.
                 </>,
                 <>
-                  A package manager caches a git dependency under its name
-                  and version. Under one number it may therefore hold a
-                  different tree than the pin points at — and nothing warns
-                  you: <IngotCode>package.json</IngotCode>,{" "}
-                  <IngotCode>package-lock.json</IngotCode> and{" "}
+                  A package manager caches a git dependency under its name and version.
+                  Under one number it may therefore hold a different tree than the pin
+                  points at — and nothing warns you: <IngotCode>package.json</IngotCode>
+                  , <IngotCode>package-lock.json</IngotCode> and{" "}
                   <IngotCode>node_modules</IngotCode> all agree.
                 </>,
                 <>
-                  Releases are tagged, so <strong>a tag is exactly one
-                  version and exactly one tree</strong>. It is the only pin
-                  that holds.
+                  Releases are tagged, so{" "}
+                  <strong>a tag is exactly one version and exactly one tree</strong>. It
+                  is the only pin that holds.
                 </>,
                 <>
-                  When a type check cannot find a symbol you can see in the
-                  kit's own source, suspect the install before the kit:
-                  compare the installed file against the <strong>tag</strong>,
-                  not against a version number, and clear the cache before
-                  measuring again. Matching numbers prove nothing.
+                  When a type check cannot find a symbol you can see in the kit's own
+                  source, suspect the install before the kit: compare the installed file
+                  against the <strong>tag</strong>, not against a version number, and
+                  clear the cache before measuring again. Matching numbers prove
+                  nothing.
                 </>,
               ]
         }
@@ -397,58 +389,55 @@ function ApiRules({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  <IngotCode>className</IngotCode> je rozvržení, nikdy vzhled.
-                  Šířka, mezery, umístění v mřížce — nic, co mění barvu,
-                  rádius, řez písma nebo vnitřní odsazení. Komponenta, jejímž
-                  smyslem je vypadat všude stejně, ho nebere vůbec; každá
-                  stránka komponenty to říká nad tabulkou vlastností.
+                  <IngotCode>className</IngotCode> je rozvržení, nikdy vzhled. Šířka,
+                  mezery, umístění v mřížce — nic, co mění barvu, rádius, řez písma nebo
+                  vnitřní odsazení. Komponenta, jejímž smyslem je vypadat všude stejně,
+                  ho nebere vůbec; každá stránka komponenty to říká nad tabulkou
+                  vlastností.
                 </>,
                 <>
-                  Co má cíl v DOM, bere <IngotCode>ref</IngotCode>. Zaostřit
-                  pole, odrolovat řádek do výřezu, nastavit
-                  <IngotCode>indeterminate</IngotCode> — všechno přes API.
-                  Sáhnout dovnitř přes <IngotCode>querySelector</IngotCode>{" "}
-                  znamená přivázat obrazovku k vnitřku komponenty, který se
-                  smí přejmenovat.
+                  Co má cíl v DOM, bere <IngotCode>ref</IngotCode>. Zaostřit pole,
+                  odrolovat řádek do výřezu, nastavit
+                  <IngotCode>indeterminate</IngotCode> — všechno přes API. Sáhnout
+                  dovnitř přes <IngotCode>querySelector</IngotCode> znamená přivázat
+                  obrazovku k vnitřku komponenty, který se smí přejmenovat.
                 </>,
                 <>
-                  Popisek, který potřebuje odečítač, je povinná vlastnost — ne
-                  nepovinná s výchozí hodnotou. Nepovinný popisek je popisek,
-                  na který se zapomene, a na obrazovce tu díru nikdo neuvidí.
+                  Popisek, který potřebuje odečítač, je povinná vlastnost — ne nepovinná
+                  s výchozí hodnotou. Nepovinný popisek je popisek, na který se
+                  zapomene, a na obrazovce tu díru nikdo neuvidí.
                 </>,
                 <>
-                  Každý viditelný text přichází přeložený od volajícího. Pár
-                  popisků, které kit říká sám, bydlí ve slovníku{" "}
+                  Každý viditelný text přichází přeložený od volajícího. Pár popisků,
+                  které kit říká sám, bydlí ve slovníku{" "}
                   <IngotCode>IngotProvider</IngotCode> a bez něj jsou anglicky.
                 </>,
               ]
             : [
                 <>
-                  <IngotCode>className</IngotCode> is layout, never look.
-                  Width, spacing, placement in a grid — nothing that changes
-                  colour, radius, weight or inner padding. A component whose
-                  whole point is to look the same everywhere does not take it
-                  at all; every component page says which it is, above the
-                  properties table.
+                  <IngotCode>className</IngotCode> is layout, never look. Width,
+                  spacing, placement in a grid — nothing that changes colour, radius,
+                  weight or inner padding. A component whose whole point is to look the
+                  same everywhere does not take it at all; every component page says
+                  which it is, above the properties table.
                 </>,
                 <>
-                  Anything with a DOM target takes <IngotCode>ref</IngotCode>.
-                  Focusing a field, scrolling a row into view, setting{" "}
-                  <IngotCode>indeterminate</IngotCode> — all through the API.
-                  Reaching inside with <IngotCode>querySelector</IngotCode>{" "}
-                  ties the screen to the component's insides, which are free
-                  to be renamed.
+                  Anything with a DOM target takes <IngotCode>ref</IngotCode>. Focusing
+                  a field, scrolling a row into view, setting{" "}
+                  <IngotCode>indeterminate</IngotCode> — all through the API. Reaching
+                  inside with <IngotCode>querySelector</IngotCode> ties the screen to
+                  the component's insides, which are free to be renamed.
                 </>,
                 <>
-                  A label a screen reader needs is a required property — not
-                  an optional one with a default. An optional label is a label
-                  somebody forgets, and nobody sees that hole on screen.
+                  A label a screen reader needs is a required property — not an optional
+                  one with a default. An optional label is a label somebody forgets, and
+                  nobody sees that hole on screen.
                 </>,
                 <>
-                  Every visible string arrives translated from the caller. The
-                  few labels the kit says itself live in the{" "}
-                  <IngotCode>IngotProvider</IngotCode> dictionary and are
-                  English without it.
+                  Every visible string arrives translated from the caller. The few
+                  labels the kit says itself live in the{" "}
+                  <IngotCode>IngotProvider</IngotCode> dictionary and are English
+                  without it.
                 </>,
               ]
         }

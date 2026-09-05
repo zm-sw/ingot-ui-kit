@@ -157,7 +157,10 @@ function PropsTable({
 
 /** ``IngotColumn<Row>`` -> ``ingotcolumn-row``; only so the testId is readable. */
 function slugify(name: string): string {
-  return name.replace(/\W+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  return name
+    .replace(/\W+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
 }
 
 function ExtraProps({
@@ -265,10 +268,7 @@ function DemoWithSource({
            ``mx-auto w-fit`` handles both at once: a demo that can shrink
            stays centred; one that cannot stretches the wrapper and starts
            a scrollbar from the left edge. */
-        <div
-          className="overflow-x-auto bg-surface-2"
-          data-testid="docs-demo-stage"
-        >
+        <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
             <IngotProvider lang={lang}>
               <page.Demo />
@@ -316,8 +316,7 @@ function CapTitle({ children }: { children: ReactNode }): JSX.Element {
  * be half empty.
  */
 type ActivePage =
-  | { kind: "guide"; guide: IngotGuidePage }
-  | { kind: "component"; doc: IngotDocPage };
+  { kind: "guide"; guide: IngotGuidePage } | { kind: "component"; doc: IngotDocPage };
 
 const DEFAULT_PAGE: ActivePage = {
   kind: "guide",
@@ -564,9 +563,7 @@ function guideGroups(
     active.kind === "component" ||
     (active.kind === "guide" && active.guide.slug === CATALOGUE_SLUG);
   const componentItems = inComponents
-    ? COMPONENT_ENTRIES.map((entry) =>
-        navItem(entry, activeHref, lang, idPrefix),
-      )
+    ? COMPONENT_ENTRIES.map((entry) => navItem(entry, activeHref, lang, idPrefix))
     : undefined;
 
   const groups: { group: IngotGuideGroup; items: IngotNavItem[] }[] = [];
@@ -577,8 +574,7 @@ function guideGroups(
     groups.at(-1)!.items.push(
       navItem(entry, activeHref, lang, idPrefix, {
         ordinal: String(index).padStart(2, "0"),
-        children:
-          entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
+        children: entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
       }),
     );
   });
@@ -591,10 +587,7 @@ function guideGroups(
  * last guide should have "Next" continue to the first component, not end
  * in a dead end.
  */
-const ALL_ENTRIES: readonly ActivePage[] = [
-  ...GUIDE_ENTRIES,
-  ...COMPONENT_ENTRIES,
-];
+const ALL_ENTRIES: readonly ActivePage[] = [...GUIDE_ENTRIES, ...COMPONENT_ENTRIES];
 
 /** Prev/next footer — between guides, components, and across the boundary of both. */
 function PagerFooter({
@@ -627,9 +620,7 @@ function PagerFooter({
           <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.prevPage, lang)}
           </IngotEyebrow>
-          <span className="truncate text-sm font-medium">
-            {titleOf(prev, lang)}
-          </span>
+          <span className="truncate text-sm font-medium">{titleOf(prev, lang)}</span>
         </a>
       ) : (
         /* A spacer keeps "Next" at the right edge when there is no previous
@@ -645,9 +636,7 @@ function PagerFooter({
           <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.nextPage, lang)}
           </IngotEyebrow>
-          <span className="truncate text-sm font-medium">
-            {titleOf(next, lang)}
-          </span>
+          <span className="truncate text-sm font-medium">{titleOf(next, lang)}</span>
         </a>
       ) : (
         <span className="hidden sm:block" />
@@ -796,10 +785,7 @@ export function DocsApp(): JSX.Element {
           }}
           groupLabel={pick(CHROME.accent, lang)}
           optionLabel={(choice) =>
-            `${pick(CHROME.accent, lang)} ${pick(
-              CHROME[ACCENT_LABELS[choice]],
-              lang,
-            )}`
+            `${pick(CHROME.accent, lang)} ${pick(CHROME[ACCENT_LABELS[choice]], lang)}`
           }
         />
       </div>
@@ -901,9 +887,7 @@ export function DocsApp(): JSX.Element {
             three themes and two languages side by side need over 400 px; on
             a 375px display they wrapped to a second row and the sticky bar
             then ate 98–125 px, a sixth of the screen. */}
-        <div className="hidden md:block">
-          {chromeControls(false, "docs-")}
-        </div>
+        <div className="hidden md:block">{chromeControls(false, "docs-")}</div>
 
         {/* Below ``md`` the button is the ONLY way between pages — the left
             menu is hidden there. Hiding the menu without it does not mean
@@ -972,45 +956,39 @@ export function DocsApp(): JSX.Element {
         </div>
 
         <main className="min-w-0 flex-1 space-y-8">
-        <IngotPageHeader
-          title={titleOf(page, lang)}
-          description={summaryOf(page, lang)}
-          titleAdornment={
-            page.kind === "component" ? (
-              <span className="flex items-center gap-2">
-                {/* Tones per the handoff: status neutral (beta warning),
+          <IngotPageHeader
+            title={titleOf(page, lang)}
+            description={summaryOf(page, lang)}
+            titleAdornment={
+              page.kind === "component" ? (
+                <span className="flex items-center gap-2">
+                  {/* Tones per the handoff: status neutral (beta warning),
                     version accent. */}
-                <IngotBadge
-                  tone={page.doc.status === "stable" ? "neutral" : "warn"}
-                  testId="docs-status"
-                >
-                  {page.doc.status === "stable"
-                    ? pick(CHROME.statusStable, lang)
-                    : pick(CHROME.statusBeta, lang)}
-                </IngotBadge>
-                <IngotBadge tone="accent" testId="docs-version">
-                  {`v${page.doc.version}`}
-                </IngotBadge>
-                {/* The selector is the only name the element can be
+                  <IngotBadge
+                    tone={page.doc.status === "stable" ? "neutral" : "warn"}
+                    testId="docs-status"
+                  >
+                    {page.doc.status === "stable"
+                      ? pick(CHROME.statusStable, lang)
+                      : pick(CHROME.statusBeta, lang)}
+                  </IngotBadge>
+                  <IngotBadge tone="accent" testId="docs-version">
+                    {`v${page.doc.version}`}
+                  </IngotBadge>
+                  {/* The selector is the only name the element can be
                     discussed under with a designer — only code knows the
                     export name. */}
-                <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
-              </span>
-            ) : undefined
-          }
-        />
+                  <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
+                </span>
+              ) : undefined
+            }
+          />
 
           {sections.map((section) => (
             <IngotSection
               key={section.id}
               id={section.id}
-              title={
-                section.cap ? (
-                  <CapTitle>{section.title}</CapTitle>
-                ) : (
-                  section.title
-                )
-              }
+              title={section.cap ? <CapTitle>{section.title}</CapTitle> : section.title}
             >
               {section.body}
             </IngotSection>

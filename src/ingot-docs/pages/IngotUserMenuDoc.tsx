@@ -22,78 +22,74 @@ export const IngotUserMenuDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Menu pod účtem v horní liště. Vrstva identity nahoře, organizace,
-        předvolby a odhlášení dole — vždy v tomhle pořadí.
+        Menu pod účtem v horní liště. Vrstva identity nahoře, organizace, předvolby a
+        odhlášení dole — vždy v tomhle pořadí.
       </>,
       <>
-        Předvolby, které patří člověku, ne obrazovce: motiv vzhledu, jazyk,
-        slovník, nápověda na stránkách.
+        Předvolby, které patří člověku, ne obrazovce: motiv vzhledu, jazyk, slovník,
+        nápověda na stránkách.
       </>,
       <>
-        Přepnutí do organizace, pod kterou je člověk přihlášený. Je to odkaz
-        na jiné místo produktu, ne volba nastavení.
+        Přepnutí do organizace, pod kterou je člověk přihlášený. Je to odkaz na jiné
+        místo produktu, ne volba nastavení.
       </>,
       <>
-        Odhlášení. Patří do poslední vrstvy, oddělené linkou od všeho, co se
-        jen přepíná.
+        Odhlášení. Patří do poslední vrstvy, oddělené linkou od všeho, co se jen
+        přepíná.
       </>,
     ],
     en: [
       <>
-        The menu under the account in the top bar. The identity layer on top,
-        then the organisation, the preferences and sign-out at the bottom —
-        always in that order.
+        The menu under the account in the top bar. The identity layer on top, then the
+        organisation, the preferences and sign-out at the bottom — always in that order.
       </>,
       <>
-        Preferences that belong to the person, not to a screen: appearance
-        theme, language, vocabulary, in-page help.
+        Preferences that belong to the person, not to a screen: appearance theme,
+        language, vocabulary, in-page help.
       </>,
       <>
-        Switching into the organisation the person is signed in under. It is a
-        link to another place in the product, not a settings choice.
+        Switching into the organisation the person is signed in under. It is a link to
+        another place in the product, not a settings choice.
       </>,
       <>
-        Signing out. It belongs in the last layer, separated by a rule from
-        everything that is merely toggled.
+        Signing out. It belongs in the last layer, separated by a rule from everything
+        that is merely toggled.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Nastavení, které má víc než jeden ovládací prvek na volbu. Menu má
-        šířku jednoho sloupce; delší formulář patří na vlastní obrazovku.
+        Nastavení, které má víc než jeden ovládací prvek na volbu. Menu má šířku jednoho
+        sloupce; delší formulář patří na vlastní obrazovku.
       </>,
       <>
-        Předvolby vázané na jednu obrazovku — filtry, řazení, hustota tabulky.
-        Ty patří k té obrazovce, ne k účtu.
+        Předvolby vázané na jednu obrazovku — filtry, řazení, hustota tabulky. Ty patří
+        k té obrazovce, ne k účtu.
       </>,
+      <>Nabídka akcí nad záznamem. Tohle je menu člověka, ne kontextové menu obsahu.</>,
       <>
-        Nabídka akcí nad záznamem. Tohle je menu člověka, ne kontextové menu
-        obsahu.
-      </>,
-      <>
-        Snaha popsat, které předvolby má produkt mít. Kit zná tvar vrstev
-        a řádků; co je uvnitř, ví aplikace.
+        Snaha popsat, které předvolby má produkt mít. Kit zná tvar vrstev a řádků; co je
+        uvnitř, ví aplikace.
       </>,
     ],
     en: [
       <>
-        Settings that need more than one control per choice. The menu is one
-        column wide; a longer form belongs on a screen of its own.
+        Settings that need more than one control per choice. The menu is one column
+        wide; a longer form belongs on a screen of its own.
       </>,
       <>
-        Preferences bound to a single screen — filters, sorting, table density.
-        Those belong to that screen, not to the account.
+        Preferences bound to a single screen — filters, sorting, table density. Those
+        belong to that screen, not to the account.
       </>,
       <>
-        A list of actions on a record. This is a person's menu, not a context
-        menu for content.
+        A list of actions on a record. This is a person's menu, not a context menu for
+        content.
       </>,
       <>
-        Any attempt to prescribe which preferences the product should have. The
-        kit knows the shape of the layers and rows; what goes inside them is
-        the application's business.
+        Any attempt to prescribe which preferences the product should have. The kit
+        knows the shape of the layers and rows; what goes inside them is the
+        application's business.
       </>,
     ],
   },
@@ -203,104 +199,97 @@ export const IngotUserMenuDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        <strong>Vypnutá nápověda na stránkách nesmí změnit rozvržení
-        stránky.</strong> Skrývá se viditelnost, ne prostor — jinak se obsah
-        přeskládá a uživatel přijde o místo, kam se právě díval.
+        <strong>Vypnutá nápověda na stránkách nesmí změnit rozvržení stránky.</strong>{" "}
+        Skrývá se viditelnost, ne prostor — jinak se obsah přeskládá a uživatel přijde o
+        místo, kam se právě díval.
       </>,
       <>
-        Popisek řádku je <IngotCode>label</IngotCode> jen tehdy, když prvek
-        vpravo dostane <IngotCode>controlId</IngotCode>. Kliknutí na popisek
-        pak ovládá prvek a odečítač je přečte spolu.
+        Popisek řádku je <IngotCode>label</IngotCode> jen tehdy, když prvek vpravo
+        dostane <IngotCode>controlId</IngotCode>. Kliknutí na popisek pak ovládá prvek a
+        odečítač je přečte spolu.
       </>,
       <>
-        Menu je skupina s vlastním jménem z <IngotCode>label</IngotCode>.
-        Odečítač tak řekne, do čeho uživatel vstoupil, ještě než začne číst
-        položky.
+        Menu je skupina s vlastním jménem z <IngotCode>label</IngotCode>. Odečítač tak
+        řekne, do čeho uživatel vstoupil, ještě než začne číst položky.
       </>,
       <>
-        Odznak s aktuální hodnotou předvolby musí nést text, ne jen barvu.
-        Zapnutá a vypnutá nápověda se od sebe nesmí lišit jen odstínem.
+        Odznak s aktuální hodnotou předvolby musí nést text, ne jen barvu. Zapnutá a
+        vypnutá nápověda se od sebe nesmí lišit jen odstínem.
       </>,
     ],
     en: [
       <>
-        <strong>Turning in-page help off must not change the page's
-        layout.</strong> What is hidden is the visibility, not the space —
-        otherwise the content reflows and the user loses the spot they were
-        looking at.
+        <strong>Turning in-page help off must not change the page's layout.</strong>{" "}
+        What is hidden is the visibility, not the space — otherwise the content reflows
+        and the user loses the spot they were looking at.
       </>,
       <>
-        A row's label is a real <IngotCode>label</IngotCode> only when the
-        control on the right is given a <IngotCode>controlId</IngotCode>.
-        Clicking the label then operates the control, and a screen reader reads
-        the two together.
+        A row's label is a real <IngotCode>label</IngotCode> only when the control on
+        the right is given a <IngotCode>controlId</IngotCode>. Clicking the label then
+        operates the control, and a screen reader reads the two together.
       </>,
       <>
-        The menu is a group with its own name from <IngotCode>label</IngotCode>
-        . That way a screen reader says what the user has entered before it
-        starts reading the items.
+        The menu is a group with its own name from <IngotCode>label</IngotCode>. That
+        way a screen reader says what the user has entered before it starts reading the
+        items.
       </>,
       <>
-        A badge showing a preference's current value must carry text, not only
-        colour. Help switched on and help switched off must not differ by shade
-        alone.
+        A badge showing a preference's current value must carry text, not only colour.
+        Help switched on and help switched off must not differ by shade alone.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Popisky vrstev, řádků i <IngotCode>label</IngotCode> menu dodává
-        volající už přeložené — kit vlastní jmenný prostor překladů nemá.
+        Popisky vrstev, řádků i <IngotCode>label</IngotCode> menu dodává volající už
+        přeložené — kit vlastní jmenný prostor překladů nemá.
       </>,
       <>
-        Předvolba se ukládá <strong>na účet</strong>, ne do prohlížeče. Motiv,
-        jazyk i slovník sledují člověka na druhý počítač; volba uložená jen
-        lokálně vypadá, že funguje, dokud si ji někdo nezmění a nezjistí, že se
-        nepřenesla. Dokumentace přihlášení nemá, takže tam je prohlížeč výjimka,
-        ne vzor.
+        Předvolba se ukládá <strong>na účet</strong>, ne do prohlížeče. Motiv, jazyk i
+        slovník sledují člověka na druhý počítač; volba uložená jen lokálně vypadá, že
+        funguje, dokud si ji někdo nezmění a nezjistí, že se nepřenesla. Dokumentace
+        přihlášení nemá, takže tam je prohlížeč výjimka, ne vzor.
       </>,
       <>
-        Slovník <strong>Jednoduše / Expert / Obojí</strong> řídí odborné termíny
-        v celém produktu, ne jen v tomhle menu. Je to volba jazyka uvnitř
-        jazyka.
+        Slovník <strong>Jednoduše / Expert / Obojí</strong> řídí odborné termíny v celém
+        produktu, ne jen v tomhle menu. Je to volba jazyka uvnitř jazyka.
       </>,
       <>
-        Pokročilé zobrazení se surovým JSON není nikdy zapnuté výchozí.
-        Zapíná si ho ten, kdo o něj požádá, a text v něm se nepřekládá — je to
-        data, ne popis.
+        Pokročilé zobrazení se surovým JSON není nikdy zapnuté výchozí. Zapíná si ho
+        ten, kdo o něj požádá, a text v něm se nepřekládá — je to data, ne popis.
       </>,
       <>
-        Menu má pevnou šířku. Delší překlady popisků se zalomí, takže popisky
-        drž krátké i v nejdelším jazyce.
+        Menu má pevnou šířku. Delší překlady popisků se zalomí, takže popisky drž krátké
+        i v nejdelším jazyce.
       </>,
     ],
     en: [
       <>
-        Layer labels, row labels and the menu's <IngotCode>label</IngotCode>{" "}
-        arrive already translated from the caller — the kit has no translation
-        namespace of its own.
+        Layer labels, row labels and the menu's <IngotCode>label</IngotCode> arrive
+        already translated from the caller — the kit has no translation namespace of its
+        own.
       </>,
       <>
-        A preference is stored <strong>on the account</strong>, not in the
-        browser. Theme, language and vocabulary follow the person to a second
-        computer; a choice kept only locally appears to work until someone
-        changes it and finds it did not travel. The documentation site has no
-        sign-in, so the browser is the exception there, not the pattern.
+        A preference is stored <strong>on the account</strong>, not in the browser.
+        Theme, language and vocabulary follow the person to a second computer; a choice
+        kept only locally appears to work until someone changes it and finds it did not
+        travel. The documentation site has no sign-in, so the browser is the exception
+        there, not the pattern.
       </>,
       <>
-        The <strong>Simple / Expert / Both</strong> vocabulary governs technical
-        terms across the whole product, not just inside this menu. It is a
-        choice of language within a language.
+        The <strong>Simple / Expert / Both</strong> vocabulary governs technical terms
+        across the whole product, not just inside this menu. It is a choice of language
+        within a language.
       </>,
       <>
-        The advanced view showing raw JSON is never on by default. It is turned
-        on by the person who asks for it, and its content is not translated — it
-        is data, not description.
+        The advanced view showing raw JSON is never on by default. It is turned on by
+        the person who asks for it, and its content is not translated — it is data, not
+        description.
       </>,
       <>
-        The menu has a fixed width. Longer translated labels wrap, so keep them
-        short even in the longest language.
+        The menu has a fixed width. Longer translated labels wrap, so keep them short
+        even in the longest language.
       </>,
     ],
   },

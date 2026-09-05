@@ -104,10 +104,7 @@ describe("IngotProvider", () => {
       "aria-label",
       INGOT_LABELS.cs.pageHintBulb,
     );
-    expect(screen.getByTestId("secret")).toHaveAttribute(
-      "placeholder",
-      "nenastaveno",
-    );
+    expect(screen.getByTestId("secret")).toHaveAttribute("placeholder", "nenastaveno");
   });
 
   it("labels overrides single entries and keeps the rest", () => {
@@ -119,9 +116,7 @@ describe("IngotProvider", () => {
     act(() => {
       toast({ text: "Gespeichert.", undo: () => undefined });
     });
-    expect(
-      screen.getByRole("button", { name: "Rückgängig" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Rückgängig" })).toBeInTheDocument();
     expect(screen.getByTestId("secret")).toHaveAttribute("placeholder", "set");
   });
 
@@ -143,10 +138,7 @@ describe("IngotProvider", () => {
       toast({ text: "Saved.", undo: () => undefined, undoLabel: "Revert" });
     });
     expect(screen.getByRole("button", { name: "Revert" })).toBeInTheDocument();
-    expect(screen.getByTestId("hint-bulb")).toHaveAttribute(
-      "aria-label",
-      "Show me",
-    );
+    expect(screen.getByTestId("hint-bulb")).toHaveAttribute("aria-label", "Show me");
   });
 
   it("every language carries every label", () => {

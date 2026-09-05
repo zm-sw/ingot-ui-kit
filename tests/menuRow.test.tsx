@@ -16,7 +16,9 @@ describe("menu row", () => {
   it("no navigation component writes the hover colour by hand", () => {
     for (const file of ["IngotTopNav.tsx", "IngotMegaMenu.tsx", "IngotSideNav.tsx"]) {
       const src = readFileSync(join(KIT_DIR, file), "utf-8");
-      expect(src, `${file} spells hover:bg-surface-2 itself`).not.toMatch(/hover:bg-surface-2/);
+      expect(src, `${file} spells hover:bg-surface-2 itself`).not.toMatch(
+        /hover:bg-surface-2/,
+      );
     }
   });
 

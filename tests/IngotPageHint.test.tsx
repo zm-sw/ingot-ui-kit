@@ -151,10 +151,7 @@ describe("IngotPageHint", () => {
   });
 
   it("reduced-motion branch in CSS: the flash is off, the frame stays", () => {
-    const css = readFileSync(
-      join(process.cwd(), "src/ingot/tokens.css"),
-      "utf-8",
-    );
+    const css = readFileSync(join(process.cwd(), "src/ingot/tokens.css"), "utf-8");
     // The frame is on the class statically — independent of the animation.
     expect(css).toMatch(/\.is-hinted\s*\{[^}]*outline:\s*2px solid var\(--accent\)/);
     expect(css).toMatch(/outline-offset:\s*3px/);

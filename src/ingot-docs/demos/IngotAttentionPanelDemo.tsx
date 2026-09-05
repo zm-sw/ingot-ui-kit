@@ -7,12 +7,12 @@ export function Demo(): JSX.Element {
       aside={
         <div className="space-y-1.5 text-sm text-bg/80">
           <p>
-            <span className="font-mono font-semibold text-warn">4</span>{" "}
-            objednávky čekají na zpracování
+            <span className="font-mono font-semibold text-warn">4</span> objednávky
+            čekají na zpracování
           </p>
           <p>
-            <span className="font-mono font-semibold text-warn">1</span>{" "}
-            rozdělaný košík bez platby
+            <span className="font-mono font-semibold text-warn">1</span> rozdělaný košík
+            bez platby
           </p>
         </div>
       }

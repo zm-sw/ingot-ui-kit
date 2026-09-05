@@ -33,4 +33,3 @@ export function Demo(): JSX.Element {
     </div>
   );
 }
-

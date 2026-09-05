@@ -6,10 +6,7 @@ export function Demo(): JSX.Element {
   const [query, setQuery] = useState("");
 
   return (
-    <IngotToolbar
-      end={<Button variant="accent">Přidat</Button>}
-      testId="docs-toolbar"
-    >
+    <IngotToolbar end={<Button variant="accent">Přidat</Button>} testId="docs-toolbar">
       <input
         type="search"
         value={query}

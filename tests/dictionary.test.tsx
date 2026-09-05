@@ -38,9 +38,7 @@ describe("termLabel", () => {
   const nesting = DICTIONARY_TERMS.nesting;
 
   it("picks the simple variant in simple mode", () => {
-    expect(termLabel(nesting, "simple", "cs")).toBe(
-      "Rozmístění dílů na plech",
-    );
+    expect(termLabel(nesting, "simple", "cs")).toBe("Rozmístění dílů na plech");
   });
 
   it("picks the expert variant in expert mode", () => {
@@ -48,18 +46,14 @@ describe("termLabel", () => {
   });
 
   it("in both mode joins the expert term and the plain description in parentheses", () => {
-    expect(termLabel(nesting, "both", "cs")).toBe(
-      "Nesting (Rozmístění dílů na plech)",
-    );
+    expect(termLabel(nesting, "both", "cs")).toBe("Nesting (Rozmístění dílů na plech)");
   });
 
   it("respektuje jazyk", () => {
     expect(termLabel(DICTIONARY_TERMS.setup_time, "simple", "en")).toBe(
       "Machine preparation",
     );
-    expect(termLabel(DICTIONARY_TERMS.setup_time, "expert", "en")).toBe(
-      "Setup time",
-    );
+    expect(termLabel(DICTIONARY_TERMS.setup_time, "expert", "en")).toBe("Setup time");
   });
 
   // Fallback: a missing simple variant NEVER ends up as empty text — in

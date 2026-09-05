@@ -24,22 +24,22 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Stránka odpovídá na „je to pro mě?“ a odpověď se dá rozdělit na
-        několik typů provozu.
+        Stránka odpovídá na „je to pro mě?“ a odpověď se dá rozdělit na několik typů
+        provozu.
       </>,
       <>
-        Ke každému segmentu patří pár technických štítků, podle kterých
-        se čtenář pozná rychleji než podle věty.
+        Ke každému segmentu patří pár technických štítků, podle kterých se čtenář pozná
+        rychleji než podle věty.
       </>,
     ],
     en: [
       <>
-        The page answers “is this for me?” and the answer splits into a
-        few kinds of operation.
+        The page answers “is this for me?” and the answer splits into a few kinds of
+        operation.
       </>,
       <>
-        Each segment comes with a couple of technical tags a reader
-        recognises themselves by faster than by a sentence.
+        Each segment comes with a couple of technical tags a reader recognises
+        themselves by faster than by a sentence.
       </>,
     ],
   },
@@ -47,25 +47,25 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
     cs: [
       <>
         Štítek má hlásit stav entity (aktivní, čeká, zrušeno). Na to je{" "}
-        <IngotCode>IngotBadge</IngotCode> — kulatá pilulka s verzálkami.
-        Tenhle štítek je technický údaj, ne stav.
+        <IngotCode>IngotBadge</IngotCode> — kulatá pilulka s verzálkami. Tenhle štítek
+        je technický údaj, ne stav.
       </>,
       <>
-        Segmenty se mají porovnat mezi sebou položku po položce. Na to
-        je <IngotCode>IngotMarketingComparison</IngotCode>: karty vedle
-        sebe se párovat nedají.
+        Segmenty se mají porovnat mezi sebou položku po položce. Na to je{" "}
+        <IngotCode>IngotMarketingComparison</IngotCode>: karty vedle sebe se párovat
+        nedají.
       </>,
     ],
     en: [
       <>
-        The tag should announce entity state (active, pending,
-        cancelled). That is <IngotCode>IngotBadge</IngotCode> — a round
-        pill in capitals. This tag is a technical fact, not a state.
+        The tag should announce entity state (active, pending, cancelled). That is{" "}
+        <IngotCode>IngotBadge</IngotCode> — a round pill in capitals. This tag is a
+        technical fact, not a state.
       </>,
       <>
         The segments are to be compared item by item. That is{" "}
-        <IngotCode>IngotMarketingComparison</IngotCode>: cards side by
-        side cannot be paired up.
+        <IngotCode>IngotMarketingComparison</IngotCode>: cards side by side cannot be
+        paired up.
       </>,
     ],
   },
@@ -83,7 +83,10 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
       name: "testId",
       type: "string",
       required: false,
-      note: { cs: "Kotva pro testy — na mřížce.", en: "An anchor for tests — on the grid." },
+      note: {
+        cs: "Kotva pro testy — na mřížce.",
+        en: "An anchor for tests — on the grid.",
+      },
     },
   ],
   extraProps: [
@@ -98,13 +101,19 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
           name: "title",
           type: "string",
           required: true,
-          note: { cs: "Jméno segmentu. Sází se jako h3.", en: "The segment name. Set as an h3." },
+          note: {
+            cs: "Jméno segmentu. Sází se jako h3.",
+            en: "The segment name. Set as an h3.",
+          },
         },
         {
           name: "text",
           type: "string",
           required: true,
-          note: { cs: "Jedna věta o tom provozu.", en: "One sentence about that operation." },
+          note: {
+            cs: "Jedna věta o tom provozu.",
+            en: "One sentence about that operation.",
+          },
         },
         {
           name: "tags",
@@ -121,46 +130,44 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Titulky jsou <IngotCode>h3</IngotCode>, takže se segmenty dají
-        procházet po nadpisech stejně jako zbytek stránky.
+        Titulky jsou <IngotCode>h3</IngotCode>, takže se segmenty dají procházet po
+        nadpisech stejně jako zbytek stránky.
       </>,
       <>
-        Štítky jsou text, ne ikony ani barevné plochy — čtou se nahlas
-        i tehdy, když se rozdíl mezi kartami nedá vidět.
+        Štítky jsou text, ne ikony ani barevné plochy — čtou se nahlas i tehdy, když se
+        rozdíl mezi kartami nedá vidět.
       </>,
     ],
     en: [
       <>
-        The titles are <IngotCode>h3</IngotCode>, so the segments can be
-        walked by heading like the rest of the page.
+        The titles are <IngotCode>h3</IngotCode>, so the segments can be walked by
+        heading like the rest of the page.
       </>,
       <>
-        The tags are text, not icons or colour fields — they are read
-        aloud even when the difference between cards cannot be seen.
+        The tags are text, not icons or colour fields — they are read aloud even when
+        the difference between cards cannot be seen.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Štítky jsou obsah, ne výčtový typ: překládají se a dodává je
-        volající. Kit jejich seznam nezná.
+        Štítky jsou obsah, ne výčtový typ: překládají se a dodává je volající. Kit
+        jejich seznam nezná.
       </>,
       <>
-        Minusky drží sazba, ne data —{" "}
-        <IngotCode>lowercase</IngotCode> je vzhled štítku, takže se
-        v datech nemusí psát malými.
+        Minusky drží sazba, ne data — <IngotCode>lowercase</IngotCode> je vzhled štítku,
+        takže se v datech nemusí psát malými.
       </>,
     ],
     en: [
       <>
-        The tags are content, not an enum: they are translated and
-        supplied by the caller. The kit does not know their list.
+        The tags are content, not an enum: they are translated and supplied by the
+        caller. The kit does not know their list.
       </>,
       <>
-        Lower case is typography, not data —{" "}
-        <IngotCode>lowercase</IngotCode> is the tag's look, so the data
-        need not be written in lower case.
+        Lower case is typography, not data — <IngotCode>lowercase</IngotCode> is the
+        tag's look, so the data need not be written in lower case.
       </>,
     ],
   },

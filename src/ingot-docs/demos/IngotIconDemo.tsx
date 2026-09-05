@@ -1,7 +1,7 @@
 import { IngotCode, IngotIcon, IngotList, IngotSection } from "@/ingot";
 
 const SIZES = [
-  { size: 13, where: "Button size=\"sm\"" },
+  { size: 13, where: 'Button size="sm"' },
   { size: 14, where: "Button" },
   { size: 15, where: "IngotSideNav" },
   { size: 20, where: "IngotEmptyState" },

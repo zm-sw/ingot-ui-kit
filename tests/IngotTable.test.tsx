@@ -51,7 +51,7 @@ function renderTable(props: Partial<Parameters<typeof IngotTable<Row>>[0]> = {})
 }
 
 describe("IngotTable — header semantics", () => {
-  it("every column is <th scope=\"col\">", () => {
+  it('every column is <th scope="col">', () => {
     renderTable();
     const heads = screen.getAllByRole("columnheader");
     expect(heads).toHaveLength(2);
@@ -83,9 +83,7 @@ describe("IngotTable — rows", () => {
 
   it("cell receives the row index", () => {
     renderTable({
-      columns: [
-        { key: "rank", header: "#", cell: (_row, index) => `#${index + 1}` },
-      ],
+      columns: [{ key: "rank", header: "#", cell: (_row, index) => `#${index + 1}` }],
     });
     expect(screen.getByText("#1")).toBeInTheDocument();
     expect(screen.getByText("#2")).toBeInTheDocument();

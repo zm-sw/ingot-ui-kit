@@ -1,4 +1,10 @@
-import { IngotCode, IngotEyebrow, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import {
+  IngotCode,
+  IngotEyebrow,
+  IngotList,
+  IngotTable,
+  type IngotColumn,
+} from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
@@ -20,7 +26,6 @@ import type { IngotGuidePage } from "@/ingot-docs/types";
  * tech-debt figures, guard names, issue keys or dated decisions.
  */
 const IMPORT_EXAMPLE = 'import { IngotTable, IngotEmptyState } from "@/ingot";';
-
 
 interface Principle {
   /** Ordinal from the design — it is a label, not an array index. */
@@ -160,26 +165,26 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
       <p>
         {lang === "cs" ? (
           <>
-            <strong>Ingot</strong> je designový systém Forgmaticu — sada
-            rozhodnutí o barvě, typografii, prostoru a chování, ze které se
-            skládá administrace tenanta, administrace platformy i veřejné
-            stránky. Není to galerie komponent. Je to dohoda, jak vypadá
-            práce ve výrobě přeložená do obrazovky.
+            <strong>Ingot</strong> je designový systém Forgmaticu — sada rozhodnutí o
+            barvě, typografii, prostoru a chování, ze které se skládá administrace
+            tenanta, administrace platformy i veřejné stránky. Není to galerie
+            komponent. Je to dohoda, jak vypadá práce ve výrobě přeložená do obrazovky.
           </>
         ) : (
           <>
-            <strong>Ingot</strong> is the Forgmatic design system — a set of
-            decisions about colour, typography, space and behaviour, from
-            which the tenant admin, the platform admin and the public pages
-            are all assembled. It is not a component gallery. It is the
-            agreement on what work on the shop floor looks like once it is
-            translated onto a screen.
+            <strong>Ingot</strong> is the Forgmatic design system — a set of decisions
+            about colour, typography, space and behaviour, from which the tenant admin,
+            the platform admin and the public pages are all assembled. It is not a
+            component gallery. It is the agreement on what work on the shop floor looks
+            like once it is translated onto a screen.
           </>
         )}
       </p>
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Co to je" : "What it is"}</IngotEyebrow>
+          <IngotEyebrow as="div" size="md">
+            {lang === "cs" ? "Co to je" : "What it is"}
+          </IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Tokeny a třídy na jednom místě. Obrazovka se z nich skládá — nevzniká z vlastních stylů psaných až v ní. Proto se změna rozhodnutí projeví všude, a ne jen tam, kde si na ni někdo vzpomene."
@@ -187,7 +192,9 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
           </p>
         </div>
         <div>
-          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Pro koho" : "Who it is for"}</IngotEyebrow>
+          <IngotEyebrow as="div" size="md">
+            {lang === "cs" ? "Pro koho" : "Who it is for"}
+          </IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Pro designéry i vývojáře. Stejný slovník na obou stranách znamená, že návrh a kód mluví o téže věci — a nikdo mezi nimi nepřekládá dva popisy jedné obrazovky."
@@ -195,7 +202,9 @@ function WhatItIs({ lang }: { lang: DocLang }): JSX.Element {
           </p>
         </div>
         <div>
-          <IngotEyebrow as="div" size="md">{lang === "cs" ? "Jak se mění" : "How it changes"}</IngotEyebrow>
+          <IngotEyebrow as="div" size="md">
+            {lang === "cs" ? "Jak se mění" : "How it changes"}
+          </IngotEyebrow>
           <p className="mt-2">
             {lang === "cs"
               ? "Nová komponenta nevzniká v obrazovce. Nejdřív vznikne v systému, dostane pravidlo a název, a teprve pak se použije."
@@ -239,9 +248,7 @@ function Layers({ lang }: { lang: DocLang }): JSX.Element {
           columns={layerColumns(lang)}
           rows={LAYERS}
           rowKey={(row) => row.layer.cs}
-          caption={
-            lang === "cs" ? "Vrstvy systému" : "The layers of the system"
-          }
+          caption={lang === "cs" ? "Vrstvy systému" : "The layers of the system"}
           className="min-w-[38rem]"
           testId="docs-layers"
         />
@@ -259,38 +266,35 @@ function GettingStarted({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  <strong>Připojit.</strong> Do projektu patří tokeny palety,
-                  sada ikon a písma Geist a Geist Mono. Bez tokenů nemají
-                  komponenty z čeho brát barvu ani mezeru.
+                  <strong>Připojit.</strong> Do projektu patří tokeny palety, sada ikon
+                  a písma Geist a Geist Mono. Bez tokenů nemají komponenty z čeho brát
+                  barvu ani mezeru.
                 </>,
                 <>
-                  <strong>Postavit rám.</strong> Horní lišta → drobečky →
-                  hlavička stránky → jeden pattern obsahu. Vždycky v tomhle
-                  pořadí: čtenář, který ho jednou pochopil, se v každé další
-                  obrazovce rozhlíží už jen po obsahu.
+                  <strong>Postavit rám.</strong> Horní lišta → drobečky → hlavička
+                  stránky → jeden pattern obsahu. Vždycky v tomhle pořadí: čtenář, který
+                  ho jednou pochopil, se v každé další obrazovce rozhlíží už jen po
+                  obsahu.
                 </>,
                 <>
-                  <strong>Doplnit obsah.</strong> Skládat z existujících
-                  prvků. Chybí-li něco, přidá se to nejdřív do systému.
+                  <strong>Doplnit obsah.</strong> Skládat z existujících prvků. Chybí-li
+                  něco, přidá se to nejdřív do systému.
                 </>,
               ]
             : [
                 <>
-                  <strong>Connect it.</strong> The project needs the palette
-                  tokens, the icon set and the Geist and Geist Mono typefaces.
-                  Without the tokens the components have nowhere to take a
-                  colour or a spacing from.
+                  <strong>Connect it.</strong> The project needs the palette tokens, the
+                  icon set and the Geist and Geist Mono typefaces. Without the tokens
+                  the components have nowhere to take a colour or a spacing from.
                 </>,
                 <>
-                  <strong>Build the frame.</strong> Top bar → breadcrumbs →
-                  page header → one content pattern. Always in that order: a
-                  reader who has understood it once only looks for content on
-                  every next screen.
+                  <strong>Build the frame.</strong> Top bar → breadcrumbs → page header
+                  → one content pattern. Always in that order: a reader who has
+                  understood it once only looks for content on every next screen.
                 </>,
                 <>
-                  <strong>Fill in the content.</strong> Assemble it from the
-                  existing elements. If something is missing, it is added to
-                  the system first.
+                  <strong>Fill in the content.</strong> Assemble it from the existing
+                  elements. If something is missing, it is added to the system first.
                 </>,
               ]
         }
@@ -305,18 +309,16 @@ function RuleOfThumb({ lang }: { lang: DocLang }): JSX.Element {
       <p>
         {lang === "cs" ? (
           <>
-            <strong>Pravidlo palce.</strong> Píšeš-li do obrazovky vlastní
-            barvu, mezeru nebo rádius, platí jedno ze dvou: buď existuje
-            token, který jsi nenašel, nebo systému chybí rozhodnutí. Obojí se
-            řeší v systému, ne v komponentě.
+            <strong>Pravidlo palce.</strong> Píšeš-li do obrazovky vlastní barvu, mezeru
+            nebo rádius, platí jedno ze dvou: buď existuje token, který jsi nenašel,
+            nebo systému chybí rozhodnutí. Obojí se řeší v systému, ne v komponentě.
           </>
         ) : (
           <>
-            <strong>Rule of thumb.</strong> If you are writing your own
-            colour, spacing or radius into a screen, one of two things is
-            true: either there is a token you did not find, or the system is
-            missing a decision. Both are settled in the system, not in the
-            component.
+            <strong>Rule of thumb.</strong> If you are writing your own colour, spacing
+            or radius into a screen, one of two things is true: either there is a token
+            you did not find, or the system is missing a decision. Both are settled in
+            the system, not in the component.
           </>
         )}
       </p>
@@ -375,13 +377,14 @@ export const IntroGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>Všechno se importuje z jednoho místa:</p>
-            <IngotCode block lang="tsx">{IMPORT_EXAMPLE}</IngotCode>
+            <IngotCode block lang="tsx">
+              {IMPORT_EXAMPLE}
+            </IngotCode>
             <p>
-              <strong>Vždycky přes tenhle jeden vstup</strong>, nikdy hlubší
-              cestou na konkrétní soubor. Co odsud vede ven, je veřejné
-              rozhraní kitu a mění se ohlášeně; co ne, je vnitřek a smí se
-              přejmenovat nebo rozdělit kdykoli. Součástí toho rozhraní jsou
-              i typy, které si prvek žádá — třeba{" "}
+              <strong>Vždycky přes tenhle jeden vstup</strong>, nikdy hlubší cestou na
+              konkrétní soubor. Co odsud vede ven, je veřejné rozhraní kitu a mění se
+              ohlášeně; co ne, je vnitřek a smí se přejmenovat nebo rozdělit kdykoli.
+              Součástí toho rozhraní jsou i typy, které si prvek žádá — třeba{" "}
               <IngotCode>IngotColumn</IngotCode> pro sloupce tabulky.
             </p>
           </div>
@@ -389,14 +392,15 @@ export const IntroGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>Everything is imported from one place:</p>
-            <IngotCode block lang="tsx">{IMPORT_EXAMPLE}</IngotCode>
+            <IngotCode block lang="tsx">
+              {IMPORT_EXAMPLE}
+            </IngotCode>
             <p>
-              <strong>Always through this one entry point</strong>, never by a
-              deeper path to a specific file. What comes out of it is the
-              kit’s public interface and changes are announced; what does not
-              is internal and may be renamed or split at any time. That
-              interface includes the types an element asks for —{" "}
-              <IngotCode>IngotColumn</IngotCode> for table columns, say.
+              <strong>Always through this one entry point</strong>, never by a deeper
+              path to a specific file. What comes out of it is the kit’s public
+              interface and changes are announced; what does not is internal and may be
+              renamed or split at any time. That interface includes the types an element
+              asks for — <IngotCode>IngotColumn</IngotCode> for table columns, say.
             </p>
           </div>
         ),
@@ -413,16 +417,14 @@ export const IntroGuide: IngotGuidePage = {
           <div className="space-y-3 text-sm text-ink-2">
             <p>
               Nové primitivum vzniká,{" "}
-              <strong>až si o něj řekne konkrétní obrazovka</strong>. Když ten
-              žadatel je, patří k sobě tři věci v jedné změně: komponenta a
-              její vyvedení z <IngotCode>@/ingot</IngotCode>, stránka na
-              tomhle webu s živou ukázkou, a první obrazovka, která ji
-              doopravdy používá.
+              <strong>až si o něj řekne konkrétní obrazovka</strong>. Když ten žadatel
+              je, patří k sobě tři věci v jedné změně: komponenta a její vyvedení z{" "}
+              <IngotCode>@/ingot</IngotCode>, stránka na tomhle webu s živou ukázkou, a
+              první obrazovka, která ji doopravdy používá.
             </p>
             <p>
-              Ukázku musí stránka vykreslit{" "}
-              <strong>skutečnou komponentou</strong>. Opsané JSX vypadá v den
-              zápisu stejně a od druhého dne tiše lže.
+              Ukázku musí stránka vykreslit <strong>skutečnou komponentou</strong>.
+              Opsané JSX vypadá v den zápisu stejně a od druhého dne tiše lže.
             </p>
           </div>
         ),
@@ -430,16 +432,15 @@ export const IntroGuide: IngotGuidePage = {
           <div className="space-y-3 text-sm text-ink-2">
             <p>
               A new primitive appears{" "}
-              <strong>once a concrete screen asks for it</strong>. Once there
-              is such a caller, three things belong together in one change:
-              the component and its export from{" "}
-              <IngotCode>@/ingot</IngotCode>, a page on this site with a live
-              demo, and the first screen that genuinely uses it.
+              <strong>once a concrete screen asks for it</strong>. Once there is such a
+              caller, three things belong together in one change: the component and its
+              export from <IngotCode>@/ingot</IngotCode>, a page on this site with a
+              live demo, and the first screen that genuinely uses it.
             </p>
             <p>
-              The page must render the demo with the{" "}
-              <strong>real component</strong>. Copied JSX looks identical on
-              the day it is written and lies quietly from the second day on.
+              The page must render the demo with the <strong>real component</strong>.
+              Copied JSX looks identical on the day it is written and lies quietly from
+              the second day on.
             </p>
           </div>
         ),
@@ -452,11 +453,10 @@ export const IntroGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Každá stránka komponenty má stejnou stavbu: živou ukázku i s
-              kódem, kdy použít a kdy nepoužít, tabulku vlastností,
-              přístupnost a překlady. Tam, kde první verze něco schválně
-              neumí, je to vypsané taky. Pravidlo o překladech je společné
-              všem prvkům, takže má vlastní stránku —{" "}
+              Každá stránka komponenty má stejnou stavbu: živou ukázku i s kódem, kdy
+              použít a kdy nepoužít, tabulku vlastností, přístupnost a překlady. Tam,
+              kde první verze něco schválně neumí, je to vypsané taky. Pravidlo o
+              překladech je společné všem prvkům, takže má vlastní stránku —{" "}
               <a className="underline" href="#/preklady">
                 Překlady
               </a>
@@ -467,12 +467,11 @@ export const IntroGuide: IngotGuidePage = {
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Every component page has the same shape: a live demo with the
-              code that produces it, when to use it and when not to, a table
-              of properties, accessibility and translations. Where the first
-              version deliberately cannot do something, that is listed too.
-              The rule about translations is common to every element, so it
-              has a page of its own —{" "}
+              Every component page has the same shape: a live demo with the code that
+              produces it, when to use it and when not to, a table of properties,
+              accessibility and translations. Where the first version deliberately
+              cannot do something, that is listed too. The rule about translations is
+              common to every element, so it has a page of its own —{" "}
               <a className="underline" href="#/preklady">
                 Translations
               </a>

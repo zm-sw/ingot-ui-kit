@@ -78,9 +78,7 @@ describe("IngotDrawer — accessibility bar", () => {
     expect(panel).toHaveAttribute("aria-modal", "true");
     const labelledBy = panel.getAttribute("aria-labelledby");
     expect(labelledBy).toBeTruthy();
-    expect(document.getElementById(labelledBy as string)).toHaveTextContent(
-      "Titulek",
-    );
+    expect(document.getElementById(labelledBy as string)).toHaveTextContent("Titulek");
   });
 
   it("focus moves inside the drawer on open", () => {

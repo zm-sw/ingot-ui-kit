@@ -127,8 +127,6 @@ describe("IngotField", () => {
     );
 
     const input = screen.getByTestId("note") as HTMLInputElement;
-    expect(input.labels?.[0]?.textContent).toBe(
-      "Poznámka pro výrobu— nepovinné",
-    );
+    expect(input.labels?.[0]?.textContent).toBe("Poznámka pro výrobu— nepovinné");
   });
 });

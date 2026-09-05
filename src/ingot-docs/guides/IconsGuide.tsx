@@ -211,9 +211,7 @@ function OpIcons({ lang }: { lang: DocLang }): JSX.Element {
           : "A second set on the same skeleton: manufacturing technologies — cutting, forming, machining, joining, finishing, inspection and logistics. It appears on machine operations, in the production chain setup and in the capacity overview. The grid below is the whole set as the kit knows it; the key is stored by the server and is never translated."}
       </p>
       <OpIconGrid />
-      <p className="font-medium text-ink">
-        {cs ? "Použití v řádku" : "In a row"}
-      </p>
+      <p className="font-medium text-ink">{cs ? "Použití v řádku" : "In a row"}</p>
       <p>
         {cs
           ? "V tabulce stojí ikona vždy vedle názvu operace a drží barvu řádku, ne barvu kategorie."
@@ -237,68 +235,63 @@ function IconRules({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Výchozí stav je dekorativní: ikona vedle popisku se
-                  odečítači obrazovky nehlásí, aby neřekl totéž dvakrát.
+                  Výchozí stav je dekorativní: ikona vedle popisku se odečítači
+                  obrazovky nehlásí, aby neřekl totéž dvakrát.
                 </>,
                 <>
                   Ikona, která stojí sama a nese význam, dostane{" "}
                   <IngotCode>title</IngotCode> — odečítač ji pak přečte.
                 </>,
                 <>
-                  Nový glyf se přidává do sady, ne do obrazovky. Ikona
-                  nakreslená v jednom souboru je ostrůvek, který příště
-                  nikdo nenajde.
+                  Nový glyf se přidává do sady, ne do obrazovky. Ikona nakreslená v
+                  jednom souboru je ostrůvek, který příště nikdo nenajde.
                 </>,
                 <>
-                  Operační ikona se kreslí v 18–22 px: pod 18 px se detail
-                  slévá, nad 24 px působí jako ilustrace.
+                  Operační ikona se kreslí v 18–22 px: pod 18 px se detail slévá, nad 24
+                  px působí jako ilustrace.
                 </>,
                 <>
-                  Barevná tečka operace a ikona se nekombinují v jednom
-                  řádku — buď barva, nebo tvar. Obojí říká totéž a vedle
-                  sebe si protiřečí.
+                  Barevná tečka operace a ikona se nekombinují v jednom řádku — buď
+                  barva, nebo tvar. Obojí říká totéž a vedle sebe si protiřečí.
                 </>,
                 <>
-                  Ikona operace nikdy nestojí bez názvu operace; výjimkou je
-                  šířkově kritický řádek, kde musí nést popisek pro odečítač.
+                  Ikona operace nikdy nestojí bez názvu operace; výjimkou je šířkově
+                  kritický řádek, kde musí nést popisek pro odečítač.
                 </>,
                 <>
-                  Nová technologie znamená novou ikonu v sadě, nikdy emoji
-                  ani obrázek.
+                  Nová technologie znamená novou ikonu v sadě, nikdy emoji ani obrázek.
                 </>,
               ]
             : [
                 <>
-                  The default is decorative: an icon next to its label is
-                  hidden from screen readers, so they do not say the same
-                  thing twice.
+                  The default is decorative: an icon next to its label is hidden from
+                  screen readers, so they do not say the same thing twice.
                 </>,
                 <>
                   An icon standing alone and carrying meaning takes a{" "}
-                  <IngotCode>title</IngotCode> — screen readers then announce
-                  it.
+                  <IngotCode>title</IngotCode> — screen readers then announce it.
                 </>,
                 <>
-                  A new glyph goes into the set, not into a screen. An icon
-                  drawn in one file is an island nobody finds next time.
+                  A new glyph goes into the set, not into a screen. An icon drawn in one
+                  file is an island nobody finds next time.
                 </>,
                 <>
-                  An operation icon is set at 18–22 px: below 18 px the
-                  detail merges, above 24 px it reads as an illustration.
+                  An operation icon is set at 18–22 px: below 18 px the detail merges,
+                  above 24 px it reads as an illustration.
                 </>,
                 <>
-                  An operation's colour dot and its icon never share a row —
-                  either the colour, or the shape. Both say the same thing
-                  and contradict each other side by side.
+                  An operation's colour dot and its icon never share a row — either the
+                  colour, or the shape. Both say the same thing and contradict each
+                  other side by side.
                 </>,
                 <>
-                  An operation icon never stands without the operation name;
-                  the exception is a width-critical row, where it must carry
-                  a label for screen readers.
+                  An operation icon never stands without the operation name; the
+                  exception is a width-critical row, where it must carry a label for
+                  screen readers.
                 </>,
                 <>
-                  A new technology means a new icon in the set, never an
-                  emoji and never a picture.
+                  A new technology means a new icon in the set, never an emoji and never
+                  a picture.
                 </>,
               ]
         }

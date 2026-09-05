@@ -71,9 +71,7 @@ describe("IngotCheckbox", () => {
   it("a disabled option reports nothing", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <IngotCheckbox checked onChange={onChange} label="Uzamčeno" disabled />,
-    );
+    render(<IngotCheckbox checked onChange={onChange} label="Uzamčeno" disabled />);
 
     await user.click(screen.getByText("Uzamčeno"));
     expect(onChange).not.toHaveBeenCalled();
@@ -101,9 +99,7 @@ describe("IngotSearchInput", () => {
   it("reports every keystroke", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <IngotSearchInput value="" onChange={onChange} label="Hledat" />,
-    );
+    render(<IngotSearchInput value="" onChange={onChange} label="Hledat" />);
 
     await user.type(screen.getByRole("searchbox"), "a");
     expect(onChange).toHaveBeenCalledWith("a");
@@ -114,12 +110,7 @@ describe("IngotSearchInput", () => {
   it("exposes a ref to the input, not to the wrapper", () => {
     const ref = createRef<HTMLInputElement>();
     render(
-      <IngotSearchInput
-        value=""
-        onChange={() => undefined}
-        label="Hledat"
-        ref={ref}
-      />,
+      <IngotSearchInput value="" onChange={() => undefined} label="Hledat" ref={ref} />,
     );
 
     expect(ref.current).toBe(screen.getByRole("searchbox"));
@@ -136,22 +127,15 @@ describe("IngotAttentionPanel", () => {
       </IngotAttentionPanel>,
     );
 
-    expect(
-      screen.getByRole("region", { name: "Co řešit teď" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Co řešit teď" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Co řešit teď" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Co řešit teď" })).toBeInTheDocument();
   });
 });
 
 describe("IngotPageLayout", () => {
   it("the index stands before the content in the DOM too", () => {
     render(
-      <IngotPageLayout
-        aside={<nav aria-label="Obsah">rejstřík</nav>}
-        testId="layout"
-      >
+      <IngotPageLayout aside={<nav aria-label="Obsah">rejstřík</nav>} testId="layout">
         <p>obsah</p>
       </IngotPageLayout>,
     );

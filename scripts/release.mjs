@@ -20,7 +20,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const DRY = process.argv.includes("--dry-run");
@@ -84,9 +84,7 @@ if (tag === null) {
   process.exit(0);
 }
 
-const commits = git("log", `${tag}..HEAD`, "--format=%s")
-  .split("\n")
-  .filter(Boolean);
+const commits = git("log", `${tag}..HEAD`, "--format=%s").split("\n").filter(Boolean);
 if (commits.length === 0) {
   console.log(`nothing to release since ${tag}`);
   process.exit(0);
@@ -104,24 +102,65 @@ const changed = [...now.entries()]
   .map(([name]) => name);
 
 const epoch = commits.some((subject) => subject.startsWith("release!:"));
-const kind = epoch ? "major" : added.length > 0 || majorBumped.length > 0 ? "minor" : "patch";
+const kind = epoch
+  ? "major"
+  : added.length > 0 || majorBumped.length > 0
+    ? "minor"
+    : "patch";
 
-const [x, y, z] = tag.slice(1).split(".").map((n) => Number.parseInt(n, 10));
+const [x, y, z] = tag
+  .slice(1)
+  .split(".")
+  .map((n) => Number.parseInt(n, 10));
 const next =
-  kind === "major" ? `${x + 1}.0.0` : kind === "minor" ? `${x}.${y + 1}.0` : `${x}.${y}.${z + 1}`;
+  kind === "major"
+    ? `${x + 1}.0.0`
+    : kind === "minor"
+      ? `${x}.${y + 1}.0`
+      : `${x}.${y}.${z + 1}`;
 
-const notes = [
-  `Automatický release z registru doc stránek (${tag} -> v${next}).`,
-  added.length ? `Nová primitiva: ${added.join(", ")}.` : null,
+// English, like every other document a consumer reads (the README, the
+// changelog, the doc web's English side). These lines ARE the changelog
+// entry as well as the release notes — one text, so there is one telling
+// to keep true.
+const noteLines = [
+  `Automatic release from the doc page registry (${tag} → v${next}).`,
+  added.length ? `New primitives: ${added.join(", ")}.` : null,
   majorBumped.length ? `Major bump: ${majorBumped.join(", ")}.` : null,
-  changed.length ? `Změněné komponenty: ${changed.join(", ")}.` : null,
-  epoch ? "Epocha kitu zvednuta commitem release!:." : null,
-]
-  .filter(Boolean)
-  .join("\n");
+  changed.length ? `Changed components: ${changed.join(", ")}.` : null,
+  epoch ? "Kit epoch raised by a release!: commit." : null,
+].filter(Boolean);
+const notes = noteLines.join("\n");
 
 console.log(`${tag} -> v${next} (${kind})`);
 console.log(notes);
+
+/**
+ * Prepends this release to CHANGELOG.md.
+ *
+ * The file is machine-written on purpose: a changelog kept by hand is a
+ * second telling of what the doc page versions already say, and the two
+ * disagree the first time somebody is in a hurry. The entry carries the same
+ * lines as the GitHub release, so those two cannot drift apart either.
+ */
+function prependChangelog(version, lines) {
+  const path = "CHANGELOG.md";
+  const date = new Date().toISOString().slice(0, 10);
+  const entry = [
+    `## v${version} — ${date}`,
+    "",
+    lines[0],
+    ...(lines.length > 1 ? ["", ...lines.slice(1).map((line) => `- ${line}`)] : []),
+  ].join("\n");
+
+  const existing = existsSync(path) ? readFileSync(path, "utf-8") : "";
+  // The header ends where the first entry starts, so a new release slots in
+  // right after it and the newest version is the first thing a reader sees.
+  const at = existing.indexOf("\n## ");
+  const head = at === -1 ? existing.trimEnd() : existing.slice(0, at).trimEnd();
+  const rest = at === -1 ? "" : existing.slice(at + 1);
+  writeFileSync(path, `${head}\n\n${entry}\n${rest ? `\n${rest}` : ""}`);
+}
 
 if (DRY) process.exit(0);
 
@@ -140,7 +179,15 @@ function publish(version, body) {
   writeFileSync("release-notes.txt", `${body}\n`);
   execFileSync(
     "gh",
-    ["release", "create", `v${version}`, "--title", `v${version}`, "--notes-file", "release-notes.txt"],
+    [
+      "release",
+      "create",
+      `v${version}`,
+      "--title",
+      `v${version}`,
+      "--notes-file",
+      "release-notes.txt",
+    ],
     { stdio: "inherit" },
   );
 }
@@ -178,7 +225,8 @@ pkg.version = next;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
 git("checkout", "-B", branch);
-git("add", pkgPath);
+prependChangelog(next, noteLines);
+git("add", pkgPath, "CHANGELOG.md");
 git("commit", "-m", `chore(release): v${next}`);
 // By overwrite, not by append: when the previous run dropped out between
 // pushing the branch and opening the PR, the branch was left hanging and
@@ -189,9 +237,31 @@ git("push", "--force", "origin", branch);
 // Same reason, one step further: an unfinished run may already have opened
 // the PR. A second ``pr create`` would fail on that, so the open PR is
 // taken over.
-const open = gh("pr", "list", "--head", branch, "--state", "open", "--json", "number", "--jq", "length");
+const open = gh(
+  "pr",
+  "list",
+  "--head",
+  branch,
+  "--state",
+  "open",
+  "--json",
+  "number",
+  "--jq",
+  "length",
+);
 if (open === "0") {
-  gh("pr", "create", "--base", "main", "--head", branch, "--title", `chore(release): v${next}`, "--body", notes);
+  gh(
+    "pr",
+    "create",
+    "--base",
+    "main",
+    "--head",
+    branch,
+    "--title",
+    `chore(release): v${next}`,
+    "--body",
+    notes,
+  );
 } else {
   console.log(`PR na ${branch} už je otevřené -> pokračuje se na něm`);
 }

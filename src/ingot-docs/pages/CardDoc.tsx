@@ -8,7 +8,17 @@ export const CardDoc: IngotDocPage = {
   status: "stable",
   version: "1.0",
   tag: ".card",
-  tokens: ["--bg", "--surface", "--surface-2", "--border", "--border-strong", "--ink", "--r-md", "--shadow-sm", "--shadow-lg"],
+  tokens: [
+    "--bg",
+    "--surface",
+    "--surface-2",
+    "--border",
+    "--border-strong",
+    "--ink",
+    "--r-md",
+    "--shadow-sm",
+    "--shadow-lg",
+  ],
   classNameNote: {
     cs: "Bere `className` na rozvržení — mezery a umístění karty. Rám, rádius a stín drží primitivum.",
     en: "Takes `className` for layout — spacing and placement of the card. The frame, radius and shadow stay with the primitive.",
@@ -22,17 +32,17 @@ export const CardDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Obsah patří k sobě a má se vizuálně oddělit od zbytku obrazovky —
-        panel nastavení, shrnutí, dlaždice v přehledu.
+        Obsah patří k sobě a má se vizuálně oddělit od zbytku obrazovky — panel
+        nastavení, shrnutí, dlaždice v přehledu.
       </>,
       <>
         Potřebuješ hlavičku s nadpisem: <IngotCode>CardHeader</IngotCode> a{" "}
         <IngotCode>CardTitle</IngotCode> jedou s ní a drží stejné odsazení.
       </>,
       <>
-        Dlaždice, která někam vede — <IngotCode>hover</IngotCode> ji při najetí
-        zvedne. Samotná karta klikatelná není: obal ji{" "}
-        <IngotCode>&lt;a&gt;</IngotCode>, nebo <IngotCode>&lt;button&gt;</IngotCode>.
+        Dlaždice, která někam vede — <IngotCode>hover</IngotCode> ji při najetí zvedne.
+        Samotná karta klikatelná není: obal ji <IngotCode>&lt;a&gt;</IngotCode>, nebo{" "}
+        <IngotCode>&lt;button&gt;</IngotCode>.
       </>,
       <>
         Sdělení platformy, které má přebít okolí —{" "}
@@ -42,9 +52,8 @@ export const CardDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The content belongs together and should be visually separated from the
-        rest of the screen — a settings panel, a summary, a tile in an
-        overview.
+        The content belongs together and should be visually separated from the rest of
+        the screen — a settings panel, a summary, a tile in an overview.
       </>,
       <>
         You need a header with a title: <IngotCode>CardHeader</IngotCode> and{" "}
@@ -57,16 +66,16 @@ export const CardDoc: IngotDocPage = {
       </>,
       <>
         A platform message that has to out-shout its surroundings —{" "}
-        <IngotCode>tone=&quot;dark&quot;</IngotCode>. It inverts the surface, so a second
-        one next to it out-shouts nothing.
+        <IngotCode>tone=&quot;dark&quot;</IngotCode>. It inverts the surface, so a
+        second one next to it out-shouts nothing.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Karta by obsahovala jedinou další kartu. Vnořené plochy čtenáři
-        neřeknou nic navíc a odsazení se sčítá, dokud obsah nezmizí uprostřed.
+        Karta by obsahovala jedinou další kartu. Vnořené plochy čtenáři neřeknou nic
+        navíc a odsazení se sčítá, dokud obsah nezmizí uprostřed.
       </>,
       <>
         Chceš jen odsazení. Na to je <IngotCode>className</IngotCode> na obalu; karta
@@ -75,9 +84,9 @@ export const CardDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The card would contain a single other card. Nested surfaces tell the
-        reader nothing extra, and the padding compounds until the content is
-        lost in the middle.
+        The card would contain a single other card. Nested surfaces tell the reader
+        nothing extra, and the padding compounds until the content is lost in the
+        middle.
       </>,
       <>
         You only want padding. That is a <IngotCode>className</IngotCode> on a wrapper;
@@ -172,10 +181,10 @@ export const CardDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Karta je <IngotCode>&lt;div&gt;</IngotCode>, ne <IngotCode>&lt;section&gt;</IngotCode>:
-        vizuální plocha sama o sobě není orientační bod a odečítač by hlásil
-        oblasti, které nikam nevedou. Potřebuješ-li osnovu, obal kartu{" "}
-        <IngotCode>IngotSection</IngotCode>.
+        Karta je <IngotCode>&lt;div&gt;</IngotCode>, ne{" "}
+        <IngotCode>&lt;section&gt;</IngotCode>: vizuální plocha sama o sobě není
+        orientační bod a odečítač by hlásil oblasti, které nikam nevedou. Potřebuješ-li
+        osnovu, obal kartu <IngotCode>IngotSection</IngotCode>.
       </>,
       <>
         <IngotCode>CardTitle</IngotCode> je nadpis vizuálně, ne významově. Když má
@@ -183,58 +192,57 @@ export const CardDoc: IngotDocPage = {
         <IngotCode>IngotSection</IngotCode>.
       </>,
       <>
-        Kontrast okraje i pozadí drží tokeny, takže karta funguje ve světlém
-        i tmavém režimu bez zásahu. Uvnitř{" "}
-        <IngotCode>tone=&quot;dark&quot;</IngotCode> ale nepiš barvy textu natvrdo —
-        obrácená plocha si barvu předává děděním a{" "}
+        Kontrast okraje i pozadí drží tokeny, takže karta funguje ve světlém i tmavém
+        režimu bez zásahu. Uvnitř <IngotCode>tone=&quot;dark&quot;</IngotCode> ale nepiš
+        barvy textu natvrdo — obrácená plocha si barvu předává děděním a{" "}
         <IngotCode>text-ink</IngotCode> na ní zmizí.
       </>,
       <>
         🚨 Klikatelná karta je <IngotCode>&lt;a&gt;</IngotCode> nebo{" "}
-        <IngotCode>&lt;button&gt;</IngotCode>, nikdy <IngotCode>&lt;div&gt;</IngotCode> s{" "}
-        <IngotCode>onClick</IngotCode>. Div se nedá zaostřit tabulátorem, neaktivuje
-        se mezerníkem a odečítač ho neohlásí jako ovládací prvek — pro
-        klávesnici ta dlaždice prostě neexistuje.
+        <IngotCode>&lt;button&gt;</IngotCode>, nikdy <IngotCode>&lt;div&gt;</IngotCode>{" "}
+        s <IngotCode>onClick</IngotCode>. Div se nedá zaostřit tabulátorem, neaktivuje
+        se mezerníkem a odečítač ho neohlásí jako ovládací prvek — pro klávesnici ta
+        dlaždice prostě neexistuje.
       </>,
       <>
-        <IngotCode>hover</IngotCode> nesmí být jediné, co o klikatelnosti říká.
-        Na dotykovém zařízení najetí neexistuje a při{" "}
-        <IngotCode>prefers-reduced-motion</IngotCode> se zvednutí vypíná — karta
-        proto musí mít viditelný titulek, který napoví, kam vede.
+        <IngotCode>hover</IngotCode> nesmí být jediné, co o klikatelnosti říká. Na
+        dotykovém zařízení najetí neexistuje a při{" "}
+        <IngotCode>prefers-reduced-motion</IngotCode> se zvednutí vypíná — karta proto
+        musí mít viditelný titulek, který napoví, kam vede.
       </>,
     ],
     en: [
       <>
         A card is a <IngotCode>&lt;div&gt;</IngotCode>, not a{" "}
         <IngotCode>&lt;section&gt;</IngotCode>: a visual surface on its own is not a
-        landmark, and a screen reader would announce regions that lead
-        nowhere. If you need an outline, wrap the card in{" "}
+        landmark, and a screen reader would announce regions that lead nowhere. If you
+        need an outline, wrap the card in <IngotCode>IngotSection</IngotCode>.
+      </>,
+      <>
+        <IngotCode>CardTitle</IngotCode> is a heading visually, not semantically. When
+        it genuinely belongs in the page outline, put a real heading inside via{" "}
         <IngotCode>IngotSection</IngotCode>.
       </>,
       <>
-        <IngotCode>CardTitle</IngotCode> is a heading visually, not semantically. When it
-        genuinely belongs in the page outline, put a real heading inside via{" "}
-        <IngotCode>IngotSection</IngotCode>.
-      </>,
-      <>
-        Border and background contrast come from tokens, so a card works in
-        light and dark alike with no intervention. Inside{" "}
+        Border and background contrast come from tokens, so a card works in light and
+        dark alike with no intervention. Inside{" "}
         <IngotCode>tone=&quot;dark&quot;</IngotCode>, though, do not hardcode text
-        colours — the inverted surface passes its colour down by inheritance,
-        and <IngotCode>text-ink</IngotCode> disappears on it.
+        colours — the inverted surface passes its colour down by inheritance, and{" "}
+        <IngotCode>text-ink</IngotCode> disappears on it.
       </>,
       <>
         🚨 A clickable card is an <IngotCode>&lt;a&gt;</IngotCode> or a{" "}
-        <IngotCode>&lt;button&gt;</IngotCode>, never a <IngotCode>&lt;div&gt;</IngotCode> with{" "}
-        <IngotCode>onClick</IngotCode>. A div cannot be focused with the keyboard,
-        does not activate on space, and a screen reader does not announce it as
-        a control — for the keyboard that tile simply does not exist.
+        <IngotCode>&lt;button&gt;</IngotCode>, never a{" "}
+        <IngotCode>&lt;div&gt;</IngotCode> with <IngotCode>onClick</IngotCode>. A div
+        cannot be focused with the keyboard, does not activate on space, and a screen
+        reader does not announce it as a control — for the keyboard that tile simply
+        does not exist.
       </>,
       <>
-        <IngotCode>hover</IngotCode> must not be the only thing that says the card
-        is clickable. Touch devices have no hover, and{" "}
-        <IngotCode>prefers-reduced-motion</IngotCode> turns the lift off — so the
-        card always needs a visible title that says where it leads.
+        <IngotCode>hover</IngotCode> must not be the only thing that says the card is
+        clickable. Touch devices have no hover, and{" "}
+        <IngotCode>prefers-reduced-motion</IngotCode> turns the lift off — so the card
+        always needs a visible title that says where it leads.
       </>,
     ],
   },
@@ -253,42 +261,41 @@ export const CardDoc: IngotDocPage = {
   limits: {
     cs: [
       <>
-        <strong>Metrika a patička jsou kompozice, ne vlastnosti.</strong> Dlaždice
-        s číslem je karta s <IngotCode>padded=&#123;false&#125;</IngotCode> a vlastním
-        odsazením; patička s verzí a datem je řádek na konci karty. Obojí je
-        v ukázce nahoře — kdyby to byly vlastnosti, karta by musela vědět, co
-        je metrika, a to nevíme.
+        <strong>Metrika a patička jsou kompozice, ne vlastnosti.</strong> Dlaždice s
+        číslem je karta s <IngotCode>padded=&#123;false&#125;</IngotCode> a vlastním
+        odsazením; patička s verzí a datem je řádek na konci karty. Obojí je v ukázce
+        nahoře — kdyby to byly vlastnosti, karta by musela vědět, co je metrika, a to
+        nevíme.
       </>,
       <>
         <strong>Zvýrazněné sdělení (callout) karta neumí</strong> a schválně to
-        nepředstírá: není to plocha, na které obsah stojí, ale barevný proužek
-        vedle něj. Vlastní primitivum dostane, až o něj řekne konkrétní
-        obrazovka — dnes ten tvar v aplikaci používají dvě.
+        nepředstírá: není to plocha, na které obsah stojí, ale barevný proužek vedle
+        něj. Vlastní primitivum dostane, až o něj řekne konkrétní obrazovka — dnes ten
+        tvar v aplikaci používají dvě.
       </>,
       <>
         <strong>Prázdný stav není karta.</strong> Na to je{" "}
-        <IngotCode>IngotEmptyState</IngotCode>, který kromě plochy řeší i text a
-        akci.
+        <IngotCode>IngotEmptyState</IngotCode>, který kromě plochy řeší i text a akci.
       </>,
     ],
     en: [
       <>
-        <strong>A metric tile and a footer are compositions, not props.</strong> A
-        tile with a number is a card with <IngotCode>padded=&#123;false&#125;</IngotCode>{" "}
-        and its own padding; a footer with a version and a date is a row at the
-        end of the card. Both are in the demo above — were they props, the card
-        would have to know what a metric is, and it does not.
+        <strong>A metric tile and a footer are compositions, not props.</strong> A tile
+        with a number is a card with <IngotCode>padded=&#123;false&#125;</IngotCode> and
+        its own padding; a footer with a version and a date is a row at the end of the
+        card. Both are in the demo above — were they props, the card would have to know
+        what a metric is, and it does not.
       </>,
       <>
-        <strong>The card does not do callouts</strong> and deliberately does not
-        pretend to: a callout is not a surface content sits on but a coloured
-        strip beside it. It gets its own primitive when a concrete screen asks
-        for one — today two screens in the application use that shape.
+        <strong>The card does not do callouts</strong> and deliberately does not pretend
+        to: a callout is not a surface content sits on but a coloured strip beside it.
+        It gets its own primitive when a concrete screen asks for one — today two
+        screens in the application use that shape.
       </>,
       <>
         <strong>An empty state is not a card.</strong> That is{" "}
-        <IngotCode>IngotEmptyState</IngotCode>, which handles the copy and the
-        action as well as the surface.
+        <IngotCode>IngotEmptyState</IngotCode>, which handles the copy and the action as
+        well as the surface.
       </>,
     ],
   },

@@ -22,13 +22,12 @@ export const IngotPageHeaderDoc: IngotDocPage = {
   useWhen: {
     cs: [
       <>
-        Obrazovka má nadpis. To je prakticky každá — proto tohle primitivum
-        drží spec, který by se jinak opisoval.
+        Obrazovka má nadpis. To je prakticky každá — proto tohle primitivum drží spec,
+        který by se jinak opisoval.
       </>,
       <>
-        K nadpisu patří akce (přidat, exportovat, filtr).{" "}
-        <IngotCode>actions</IngotCode> je zarovná doprava a nechá je zalomit, když se
-        nevejdou.
+        K nadpisu patří akce (přidat, exportovat, filtr). <IngotCode>actions</IngotCode>{" "}
+        je zarovná doprava a nechá je zalomit, když se nevejdou.
       </>,
       <>
         Ke jménu patří stav — odznak, počet, štítek. To je{" "}
@@ -37,8 +36,8 @@ export const IngotPageHeaderDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The screen has a title. That is nearly every screen — which is why
-        this primitive owns a spec that would otherwise be copied around.
+        The screen has a title. That is nearly every screen — which is why this
+        primitive owns a spec that would otherwise be copied around.
       </>,
       <>
         The title comes with actions (add, export, filter).{" "}
@@ -55,27 +54,25 @@ export const IngotPageHeaderDoc: IngotDocPage = {
     cs: [
       <>
         Je to nadpis sekce uvnitř obrazovky, ne nadpis obrazovky. Na to je{" "}
-        <IngotCode>IngotSection</IngotCode>; dvě <IngotCode>&lt;h1&gt;</IngotCode> na stránce
-        rozbijí osnovu, kterou odečítač čte.
+        <IngotCode>IngotSection</IngotCode>; dvě <IngotCode>&lt;h1&gt;</IngotCode> na
+        stránce rozbijí osnovu, kterou odečítač čte.
       </>,
       <>
-        Potřebuješ drobečkovou navigaci. Tu záměrně neumí: drobečky znají
-        routu, a tenhle modul zůstává bez závislosti na routeru. Skládá se
-        o patro výš — drobečky nad hlavičkou, hlavička z tohohle
-        primitiva.
+        Potřebuješ drobečkovou navigaci. Tu záměrně neumí: drobečky znají routu, a
+        tenhle modul zůstává bez závislosti na routeru. Skládá se o patro výš — drobečky
+        nad hlavičkou, hlavička z tohohle primitiva.
       </>,
     ],
     en: [
       <>
         It is a section heading inside a screen, not the screen's title. Use{" "}
-        <IngotCode>IngotSection</IngotCode>; two <IngotCode>&lt;h1&gt;</IngotCode> elements break
-        the outline a screen reader reads.
+        <IngotCode>IngotSection</IngotCode>; two <IngotCode>&lt;h1&gt;</IngotCode>{" "}
+        elements break the outline a screen reader reads.
       </>,
       <>
-        You need breadcrumbs. It deliberately cannot do them: breadcrumbs
-        know about routing, and this module stays free of a router
-        dependency. Compose them one level up — the trail above the header,
-        the header from this primitive.
+        You need breadcrumbs. It deliberately cannot do them: breadcrumbs know about
+        routing, and this module stays free of a router dependency. Compose them one
+        level up — the trail above the header, the header from this primitive.
       </>,
     ],
   },
@@ -137,18 +134,16 @@ export const IngotPageHeaderDoc: IngotDocPage = {
         <IngotCode>aria-describedby</IngotCode>. Čte ho každý, ne jen odečítač.
       </>,
       <>
-        <strong>Modul nemá žádnou závislost, a to je jeho smysl.</strong>{" "}
-        Typografický spec je tu vyvedený zvlášť (<IngotCode>
-          INGOT_PAGE_TITLE_CLASS
-        </IngotCode>), takže se dá použít i tam, kde by se router načítat
-        neměl — třeba na stránce, která žádné routy nemá.
+        <strong>Modul nemá žádnou závislost, a to je jeho smysl.</strong> Typografický
+        spec je tu vyvedený zvlášť (<IngotCode>INGOT_PAGE_TITLE_CLASS</IngotCode>),
+        takže se dá použít i tam, kde by se router načítat neměl — třeba na stránce,
+        která žádné routy nemá.
       </>,
     ],
     en: [
       <>
         The title is an <IngotCode>&lt;h1&gt;</IngotCode> and there should be exactly
-        one per screen — it is the root of the outline a screen reader
-        navigates by.
+        one per screen — it is the root of the outline a screen reader navigates by.
       </>,
       <>
         <IngotCode>description</IngotCode> is a paragraph under the title, not{" "}
@@ -156,33 +151,32 @@ export const IngotPageHeaderDoc: IngotDocPage = {
         reader.
       </>,
       <>
-        <strong>The module has no dependencies, and that is the point.</strong>{" "}
-        The type spec is exported separately (<IngotCode>
-          INGOT_PAGE_TITLE_CLASS
-        </IngotCode>), so it can be used where a router has no business being
-        loaded — on a page that has no routes at all, say.
+        <strong>The module has no dependencies, and that is the point.</strong> The type
+        spec is exported separately (<IngotCode>INGOT_PAGE_TITLE_CLASS</IngotCode>), so
+        it can be used where a router has no business being loaded — on a page that has
+        no routes at all, say.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        <IngotCode>title</IngotCode> a <IngotCode>description</IngotCode> dodává volající už
-        přeložené.
+        <IngotCode>title</IngotCode> a <IngotCode>description</IngotCode> dodává
+        volající už přeložené.
       </>,
       <>
-        Popisek u obrazovky ber ze stejného zdroje jako popisek v menu, jinak
-        se ta dvě místa rozejdou.
+        Popisek u obrazovky ber ze stejného zdroje jako popisek v menu, jinak se ta dvě
+        místa rozejdou.
       </>,
     ],
     en: [
       <>
-        <IngotCode>title</IngotCode> and <IngotCode>description</IngotCode> arrive from the caller
-        already translated.
+        <IngotCode>title</IngotCode> and <IngotCode>description</IngotCode> arrive from
+        the caller already translated.
       </>,
       <>
-        Take the screen's description from the same source as the menu entry,
-        or the two will drift apart.
+        Take the screen's description from the same source as the menu entry, or the two
+        will drift apart.
       </>,
     ],
   },
