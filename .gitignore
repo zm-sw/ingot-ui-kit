@@ -2,3 +2,10 @@ node_modules/
 dist/
 *.local
 .vercel
+
+# The reference consumer installs the PACKED kit, written by
+# scripts/pack-for-consumer.mjs. It is a build artifact, not a source.
+examples/consumer/vendor/
+examples/consumer/*.tgz
+examples/consumer/public/theme-init.js
+examples/consumer/package-lock.json

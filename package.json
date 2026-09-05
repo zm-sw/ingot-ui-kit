@@ -9,22 +9,42 @@
   },
   "type": "module",
   "exports": {
-    ".": "./src/ingot/index.ts",
-    "./forgmatic": "./src/ingot/forgmatic/index.ts",
-    "./marketing": "./src/ingot/marketing.ts",
-    "./theme": "./src/ingot/theme.ts",
+    ".": {
+      "types": "./src/ingot/index.ts",
+      "default": "./src/ingot/index.ts"
+    },
+    "./forgmatic": {
+      "types": "./src/ingot/forgmatic/index.ts",
+      "default": "./src/ingot/forgmatic/index.ts"
+    },
+    "./marketing": {
+      "types": "./src/ingot/marketing.ts",
+      "default": "./src/ingot/marketing.ts"
+    },
+    "./theme": {
+      "types": "./src/ingot/theme.ts",
+      "default": "./src/ingot/theme.ts"
+    },
+    "./tailwind-preset": {
+      "types": "./src/ingot/tailwind-preset.ts",
+      "default": "./src/ingot/tailwind-preset.ts"
+    },
     "./theme-init.js": "./src/ingot/theme-init.js",
-    "./tailwind-preset": "./src/ingot/tailwind-preset.ts",
     "./tokens.css": "./src/ingot/tokens.css",
     "./tokens.json": "./src/ingot/tokens.json"
   },
   "files": [
     "src/ingot"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build && node scripts/build-tokens.mjs --figma",
+    "consumer:pack": "node scripts/pack-for-consumer.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -67,5 +87,22 @@
     "vite": "^6.4.3",
     "vitest": "^3.2.6",
     "vitest-axe": "^0.1.0"
-  }
+  },
+  "typesVersions": {
+    "*": {
+      "forgmatic": [
+        "./src/ingot/forgmatic/index.ts"
+      ],
+      "marketing": [
+        "./src/ingot/marketing.ts"
+      ],
+      "theme": [
+        "./src/ingot/theme.ts"
+      ],
+      "tailwind-preset": [
+        "./src/ingot/tailwind-preset.ts"
+      ]
+    }
+  },
+  "types": "./src/ingot/index.ts"
 }

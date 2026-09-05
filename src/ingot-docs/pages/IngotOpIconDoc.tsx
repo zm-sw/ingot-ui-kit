@@ -8,10 +8,14 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // because an operation icon key is this platform's, not the kit's. The core
 // barrel still re-exports it as deprecated, so the bump is a patch, not a
 // major — nobody's call site breaks yet.
+// 1.2 (KAN-854): the development-only warning no longer reaches for a bundler's field directly. A consumer's typecheck used to fail
+// inside our source, on a file they never wrote, unless their
+// tsconfig happened to include the bundler's types. Nothing a
+// caller passes or sees changed.
 export const IngotOpIconDoc: IngotDocPage = {
   name: "IngotOpIcon",
   status: "stable",
-  version: "1.1",
+  version: "1.2",
   tag: "[data-op-icon]",
   tokens: ["currentColor"],
   classNameNote: {

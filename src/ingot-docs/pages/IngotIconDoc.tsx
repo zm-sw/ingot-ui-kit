@@ -3,6 +3,10 @@ import { Demo } from "@/ingot-docs/demos/IngotIconDemo";
 import demoSource from "@/ingot-docs/demos/IngotIconDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.4 (KAN-854): the development-only warning no longer reaches for a bundler's field directly. A consumer's typecheck used to fail
+// inside our source, on a file they never wrote, unless their
+// tsconfig happened to include the bundler's types. Nothing a
+// caller passes or sees changed.
 export const IngotIconDoc: IngotDocPage = {
   name: "IngotIcon",
   status: "stable",
@@ -16,7 +20,7 @@ export const IngotIconDoc: IngotDocPage = {
   // one only by colour. The promise "there is and will be no fill in the
   // set" therefore softened to a narrow exception rather than being dropped
   // — the rewritten Limits section holds it. Callers touch nothing.
-  version: "1.3",
+  version: "1.4",
   tag: "[data-icon]",
   tokens: ["currentColor"],
   classNameNote: {

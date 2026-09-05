@@ -24,7 +24,17 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**"],
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "coverage/**",
+      // The reference consumer builds its own app against a vendored copy
+      // of the kit. Both are build output: linting them would mean linting
+      // this repository's own source a second time, minified.
+      "examples/*/dist/**",
+      "examples/*/vendor/**",
+      "examples/*/public/**",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -81,8 +91,10 @@ export default tseslint.config(
     },
   },
   {
-    // Scripts run under plain node, outside the app's globals.
-    files: ["scripts/**/*.mjs", "*.config.{ts,js,mjs}"],
+    // Scripts run under plain node, outside the app's globals. The
+    // example has its own — the one file a consumer has to copy out of
+    // the package cannot be imported, so something has to copy it.
+    files: ["scripts/**/*.mjs", "examples/*/scripts/**/*.mjs", "*.config.{ts,js,mjs}"],
     languageOptions: {
       globals: {
         console: "readonly",

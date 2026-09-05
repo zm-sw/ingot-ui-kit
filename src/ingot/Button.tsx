@@ -8,6 +8,20 @@ import {
 
 import { cx } from "./cx";
 
+// Development-only warnings read a bundler's flag, and ``ImportMeta`` has
+// no ``env`` unless the consumer's tsconfig happens to include the
+// bundler's types — so their typecheck failed inside our source, on a file
+// they never wrote. The cast says what we expect and tolerates not finding
+// it: no flag means "not a development build", so a production bundle
+// stays silent rather than warning at every render.
+//
+// Deliberately NOT extracted into a shared helper. Two of these three
+// files are imported by nearly every primitive, so a shared module would
+// force a version bump on twenty-one doc pages for a change that alters
+// nothing anyone can see — and a version that moves for that stops meaning
+// "behaviour changed".
+const DEV = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV === true;
+
 type ButtonVariant =
   | "primary"
   | "accent"
@@ -117,7 +131,7 @@ export const Button = forwardRef<
   } = props;
 
   if (
-    import.meta.env.DEV &&
+    DEV &&
     iconOnly &&
     !props["aria-label"] &&
     !props["aria-labelledby"]

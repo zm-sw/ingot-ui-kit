@@ -3,10 +3,14 @@ import { Demo } from "@/ingot-docs/demos/ButtonDemo";
 import demoSource from "@/ingot-docs/demos/ButtonDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
+// 1.2 (KAN-854): the development-only warning no longer reaches for a bundler's field directly. A consumer's typecheck used to fail
+// inside our source, on a file they never wrote, unless their
+// tsconfig happened to include the bundler's types. Nothing a
+// caller passes or sees changed.
 export const ButtonDoc: IngotDocPage = {
   name: "Button",
   status: "stable",
-  version: "1.1",
+  version: "1.2",
   tag: ".btn",
   tokens: [
     "--bg",

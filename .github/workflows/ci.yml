@@ -44,3 +44,32 @@ jobs:
           node-version: 22
       - name: Component change requires a version bump
         run: node scripts/version_guard.mjs origin/${{ github.base_ref || 'main' }}
+
+  # The reference consumer: builds an application against the PACKED kit,
+  # so a leaked relative path, a missing export, an undeclared peer or a
+  # type only this repository's tsconfig supplies fails here instead of at
+  # somebody else's first install.
+  #
+  # Not on every pull request, because it installs a second node_modules
+  # tree and most changes cannot break it. It runs on main, and on a PR
+  # labelled `consumer` when the change is one that could — anything
+  # touching the package manifest or the shape of what ships.
+  consumer:
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'consumer')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Pack the kit as a consumer receives it
+        run: npm run consumer:pack
+      - name: Build the example against the packed kit
+        working-directory: examples/consumer
+        # install, not ci: the example has no lockfile of its own — it would
+        # record the kit's version and go stale at every release.
+        run: npm install --no-audit --no-fund && npm run build
