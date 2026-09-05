@@ -22,24 +22,23 @@ import { createContext, useContext, useMemo, type ReactNode } from "react";
 const ModalDepthContext = createContext<number>(0);
 
 /**
- * Nejhlubší modal, ze kterého se ještě smí nabídnout T1 „+ Přidat…".
+ * The deepest modal from which a quick-create "+ Add…" may still be
+ * offered.
  *
- * ``1`` = ze stránky (0) i z prvního modalu (1) ano, z modalu nad
- * modalem (2) už ne. Rozhodnutí vlastníka z 2026-08-10 znělo
- * „stacking max 1 úroveň", tedy JEDNA vrstva navíc nad tím, co je
- * zrovna otevřené.
+ * ``1`` = from the page (0) and from the first modal (1) yes, from a modal
+ * above a modal (2) no. The owner's decision of 2026-08-10 read "stacking
+ * max 1 level", i.e. ONE extra layer above what is currently open.
  *
- * ⚠️ Ta věta jde číst i přísněji — „quick-create jen ze stránky".
- * Tady je schválně ta volnější: přísnější čtení by vyplo
- * ``+ Přidat kategorii…`` uvnitř modalu zakládání položky, což je
- * odbavená a nasazená featura (KAN-68 / #3188). Vypnout ji jako
- * vedlejší efekt zavádění konstanty by byla regrese schovaná
- * v refaktoru; jestli to vlastník myslel přísněji, je to vlastní
- * rozhodnutí a vlastní změna. Viz KAN-109.
+ * That sentence can be read more strictly too — "quick-create only from
+ * the page". The looser reading is deliberate here: the strict one would
+ * turn off "+ Add category…" inside the item-creation modal, a shipped and
+ * deployed feature. Turning it off as a side effect of introducing a
+ * constant would be a regression hidden in a refactor; if the owner meant
+ * it strictly, that is its own decision and its own change.
  */
 export const MAX_QUICK_CREATE_DEPTH = 1;
 
-/** Obal kolem obsahu modalu — zvyšuje hloubku o jedna. */
+/** Wrapper around a modal's content — increases the depth by one. */
 export function ModalDepthProvider({
   children,
 }: {
@@ -54,16 +53,16 @@ export function ModalDepthProvider({
   );
 }
 
-/** Aktuální hloubka; 0 = nejsme v modalu. */
+/** Current depth; 0 = not inside a modal. */
 export function useModalDepth(): number {
   return useContext(ModalDepthContext);
 }
 
 /**
- * Smí se na téhle hloubce nabídnout T1 „+ Přidat…"?
+ * May a quick-create "+ Add…" be offered at this depth?
  *
- * Volá se z komponent, které sentinel renderují — ne z těch, které ho
- * jen konzumují.
+ * Called from the components that render the affordance — not from those
+ * that merely consume it.
  */
 export function useCanQuickCreate(): boolean {
   return useModalDepth() <= MAX_QUICK_CREATE_DEPTH;

@@ -7,40 +7,43 @@ import {
 
 import { cx } from "./cx";
 
-//: ``elevated`` (``shadow-lg``) tu bylo do KAN-653 a nemělo v repu jediného
-//: konzumenta — spec ho nezná a stín té velikosti patří pod modál, ne pod
-//: kartu. ``flat`` a ``raised`` konzumenty mají, takže zůstávají jako
-//: zdokumentovaná odchylka od specu, který výšku plochy neřeší vůbec.
+// ``elevated`` (``shadow-lg``) used to be here and had not a single
+// consumer — the spec does not know it and a shadow of that size belongs
+// under a modal, not a card. ``flat`` and ``raised`` have consumers, so
+// they stay as a documented deviation from a spec that does not address
+// surface elevation at all.
 type CardElevation = "flat" | "raised";
 type CardTone = "default" | "dark";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   elevation?: CardElevation;
   padded?: boolean;
-  /** Zvedne kartu při najetí. Jen pro klikatelné dlaždice. */
+  /** Lifts the card on hover. Only for clickable tiles. */
   hover?: boolean;
-  /** ``dark`` je obrácená plocha pro sdělení platformy — max. jedna na obrazovku. */
+  /** ``dark`` is the inverted surface for a platform message — at most one per screen. */
   tone?: CardTone;
 }
 
-//: Barva plochy a stín jsou schválně DVĚ různá pole, ne jeden řetězec na
-//: variantu. Kdyby ``tone="dark"`` posílal ``bg-ink`` vedle ``bg-surface``
-//: z elevace, rozhodovalo by o výsledku pořadí ve vygenerovaném CSS, ne
-//: pořadí v ``cx()`` — obě utility mají tutéž specificitu.
+// Surface colour and shadow are deliberately TWO separate fields, not one
+// string per variant. If ``tone="dark"`` sent ``bg-ink`` next to the
+// elevation's ``bg-surface``, the outcome would be decided by the order in
+// the generated CSS, not the order in ``cx()`` — both utilities have the
+// same specificity.
 const SURFACE = "border border-border bg-surface";
 
-//: Světlá: obrácená plocha (``--ink`` pod barvou stránky). Tmavá: obrátit
-//: se nedá znovu — v tmavém motivu už je plocha stránky tmavá, takže se
-//: karta místo toho ZVEDNE na ``--surface-2``, přesně jak to dělá handoff
-//: (``[data-theme="dark"] .card-dark``). Tenhle override patří sem, ne do
-//: palety: běžná ``.card`` na ``--surface`` zůstává v obou motivech.
+// Light: an inverted surface (``--ink`` under the page colour). Dark:
+// cannot invert again — the page surface is already dark in the dark
+// theme, so the card LIFTS to ``--surface-2`` instead, exactly as the
+// handoff does (``[data-theme="dark"] .card-dark``). This override belongs
+// here, not in the palette: an ordinary ``.card`` on ``--surface`` stays
+// the same in both themes.
 const SURFACE_DARK =
   "border border-ink bg-ink text-bg dark:border-border-strong dark:bg-surface-2 dark:text-ink";
 
-//: Tón se dědí do ``CardTitle``. Bez toho by nadpis v tmavé kartě zůstal
-//: na ``--ink`` — tedy near-black text na near-black ploše ve světlém
-//: motivu. Kontext, ne ``[&_h3]`` varianta: ta by mlčky minula každý
-//: nadpis, který si ``CardTitle`` obalí.
+// The tone is inherited by ``CardTitle``. Without it a title in a dark card
+// would stay on ``--ink`` — near-black text on a near-black surface in the
+// light theme. A context, not an ``[&_h3]`` variant: that would silently
+// miss every heading ``CardTitle`` wraps.
 const CardToneContext = createContext<CardTone>("default");
 
 const SHADOW: Record<CardElevation, string> = {
@@ -68,9 +71,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
           "rounded-md",
           tone === "dark" ? SURFACE_DARK : SURFACE,
           SHADOW[elevation],
-          // Zvednutí o 3px + větší stín, jak to má handoff (``.card-hover``).
-          // ``motion-reduce`` ho vypíná — pohyb na najetí je přesně to, co si
-          // ta předvolba vymiňuje.
+          // A 3px lift + a larger shadow, as the handoff has it
+          // (``.card-hover``). ``motion-reduce`` turns it off — movement on
+          // hover is exactly what that preference asks to avoid.
           hover &&
             "cursor-pointer transition-[transform,box-shadow] hover:-translate-y-[3px] hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0",
           padded && "p-5",

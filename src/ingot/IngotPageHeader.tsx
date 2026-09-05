@@ -26,13 +26,13 @@ export function IngotPageHeader({
   titleAdornment,
   testId,
 }: {
-  /** Nadpis obrazovky. Detailní routy sem dávají jméno záznamu. */
+  /** Screen title. Detail routes put the record's name here. */
   title: ReactNode;
-  /** Jedna věta: co tu čtenář najde. */
+  /** One sentence: what the reader finds here. */
   description?: ReactNode;
-  /** Shluk akcí zarovnaný doprava (tlačítka, filtry, stavové odznaky). */
+  /** A cluster of actions aligned right (buttons, filters, status badges). */
   actions?: ReactNode;
-  /** Odznak vedle nadpisu — stav, počet, štítek. */
+  /** A badge next to the title — state, count, tag. */
   titleAdornment?: ReactNode;
   testId?: string;
 }): JSX.Element {

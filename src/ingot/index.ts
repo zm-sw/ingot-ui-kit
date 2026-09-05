@@ -30,12 +30,12 @@
 export { Button } from "./Button";
 export { Card, CardHeader, CardTitle } from "./Card";
 
-// --- ikony (KAN-649) -------------------------------------------------
+// --- icons ------------------------------------------------------------
 //
-// Dvě sady, ne jedna: rozhraní (``IngotIcon``) se barví a škáluje volně,
-// kdežto ikona výrobní operace nese klíč, který ukládá backend, a má
-// vlastní pravidla sazby. Jeden společný komponent by ta pravidla musel
-// rozvolnit na průnik obojího.
+// Two sets, not one: the interface set (``IngotIcon``) colours and scales
+// freely, while a production-operation icon carries a key the backend
+// stores and has its own typesetting rules. One shared component would
+// have to loosen those rules to the intersection of both.
 export {
   IngotIcon,
   INGOT_ICON_NAMES,
@@ -47,11 +47,11 @@ export {
   type IngotOpIconVariant,
 } from "./IngotOpIcon";
 
-// --- skořápka obrazovky (KAN-628) ------------------------------------
+// --- page shell -------------------------------------------------------
 //
-// Doc web kit vyučuje, takže stránka, která si sama skládá třídy, ho
-// svým vlastním příkladem popírá. Tahle pětice je to, co si skládal:
-// nadpis, sekce, výčet, boční menu a kód v textu.
+// The doc web teaches the kit, so a page that composes its own classes
+// contradicts it by example. These five are what it used to compose:
+// heading, section, list, side menu and inline code.
 export {
   IngotPageHeader,
   INGOT_PAGE_TITLE_CLASS,
@@ -65,9 +65,10 @@ export {
   type IngotEyebrowSize,
   type IngotEyebrowTone,
 } from "./IngotEyebrow";
-// 🪤 Sbalitelná sekce je VLASTNÍ primitivum, ne prop na ``IngotSection``.
-// Ta sází nadpis a drží osnovu stránky; tahle je popisek bloku v panelu.
-// Jeden prop nad dvěma sazbami by byly dvě komponenty za přepínačem.
+// A collapsible section is its OWN primitive, not a prop on
+// ``IngotSection``. That one sets a heading and holds the page outline;
+// this one is a block caption in a panel. One prop over two typesettings
+// would be two components behind a switch.
 export {
   IngotDisclosure,
   IngotDisclosureGroup,
@@ -99,11 +100,12 @@ export {
 export { IngotConfirm, useConfirmVeto } from "./IngotConfirm";
 export { IngotTable, type IngotColumn, type IngotSort } from "./IngotTable";
 export { IngotEmptyState } from "./IngotEmptyState";
-// --- list obrazovka kolem tabulky (KAN-654) --------------------------
+// --- the list screen around the table ---------------------------------
 //
-// Závazné pořadí bloků: toolbar → (bulk bar) → tabulka → pager. Bulk bar
-// kreslí IngotTable (visí na jejím výběru), toolbar a pager jsou
-// samostatné — tabulka není jejich jediný konzument a stav drží volající.
+// Binding block order: toolbar → (bulk bar) → table → pager. The bulk bar
+// is drawn by IngotTable (it hangs on its selection); toolbar and pager
+// are separate — the table is not their only consumer and the caller owns
+// the state.
 export { IngotToolbar } from "./IngotToolbar";
 export { IngotPagination } from "./IngotPagination";
 export { IngotField } from "./IngotField";
@@ -145,9 +147,10 @@ export {
   type ResolvedProcessIcon,
 } from "./processIconLibrary";
 
-// --- shell a patterny nastavení (dorovnání na handoff) ---------------
-// Rám aplikace: horní lišta místo bočního menu, mega menu sekce, menu
-// účtu a drobečky. Boční menu (``IngotSideNav``) zůstává pro rejstříky.
+// --- shell and settings patterns (aligned to the handoff) -------------
+// The application frame: a top bar instead of a side menu, a section mega
+// menu, the account menu and breadcrumbs. The side menu (``IngotSideNav``)
+// stays for indexes.
 export {
   IngotTopNav,
   IngotTopNavAccount,
@@ -168,18 +171,19 @@ export { IngotMetrics, type IngotMetric } from "./IngotMetrics";
 export { IngotStepCard } from "./IngotStepCard";
 export { IngotOptionCard } from "./IngotOptionCard";
 export { IngotRowActions, type IngotRowAction } from "./IngotRowActions";
-// Rozhodnutí vlastníka 2026-09-02: filtrační atomy (bod 06), rám obsahu
-// stránky (05) a pojmenovaná výjimka z principu 02 (08).
+// Owner's decision, 2026-09-02: filter atoms (point 06), the page content
+// frame (05) and the named exception to principle 02 (08).
 export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
 export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
-// --- volba akcentu a přepínač chromu ---------------------------------
-// Akcentové rodiny jsou tokeny kitu (``tokens.css``, bloky
-// ``[data-accent]``), takže jejich výčet i puntíky, kterými se vybírají,
-// patří sem. Ukládání volby (localStorage, účet) zůstává aplikaci.
+// --- accent choice and chrome switch ---------------------------------
+// The accent families are tokens of the kit (``tokens.css``,
+// ``[data-accent]`` blocks), so their list and the dots that pick them
+// belong here. Persisting the choice (localStorage, account) stays with
+// the application.
 export {
   ACCENT_CHOICES,
   DEFAULT_ACCENT,
@@ -188,22 +192,23 @@ export {
 export { IngotAccentSwatches } from "./IngotAccentSwatches";
 export { IngotSegmented, type IngotSegmentedOption } from "./IngotSegmented";
 
-// --- marketingové bloky veřejných stránek ----------------------------
+// --- marketing blocks of the public pages -----------------------------
 //
-// Handoff „Veřejné stránky", ingot.css sekce 13. Bydlely mimo kit
-// s odůvodněním „v adminu nemají konzumenta", jenže tím se ocitly i mimo
-// distribuci: ``files`` pouští ven jen ``src/ingot``, takže veřejný web,
-// pro který vznikly, si je nemohl nainstalovat a musel by je opsat.
-// Opsaný blok je přesně ta druhá pravda, které se kit brání jinde.
+// Handoff "Public pages", ingot.css section 13. They used to live outside
+// the kit on the grounds that "the admin has no consumer for them" — which
+// also put them outside the distribution: ``files`` ships only
+// ``src/ingot``, so the public web they were made for could not install
+// them and would have had to copy them. A copied block is exactly the
+// second truth the kit guards against elsewhere.
 //
-// Kreslí se výhradně tokeny kitu — žádná vlastní barva, žádný gradient —
-// jen s většími rozestupy a trojsloupcovou mřížkou. Pravidla skladby
-// (akcent nejvýš na jednom prvku sekce, tmavý blok nejvýš 2× na stránku,
-// pod 1100 px jeden sloupec) drží stránka, ne komponenta; popisuje je
-// průvodce „Veřejné stránky".
+// Drawn exclusively with kit tokens — no colour of their own, no gradient
+// — only with larger spacing and a three-column grid. Composition rules
+// (accent on at most one element per section, a dark block at most twice
+// per page, one column below 1100 px) are held by the page, not the
+// component; the "Public pages" guide describes them.
 //
-// Texty i ceny jsou OBSAH (branding/CMS/plány) — chodí přes props,
-// nikdy jako konstanty v JSX.
+// Texts and prices are CONTENT (branding / CMS / plans) — they arrive
+// through props, never as constants in JSX.
 export { IngotMarketingSectionHead } from "./IngotMarketingSectionHead";
 export {
   IngotMarketingTri,

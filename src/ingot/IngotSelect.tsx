@@ -4,25 +4,25 @@ import { cx } from "./cx";
 import { inputChrome } from "./inputChrome";
 
 /**
- * Výběr jedné hodnoty z krátké množiny — filtr nad seznamem, přepínač
- * varianty v nastavení.
+ * Picking one value from a short set — a filter above a list, a variant
+ * switch in settings.
  *
- * Nativní ``<select>`` schválně: dostává klávesnici, odečítač i mobilní
- * chování zadarmo a filtry ho používají po tuctech na jedné obrazovce.
- * Vlastní rozbalovací seznam by tu kupoval vzhled za celý balík
- * chování, který by pak někdo musel doopravdy napsat. Až si obrazovka
- * řekne o hledání uvnitř nebo o skupiny, bude to nové primitivum, ne
- * vlastnost tohohle.
+ * A native ``<select>`` on purpose: it gets keyboard, screen reader and
+ * mobile behaviour for free, and filters use it by the dozen on one
+ * screen. A custom dropdown would buy looks at the price of a whole bundle
+ * of behaviour someone would then have to really write. Once a screen asks
+ * for search inside or for groups, that is a new primitive, not a property
+ * of this one.
  *
- * „Všechny stavy“ je první ``option``, ne placeholder: filtr vždycky
- * v nějakém stavu JE a prázdná hodnota by tvrdila, že není.
+ * "All statuses" is the first ``option``, not a placeholder: a filter IS
+ * always in some state and an empty value would claim it is not.
  *
- * Ingot **nemá vlastní i18n namespace** — popisky dodává volající.
+ * The kit has no i18n namespace of its own — labels arrive translated.
  */
 
 export interface IngotSelectOption {
   value: string;
-  /** Přeložený popisek volby. */
+  /** Translated label of the option. */
   label: string;
 }
 
@@ -40,16 +40,16 @@ export function IngotSelect({
   onChange: (next: string) => void;
   options: readonly IngotSelectOption[];
   /**
-   * Přeložený ``aria-label``. Povinný, protože filtr bar viditelný
-   * popisek nemívá — bez něj odečítač čte jen aktuální hodnotu a
-   * uživatel neví, ČEHO je to hodnota. Obrazovka s viditelným
-   * ``<label htmlFor>`` předá totéž id přes ``id`` a label může být
-   * týž text.
+   * Translated ``aria-label``. Required, because a filter bar rarely has a
+   * visible label — without it a screen reader reads only the current
+   * value and the user does not know WHAT it is a value of. A screen with
+   * a visible ``<label htmlFor>`` passes the same id through ``id`` and the
+   * label may be the same text.
    */
   label: string;
   disabled?: boolean;
   id?: string;
-  /** Průchozí třída — šířku určuje obrazovka, vzhled primitivum. */
+  /** Pass-through class — the screen sets the width, the primitive the look. */
   className?: string;
   testId?: string;
 }): JSX.Element {

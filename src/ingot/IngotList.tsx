@@ -3,18 +3,18 @@ import { type JSX, type ReactNode } from "react";
 import { cx } from "./cx";
 
 /**
- * Výčet (KAN-628) — odrážky, čísla, nebo holý seznam bez značek.
+ * A list — bullets, numbers, or a bare list without markers.
  *
- * Proč to není „jen `<ul>`": značka a odsazení k sobě patří. Ruční výčty
- * v repu se liší v obojím (`list-disc pl-5`, `list-disc pl-4`, `ml-4`,
- * někde `space-y-1`, jinde nic), takže dva seznamy vedle sebe nesedí —
- * a nikdo neví, který z nich je ten správný.
+ * Why it is not "just a `<ul>`": marker and indentation belong together.
+ * Hand-written lists differed in both (`list-disc pl-5`, `list-disc pl-4`,
+ * `ml-4`, `space-y-1` here and nothing there), so two lists side by side
+ * did not line up — and nobody knew which was the right one.
  *
- * `variant="plain"` je pro seznamy odkazů (navigace, obsah stránky), kde
- * je odrážka šum: pořadí i tak nese `<li>`, takže odečítač počet položek
- * ohlásí, jen se nekreslí puntík.
+ * `variant="plain"` is for lists of links (navigation, page contents)
+ * where a bullet is noise: `<li>` still carries the order, so a screen
+ * reader announces the item count, only the dot is not drawn.
  *
- * Ingot **nemá vlastní i18n namespace** — položky dodává volající.
+ * The kit has no i18n namespace of its own — items come from the caller.
  */
 export function IngotList({
   items,
@@ -22,7 +22,7 @@ export function IngotList({
   testId,
 }: {
   items: readonly ReactNode[];
-  /** `bullet` odrážky · `ordered` čísla · `plain` bez značek. */
+  /** `bullet` bullets · `ordered` numbers · `plain` no markers. */
   variant?: "bullet" | "ordered" | "plain";
   testId?: string;
 }): JSX.Element {
@@ -31,8 +31,8 @@ export function IngotList({
     return (
       <ol className={cx("list-decimal pl-5", shared)} data-testid={testId}>
         {items.map((item, index) => (
-          // Položky jsou statický obsah bez identity; pole se za běhu
-          // nepřeskládá, takže index je tu stabilní klíč.
+          // Items are static content without identity; the array is not
+          // reordered at runtime, so the index is a stable key here.
           <li key={index}>{item}</li>
         ))}
       </ol>

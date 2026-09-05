@@ -3,27 +3,27 @@ import { useCallback, useEffect, useState } from "react";
 import type { IngotFieldSpec } from "./fields";
 
 /**
- * Stav deklarativního formuláře Ingotu (KAN-382).
+ * State of the declarative Ingot form.
  *
- * Jediná věc, kvůli které to je hook a ne prostý ``useState`` v každé
- * obrazovce: **write-only chování tajných polí**. To pravidlo se nesmí
- * lišit obrazovku od obrazovky — jinak jedna z nich pošle prázdný řetězec
- * a přepíše uloženou hodnotu na nic. Proto ho drží Ingot a konzument dostane
- * hotový payload.
+ * The one reason this is a hook and not a plain ``useState`` in every
+ * screen: **the write-only behaviour of secret fields**. That rule must
+ * not differ from screen to screen — otherwise one of them sends an empty
+ * string and overwrites the stored value with nothing. So the kit holds it
+ * and the consumer gets a finished payload.
  */
 export interface IngotFormState {
-  /** ``null``, dokud nedorazila počáteční data — konzument tou dobou nekreslí. */
+  /** ``null`` until the initial data arrives — the consumer does not render meanwhile. */
   values: Record<string, unknown> | null;
   setValue: (key: string, value: unknown) => void;
-  /** Hodnoty k odeslání: tajná pole, kterých se nikdo nedotkl, chybí. */
+  /** Values to submit: untouched secret fields are absent. */
   payload: () => Record<string, unknown>;
 }
 
 /**
- * Tajné pole se **neplní** ze serveru (server hodnotu nevrací), takže se
- * jeho prázdnost nedá odlišit od „admin ji vymazal". Ingot tuhle nejednoznačnost
- * řeší jediným způsobem, který nemůže ztratit uloženou hodnotu: prázdné =
- * netknuté = neposílá se.
+ * A secret field is **not filled** from the server (the server does not
+ * return the value), so its emptiness cannot be told from "the admin
+ * cleared it". The kit resolves that ambiguity the only way that cannot
+ * lose a stored value: empty = untouched = not sent.
  */
 export function ingotFormPayload(
   fields: readonly IngotFieldSpec[],
@@ -46,10 +46,10 @@ export function useIngotForm(
 ): IngotFormState {
   const [values, setValues] = useState<Record<string, unknown> | null>(null);
 
-  // Přeseje se při každém novém načtení ze serveru (i po uložení). Tajná
-  // pole se přitom vracejí do prázdna — server je neposílá a formulář si
-  // je nesmí pamatovat, jinak by druhé uložení odeslalo, co admin napsal
-  // do minulého.
+  // Re-seeded on every fresh load from the server (after a save too).
+  // Secret fields return to empty in the process — the server does not
+  // send them and the form must not remember them, otherwise a second save
+  // would send what the admin typed into the previous one.
   useEffect(() => {
     if (initial) setValues({ ...initial });
   }, [initial]);

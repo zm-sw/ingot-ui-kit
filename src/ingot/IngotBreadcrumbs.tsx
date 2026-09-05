@@ -4,24 +4,25 @@ import { cx } from "./cx";
 import { eyebrowClass } from "./IngotEyebrow";
 
 /**
- * Drobečky nad hlavičkou stránky — kde jsem a jak zpátky.
+ * Breadcrumbs above the page header — where am I and how do I get back.
  *
- * V aplikaci bez bočního menu nesou drobečky celou orientaci: horní
- * lišta říká, ve které sekci jsi, drobečky říkají, jak hluboko.
+ * In an application without a side menu the breadcrumbs carry the whole
+ * orientation: the top bar says which section you are in, the breadcrumbs
+ * say how deep.
  *
- * 🪤 **Poslední článek není odkaz.** Je to místo, kde stojíš, a odkaz
- * sám na sebe je slib prokliku, který nikam nevede. Komponenta ho proto
- * vykreslí jako text, i kdyby volající ``href`` poslal.
+ * **The last crumb is not a link.** It is the place you stand, and a link
+ * to itself promises a click that leads nowhere. The component therefore
+ * renders it as text even if the caller sent an ``href``.
  *
- * Na kořenové stránce sekce se drobečky nekreslí vůbec — jediný článek
- * neříká nic, co by hlavička neřekla líp.
+ * On a section's root page no breadcrumbs are drawn at all — a single
+ * crumb says nothing the header does not say better.
  *
- * Ingot **nemá vlastní i18n namespace** — popisky dodává volající.
+ * The kit has no i18n namespace of its own — labels arrive translated.
  */
 
 export interface IngotCrumb {
   label: string;
-  /** Adresa. Poslední článek ji mít nemusí — stejně se nevykreslí. */
+  /** Address. The last crumb need not have one — it is not rendered anyway. */
   href?: string;
 }
 
@@ -30,9 +31,9 @@ export function IngotBreadcrumbs({
   label,
   testId,
 }: {
-  /** Cesta odshora dolů. Jediný článek se nevykreslí. */
+  /** The path from top to bottom. A single crumb is not rendered. */
   items: readonly IngotCrumb[];
-  /** Přeložený ``aria-label`` navigace. */
+  /** Translated ``aria-label`` of the navigation. */
   label: string;
   testId?: string;
 }): JSX.Element | null {

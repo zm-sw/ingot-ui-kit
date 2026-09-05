@@ -5,23 +5,27 @@ import { IngotIcon } from "./IngotIcon";
 import { inputChrome } from "./inputChrome";
 
 /**
- * Hledací pole nad seznamem — první prvek filtr baru (``IngotToolbar``).
+ * Search field above a list — the first element of the filter bar
+ * (``IngotToolbar``).
  *
- * Filtruje, nevyhledává: zužuje seznam, na kterém stojí, a proto nemá
- * tlačítko „Hledat“ ani vlastní obrazovku výsledků. Změna se hlásí
- * každým úhozem; kdo potřebuje debounce, drží si ho u dat, ne v poli —
- * pole nemá jak vědět, jestli za dotazem stojí síťový požadavek.
+ * It filters, it does not search: it narrows the list it stands on, and
+ * therefore has no "Search" button and no results screen of its own. The
+ * change is reported on every keystroke; whoever needs a debounce keeps
+ * it at the data, not in the field — the field cannot know whether a
+ * network request stands behind the query.
  *
- * Lupa je dekorace (``aria-hidden``): jméno pole nese ``label``.
- * ``type="search"`` dává prohlížečové vymazání křížkem zadarmo.
+ * The magnifier is decoration (``aria-hidden``): the field's name is
+ * carried by ``label``. ``type="search"`` gives the browser's clear cross
+ * for free.
  *
- * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ * The kit has no i18n namespace of its own — texts arrive translated.
  *
- * 🪤 ``inputRef`` míří na ten ``<input>`` schválně, a ne na obal: obrazovka
- * s klávesovou zkratkou „skoč do hledání“ na pole jinak nedosáhne a sáhne
- * si do vnitřku primitiva (``wrap.querySelector("input")``). Takové
- * sáhnutí přejmenování elementu uvnitř kitu tiše rozbije a žádný test kitu
- * to nechytí — proto je cesta ven součástí API, ne náhoda.
+ * ``inputRef`` points at the ``<input>`` on purpose, not at the wrapper: a
+ * screen with a "jump to search" shortcut could not reach the field
+ * otherwise and would reach into the primitive's insides
+ * (``wrap.querySelector("input")``). Renaming an element inside the kit
+ * would silently break such a reach and no kit test would catch it —
+ * hence the way out is part of the API, not an accident.
  */
 export function IngotSearchInput({
   value,
@@ -35,17 +39,18 @@ export function IngotSearchInput({
 }: {
   value: string;
   onChange: (next: string) => void;
-  /** Přeložený ``aria-label`` — placeholder jméno nenahradí, po vyplnění zmizí. */
+  /** Translated ``aria-label`` — a placeholder is no substitute for a name; it vanishes once filled. */
   label: string;
-  /** Přeložený placeholder. Nápověda formátu, ne jméno pole. */
+  /** Translated placeholder. A format hint, not the field's name. */
   placeholder?: string;
   disabled?: boolean;
   /**
-   * Ref na samotné pole — pro klávesovou zkratku, která do hledání skáče.
-   * Ne na „fokus po mountu“; ten patří prohlížeči přes ``autoFocus``.
+   * Ref to the field itself — for the keyboard shortcut that jumps into
+   * search. Not for "focus on mount"; that belongs to the browser via
+   * ``autoFocus``.
    */
   inputRef?: Ref<HTMLInputElement>;
-  /** Průchozí třída — šířku určuje obrazovka, vzhled primitivum. */
+  /** Pass-through class — the screen sets the width, the primitive the look. */
   className?: string;
   testId?: string;
 }): JSX.Element {

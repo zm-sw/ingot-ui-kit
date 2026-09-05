@@ -37,12 +37,12 @@ export type IngotBadgeTone =
   | "ink";
 
 /**
- * Tón → dvojice pozadí/text z tokenů. Obojí musí unést 4,5:1 ve světlém
- * i tmavém motivu; měří to `tests/ingot/IngotBadge.test.tsx` nad skutečnými
- * hodnotami z `globals.css`, ne nad jménem třídy.
+ * Tone → a background/text pair from tokens. Both must carry 4.5:1 in the
+ * light and the dark theme; `tests/IngotBadge.test.tsx` measures it over
+ * the real values from `tokens.css`, not over the class name.
  *
- * `ink` je jediný plný — je to nejsilnější důraz a na tintu by nešel odlišit
- * od `neutral`.
+ * `ink` is the only solid one — it is the strongest emphasis and on a tint
+ * it could not be told from `neutral`.
  */
 const TONE: Record<IngotBadgeTone, string> = {
   neutral: "border-border bg-surface-2 text-ink-2",
@@ -59,10 +59,10 @@ export function IngotBadge({
   dot = false,
   testId,
 }: {
-  /** Stav jedním slovem, už přeložený. */
+  /** The state in one word, already translated. */
   children: ReactNode;
   tone?: IngotBadgeTone;
-  /** Tečka pro živý stav („právě běží“). Dekorace, ne význam. */
+  /** A dot for a live state ("running now"). Decoration, not meaning. */
   dot?: boolean;
   testId?: string;
 }): JSX.Element {
