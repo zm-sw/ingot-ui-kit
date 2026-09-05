@@ -7,9 +7,10 @@ export const IngotDrawerDoc: IngotDocPage = {
   name: "IngotDrawer",
   status: "beta",
   // 1.1 — header markup shared with IngotModal (internal OverlayHeader); no visible change.
-  version: "1.1",
+  // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
+  version: "1.2",
   tag: ".drawer",
-  tokens: ["--surface", "--border", "--ink", "--ink-3", "--shadow-lg"],
+  tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--shadow-lg"],
   summary: {
     cs: "Boční panel pro editaci se stejnou a11y laťkou jako dialog: focus trap, ESC, scroll lock a návrat fokusu na spouštěč.",
     en: "A side panel for editing with the same accessibility floor as the dialog: focus trap, ESC, scroll lock and focus returned to the trigger.",

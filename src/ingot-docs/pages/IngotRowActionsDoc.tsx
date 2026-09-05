@@ -6,9 +6,10 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotRowActionsDoc: IngotDocPage = {
   name: "IngotRowActions",
   status: "stable",
-  version: "1.0",
+  // 1.1 — actions are the kit's shared icon button (accent focus ring).
+  version: "1.1",
   tag: ".rowactions",
-  tokens: ["--surface-2", "--ink", "--ink-3", "--danger", "--danger-bg", "--r-sm"],
+  tokens: ["--surface-2", "--ink", "--ink-3", "--danger", "--danger-bg", "--accent-bg", "--r-sm"],
   summary: {
     cs: "Akce jednoho řádku tabulky — ikonová tlačítka 28×28 px na konci řádku, bez rámečku a bez viditelného popisku.",
     en: "The actions of a single table row — 28×28 px icon buttons at the end of the row, with no frame and no visible label.",

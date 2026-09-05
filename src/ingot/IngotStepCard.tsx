@@ -1,6 +1,7 @@
 import { useId, useState, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IconButton } from "./IconButton";
 import { IngotEyebrow } from "./IngotEyebrow";
 import { IngotIcon } from "./IngotIcon";
 
@@ -121,22 +122,21 @@ export function IngotStepCard({
           </p>
         </div>
         {collapsible && (
-          <button
-            type="button"
-            //: `aria-controls` míří na tělo, ne na kartu — odečítač tak
-            //: nabídne skok přesně na to, co tlačítko odkrylo.
+          <IconButton
+            // `aria-controls` points at the body, not the card, so a screen
+            // reader offers a jump to exactly what the button revealed.
             aria-expanded={open}
             aria-controls={bodyId}
-            aria-label={toggleLabel}
+            label={toggleLabel ?? ""}
             onClick={() => setOpen((prev) => !prev)}
-            className="-mr-1.5 ml-auto grid h-7 w-7 flex-none place-items-center self-start rounded-sm text-ink-3 hover:bg-surface-3 hover:text-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink"
+            className="-mr-1.5 ml-auto self-start"
           >
             <IngotIcon
               name="chevron-right"
               size={13}
               className={cx("transition-transform", open && "rotate-90")}
             />
-          </button>
+          </IconButton>
         )}
       </div>
       {/*

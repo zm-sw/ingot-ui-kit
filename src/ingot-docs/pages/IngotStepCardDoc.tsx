@@ -7,7 +7,8 @@ export const IngotStepCardDoc: IngotDocPage = {
   name: "IngotStepCard",
   status: "beta",
   // 1.2 — caption set by IngotEyebrow, the kit's shared mono label.
-  version: "1.2",
+  // 1.3 — collapse toggle is the kit's shared icon button.
+  version: "1.3",
   tag: ".stepcard",
   tokens: [
     "--surface",
