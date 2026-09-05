@@ -91,6 +91,10 @@ export function importers(sources) {
 export function changedTokens(before, after) {
   const read = (css) => {
     const values = new Map();
+    // Comments first: the stylesheet's prose quotes values while explaining
+    // them ("the handoff wants --ink-3:#6d6862"), and a quoted value that
+    // moves with its paragraph is not a change to the palette.
+    css = css.replace(/\/\*[\s\S]*?\*\//g, "");
     for (const match of css.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
       const [, name, value] = match;
       const key = `${name}`;

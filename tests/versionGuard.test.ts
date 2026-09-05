@@ -195,6 +195,13 @@ describe("tokens.css owes the pages that declare the changed token", () => {
     ]);
   });
 
+  it("ignores a value quoted inside a comment", () => {
+    // The stylesheet explains its own values in prose, and that prose moves
+    // when a paragraph is reworded. A quoted hex is not a declaration.
+    const withNote = `/* the handoff wants --surface: #eeeeee */ ${before}`;
+    expect(changedTokens(before, withNote)).toEqual([]);
+  });
+
   it("asks nobody when only a comment or an unused token moved", () => {
     expect(
       owed({

@@ -48,11 +48,7 @@ export const INGOT_COLOR_TOKENS = [
   "code-tag",
   "code-attr",
   "code-number",
-  "code-punct",
-  "r-xs",
-  "r-sm",
-  "r-md",
-  "r-lg"
+  "code-punct"
 ] as const;
 
 /** The accent families, in the order the picker shows them. */
@@ -229,18 +225,6 @@ export const INGOT_TOKEN_VALUES: Record<string, { light: string; dark?: string }
   "code-punct": {
     "light": "#57534e",
     "dark": "#cbc3b7"
-  },
-  "r-xs": {
-    "light": "4px"
-  },
-  "r-sm": {
-    "light": "6px"
-  },
-  "r-md": {
-    "light": "10px"
-  },
-  "r-lg": {
-    "light": "14px"
   }
 };
 
