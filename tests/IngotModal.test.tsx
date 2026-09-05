@@ -1,16 +1,18 @@
 /**
- * Skořápka dialogu (KAN-580) — druhé primitivum Ingotu.
+ * Dialog shell (KAN-580) — the second Ingot primitive.
  *
- * Testy měří **a11y laťku** z rozhodnutí vlastníka 2026-08-25, protože právě
- * ta je důvodem, proč shell existuje: padesát ručních overlayů ji každý
- * splňovalo jinak (nebo vůbec). Laťka platí od teď pro každé další
- * primitivum, takže se měří tady, ne u konzumentů.
+ * The tests measure the **accessibility bar** from the owner decision of
+ * 2026-08-25, because that bar is exactly why the shell exists: fifty
+ * hand-made overlays each met it differently (or not at all). The bar
+ * applies from now on to every further primitive, so it is measured here,
+ * not at the consumers.
  *
- * A jedna věc navíc, která není a11y: **``ModalDepthProvider`` je uvnitř**.
- * Do KAN-580 si ho každý modal musel obalit ručně a `ModalDepthContext`
- * docstring tvrdil, že centrálně to nejde. Kdyby to shell přestal dělat,
- * `useCanQuickCreate()` by uvnitř dialogu tiše vrátil `true` na hloubce, kde
- * má vracet `false` — nic by nespadlo, jen by se nabídlo, co se nabízet nemá.
+ * And one more thing that is not accessibility: **``ModalDepthProvider`` is
+ * inside**. Before KAN-580 every modal had to wrap it by hand and the
+ * `ModalDepthContext` docstring claimed it could not be done centrally. If
+ * the shell stopped doing it, `useCanQuickCreate()` inside a dialog would
+ * silently return `true` at a depth where it should return `false` —
+ * nothing would crash, it would just offer what must not be offered.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -54,8 +56,8 @@ function Harness({ children }: { children?: React.ReactNode }) {
   );
 }
 
-describe("IngotModal — a11y laťka", () => {
-  it("panel je dialog popsaný svým titulkem", () => {
+describe("IngotModal — accessibility bar", () => {
+  it("the panel is a dialog labelled by its title", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -68,31 +70,32 @@ describe("IngotModal — a11y laťka", () => {
     );
   });
 
-  it("fokus jde po otevření dovnitř dialogu", () => {
+  it("focus moves inside the dialog on open", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
-    // První fokusovatelný prvek v DOM pořadí je zavírací tlačítko hlavičky.
-    // Podstatné je, že fokus je UVNITŘ dialogu — bez toho čte čtečka dál
-    // stránku pod overlayem a Tab z ní nikdy nevstoupí dovnitř.
+    // The first focusable element in DOM order is the header close button.
+    // What matters is that focus is INSIDE the dialog — without that a
+    // screen reader keeps reading the page under the overlay and Tab never
+    // enters it.
     expect(screen.getByTestId("probe-panel")).toContainElement(
       document.activeElement as HTMLElement,
     );
     expect(document.activeElement).toBe(screen.getByTestId("probe-close"));
   });
 
-  it("dialog bez fokusovatelného obsahu vezme fokus na panel", () => {
+  it("a dialog without focusable content takes focus on the panel", () => {
     render(
       <Harness>
         <p>jen text</p>
       </Harness>,
     );
     fireEvent.click(screen.getByTestId("opener"));
-    // Zavírací tlačítko hlavičky je fokusovatelné vždycky — bez něj by fokus
-    // zůstal na <body> a čtečka by začínala od začátku stránky.
+    // The header close button is always focusable — without it focus would
+    // stay on <body> and a screen reader would start from the top of the page.
     expect(document.activeElement).toBe(screen.getByTestId("probe-close"));
   });
 
-  it("Tab z posledního prvku se vrací na první (trap), ne ven", () => {
+  it("Tab from the last element returns to the first (trap), not outside", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -102,7 +105,7 @@ describe("IngotModal — a11y laťka", () => {
     expect(document.activeElement).toBe(screen.getByTestId("probe-close"));
   });
 
-  it("Shift+Tab z prvního prvku jde na poslední", () => {
+  it("Shift+Tab from the first element goes to the last", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -112,14 +115,14 @@ describe("IngotModal — a11y laťka", () => {
     expect(document.activeElement).toBe(screen.getByTestId("last"));
   });
 
-  it("ESC zavírá", () => {
+  it("ESC closes", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     fireEvent.keyDown(screen.getByTestId("probe"), { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("kliknutí do pozadí zavírá, kliknutí do panelu ne", () => {
+  it("a click on the backdrop closes, a click in the panel does not", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -130,18 +133,18 @@ describe("IngotModal — a11y laťka", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("fokus se po zavření vrací na spouštěč", () => {
+  it("focus returns to the trigger after close", () => {
     render(<Harness />);
     const opener = screen.getByTestId("opener");
-    // jsdom fokus při ``click`` nepřesouvá; prohlížeč ano, a právě ten
-    // fokusovaný spouštěč je to, na co se dialog má vrátit.
+    // jsdom does not move focus on ``click``; a browser does, and that
+    // focused trigger is exactly what the dialog should return to.
     opener.focus();
     fireEvent.click(opener);
     fireEvent.keyDown(screen.getByTestId("probe"), { key: "Escape" });
     expect(document.activeElement).toBe(opener);
   });
 
-  it("pozadí se zamkne při otevření a odemkne při zavření", () => {
+  it("the background locks on open and unlocks on close", () => {
     render(<Harness />);
     expect(document.body.style.overflow).toBe("");
 
@@ -152,7 +155,7 @@ describe("IngotModal — a11y laťka", () => {
     expect(document.body.style.overflow).toBe("");
   });
 
-  it("vnořený dialog neodemkne pozadí, dokud stojí i ten vnější", () => {
+  it("a nested dialog does not unlock the background while the outer one stands", () => {
     function Nested() {
       const [inner, setInner] = useState(true);
       return (
@@ -176,8 +179,8 @@ describe("IngotModal — a11y laťka", () => {
   });
 });
 
-describe("IngotModal — ModalDepthProvider je uvnitř (KAN-580)", () => {
-  it("obsah dialogu je o úroveň hlouběji, aniž by ho volající obaloval", () => {
+describe("IngotModal — ModalDepthProvider is inside (KAN-580)", () => {
+  it("dialog content is one level deeper without the caller wrapping it", () => {
     render(
       <Harness>
         <DepthProbe />
@@ -187,7 +190,7 @@ describe("IngotModal — ModalDepthProvider je uvnitř (KAN-580)", () => {
     expect(screen.getByTestId("depth")).toHaveTextContent("1");
   });
 
-  it("vnořený dialog přidá další úroveň", () => {
+  it("a nested dialog adds another level", () => {
     render(
       <IngotModal title="vnější" closeLabel="Zavřít" onClose={vi.fn()}>
         <IngotModal title="vnitřní" closeLabel="Zavřít" onClose={vi.fn()}>

@@ -1,18 +1,22 @@
 /**
  * `IngotField` (KAN-651).
  *
- * Testuje se to, co komponenta drží ZA volajícího — protože přesně to se
- * ztrácelo, když si každý formulář skládal `<label>` + `<input>` sám:
+ * What is tested is what the component holds FOR the caller — because that
+ * is exactly what got lost when every form composed `<label>` + `<input>`
+ * itself:
  *
- * 1. **Vazba popisku na vstup.** `getByLabelText` ji projde jen tehdy, když
- *    `label for` sedí na `input id`; opsaný popisek vedle vstupu ne.
- * 2. 🪤 **Dvě pole se stejným popiskem na jedné stránce.** Ruční `id` se tady
- *    typicky srazí a klik na druhý popisek zaostří první vstup. `useId` to
- *    řeší, ale jen dokud to někdo měří.
- * 3. **Chyba je text a `aria-invalid`, ne jen barva** — a je navázaná přes
- *    `aria-describedby`, takže ji odečítač přečte s polem, ne někde vedle.
- * 4. **Jednotka je v `aria-describedby` taky.** Kdyby byla jen vidět,
- *    odečítač by přečetl „3“ místo „3 mm“.
+ * 1. **Label-to-input binding.** `getByLabelText` passes only when
+ *    `label for` matches `input id`; a copied label next to the input does
+ *    not.
+ * 2. **Two fields with the same label on one page.** Hand-written `id`
+ *    values typically collide here and a click on the second label focuses
+ *    the first input. `useId` solves it, but only as long as someone
+ *    measures it.
+ * 3. **An error is text and `aria-invalid`, not only colour** — and it is
+ *    bound via `aria-describedby`, so a screen reader reads it with the
+ *    field, not somewhere beside it.
+ * 4. **The unit is in `aria-describedby` too.** If it were only visible, a
+ *    screen reader would read "3" instead of "3 mm".
  */
 
 import { render, screen } from "@testing-library/react";
@@ -30,20 +34,20 @@ function Controlled(
 }
 
 describe("IngotField", () => {
-  it("váže popisek na vstup, takže se dá najít podle popisku", async () => {
+  it("binds the label to the input, so it can be found by label", async () => {
     const user = userEvent.setup();
     render(<Controlled label="Počet kusů" testId="quantity" />);
 
     const input = screen.getByLabelText("Počet kusů");
     expect(input).toBe(screen.getByTestId("quantity"));
 
-    // Klik na popisek zaostří vstup — to je ta vazba v provozu, ne jen
-    // shodný atribut.
+    // A click on the label focuses the input — that is the binding in
+    // operation, not just a matching attribute.
     await user.click(screen.getByText("Počet kusů"));
     expect(input).toHaveFocus();
   });
 
-  it("nesrazí id dvou polí se stejným popiskem na jedné stránce", () => {
+  it("does not collide the ids of two fields with the same label on one page", () => {
     render(
       <>
         <Controlled label="Počet kusů" testId="a" />
@@ -60,7 +64,7 @@ describe("IngotField", () => {
     expect(labels.map((el) => el.getAttribute("for"))).toEqual([a.id, b.id]);
   });
 
-  it("bez chyby nehlásí aria-invalid a nepopisuje se prázdnem", () => {
+  it("without an error reports no aria-invalid and is not described by emptiness", () => {
     render(<Controlled label="Počet kusů" testId="quantity" />);
 
     const input = screen.getByTestId("quantity");
@@ -68,7 +72,7 @@ describe("IngotField", () => {
     expect(input).not.toHaveAttribute("aria-describedby");
   });
 
-  it("chybu hlásí textem i aria-invalid a naváže ji přes aria-describedby", () => {
+  it("reports an error by text and aria-invalid and binds it via aria-describedby", () => {
     render(
       <Controlled
         label="Označení materiálu"
@@ -91,7 +95,7 @@ describe("IngotField", () => {
     );
   });
 
-  it("popíše vstup nápovědou i jednotkou v pořadí, v jakém se čtou", () => {
+  it("describes the input by hint and unit in the order they are read", () => {
     render(
       <Controlled
         label="Počet kusů"
@@ -113,7 +117,7 @@ describe("IngotField", () => {
     ]);
   });
 
-  it("přidá k popisku přeložené „nepovinné“, když ho volající dodá", () => {
+  it("appends the translated optional marker to the label when the caller supplies it", () => {
     render(
       <Controlled
         label="Poznámka pro výrobu"

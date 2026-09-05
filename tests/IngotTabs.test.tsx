@@ -1,14 +1,14 @@
 /**
- * Přepínání pohledů (KAN-657).
+ * View switching (KAN-657).
  *
- * Testy měří kontrakt ze specu Tabs v1.1:
+ * The tests measure the contract from the Tabs v1.1 spec:
  *
- * - role ``tablist``/``tab``/``tabpanel`` a ``aria-selected``,
- * - roving tabindex (Tab zastaví jen na aktivním tabu),
- * - šipky, Home a End přepínají pohledy — komponenta je řízená, takže
- *   se měří, že volá ``onChange`` se správným klíčem,
- * - aktivní tab je poznat i bez barvy (podtržení + tučnost),
- * - ``count`` se vykreslí vedle popisku.
+ * - the ``tablist``/``tab``/``tabpanel`` roles and ``aria-selected``,
+ * - roving tabindex (Tab stops only on the active tab),
+ * - arrows, Home and End switch views — the component is controlled, so
+ *   what is measured is that it calls ``onChange`` with the right key,
+ * - the active tab is told without colour too (underline + weight),
+ * - ``count`` renders next to the label.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -39,7 +39,7 @@ function Controlled({ initial = "overview" }: { initial?: string }) {
 }
 
 describe("IngotTabs — role a atributy", () => {
-  it("vykreslí tablist, taby s aria-selected a tabpanel svázaný s aktivním tabem", () => {
+  it("renders a tablist, tabs with aria-selected and a tabpanel bound to the active tab", () => {
     render(<Controlled />);
 
     const tablist = screen.getByRole("tablist", { name: "Pohledy" });
@@ -55,7 +55,7 @@ describe("IngotTabs — role a atributy", () => {
     expect(tabs[0].getAttribute("aria-controls")).toBe(panel.id);
   });
 
-  it("count se vykreslí mono vedle popisku", () => {
+  it("count renders in mono next to the label", () => {
     render(<Controlled />);
     const tab = screen.getByTestId("tabs-tab-items");
     expect(tab).toHaveTextContent("Položky");
@@ -63,7 +63,7 @@ describe("IngotTabs — role a atributy", () => {
     expect(tab.querySelector(".font-mono")).toHaveTextContent("12");
   });
 
-  it("aktivní tab je poznat i bez barvy — podtržení a tučnost", () => {
+  it("the active tab is told without colour — underline and weight", () => {
     render(<Controlled />);
     const active = screen.getByTestId("tabs-tab-overview");
     const idle = screen.getByTestId("tabs-tab-items");
@@ -72,7 +72,7 @@ describe("IngotTabs — role a atributy", () => {
     expect(idle.className).toContain("border-transparent");
   });
 
-  it("roving tabindex: Tab zastaví jen na aktivním tabu", () => {
+  it("roving tabindex: Tab stops only on the active tab", () => {
     render(<Controlled initial="items" />);
     expect(screen.getByTestId("tabs-tab-items")).toHaveAttribute(
       "tabindex",
@@ -89,14 +89,14 @@ describe("IngotTabs — role a atributy", () => {
   });
 });
 
-describe("IngotTabs — ovládání", () => {
-  it("kliknutí přepne pohled", () => {
+describe("IngotTabs — controls", () => {
+  it("a click switches the view", () => {
     render(<Controlled />);
     fireEvent.click(screen.getByTestId("tabs-tab-history"));
     expect(screen.getByTestId("panel-content")).toHaveTextContent("history");
   });
 
-  it("šipka doprava jde na další tab, z posledního se vrací na první", () => {
+  it("arrow right goes to the next tab, from the last back to the first", () => {
     render(<Controlled />);
     const tablist = screen.getByRole("tablist");
 
@@ -109,7 +109,7 @@ describe("IngotTabs — ovládání", () => {
     expect(screen.getByTestId("panel-content")).toHaveTextContent("overview");
   });
 
-  it("šipka doleva jde na předchozí tab, z prvního na poslední", () => {
+  it("arrow left goes to the previous tab, from the first to the last", () => {
     render(<Controlled />);
     const tablist = screen.getByRole("tablist");
 
@@ -117,7 +117,7 @@ describe("IngotTabs — ovládání", () => {
     expect(screen.getByTestId("panel-content")).toHaveTextContent("history");
   });
 
-  it("Home jde na první, End na poslední tab", () => {
+  it("Home goes to the first tab, End to the last", () => {
     render(<Controlled initial="items" />);
     const tablist = screen.getByRole("tablist");
 
@@ -128,7 +128,7 @@ describe("IngotTabs — ovládání", () => {
     expect(screen.getByTestId("panel-content")).toHaveTextContent("overview");
   });
 
-  it("je řízená — bez vlastního stavu volá onChange a value nemění", () => {
+  it("is controlled — without state of its own it calls onChange and leaves value alone", () => {
     const onChange = vi.fn();
     render(
       <IngotTabs items={ITEMS} value="overview" onChange={onChange} testId="tabs" />,
@@ -141,7 +141,7 @@ describe("IngotTabs — ovládání", () => {
     );
   });
 
-  it("bez children se žádný tabpanel nevykreslí", () => {
+  it("without children no tabpanel renders", () => {
     render(
       <IngotTabs items={ITEMS} value="overview" onChange={vi.fn()} testId="tabs" />,
     );

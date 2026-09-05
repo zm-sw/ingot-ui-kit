@@ -1,16 +1,19 @@
 /**
- * Potvrzovací dialog (KAN-583) — třetí primitivum Ingotu.
+ * Confirmation dialog (KAN-583) — the third Ingot primitive.
  *
- * Dvě věci, které se tu měří, a proč zrovna ty:
+ * Two things are measured here, and why exactly those:
  *
- * 1. **Že to opravdu jede přes `IngotModal`.** Kdyby si `IngotConfirm` overlay
- *    znovu udělal sám, testy na tlačítka by pořád procházely — a a11y laťka by
- *    tiše zmizela. ESC, návrat fokusu na spouštěč a portál do `document.body`
- *    jsou vlastnosti shellu; jestli platí i tady, je jediný levný důkaz, že
- *    pod tím shell je. Proto se měří tady, ne jen v `IngotModal.test.tsx`.
- * 2. **Veto (KAN-422).** Zašedlé „Smazat trvale" vedle důvodu čte operátor
- *    jako „ještě chvíli", proto se tlačítko nesmí nabídnout vůbec. Test na
- *    `disabled` by tuhle regresi nechytil — kontroluje se NEPŘÍTOMNOST.
+ * 1. **That it really runs through `IngotModal`.** If `IngotConfirm` made
+ *    its own overlay again, the button tests would still pass — and the
+ *    accessibility bar would quietly vanish. ESC, focus return to the
+ *    trigger and the portal into `document.body` are shell properties;
+ *    whether they hold here too is the only cheap proof that the shell is
+ *    underneath. Hence they are measured here, not only in
+ *    `IngotModal.test.tsx`.
+ * 2. **Veto (KAN-422).** A greyed-out "Delete permanently" next to a reason
+ *    reads to an operator as "wait a moment", so the button must not be
+ *    offered at all. A test for `disabled` would not catch this regression
+ *    — ABSENCE is checked.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -70,7 +73,7 @@ function Harness({
 }
 
 describe("IngotConfirm — kostra a kontrakt", () => {
-  it("panel je dialog popsaný svým titulkem", () => {
+  it("the panel is a dialog labelled by its title", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -83,7 +86,7 @@ describe("IngotConfirm — kostra a kontrakt", () => {
     );
   });
 
-  it("potvrzení volá onConfirm, zrušení zavírá", () => {
+  it("confirm calls onConfirm, cancel closes", () => {
     const onConfirm = vi.fn();
     render(<Harness onConfirm={onConfirm} />);
     fireEvent.click(screen.getByTestId("opener"));
@@ -95,7 +98,7 @@ describe("IngotConfirm — kostra a kontrakt", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("busy zamkne obě tlačítka", () => {
+  it("busy locks both buttons", () => {
     render(<Harness busy />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -111,8 +114,8 @@ describe("IngotConfirm — kostra a kontrakt", () => {
   });
 });
 
-describe("IngotConfirm — jede přes IngotModal, ne přes vlastní overlay", () => {
-  it("ESC zavírá", () => {
+describe("IngotConfirm — runs through IngotModal, not through its own overlay", () => {
+  it("ESC closes", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -121,7 +124,7 @@ describe("IngotConfirm — jede přes IngotModal, ne přes vlastní overlay", ()
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("kliknutí do pozadí zavírá, kliknutí do panelu ne", () => {
+  it("a click on the backdrop closes, a click in the panel does not", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -132,7 +135,7 @@ describe("IngotConfirm — jede přes IngotModal, ne přes vlastní overlay", ()
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("po zavření se fokus vrací na spouštěč", () => {
+  it("focus returns to the trigger after close", () => {
     render(<Harness />);
     const opener = screen.getByTestId("opener");
     opener.focus();
@@ -143,7 +146,7 @@ describe("IngotConfirm — jede přes IngotModal, ne přes vlastní overlay", ()
     expect(opener).toHaveFocus();
   });
 
-  it("dialog visí na document.body, ne v místě volání", () => {
+  it("the dialog hangs on document.body, not at the call site", () => {
     const { container } = render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -152,23 +155,23 @@ describe("IngotConfirm — jede přes IngotModal, ne přes vlastní overlay", ()
   });
 });
 
-describe("IngotConfirm — veto z dopadového slotu (KAN-422)", () => {
-  it("veto potvrzovací tlačítko SUNDÁ a vypíše důvod", () => {
+describe("IngotConfirm — veto from the impact slot (KAN-422)", () => {
+  it("a veto REMOVES the confirm button and prints the reason", () => {
     render(<Harness impact={<VetoingImpact reason="Má objednávky." />} />);
     fireEvent.click(screen.getByTestId("opener"));
 
-    // Nepřítomnost, ne disabled: zašedlé tlačítko čte operátor jako
-    // „ještě chvíli", ne jako „tudy ne".
+    // Absence, not disabled: a greyed-out button reads to an operator as
+    // "wait a moment", not as "not this way".
     expect(screen.queryByTestId("confirm-dialog-confirm")).toBeNull();
     expect(screen.getByTestId("confirm-dialog-blocked")).toHaveTextContent(
       "Má objednávky.",
     );
     expect(screen.getByRole("alert")).toBeInTheDocument();
-    // Zrušit zůstává — jinak z dialogu nevede cesta ven.
+    // Cancel stays — otherwise there is no way out of the dialog.
     expect(screen.getByTestId("confirm-dialog-cancel")).toBeInTheDocument();
   });
 
-  it("slot bez důvodu potvrzení nechává", () => {
+  it("a slot without a reason leaves the confirmation in place", () => {
     render(<Harness impact={<VetoingImpact reason={null} />} />);
     fireEvent.click(screen.getByTestId("opener"));
 

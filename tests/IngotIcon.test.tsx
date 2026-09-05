@@ -1,23 +1,24 @@
 /**
- * Ikonová vrstva kitu (KAN-649) — dvě sady, dvoje pravidla.
+ * Icon layer of the kit (KAN-649) — two sets, two sets of rules.
  *
- * Co se tu měří a proč zrovna to:
+ * What is measured here and why exactly that:
  *
- * 1. **Dekorativní je VÝCHOZÍ stav.** Ikona vedle svého popisku, kterou
- *    odečítač přečte, znamená, že uživatel slyší totéž dvakrát. Regrese
- *    by byla neviditelná — vizuálně se nezmění nic.
- * 2. **Neznámý klíč nesmí zmizet potichu.** ``icon_key`` teče z databáze,
- *    takže typecheck ho nechytí; tiché prázdno se pak hledá přes půl
- *    aplikace. Měří se, že komponenta nevykreslí nic A že to ve vývoji
- *    řekne nahlas.
- * 3. **``IngotOpIcon`` kresby neduplikuje.** Kdyby si geometrii opsal,
- *    test na „něco se vykreslilo" by pořád procházel a obě kopie by se
- *    rozešly tiše. Proto se porovnává s tím, co vrací sama knihovna
- *    operací — ne s konstantou v testu.
- * 4. **Výplň je JEDNA pojmenovaná výjimka.** Sada je čára; ``star-filled``
- *    je druhý tvar ke stavovému glyfu, ne povolení kreslit plné ikony.
- *    Bez testu by se druhá výplň přidala mimochodem a ta věta v Limitech
- *    by tiše přestala platit.
+ * 1. **Decorative is the DEFAULT state.** An icon next to its label that a
+ *    screen reader reads means the user hears the same thing twice. The
+ *    regression would be invisible — visually nothing changes.
+ * 2. **An unknown key must not vanish quietly.** ``icon_key`` flows from
+ *    the database, so the typecheck does not catch it; a silent blank is
+ *    then hunted across half the application. It is measured that the
+ *    component renders nothing AND says so loudly in development.
+ * 3. **``IngotOpIcon`` does not duplicate the drawings.** If it copied the
+ *    geometry, a test for "something rendered" would still pass and both
+ *    copies would drift quietly. Hence the comparison against what the
+ *    operations library itself returns — not against a constant in the
+ *    test.
+ * 4. **The fill is ONE named exception.** The set is line art;
+ *    ``star-filled`` is the second shape of a state glyph, not a licence to
+ *    draw filled icons. Without the test a second fill would be added in
+ *    passing and the sentence in Limits would quietly stop being true.
  */
 
 import { render, screen } from "@testing-library/react";
@@ -35,7 +36,7 @@ const OP = INGOT_OP_ICON_KEYS[0];
 const OTHER_OP = INGOT_OP_ICON_KEYS[1];
 
 describe("IngotIcon", () => {
-  it("je bez title dekorativní a s ním pojmenovaný obrázek", () => {
+  it("is decorative without title and a named image with it", () => {
     const { container, rerender } = render(<IngotIcon name="upload" />);
 
     const decorative = container.querySelector("svg");
@@ -50,7 +51,7 @@ describe("IngotIcon", () => {
     expect(labelled.querySelector("title")).toHaveTextContent("Nahrát výkres");
   });
 
-  it("drží techniku handoffu — 24×24, currentColor, výjimka u fajfky", () => {
+  it("keeps the handoff technique — 24×24, currentColor, the check as the exception", () => {
     const { container, rerender } = render(<IngotIcon name="upload" />);
 
     const svg = container.querySelector("svg");
@@ -64,7 +65,7 @@ describe("IngotIcon", () => {
     expect(container.querySelector("svg")).toHaveAttribute("stroke-width", "2.2");
   });
 
-  it("nevykreslí nic a varuje, když klíč sada nezná", () => {
+  it("renders nothing and warns when the set does not know the key", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const unknown = "rozhodne-neexistuje" as (typeof INGOT_ICON_NAMES)[number];
 
@@ -77,7 +78,7 @@ describe("IngotIcon", () => {
     warn.mockRestore();
   });
 
-  it("výplň má jediný glyf a s čárovým párem sdílí geometrii", () => {
+  it("only one glyph has a fill and it shares geometry with its line pair", () => {
     const { container: line } = render(<IngotIcon name="star" />);
     const { container: filled } = render(<IngotIcon name="star-filled" />);
 
@@ -97,7 +98,7 @@ describe("IngotIcon", () => {
     expect(withFill).toEqual(["star-filled"]);
   });
 
-  it("vypisuje každý svůj klíč a všechny se vykreslí", () => {
+  it("lists every key of its own and all of them render", () => {
     expect(INGOT_ICON_NAMES.length).toBeGreaterThan(30);
 
     for (const name of INGOT_ICON_NAMES) {
@@ -109,7 +110,7 @@ describe("IngotIcon", () => {
 });
 
 describe("IngotOpIcon", () => {
-  it("bere kresbu z knihovny operací, ne z vlastní kopie", () => {
+  it("takes the drawing from the operations library, not from its own copy", () => {
     const { container } = render(<IngotOpIcon token={OP} />);
 
     const { container: library } = render(
@@ -121,7 +122,7 @@ describe("IngotOpIcon", () => {
     );
   });
 
-  it("obarví se kategorií procesu, ale u :black si barvu nese token", () => {
+  it("takes the process category colour, but for :black the token carries the colour", () => {
     const { container: byCategory } = render(
       <IngotOpIcon token={OP} categoryColor="rgb(1, 2, 3)" testId="op" />,
     );
@@ -137,7 +138,7 @@ describe("IngotOpIcon", () => {
     });
   });
 
-  it("je bez title dekorativní a s ním pojmenovaný obrázek", () => {
+  it("is decorative without title and a named image with it", () => {
     const { container, rerender } = render(<IngotOpIcon token={OTHER_OP} testId="op" />);
     expect(container.querySelector('[data-testid="op"]')).toHaveAttribute(
       "aria-hidden",
@@ -148,7 +149,7 @@ describe("IngotOpIcon", () => {
     expect(screen.getByRole("img", { name: "Název operace" })).toBeInTheDocument();
   });
 
-  it("na neznámý i prázdný token vrátí nic, ať volající může spadnout jinam", () => {
+  it("returns nothing for an unknown or empty token so the caller can fall back elsewhere", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const { container: unknown } = render(<IngotOpIcon token="neexistuje" />);

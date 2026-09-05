@@ -1,21 +1,24 @@
 /**
  * `IngotBadge` (KAN-652).
  *
- * 🚨 **Kontrast se tu MĚŘÍ, netvrdí.** Test na `toHaveClass("text-ok")` by
- * prošel i nad tónem, který na svém pozadí není vidět — jméno třídy o
- * kontrastu neříká nic. Proto se z vykresleného štítku vezmou třídy, které
- * komponenta doopravdy vydala, přeloží se na tokeny a poměr se spočítá nad
- * hodnotami z `globals.css`, a to v OBOU motivech: token má dvě hodnoty a
- * změřit jen jednu znamená změřit půlku.
+ * **Contrast is MEASURED here, not asserted.** A test for
+ * `toHaveClass("text-ok")` would pass over a tone that is invisible on
+ * its background — a class name says nothing about contrast. Hence the
+ * classes the component really emitted are taken from the rendered badge,
+ * translated to tokens, and the ratio is computed over the values from
+ * `globals.css`, in BOTH themes: a token has two values and measuring one
+ * means measuring half.
  *
- * Zbytek je to, co se u štítku dá pokazit potichu:
+ * The rest is what can go wrong quietly on a badge:
  *
- * 1. **Každý tón vydá jiné pozadí i text.** Kdyby dva tóny spadly na tutéž
- *    dvojici, štítek by dvě různá sdělení kreslil stejně.
- * 2. 🎨 **Tón nejde přepsat zvenčí.** `Pill` bere `className`, a jeho
- *    `bg-…` s tónem prohrává — volající si myslí, že barvu přepsal, a ona
- *    zůstane. Tady ta vlastnost neexistuje, což musí platit i po refaktoru.
- * 3. **`dot` je dekorace.** Odečítač ho nesmí přečíst.
+ * 1. **Every tone emits a different background and text.** If two tones
+ *    fell onto the same pair, the badge would draw two different messages
+ *    alike.
+ * 2. **The tone cannot be overridden from outside.** `Pill` takes
+ *    `className`, and its `bg-…` loses to the tone — the caller thinks
+ *    they overrode the colour and it stays. Here that prop does not exist,
+ *    which has to hold after a refactor too.
+ * 3. **`dot` is decoration.** A screen reader must not read it.
  */
 
 import { render, screen } from "@testing-library/react";
@@ -40,12 +43,13 @@ const GLOBALS = readFileSync(
 );
 
 /**
- * Hodnoty tokenů z jednoho `:root` bloku `globals.css`.
+ * Token values from one `:root` block of `globals.css`.
  *
- * 🪤 Token nemusí nést hex přímo. Výchozí akcentová rodina drží hodnoty
- * ve `--blue-*` a `--accent-*` je jen odkazuje, aby je nemusel opisovat
- * blok `[data-accent="blue"]` — jinak by existovaly dvě definice téže
- * modré. Alias se proto dohledá; měří se pořád skutečná barva.
+ * A token need not carry a hex directly. The default accent family holds
+ * its values in `--blue-*` and `--accent-*` only references them, so the
+ * `[data-accent="blue"]` block does not have to copy them — otherwise
+ * there would be two definitions of the same blue. The alias is therefore
+ * resolved; what is measured is still the real colour.
  */
 function tokens(selector: string): Record<string, string> {
   const start = GLOBALS.indexOf(`${selector} {`);
@@ -99,8 +103,9 @@ function contrast(a: string, b: string): number {
 /**
  * `bg-ok-bg` → `--ok-bg`, `text-ink-2` → `--ink-2`.
  *
- * 🪤 `text-` nese i velikost (`text-[11px]`). Hranaté hodnoty proto ven —
- * bez toho helper vrátil `--[11px]` a měřil velikost místo barvy.
+ * `text-` carries size too (`text-[11px]`). Bracketed values therefore go
+ * out — without that the helper returned `--[11px]` and measured size
+ * instead of colour.
  */
 function tokenOf(className: string, prefix: string): string {
   const hits = className
@@ -117,7 +122,7 @@ function tokenOf(className: string, prefix: string): string {
   return `--${hits[0]}`;
 }
 
-/** Dvojice pozadí/text, kterou komponenta pro daný tón doopravdy vydala. */
+/** The background/text pair the component really emitted for the given tone. */
 function painted(tone: IngotBadgeTone): { bg: string; text: string } {
   const { unmount } = render(
     <IngotBadge tone={tone} testId="badge">
@@ -130,7 +135,7 @@ function painted(tone: IngotBadgeTone): { bg: string; text: string } {
 }
 
 describe("IngotBadge", () => {
-  it.each(TONES)("tón %s unese 4,5:1 ve světlém i tmavém motivu", (tone) => {
+  it.each(TONES)("tone %s holds 4.5:1 in the light and the dark theme", (tone) => {
     const { bg, text } = painted(tone);
 
     for (const [theme, values] of Object.entries(THEMES)) {
@@ -151,7 +156,7 @@ describe("IngotBadge", () => {
     }
   });
 
-  it("nekreslí dva tóny stejně", () => {
+  it("does not draw two tones alike", () => {
     const pairs = TONES.map((tone) => {
       const { bg, text } = painted(tone);
       return `${bg}/${text}`;
@@ -159,7 +164,7 @@ describe("IngotBadge", () => {
     expect(new Set(pairs).size).toBe(TONES.length);
   });
 
-  it("bez tónu je neutrální", () => {
+  it("is neutral without a tone", () => {
     render(
       <>
         <IngotBadge testId="implicit">Koncept</IngotBadge>
@@ -173,7 +178,7 @@ describe("IngotBadge", () => {
     );
   });
 
-  it("nese význam textem, ne barvou", () => {
+  it("carries meaning by text, not by colour", () => {
     render(
       <IngotBadge tone="danger" testId="badge">
         Zamítnuto
@@ -182,16 +187,16 @@ describe("IngotBadge", () => {
     expect(screen.getByTestId("badge")).toHaveTextContent("Zamítnuto");
   });
 
-  it("verzálky dělá CSS, ne přepsaný řetězec", () => {
+  it("uppercase is done by CSS, not by a rewritten string", () => {
     render(<IngotBadge testId="badge">Ve výrobě</IngotBadge>);
     const badge = screen.getByTestId("badge");
-    // Kdyby to dělal `toUpperCase()`, přišel by o to překlad i všude, kde se
-    // ten řetězec použije znovu.
+    // If `toUpperCase()` did it, translation would lose it, and so would
+    // every place the string is reused.
     expect(badge.textContent).toBe("Ve výrobě");
     expect(badge.className).toContain("uppercase");
   });
 
-  it("tečku živého stavu odečítač nečte a bez dot tam není", () => {
+  it("a screen reader does not read the live-state dot and without dot it is absent", () => {
     const { unmount } = render(
       <IngotBadge dot testId="badge">
         Ve výrobě
@@ -209,11 +214,12 @@ describe("IngotBadge", () => {
     ).toHaveLength(0);
   });
 
-  it("nebere className, takže tón nejde přepsat zvenčí", () => {
-    // 🎨 Kdyby ho někdo doplnil, tenhle výraz začne typovat — a to je ta
-    // regrese: u dnešního Pill `className="bg-…"` s tónem tiše prohrává.
+  it("takes no className, so the tone cannot be overridden from outside", () => {
+    // If someone added it, this expression would start to type-check — and
+    // that is the regression: on the current Pill `className="bg-…"` quietly
+    // loses to the tone.
     render(
-      // @ts-expect-error IngotBadge className schválně nepřijímá.
+      // @ts-expect-error IngotBadge deliberately does not accept className.
       <IngotBadge className="bg-danger-bg" testId="badge">
         Ve výrobě
       </IngotBadge>,

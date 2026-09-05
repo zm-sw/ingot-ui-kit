@@ -4,20 +4,20 @@ import { describe, expect, it } from "vitest";
 import { IngotCode } from "@/ingot";
 import { highlightTsx } from "@/ingot/highlightTsx";
 
-/** Slepí tokeny zpátky — obarvení nesmí text ani přeskládat, ani ztratit. */
+/** Glues the tokens back together — colouring must neither reorder nor lose text. */
 function joined(source: string): string {
   return highlightTsx(source)
     .map((token) => token.text)
     .join("");
 }
 
-/** Role prvního tokenu, jehož text se rovná ``needle``. */
+/** Role of the first token whose text equals ``needle``. */
 function kindOf(source: string, needle: string): string | undefined {
   return highlightTsx(source).find((token) => token.text === needle)?.kind;
 }
 
 describe("highlightTsx", () => {
-  it("vrátí zpátky přesně vstupní text", () => {
+  it("returns exactly the input text", () => {
     const source = [
       "import { useState } from 'react';",
       "// komentář",
@@ -28,11 +28,11 @@ describe("highlightTsx", () => {
     expect(joined(source)).toBe(source);
   });
 
-  it("nespadne na prázdném vstupu", () => {
+  it("does not crash on empty input", () => {
     expect(highlightTsx("")).toEqual([]);
   });
 
-  it("rozliší klíčové slovo, řetězec, číslo a komentář", () => {
+  it("tells keyword, string, number and comment apart", () => {
     const source = 'const x = "ahoj"; // pozn\nconst y = 42;';
     expect(kindOf(source, "const")).toBe("keyword");
     expect(kindOf(source, '"ahoj"')).toBe("string");
@@ -40,29 +40,29 @@ describe("highlightTsx", () => {
     expect(kindOf(source, "// pozn")).toBe("comment");
   });
 
-  it("v JSX značce pozná jméno značky a atribut", () => {
+  it("recognises the tag name and an attribute in a JSX tag", () => {
     const source = '<IngotBadge tone="ok">Hotovo</IngotBadge>';
     expect(kindOf(source, "IngotBadge")).toBe("tag");
     expect(kindOf(source, "tone")).toBe("attr");
   });
 
-  it("mimo značku je identifikátor běžný text, ne atribut", () => {
-    // ``Hotovo`` stojí za ``>``, tedy už v obsahu — kdyby se stav značky
-    // nezavíral, obarvilo by se jako atribut.
+  it("outside a tag an identifier is plain text, not an attribute", () => {
+    // ``Hotovo`` stands after ``>``, so already in content — if the tag
+    // state did not close, it would be coloured as an attribute.
     expect(kindOf('<IngotBadge tone="ok">Hotovo</IngotBadge>', "Hotovo")).toBe(
       "plain",
     );
   });
 
-  it("uvnitř výrazu ve značce se atributy nehledají", () => {
+  it("attributes are not looked for inside an expression in a tag", () => {
     const source = "<IngotTabs value={view} onChange={setView} />";
     expect(kindOf(source, "value")).toBe("attr");
     expect(kindOf(source, "view")).toBe("plain");
   });
 
-  it("generikum není JSX značka", () => {
-    // 🪤 Tohle je ta jediná nejednoznačnost, kterou skener řeší: po
-    // identifikátoru je ostrá závorka generikum nebo porovnání.
+  it("a generic is not a JSX tag", () => {
+    // This is the single ambiguity the scanner resolves: after an
+    // identifier an angle bracket is a generic or a comparison.
     expect(kindOf("const [a, b] = useState<string>(null);", "string")).toBe(
       "plain",
     );
@@ -71,7 +71,7 @@ describe("highlightTsx", () => {
 });
 
 describe("IngotCode", () => {
-  it("obarvený výpis nese týž text jako neobarvený", () => {
+  it("a coloured listing carries the same text as an uncoloured one", () => {
     const source = 'const label = "Hotovo";';
     render(
       <IngotCode block lang="tsx" testId="code">
@@ -81,7 +81,7 @@ describe("IngotCode", () => {
     expect(screen.getByTestId("code").textContent).toBe(source);
   });
 
-  it("bez lang nevykreslí ani jednu barevnou třídu", () => {
+  it("without lang renders not a single colour class", () => {
     render(
       <IngotCode block testId="plain">
         {'const label = "Hotovo";'}
@@ -92,7 +92,7 @@ describe("IngotCode", () => {
     ).toHaveLength(0);
   });
 
-  it("s lang obarví klíčové slovo i řetězec", () => {
+  it("with lang colours a keyword and a string", () => {
     render(
       <IngotCode block lang="tsx" testId="code">
         {'const label = "Hotovo";'}
@@ -105,7 +105,7 @@ describe("IngotCode", () => {
     );
   });
 
-  it("lang na kódu ve větě nic nekreslí — obarvuje se jen výpis", () => {
+  it("lang on inline code draws nothing — only a listing is coloured", () => {
     render(
       <IngotCode lang="tsx" testId="inline">
         {"const x = 1;"}
