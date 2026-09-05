@@ -21,11 +21,17 @@
  *    module. The importers are read from the source, not from a
  *    hand-written list, because a hand-written list is the first thing to
  *    drift when a module gains a consumer.
- * 3. **``tokens.css``** owes a bump on every page that DECLARES one of the
+ * 3. **The stylesheets** owe a bump on every page that DECLARES one of the
  *    tokens whose value changed. That is what the ``tokens`` field on a doc
  *    page is for: it already promises "a change to any of these shows on
  *    this component", so the guard holds the page to its own promise
  *    instead of demanding all forty-nine.
+ *
+ *    What is compared is the token VALUES across every stylesheet at once,
+ *    not one file's text. A declaration that moves from a hand-written file
+ *    into a generated one changes no colour a consumer will ever see, and a
+ *    guard that demanded fifty version bumps for that would be a guard
+ *    people learn to route around.
  *
  * The barrel (``index.ts``) is the fourth case: it owes nothing by itself
  * when a page was ADDED — that is a new primitive arriving with its own
@@ -132,7 +138,7 @@ export function pagesOwed({
   for (const file of changedFiles) {
     const name = moduleName(file);
 
-    if (file.endsWith("tokens.css")) {
+    if (file.endsWith(".css")) {
       const moved = changedTokens(tokensBefore, tokensAfter);
       const dependents = Object.entries(pages)
         .filter(([, tokens]) => tokens.some((token) => moved.includes(token)))
@@ -141,11 +147,20 @@ export function pagesOwed({
       if (missing.length > 0) {
         owed.push({ file, reason: `tokens ${moved.join(", ")}`, pages: missing });
       }
-      continue;
+      // Only the first stylesheet reports: the values were compared across
+      // all of them together, so a second entry would repeat the same list.
+      break;
     }
 
     if (pageNames.has(name) && COMPONENT_RE.test(name)) {
       if (!paid.has(name)) owed.push({ file, reason: "its own page", pages: [name] });
+      continue;
+    }
+
+    if (file.endsWith("tokens.json")) {
+      // The source of the stylesheets, not a module of its own. Whatever it
+      // changed shows up in the generated CSS, which the comparison above
+      // already measured.
       continue;
     }
 
