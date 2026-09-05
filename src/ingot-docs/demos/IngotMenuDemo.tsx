@@ -1,10 +1,35 @@
 import { useRef, useState } from "react";
 
 import { Button, IngotMenu } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    trigger: "Akce objednávky",
+    nothing: "zatím nic",
+    open: "Otevřít detail",
+    duplicate: "Duplikovat",
+    exportPdf: "Exportovat do PDF",
+    remove: "Smazat",
+    lastLabel: "Naposledy vybráno:",
+    hint: "Šipky procházejí položky, psaní hledá podle prvních písmen, Tab menu opustí.",
+  },
+  en: {
+    trigger: "Order actions",
+    nothing: "nothing yet",
+    open: "Open the detail",
+    duplicate: "Duplicate",
+    exportPdf: "Export to PDF",
+    remove: "Delete",
+    lastLabel: "Last chosen:",
+    hint: "Arrows walk the items, typing jumps by first letters, Tab leaves the menu.",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   const [open, setOpen] = useState(false);
-  const [last, setLast] = useState("zatím nic");
+  const [last, setLast] = useState(t.nothing);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -16,47 +41,46 @@ export function Demo(): JSX.Element {
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        Akce objednávky
+        {t.trigger}
       </Button>
       <IngotMenu
         open={open}
         anchorRef={anchorRef}
         onClose={() => setOpen(false)}
-        label="Akce objednávky"
+        label={t.trigger}
         items={[
           {
             key: "open",
-            label: "Otevřít detail",
+            label: t.open,
             icon: "file",
-            onSelect: () => setLast("Otevřít detail"),
+            onSelect: () => setLast(t.open),
           },
           {
             key: "copy",
-            label: "Duplikovat",
+            label: t.duplicate,
             icon: "copy",
-            onSelect: () => setLast("Duplikovat"),
+            onSelect: () => setLast(t.duplicate),
           },
           {
             key: "export",
-            label: "Exportovat do PDF",
+            label: t.exportPdf,
             icon: "download",
             disabled: true,
-            onSelect: () => setLast("Exportovat do PDF"),
+            onSelect: () => setLast(t.exportPdf),
           },
           {
             key: "delete",
-            label: "Smazat",
+            label: t.remove,
             icon: "trash",
             tone: "danger",
             separatorBefore: true,
-            onSelect: () => setLast("Smazat"),
+            onSelect: () => setLast(t.remove),
           },
         ]}
         testId="docs-menu"
       />
       <p className="text-xs text-ink-3">
-        Naposledy vybráno: <strong className="text-ink">{last}</strong>. Šipky
-        procházejí položky, psaní hledá podle prvních písmen, Tab menu opustí.
+        {t.lastLabel} <strong className="text-ink">{last}</strong>. {t.hint}
       </p>
     </div>
   );

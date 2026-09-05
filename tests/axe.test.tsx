@@ -50,7 +50,7 @@ describe("the doc web's demos pass axe", () => {
       // labels a real screen sees rather than the English fallbacks.
       const { container } = render(
         <IngotProvider lang="cs">
-          <Demo />
+          <Demo lang="cs" />
         </IngotProvider>,
       );
 

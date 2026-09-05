@@ -5,9 +5,39 @@ import {
   IngotUserMenuRow,
   IngotUserMenuSection,
 } from "@/ingot";
-export function Demo(): JSX.Element {
+import type { DocLang, Localized } from "@/ingot-docs/lang";
+
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    menu: "Menu účtu",
+    tenant: "Otevřít Strojírny Kladno →",
+    theme: "Motiv vzhledu",
+    themeValue: "Podle systému",
+    language: "Jazyk",
+    dictionary: "Slovník",
+    dictionaryValue: "Jednoduše",
+    hints: "Nápověda na stránkách",
+    hintsValue: "Zapnuto",
+    signOut: "Odhlásit se",
+  },
+  en: {
+    menu: "Account menu",
+    tenant: "Open Kladno Engineering →",
+    theme: "Appearance",
+    themeValue: "Follow the system",
+    language: "Language",
+    dictionary: "Dictionary",
+    dictionaryValue: "Plain",
+    hints: "Hints on pages",
+    hintsValue: "On",
+    signOut: "Sign out",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   return (
-    <IngotUserMenu label="Menu účtu" testId="docs-usermenu">
+    <IngotUserMenu label={t.menu} testId="docs-usermenu">
       <IngotUserMenuSection>
         <p className="text-sm font-semibold text-ink">Petr Zeman</p>
         <p className="text-[13px] text-ink-3">petr@strojirny-kladno.cz</p>
@@ -15,28 +45,28 @@ export function Demo(): JSX.Element {
       <IngotUserMenuSection>
         <a
           className="block py-1.5 text-sm font-semibold text-ink"
-          href="#/IngotUserMenu"
+          href="/komponenty/user-menu"
         >
-          Otevřít Strojírny Kladno →
+          {t.tenant}
         </a>
       </IngotUserMenuSection>
       <IngotUserMenuSection>
-        <IngotUserMenuRow label="Motiv vzhledu">
-          <IngotBadge>Podle systému</IngotBadge>
+        <IngotUserMenuRow label={t.theme}>
+          <IngotBadge>{t.themeValue}</IngotBadge>
         </IngotUserMenuRow>
-        <IngotUserMenuRow label="Jazyk">
-          <IngotBadge>CS</IngotBadge>
+        <IngotUserMenuRow label={t.language}>
+          <IngotBadge>{lang.toUpperCase()}</IngotBadge>
         </IngotUserMenuRow>
-        <IngotUserMenuRow label="Slovník">
-          <IngotBadge tone="accent">Jednoduše</IngotBadge>
+        <IngotUserMenuRow label={t.dictionary}>
+          <IngotBadge tone="accent">{t.dictionaryValue}</IngotBadge>
         </IngotUserMenuRow>
-        <IngotUserMenuRow label="Nápověda na stránkách">
-          <IngotBadge tone="ok">Zapnuto</IngotBadge>
+        <IngotUserMenuRow label={t.hints}>
+          <IngotBadge tone="ok">{t.hintsValue}</IngotBadge>
         </IngotUserMenuRow>
       </IngotUserMenuSection>
       <IngotUserMenuSection>
         <Button variant="ghost" size="sm">
-          Odhlásit se
+          {t.signOut}
         </Button>
       </IngotUserMenuSection>
     </IngotUserMenu>

@@ -463,7 +463,7 @@ describe("DocsApp", () => {
       // imports and the function header too — not just a piece of JSX that
       // could be copied.
       expect(page.demoSource).toContain('from "@/ingot"');
-      expect(page.demoSource).toContain("export function Demo()");
+      expect(page.demoSource).toContain("export function Demo(");
       expect(page.demoSource).toContain(name);
     },
   );
@@ -539,6 +539,33 @@ describe("DocsApp", () => {
     // `index.html` ships lang="cs"; after a switch it would be a lie a
     // screen reader pays for and nobody sees.
     expect(document.documentElement.lang).toBe("en");
+    // And the address is the English one, so what the reader shares is the
+    // page they are actually looking at.
+    expect(window.location.pathname).toBe(`/en${componentPath("IngotEmptyState")}`);
+  });
+
+  it("the demo itself switches language, not only the page around it", async () => {
+    // The demo is the part of the page a reader looks at first. Translating
+    // the prose around a demo that stays in the other language looks
+    // finished and is not.
+    const user = userEvent.setup();
+    goto(componentPath("IngotEmptyState"));
+    render(<DocsApp />);
+
+    const stage = screen.getByTestId("docs-demo-stage");
+    const empty = INGOT_DOC_PAGES.find((page) => page.name === "IngotEmptyState")!;
+    expect(within(stage).getByTestId("docs-empty")).toBeInTheDocument();
+    const csTitle = within(stage).getByText("Zatím tu nic není");
+    expect(csTitle).toBeInTheDocument();
+
+    await user.click(await screen.findByTestId("docs-lang-en"));
+
+    const stageEn = screen.getByTestId("docs-demo-stage");
+    expect(within(stageEn).getByText("Nothing here yet")).toBeInTheDocument();
+    expect(within(stageEn).queryByText("Zatím tu nic není")).toBeNull();
+    // The page around it moved too, so the two cannot drift apart in a test
+    // that only ever looked at one of them.
+    expect(screen.getByText(empty.summary.en)).toBeInTheDocument();
   });
 
   it("offers only the languages the platform enabled", async () => {

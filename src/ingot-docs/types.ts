@@ -25,7 +25,7 @@
  */
 import type { JSX, ReactNode } from "react";
 
-import type { Localized } from "@/ingot-docs/lang";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
 /**
  * A doc web page that is NOT about a component.
@@ -180,8 +180,17 @@ export interface IngotDocPage {
   classNameNote: Localized<string>;
   /** One sentence for the menu and above the demo. */
   summary: Localized<string>;
-  /** Live demo. MUST render the real component from ``@/ingot``. */
-  Demo: () => JSX.Element;
+  /**
+   * Live demo. MUST render the real component from ``@/ingot``.
+   *
+   * It is handed the reader's language, because a demo is part of the page
+   * and a page that translates everything except the one thing the reader
+   * is looking at is worse than one that translates nothing: it looks
+   * finished. The demo holds its own texts as a ``Localized`` constant at
+   * the top of the module, where the code listing shows them — the guard
+   * refuses Czech anywhere else in a demo.
+   */
+  Demo: (props: { lang: DocLang }) => JSX.Element;
   /**
    * Source of that demo, printed under the "Show code" toggle.
    *

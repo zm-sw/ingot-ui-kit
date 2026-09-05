@@ -1,4 +1,5 @@
 import { IngotCode, IngotIcon, IngotList, IngotSection } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
 const SIZES = [
   { size: 13, where: 'Button size="sm"' },
@@ -7,25 +8,43 @@ const SIZES = [
   { size: 20, where: "IngotEmptyState" },
 ];
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    upload: "Nahrát výkres",
+    done: "Hotovo",
+    remove: "Smazat",
+    close: "Zavřít",
+    sizes: "Velikosti",
+  },
+  en: {
+    upload: "Upload a drawing",
+    done: "Done",
+    remove: "Delete",
+    close: "Close",
+    sizes: "Sizes",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-4 text-ink-2">
         <span className="inline-flex items-center gap-1.5 text-sm">
           <IngotIcon name="upload" />
-          Nahrát výkres
+          {t.upload}
         </span>
         <span className="inline-flex items-center gap-1.5 text-sm">
           <IngotIcon name="check" />
-          Hotovo
+          {t.done}
         </span>
         <span className="inline-flex items-center gap-1.5 text-sm text-danger">
           <IngotIcon name="trash" />
-          Smazat
+          {t.remove}
         </span>
-        <IngotIcon name="close" size={16} title="Zavřít" />
+        <IngotIcon name="close" size={16} title={t.close} />
       </div>
-      <IngotSection title="Velikosti" level={3}>
+      <IngotSection title={t.sizes} level={3}>
         <IngotList
           items={SIZES.map((step) => (
             <span key={step.size} className="inline-flex items-center gap-2">

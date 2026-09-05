@@ -1,6 +1,47 @@
 import { Button, IngotMarketingPricing } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    price: "X XXX Kč",
+    period: "měsíčně",
+    startDesc: "Pro první poptávky.",
+    startOne: "Jeden uživatel",
+    startTwo: "Základní rozpad operací",
+    startAction: "Vyzkoušet",
+    teamDesc: "Pro dílnu s obchodem.",
+    teamOne: "Pět uživatelů",
+    teamTwo: "Vlastní sazby strojů",
+    teamThree: "Historie nabídek",
+    teamBadge: "Nejčastější",
+    teamAction: "Domluvit ukázku",
+    firmDesc: "Pro výrobu s více provozy.",
+    firmOne: "Neomezení uživatelé",
+    firmTwo: "Napojení na sklad",
+    firmAction: "Kontaktovat",
+  },
+  en: {
+    price: "X,XXX",
+    period: "per month",
+    startDesc: "For the first enquiries.",
+    startOne: "One user",
+    startTwo: "Basic operation breakdown",
+    startAction: "Try it",
+    teamDesc: "For a shop with a sales desk.",
+    teamOne: "Five users",
+    teamTwo: "Your own machine rates",
+    teamThree: "Quote history",
+    teamBadge: "Most chosen",
+    teamAction: "Book a demo",
+    firmDesc: "For manufacturing across sites.",
+    firmOne: "Unlimited users",
+    firmTwo: "Stock integration",
+    firmAction: "Get in touch",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   return (
     <div className="bg-bg p-6">
       <IngotMarketingPricing
@@ -9,41 +50,41 @@ export function Demo(): JSX.Element {
           {
             id: "start",
             name: "Start",
-            price: "X XXX Kč",
-            period: "měsíčně",
-            description: "Pro první poptávky.",
-            features: ["Jeden uživatel", "Základní rozpad operací"],
+            price: t.price,
+            period: t.period,
+            description: t.startDesc,
+            features: [t.startOne, t.startTwo],
             action: (
               <Button variant="secondary" className="w-full">
-                Vyzkoušet
+                {t.startAction}
               </Button>
             ),
           },
           {
             id: "team",
             name: "Team",
-            price: "X XXX Kč",
-            period: "měsíčně",
-            description: "Pro dílnu s obchodem.",
-            features: ["Pět uživatelů", "Vlastní sazby strojů", "Historie nabídek"],
+            price: t.price,
+            period: t.period,
+            description: t.teamDesc,
+            features: [t.teamOne, t.teamTwo, t.teamThree],
             featured: true,
-            badge: "Nejčastější",
+            badge: t.teamBadge,
             action: (
               <Button variant="primary" className="w-full">
-                Domluvit ukázku
+                {t.teamAction}
               </Button>
             ),
           },
           {
             id: "firm",
             name: "Firm",
-            price: "X XXX Kč",
-            period: "měsíčně",
-            description: "Pro výrobu s více provozy.",
-            features: ["Neomezení uživatelé", "Napojení na sklad"],
+            price: t.price,
+            period: t.period,
+            description: t.firmDesc,
+            features: [t.firmOne, t.firmTwo],
             action: (
               <Button variant="secondary" className="w-full">
-                Kontaktovat
+                {t.firmAction}
               </Button>
             ),
           },

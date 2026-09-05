@@ -1,5 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit. Six guards:
+ * Repo checks for the Ingot UI Kit. Seven guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -26,6 +26,11 @@
  *    file under `src/ingot/` carries Czech text outside comments. The two
  *    exemptions are the IngotProvider dictionary and the bilingual
  *    operation icon library.
+ *
+ *  - ingot-demos-localised: a demo takes the reader's language and keeps
+ *    every text it says in one `TEXT` dictionary at the top of the module,
+ *    where the code listing shows it. A page that translates everything
+ *    except the thing the reader is looking at looks finished and is not.
  *
  *  - ingot-tokens-fresh: the generated token files match tokens.json, and
  *    the Tailwind preset offers a utility for every colour in it. Three
@@ -563,6 +568,74 @@ function guardIngotNoHardcodedText() {
   }
 }
 
+// --- ingot-demos-localised --------------------------------------------------
+
+const DEMOS_DIR = join(ROOT, "src/ingot-docs/demos");
+
+/**
+ * The source with the demo's ``TEXT`` dictionary cut out.
+ *
+ * Everything a demo says has to live in that one constant, at the top of
+ * the module where the code listing shows it. Anything else is text the
+ * reader will see in the wrong language, and the point of a demo is that
+ * it is the page's most-read part.
+ *
+ * The dictionary is found by brace matching rather than by a regular
+ * expression: its type is ``Localized<Record<string, string>>`` and a
+ * pattern that stops at the first ``>`` silently matches nothing, which
+ * would make this guard pass over every file it is meant to read.
+ */
+function withoutDemoText(src) {
+  const at = src.indexOf("const TEXT");
+  if (at < 0) return src;
+  const open = src.indexOf("{", at);
+  if (open < 0) return src;
+  let depth = 0;
+  for (let i = open; i < src.length; i += 1) {
+    if (src[i] === "{") depth += 1;
+    else if (src[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return src.slice(0, at) + src.slice(i + 1);
+    }
+  }
+  return src.slice(0, at);
+}
+
+function guardIngotDemosLocalised() {
+  const guard = "ingot-demos-localised";
+  const hits = [];
+  let files = 0;
+  let localised = 0;
+  for (const path of walk(DEMOS_DIR, /\.tsx$/)) {
+    files += 1;
+    const src = stripComments(read(path));
+    if (src.includes("const TEXT")) localised += 1;
+    withoutDemoText(src)
+      .split("\n")
+      .forEach((line, index) => {
+        if (CZECH_RE.test(line)) {
+          hits.push(`${rel(path)}:${index + 1}: ${line.trim().slice(0, 70)}`);
+        }
+      });
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} line(s) of Czech in a demo outside its TEXT dictionary:`,
+      ...hits.slice(0, 30),
+      "A demo takes the reader's language and reads its texts from one",
+      "`const TEXT: Localized<Record<string, string>>` at the top of the",
+      "module, where the code listing shows them. A page that translates",
+      "everything except the thing the reader is looking at is worse than",
+      "one that translates nothing: it looks finished.",
+    ]);
+  } else {
+    ok(
+      guard,
+      `${localised} of ${files} demo(s) carry a TEXT dictionary and none says Czech outside it`,
+    );
+  }
+}
+
 // --- ingot-tokens-fresh -----------------------------------------------------
 
 /** Line endings are the checkout's business, not the generator's. */
@@ -636,6 +709,7 @@ guardIngotDocsKitOnly();
 guardIngotDocsNoInternalProse();
 guardIngotCommentsEnglish();
 guardIngotNoHardcodedText();
+guardIngotDemosLocalised();
 await guardIngotTokensFresh();
 
 if (failures.length) {
