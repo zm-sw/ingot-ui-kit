@@ -1,5 +1,6 @@
 import { type JSX, type ReactNode } from "react";
 
+import { cx } from "./cx";
 import { IngotEyebrow } from "./IngotEyebrow";
 
 /**
@@ -66,20 +67,20 @@ export function IngotSideNav({
             <a
               href={item.href}
               aria-current={item.current ? "page" : undefined}
-              className={
+              className={cx(
+                "flex items-baseline gap-2 rounded border px-2.5 py-1.5 text-sm",
                 item.current
-                  ? "flex items-baseline gap-2 rounded border border-border bg-surface px-2.5 py-1.5 text-sm font-medium text-ink shadow-sm"
-                  : "flex items-baseline gap-2 rounded border border-transparent px-2.5 py-1.5 text-sm text-ink-2 hover:bg-surface-2 hover:text-ink"
-              }
+                  ? "border-border bg-surface font-medium text-ink shadow-sm"
+                  : "border-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
+              )}
               data-testid={item.testId}
             >
               {item.ordinal !== undefined && (
                 <span
-                  className={
-                    item.current
-                      ? "font-mono text-[10.5px] tabular-nums text-ink-3"
-                      : "font-mono text-[10.5px] tabular-nums text-ink-4"
-                  }
+                  className={cx(
+                    "font-mono text-[10.5px] tabular-nums",
+                    item.current ? "text-ink-3" : "text-ink-4",
+                  )}
                 >
                   {item.ordinal}
                 </span>
@@ -93,11 +94,12 @@ export function IngotSideNav({
                     <a
                       href={child.href}
                       aria-current={child.current ? "page" : undefined}
-                      className={
+                      className={cx(
+                        "relative block rounded py-1 pl-[22px] pr-2 text-[13px]",
                         child.current
-                          ? "relative block rounded py-1 pl-[22px] pr-2 text-[13px] font-medium text-ink before:absolute before:bottom-1 before:left-[9px] before:top-1 before:w-0.5 before:bg-ink before:content-['']"
-                          : "relative block rounded py-1 pl-[22px] pr-2 text-[13px] text-ink-3 hover:bg-surface-2 hover:text-ink"
-                      }
+                          ? "font-medium text-ink before:absolute before:bottom-1 before:left-[9px] before:top-1 before:w-0.5 before:bg-ink before:content-['']"
+                          : "text-ink-3 hover:bg-surface-2 hover:text-ink",
+                      )}
                       data-testid={child.testId}
                     >
                       {child.label}

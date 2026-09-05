@@ -7,7 +7,8 @@ export const IngotSideNavDoc: IngotDocPage = {
   name: "IngotSideNav",
   status: "stable",
   // 1.1 — caption set by IngotEyebrow, the kit's shared mono label.
-  version: "1.1",
+  // 1.2 — class composition via cx(); no visible change.
+  version: "1.2",
   tag: ".sidenav",
   tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-2", "--ink-3", "--ink-4", "--font-mono", "--r-sm", "--shadow-sm"],
   summary: {

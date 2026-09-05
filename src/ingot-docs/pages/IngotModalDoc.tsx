@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotModalDoc: IngotDocPage = {
   name: "IngotModal",
   status: "stable",
-  version: "1.0",
+  // 1.1 — header markup shared with IngotDrawer (internal OverlayHeader); no visible change.
+  version: "1.1",
   tag: ".modal",
   tokens: ["--surface", "--border", "--ink", "--ink-3", "--r-lg", "--shadow-lg"],
   summary: {

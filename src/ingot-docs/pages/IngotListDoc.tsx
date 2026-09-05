@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotListDoc: IngotDocPage = {
   name: "IngotList",
   status: "stable",
-  version: "1.0",
+  // 1.1 — class composition via cx(); no visible change.
+  version: "1.1",
   tag: ".list",
   tokens: ["--ink-2"],
   summary: {

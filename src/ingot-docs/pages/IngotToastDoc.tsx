@@ -6,7 +6,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotToastDoc: IngotDocPage = {
   name: "IngotToast",
   status: "beta",
-  version: "1.0",
+  // 1.1 — class composition via cx(); no visible change.
+  version: "1.1",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   summary: {
