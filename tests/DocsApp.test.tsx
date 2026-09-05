@@ -279,9 +279,15 @@ describe("DocsApp", () => {
     goto(guidePath("komponenty"));
     render(<DocsApp />);
 
-    const navs = [CHROME.groupSystem.cs, CHROME.groupApp.cs, CHROME.groupRules.cs].map(
-      (name) => screen.getByRole("navigation", { name }),
-    );
+    // Every group, including the one for kit authors — a group left out
+    // here would let a guide fall out of the menu and the count would
+    // still add up, which is the failure this test exists to catch.
+    const navs = [
+      CHROME.groupSystem.cs,
+      CHROME.groupApp.cs,
+      CHROME.groupRules.cs,
+      CHROME.groupAuthors.cs,
+    ].map((name) => screen.getByRole("navigation", { name }));
 
     // The total has to add up: every guide in one group plus the components
     // nested under the overview page.
@@ -615,6 +621,35 @@ describe("DocsApp", () => {
       .getAllByRole("radio")
       .map((button) => button.textContent?.toLowerCase());
     expect(values).toEqual([...DOC_LANGS]);
+  });
+
+  it("behaves the same with the platform gone as with it there", async () => {
+    // The site is static documentation. Making it depend on a platform
+    // being awake meant a cold start on the API host left the switch in a
+    // fallback that looked exactly like a decision — and nobody could tell
+    // which one they were looking at.
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("offline"))),
+    );
+    goto(componentPath("IngotEmptyState"));
+    render(<DocsApp />);
+
+    // Drawn immediately, not after a failed request: the switch is right
+    // before anything has been asked of anyone.
+    const picker = screen.getByTestId("docs-lang");
+    expect(
+      within(picker)
+        .getAllByRole("radio")
+        .map((button) => button.textContent?.toLowerCase()),
+    ).toEqual([...DOC_LANGS]);
+
+    // And switching works, which is the part that used to need the API.
+    await user.click(screen.getByTestId("docs-lang-en"));
+    const empty = INGOT_DOC_PAGES.find((page) => page.name === "IngotEmptyState")!;
+    expect(screen.getByText(empty.summary.en)).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe("en");
   });
 
   // --- motiv (KAN-627) -----------------------------------------------

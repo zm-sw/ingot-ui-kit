@@ -10,6 +10,7 @@
  */
 import { A11yGuide } from "@/ingot-docs/guides/A11yGuide";
 import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
+import { AuthorsGuide } from "@/ingot-docs/guides/AuthorsGuide";
 import { ChangesGuide } from "@/ingot-docs/guides/ChangesGuide";
 import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
 import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
@@ -131,6 +132,9 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   FormatsGuide,
   A11yGuide,
   TranslationsGuide,
+  // Last, and a group of its own: it speaks to whoever changes the kit,
+  // not to whoever uses it. Everyone else used to have to walk past it.
+  AuthorsGuide,
 ];
 
 export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [

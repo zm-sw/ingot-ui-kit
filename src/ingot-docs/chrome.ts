@@ -19,6 +19,7 @@ export interface ChromeStrings {
   groupSystem: Localized<string>;
   groupApp: Localized<string>;
   groupRules: Localized<string>;
+  groupAuthors: Localized<string>;
   onThisPage: Localized<string>;
   demo: Localized<string>;
   useWhen: Localized<string>;
@@ -96,6 +97,7 @@ export const CHROME: ChromeStrings = {
   groupSystem: { cs: "Systém", en: "System" },
   groupApp: { cs: "Aplikace", en: "Application" },
   groupRules: { cs: "Pravidla", en: "Rules" },
+  groupAuthors: { cs: "Pro autory kitu", en: "For kit authors" },
   onThisPage: { cs: "Co je na stránce", en: "On this page" },
   demo: { cs: "Ukázka", en: "Demo" },
   useWhen: { cs: "Kdy použít", en: "When to use it" },

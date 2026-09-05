@@ -1,25 +1,33 @@
 /**
- * Platform languages for the doc web.
+ * Which languages the doc web offers.
  *
- * Which languages are offered is **not built into the bundle** — the owner
- * decides it in the language registry and it is read at runtime from
- * ``GET /public/languages``. That endpoint is tenant-free on purpose: the
- * doc web has no org and no session, so it has no way to reach the
- * per-tenant ``/public/orgs/…/branding`` where the same list also travels.
+ * **The bundle is the source of truth.** ``DOC_LANGS`` names the languages
+ * this build actually has text for, and the type makes that literal: a
+ * language cannot be added to the list without every string being written,
+ * because ``Localized<T>`` is a total record and the typecheck refuses a
+ * gap. So the switch can be drawn before anything is asked of anyone.
  *
- * ## What happens when the API does not answer
+ * That inverts what this module used to do. It used to *fetch* the list,
+ * which made a static documentation site depend on a platform being awake:
+ * a cold start on the API host left the switch in a fallback that looked
+ * exactly like a decision, and nobody could tell the difference.
  *
- * Nothing dramatic, and that is intended. The doc web is a static page and
- * has its text in the bundle; the language is the only thing it needs to
- * take from outside. When that fails, it offers what it has
- * (``DOC_LANGS``) instead of the switch disappearing or an error message
- * showing about something the reader does not care about.
+ * The platform is now an **enrichment**, and it can do exactly two things:
  *
- * **The fallback is NOT "the right list".** It is the last resort. If it
- * became the normal state (say because nobody let the doc web host through
- * CORS), the switch would silently stop respecting the language registry
- * and nobody would notice — hence ``source`` in the return value says where
- * the data is from, and a test reaches for it.
+ * 1. **Name a language better.** The registry's own label beats the one
+ *    this bundle ships with, because the registry is where the owner
+ *    writes it and this list is only a sensible default.
+ * 2. **Hide one.** A language the owner switched off platform-wide should
+ *    not be offered here either. Only an answer can hide something —
+ *    silence hides nothing, which is the whole point.
+ *
+ * It cannot ADD a language. A language the bundle has no text for would
+ * switch the reader to an empty page, and an empty page is worse than a
+ * missing option.
+ *
+ * The request has a short deadline for the same reason: after it, the page
+ * is not waiting for anything. Nothing about the site's behaviour depends
+ * on the answer arriving.
  */
 import {
   DOC_LANGS,
@@ -35,8 +43,8 @@ export interface DocLanguageOption {
 
 export interface DocLanguages {
   options: readonly DocLanguageOption[];
-  /** ``platform`` = from the API, ``fallback`` = API unreachable. */
-  source: "platform" | "fallback";
+  /** ``platform`` = the registry answered and was applied, ``bundle`` = it did not. */
+  source: "platform" | "bundle";
 }
 
 interface PublicLanguage {
@@ -44,52 +52,60 @@ interface PublicLanguage {
   label: string;
 }
 
-/** What is offered when the platform cannot be asked. */
-export function fallbackLanguages(): DocLanguages {
+/** How long the enrichment is worth waiting for. */
+export const LANGUAGE_TIMEOUT_MS = 1500;
+
+/** What the build itself knows — offered immediately, before anything is fetched. */
+export function bundleLanguages(): DocLanguages {
   return {
     options: DOC_LANGS.map((code) => ({
       code,
       label: DOC_LANG_FALLBACK_LABELS[code],
     })),
-    source: "fallback",
+    source: "bundle",
   };
 }
 
 function apiBaseUrl(): string {
-  const fromEnv = import.meta.env.VITE_API_URL;
+  const meta = import.meta as ImportMeta & { env?: { VITE_API_URL?: unknown } };
+  const fromEnv = meta.env?.VITE_API_URL;
   return typeof fromEnv === "string" ? fromEnv : "";
 }
 
 /**
- * Intersection of "what the platform enabled" × "what the doc web has text
- * for".
+ * The bundle's languages, relabelled and possibly narrowed by the platform.
  *
- * Order and labels are set by the platform — it is its registry. The doc
- * web only strikes out what it has nothing to fill.
+ * Never throws and never returns nothing: the worst case is the list this
+ * build shipped with, which is also the case where the site behaves exactly
+ * as it does with the platform up.
  */
 export async function fetchDocLanguages(signal?: AbortSignal): Promise<DocLanguages> {
+  const base = bundleLanguages();
   try {
     const response = await fetch(`${apiBaseUrl()}/api/v1/public/languages`, {
       headers: { Accept: "application/json" },
-      signal,
+      signal: signal ?? AbortSignal.timeout(LANGUAGE_TIMEOUT_MS),
     });
-    if (!response.ok) return fallbackLanguages();
+    if (!response.ok) return base;
 
     const payload = (await response.json()) as { languages?: PublicLanguage[] };
-    const options: DocLanguageOption[] = [];
+    const enabled = new Map<DocLang, string>();
     for (const entry of payload.languages ?? []) {
-      // A language the platform enabled but the doc web has no text for is
-      // NOT offered. Switching to an empty page is worse than not offering
-      // the language.
-      if (isDocLang(entry.code)) {
-        options.push({ code: entry.code, label: entry.label || entry.code });
-      }
+      if (isDocLang(entry.code)) enabled.set(entry.code, entry.label || entry.code);
     }
-    // The platform may have all our languages disabled. An empty switch
-    // would mean a page where nothing can be read — the fallback is better.
-    if (options.length === 0) return fallbackLanguages();
-    return { options, source: "platform" };
+    // The platform answered and none of our languages was in it. Taking
+    // that literally would leave a page nobody can read; the build's own
+    // list is the better answer, and `source` still says the platform was
+    // not applied.
+    if (enabled.size === 0) return base;
+
+    return {
+      options: base.options
+        .filter((option) => enabled.has(option.code))
+        .map((option) => ({ code: option.code, label: enabled.get(option.code)! })),
+      source: "platform",
+    };
   } catch {
-    return fallbackLanguages();
+    return base;
   }
 }

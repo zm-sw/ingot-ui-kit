@@ -51,12 +51,19 @@ export interface IngotGuideSection {
 }
 
 /**
- * Group in the left menu. Three on purpose: what the kit IS (``system``),
- * how screens are built from it (``app``), and what is expected of an
- * author (``rules``). A fourth group would mean one of the three fell
- * apart.
+ * Group in the left menu.
+ *
+ * Three of them are for the reader who is BUILDING something: what the kit
+ * is (``system``), how screens are made from it (``app``), and what is
+ * expected of the screen (``rules``).
+ *
+ * ``authors`` is the fourth and it is a different audience, not a fourth
+ * topic. It answers "what am I allowed to do to the kit", which is a
+ * question only a contributor has — and it used to sit among the usage
+ * rules, where everybody else had to walk past it. It comes last in the
+ * menu for the same reason.
  */
-export type IngotGuideGroup = "system" | "app" | "rules";
+export type IngotGuideGroup = "system" | "app" | "rules" | "authors";
 
 export interface IngotGuidePage {
   /** The part of the hash after ``#/`` — ``uvod``, ``preklady``. Not

@@ -67,7 +67,7 @@ import {
   type Localized,
 } from "@/ingot-docs/lang";
 import {
-  fallbackLanguages,
+  bundleLanguages,
   fetchDocLanguages,
   type DocLanguages,
 } from "@/ingot-docs/platformLanguages";
@@ -567,6 +567,7 @@ const GROUP_LABELS: Record<IngotGuideGroup, keyof typeof CHROME> = {
   system: "groupSystem",
   app: "groupApp",
   rules: "groupRules",
+  authors: "groupAuthors",
 };
 
 /**
@@ -726,7 +727,7 @@ export function DocsApp(): JSX.Element {
   const setLang = (next: DocLang) => setLocation((prev) => ({ ...prev, lang: next }));
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
-  const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
+  const [languages, setLanguages] = useState<DocLanguages>(bundleLanguages);
   /** Drawer with the menu and switches — only below ``md``, see the header. */
   const [navOpen, setNavOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -813,9 +814,10 @@ export function DocsApp(): JSX.Element {
     goTo(href);
   }
 
-  // Which languages are offered is decided by the platform — not the
-  // bundle. Until it answers (or when it does not), we hold what the doc
-  // web has text for.
+  // The bundle decides which languages exist; the platform may relabel
+  // them or hide one it switched off. The switch is therefore already
+  // drawn and already correct before this runs, and nothing about the page
+  // waits for the answer.
   useEffect(() => {
     const controller = new AbortController();
     void fetchDocLanguages(controller.signal).then(setLanguages);
