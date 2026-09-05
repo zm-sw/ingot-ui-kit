@@ -1,42 +1,49 @@
 /**
- * Skořápka doc webu Ingotu (KAN-581).
+ * Shell of the Ingot doc web.
  *
- * Guard `ingot-doc-pages` kontroluje SOUBORY — že primitivum má stránku,
- * že stránka má modul a že modul importuje z `@/ingot`. Co guard z principu
- * neuvidí, je jestli se to celé vůbec vykreslí; „stránka existuje" a
- * „stránka se namountuje" jsou dvě různá tvrzení.
+ * The `ingot-doc-pages` guard checks FILES — that a primitive has a page,
+ * that the page has a module and that the module imports from `@/ingot`.
+ * What the guard by principle cannot see is whether it all renders at
+ * all; "the page exists" and "the page mounts" are two different claims.
  *
- * Proto tyhle testy:
+ * Hence these tests:
  *
- * 1. **Menu má tolik položek, kolik je primitiv** — a bere je z registru,
- *    takže nové primitivum se v menu objeví samo.
- * 2. **Ukázka se doopravdy vykreslí.** Renderuje se skutečná komponenta,
- *    ne popis komponenty.
- * 3. 🪤 **Kotva v pravém sloupci nesmí přehodit stránku.** Router jede na
- *    hashi (`#/IngotModal`), ale „Co je na stránce" kotví na `#ukazka`
- *    uvnitř téže stránky. První verze brala i takový hash jako routu, takže
- *    proklik na kotvu shodil obsah zpátky na první primitivum.
+ * 1. **The menu has as many items as there are primitives** — and takes
+ *    them from the registry, so a new primitive shows up in the menu by
+ *    itself.
+ * 2. **The demo really renders.** The real component is rendered, not a
+ *    description of it.
+ * 3. **An anchor in the right column must not switch the page.** The
+ *    router runs on the hash (`#/IngotModal`), but "On this page" anchors
+ *    to `#ukazka` inside the same page. The first version took such a hash
+ *    as a route too, so clicking an anchor threw the content back to the
+ *    first primitive.
  *
- * KAN-624 přidal obsah, KAN-625 stránky bez komponenty, KAN-626 výpis kódu:
+ * Content, pages without a component and the code listing:
  *
- * 4. **Sekce s obsahem opravdu nesou obsah.** `useWhen` / `avoidWhen` /
- *    `a11y` / `i18n` jsou povinná pole, takže stránku bez nich odmítne
- *    `tsc` — ale prázdné pole (`[]`) typecheck PUSTÍ. Typ umí vynutit, že
- *    sekce existuje; že v ní něco je, musí vynutit test.
- * 5. **Pravý sloupec odkazuje na sekce, které na stránce jsou.**
- * 6. **Úvod je výchozí obrazovka** a neznámý hash na něj padá.
- * 7. **Průvodci se nesmí přimíchat mezi komponenty** ani v DOM.
- * 8. 🪤 **Výpis kódu musí pocházet ze skutečného modulu.** `?raw` vrátí CELÝ
- *    soubor, takže v něm musí být i importy a hlavička funkce.
+ * 4. **Sections with content really carry content.** `useWhen` /
+ *    `avoidWhen` / `a11y` / `i18n` are required fields, so a page without
+ *    them is refused by `tsc` — but an empty array (`[]`) PASSES the
+ *    typecheck. The type can enforce that a section exists; that there is
+ *    something in it, a test must enforce.
+ * 5. **The right column links to sections that are on the page.**
+ * 6. **The intro is the default screen** and an unknown hash falls to it.
+ * 7. **Guides must not mix in among components**, not even in the DOM.
+ * 8. **The code listing must come from the real module.** `?raw` returns
+ *    the WHOLE file, so it has to contain the imports and the function
+ *    header too.
  *
- * KAN-627 přidal jazyky a motiv:
+ * Languages and theme:
  *
- * 9. **Každý přeložitelný text existuje ve VŠECH jazycích a je neprázdný.**
- *    `Record<DocLang, …>` vynutí, že klíč je; že za ním něco je, ne.
- * 10. 🪤 **Nabídnou se jen jazyky, které platforma zapnula A doc web pro ně
- *     má text.** Přepnout na prázdnou stránku je horší než ten jazyk
- *     nenabídnout — a když API neodpoví, drží se to, co bundle nese.
- * 11. **Motiv nasazuje `.dark` na `<html>`** a volba přežije reload.
+ * 9. **Every translatable text exists in ALL languages and is non-empty.**
+ *    `Record<DocLang, …>` enforces that the key is there; not that
+ *    something is behind it.
+ * 10. **Only languages the platform enabled AND the doc web has text for
+ *     are offered.** Switching to an empty page is worse than not offering
+ *     the language — and when the API does not answer, what the bundle
+ *     carries is kept.
+ * 11. **The theme puts `.dark` on `<html>`** and the choice survives a
+ *     reload.
  */
 
 import { render, screen, waitFor, within } from "@testing-library/react";
@@ -54,7 +61,7 @@ const LANG_KEY = "forgmatic.ingot.docs.lang";
 const THEME_KEY = "forgmatic.ingot.theme";
 const ACCENT_KEY = "forgmatic.ingot.accent";
 
-/** Odpověď ``/public/languages`` — pokaždé NOVÁ, tělo se nedá číst dvakrát. */
+/** Response of ``/public/languages`` — NEW every time, a body cannot be read twice. */
 function languagesResponse(codes: readonly string[]): Response {
   return new Response(
     JSON.stringify({
@@ -72,14 +79,15 @@ function languagesResponse(codes: readonly string[]): Response {
 describe("DocsApp", () => {
   beforeEach(() => {
     window.location.hash = "";
-    // Jazyk se pinuje schválně: jsdom hlásí navigator.language "en-US",
-    // takže bez toho by výchozí jazyk závisel na prostředí, ne na testu.
+    // The language is pinned on purpose: jsdom reports navigator.language
+    // "en-US", so without it the default language would depend on the
+    // environment, not on the test.
     window.localStorage.setItem(LANG_KEY, "cs");
     window.localStorage.removeItem(THEME_KEY);
     window.localStorage.removeItem(ACCENT_KEY);
     document.documentElement.classList.remove("dark");
     delete document.documentElement.dataset.accent;
-    // Většina testů o jazyky nejde; ať nesahají na síť vůbec.
+    // Most tests are not about languages; keep them off the network entirely.
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.resolve(languagesResponse(["cs", "en"]))),
@@ -91,26 +99,26 @@ describe("DocsApp", () => {
     window.localStorage.clear();
   });
 
-  it("vypíše do menu každé primitivum z registru", () => {
-    // Seznam komponent je vidět jen v jejich sekci — jinde je sbalený.
+  it("lists every primitive from the registry in the menu", () => {
+    // The component list is visible only in its section — collapsed elsewhere.
     window.location.hash = "#/komponenty";
     render(<DocsApp />);
-    // Komponenty jsou vnořené pod rozcestníkem ve skupině „Systém“.
+    // Components nest under the overview page in the "System" group.
     const nav = screen.getByRole("navigation", { name: CHROME.groupSystem.cs });
     for (const page of INGOT_DOC_PAGES) {
-      // V menu stojí jméno bez prefixu; plné jméno drží adresa.
+      // The menu shows the name without the prefix; the address keeps the full name.
       expect(within(nav).getByText(displayName(page.name))).toBeInTheDocument();
     }
   });
 
-  it("vykreslí živou ukázku vybraného primitiva, ne jen její popis", () => {
+  it("renders the live demo of the selected primitive, not just its description", () => {
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "EmptyState" }),
     ).toBeInTheDocument();
-    // Skutečný IngotEmptyState, ne text o něm: jeho vlastní testid.
+    // The real IngotEmptyState, not text about it: its own testid.
     expect(screen.getByTestId("docs-empty")).toBeInTheDocument();
     expect(screen.getByText("Zatím tu nic není")).toBeInTheDocument();
   });
@@ -118,15 +126,15 @@ describe("DocsApp", () => {
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
     "%s má v každém jazyce a v každé povinné sekci aspoň jednu položku",
     (_name, page) => {
-      // Record<DocLang, …> vynutí, že KLÍČ je. Že za ním něco je, ne —
-      // a prázdná sekce je přesně ta polovina pravdy, kvůli které se
-      // v tomhle repu smazaly hlavičky specifikací.
-      // Statusy a verze živí badge vedle nadpisu — stránka bez nich by
-      // tiše slibovala stabilitu, kterou nikdo nevyhlásil.
+      // Record<DocLang, …> enforces that the KEY exists. Not that there is
+      // something behind it — and an empty section is exactly the half
+      // truth that got the spec headers deleted in this repo.
+      // Statuses and versions feed the badges next to the heading — a page
+      // without them would silently promise a stability nobody declared.
       expect(["stable", "beta"]).toContain(page.status);
       expect(page.version).toMatch(/^\d+\.\d+$/);
-      // Selektor a tokeny jsou smlouva pro review: čím prvek jmenovat
-      // a co rozbije změna tokenu.
+      // The selector and the tokens are a contract for review: what to call
+      // the element and what a token change breaks.
       expect(page.tag.trim().length).toBeGreaterThan(0);
       expect(page.tokens.length).toBeGreaterThan(0);
       for (const lang of DOC_LANGS) {
@@ -162,7 +170,7 @@ describe("DocsApp", () => {
     },
   );
 
-  it("vykreslí sekce s obsahem a odkáže na ně z pravého sloupce", () => {
+  it("renders sections with content and links to them from the right column", () => {
     window.location.hash = "#/IngotTable";
     render(<DocsApp />);
 
@@ -174,7 +182,7 @@ describe("DocsApp", () => {
       CHROME.a11y.cs,
       CHROME.tokens.cs,
       CHROME.i18n.cs,
-      // IngotTable je jediná stránka s nepovinnou sekcí `limits`.
+      // IngotTable is the only page with the optional `limits` section.
       CHROME.limits.cs,
     ]) {
       expect(
@@ -182,8 +190,9 @@ describe("DocsApp", () => {
       ).toBeInTheDocument();
     }
 
-    // Pravý sloupec se odvozuje z téhož pole, které vykreslilo obsah —
-    // každá kotva tedy musí mířit na sekci, která na stránce doopravdy je.
+    // The right column is derived from the same array that rendered the
+    // content — every anchor must therefore point to a section that really
+    // is on the page.
     const aside = screen.getByRole("complementary", {
       name: CHROME.onThisPage.cs,
     });
@@ -196,17 +205,17 @@ describe("DocsApp", () => {
     }
   });
 
-  it("vypíše u IngotTable i vlastnosti typu IngotColumn", () => {
+  it("lists the IngotColumn type props on the IngotTable page too", () => {
     window.location.hash = "#/IngotTable";
     render(<DocsApp />);
 
-    // `cell` a `cellClassName` nežijí na IngotTable, ale na IngotColumn.
+    // `cell` and `cellClassName` do not live on IngotTable but on IngotColumn.
     const extra = screen.getByTestId("docs-props-ingotcolumn-row");
     expect(within(extra).getByText("cell")).toBeInTheDocument();
     expect(within(extra).getByText("cellClassName")).toBeInTheDocument();
   });
 
-  it("bez hashe otevře úvod, ne první primitivum v registru", () => {
+  it("opens the intro without a hash, not the first primitive in the registry", () => {
     render(<DocsApp />);
     expect(
       screen.getByRole("heading", {
@@ -216,7 +225,7 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
   });
 
-  it("neznámý hash padá na úvod, ne na první komponentu", () => {
+  it("an unknown hash falls back to the intro, not to the first component", () => {
     window.location.hash = "#/NeexistujiciStranka";
     render(<DocsApp />);
     expect(
@@ -227,23 +236,23 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
   });
 
-  it("vykreslí stránku Překlady jako samostatnou stránku bez komponenty", () => {
+  it("renders the Translations page as a standalone page without a component", () => {
     window.location.hash = "#/preklady";
     render(<DocsApp />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Překlady" }),
     ).toBeInTheDocument();
-    // Stránka bez komponenty NEMÁ ukázku ani tabulku vlastností — to je
-    // celý důvod, proč je to vlastní typ, a ne další IngotDocPage.
+    // A page without a component has NO demo and no props table — that is
+    // the whole reason it is its own type and not another IngotDocPage.
     expect(
       screen.queryByRole("heading", { level: 2, name: CHROME.demo.cs }),
     ).not.toBeInTheDocument();
     expect(screen.queryByTestId("docs-props")).not.toBeInTheDocument();
   });
 
-  it("rozdělí menu do skupin a každého průvodce dá právě do jedné", () => {
-    // V sekci komponent je rejstřík rozbalený — plný počet odkazů.
+  it("splits the menu into groups and puts every guide into exactly one", () => {
+    // In the components section the index is expanded — the full link count.
     window.location.hash = "#/komponenty";
     render(<DocsApp />);
 
@@ -253,8 +262,8 @@ describe("DocsApp", () => {
       CHROME.groupRules.cs,
     ].map((name) => screen.getByRole("navigation", { name }));
 
-    // Dohromady musí sedět počet: každý průvodce v jedné skupině plus
-    // komponenty vnořené pod rozcestníkem.
+    // The total has to add up: every guide in one group plus the components
+    // nested under the overview page.
     const links = navs.flatMap((nav) => within(nav).getAllByRole("link"));
     expect(links).toHaveLength(
       INGOT_GUIDE_PAGES.length + INGOT_DOC_PAGES.length,
@@ -264,16 +273,16 @@ describe("DocsApp", () => {
     }
   });
 
-  it("řadí komponenty abecedně podle jména, které ukazuje", () => {
-    // Rejstřík o jedenatřiceti položkách se prochází podle abecedy.
-    // Podle ZOBRAZENÉHO jména: podle jména exportu by Button a Card
-    // skončily první, protože prefix nemají.
+  it("sorts components alphabetically by the name it shows", () => {
+    // An index of some thirty items is walked alphabetically. By the
+    // DISPLAYED name: by export name Button and Card would end up first
+    // because they have no prefix.
     const shown = INGOT_DOC_PAGES.map((page) => displayName(page.name));
     const sorted = [...shown].sort((a, b) => a.localeCompare(b, "en"));
     expect(shown).toEqual(sorted);
   });
 
-  it("čísluje průvodce podle pořadí v registru, ne ručně", () => {
+  it("numbers guides by their order in the registry, not by hand", () => {
     render(<DocsApp />);
     INGOT_GUIDE_PAGES.forEach((guide, index) => {
       expect(screen.getByTestId(`docs-nav-${guide.slug}`)).toHaveTextContent(
@@ -282,12 +291,12 @@ describe("DocsApp", () => {
     });
   });
 
-  it("vnoří komponenty pod rozcestník, ne vedle něj", () => {
+  it("nests components under the overview page, not next to it", () => {
     window.location.hash = "#/komponenty";
     render(<DocsApp />);
 
-    // Podseznam visí na položce rozcestníku — vnoření je struktura,
-    // takže musí být poznat i z DOM, ne jen z odsazení.
+    // The sublist hangs on the overview item — nesting is structure, so it
+    // must be visible from the DOM too, not only from indentation.
     const catalogue = screen.getByTestId("docs-nav-komponenty");
     const sublist = catalogue.closest("li")?.querySelector("ul");
     expect(sublist).not.toBeNull();
@@ -296,10 +305,10 @@ describe("DocsApp", () => {
     );
   });
 
-  it("mimo sekci komponent je rejstřík sbalený, na stránce komponenty rozbalený", () => {
-    // Pokyn vlastníka 2026-09-02: 31 rozbalených položek na každé
-    // stránce dělalo z menu rejstřík, ve kterém se ostatní skupiny
-    // hledaly rolováním.
+  it("outside the components section the index is collapsed, on a component page expanded", () => {
+    // Owner instruction of 2026-09-02: 31 expanded items on every page
+    // turned the menu into an index in which the other groups had to be
+    // found by scrolling.
     window.location.hash = "#/preklady";
     const first = render(<DocsApp />);
     expect(
@@ -314,7 +323,7 @@ describe("DocsApp", () => {
     ).not.toBeNull();
   });
 
-  it("žádný slug průvodce nekoliduje se jménem primitiva", () => {
+  it("no guide slug collides with a primitive name", () => {
     const names = new Set(INGOT_DOC_PAGES.map((page) => page.name));
     for (const guide of INGOT_GUIDE_PAGES) {
       expect(names.has(guide.slug)).toBe(false);
@@ -323,12 +332,12 @@ describe("DocsApp", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("ukazuje náhled a zdroj přepíná taby Náhled/Kód", async () => {
+  it("shows the preview and switches to the source via the Preview/Code tabs", async () => {
     const user = userEvent.setup();
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
 
-    // Výchozí pohled je náhled na stagi; zdroj se nevykresluje.
+    // The default view is the preview on the stage; the source is not rendered.
     expect(screen.getByTestId("docs-demo-stage")).toBeInTheDocument();
     expect(screen.queryByTestId("docs-source")).not.toBeInTheDocument();
 
@@ -346,7 +355,7 @@ describe("DocsApp", () => {
     expect(screen.queryByTestId("docs-source")).not.toBeInTheDocument();
   });
 
-  it("zkopíruje zdroj ukázky do schránky tlačítkem Kopírovat", async () => {
+  it("copies the demo source to the clipboard with the Copy button", async () => {
     const user = userEvent.setup();
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
@@ -357,13 +366,13 @@ describe("DocsApp", () => {
     expect(await window.navigator.clipboard.readText()).toBe(
       page!.demoSource,
     );
-    // Potvrzení se ukáže v popisku tlačítka a po chvíli zase zmizí.
+    // The confirmation shows in the button label and disappears again after a moment.
     expect(screen.getByTestId("docs-copy")).toHaveTextContent(
       CHROME.copiedCode.cs,
     );
   });
 
-  it("vypíše sekci Tokeny se seznamem tokenů komponenty", () => {
+  it("renders the Tokens section with the component token list", () => {
     window.location.hash = "#/IngotBadge";
     render(<DocsApp />);
 
@@ -397,16 +406,16 @@ describe("DocsApp", () => {
     );
   });
 
-  it("průvodce badge stavu ani verze nemá", () => {
+  it("a guide has neither a status nor a version badge", () => {
     window.location.hash = "#/uvod";
     render(<DocsApp />);
     expect(screen.queryByTestId("docs-status")).not.toBeInTheDocument();
     expect(screen.queryByTestId("docs-version")).not.toBeInTheDocument();
   });
 
-  // --- prev/next patička ----------------------------------------------
+  // --- prev/next footer -----------------------------------------------
 
-  it("první stránka nemá Předchozí a poslední nemá Další", () => {
+  it("the first page has no Previous and the last has no Next", () => {
     window.location.hash = `#/${INGOT_GUIDE_PAGES[0].slug}`;
     const { unmount } = render(<DocsApp />);
     expect(screen.queryByTestId("docs-prev")).not.toBeInTheDocument();
@@ -420,7 +429,7 @@ describe("DocsApp", () => {
     expect(screen.queryByTestId("docs-next")).not.toBeInTheDocument();
   });
 
-  it("patička vede z posledního průvodce na první komponentu", () => {
+  it("the footer leads from the last guide to the first component", () => {
     const lastGuide = INGOT_GUIDE_PAGES[INGOT_GUIDE_PAGES.length - 1];
     window.location.hash = `#/${lastGuide.slug}`;
     render(<DocsApp />);
@@ -437,15 +446,16 @@ describe("DocsApp", () => {
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
     "%s vypisuje zdroj ukázky ze SKUTEČNÉHO modulu, ne z ručního řetězce",
     (name, page) => {
-      // ?raw import vrátí CELÝ soubor, takže v něm musí být i jeho importy
-      // a hlavička funkce — ne jen kus JSX, který se dá opsat.
+      // A ?raw import returns the WHOLE file, so it has to contain its
+      // imports and the function header too — not just a piece of JSX that
+      // could be copied.
       expect(page.demoSource).toContain('from "@/ingot"');
       expect(page.demoSource).toContain("export function Demo()");
       expect(page.demoSource).toContain(name);
     },
   );
 
-  it("nechá stránku být, když hash míří na kotvu uvnitř ní", () => {
+  it("leaves the page alone when the hash points to an anchor inside it", () => {
     window.location.hash = "#/IngotModal";
     render(<DocsApp />);
     expect(
@@ -462,7 +472,7 @@ describe("DocsApp", () => {
 
   // --- jazyky (KAN-627) ----------------------------------------------
 
-  it("přepne obsah i skořápku do vybraného jazyka a volbu si zapamatuje", async () => {
+  it("switches content and shell to the chosen language and remembers the choice", async () => {
     const user = userEvent.setup();
     window.location.hash = "#/IngotEmptyState";
     render(<DocsApp />);
@@ -474,7 +484,7 @@ describe("DocsApp", () => {
 
     await user.click(enButton);
 
-    // Skořápka i obsah stránky — ne jen jedno z toho.
+    // Shell and page content both — not just one of them.
     expect(
       screen.getByRole("heading", { level: 2, name: CHROME.demo.en }),
     ).toBeInTheDocument();
@@ -493,9 +503,10 @@ describe("DocsApp", () => {
     expect(document.documentElement.lang).toBe("en");
   });
 
-  it("nabídne jen jazyky, které platforma zapnula", async () => {
-    // Platforma má zapnutou jen češtinu → přepínat není co, a přepínač se
-    // vůbec nenabídne. Volba s jedinou možností slibuje volbu, která není.
+  it("offers only the languages the platform enabled", async () => {
+    // The platform has only Czech enabled → nothing to switch, and the
+    // switch is not offered at all. A choice with a single option promises
+    // a choice that is not there.
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.resolve(languagesResponse(["cs"]))),
@@ -506,9 +517,10 @@ describe("DocsApp", () => {
     });
   });
 
-  it("nenabídne jazyk platformy, pro který doc web nemá text", async () => {
-    // 🪤 Platforma smí mít zapnutý jazyk, do kterého doc web přeložený není.
-    // Přepnout na prázdnou stránku je horší než ten jazyk nenabídnout.
+  it("does not offer a platform language the doc web has no text for", async () => {
+    // The platform may have a language enabled that the doc web is not
+    // translated into. Switching to an empty page is worse than not
+    // offering the language.
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.resolve(languagesResponse(["cs", "en", "de"]))),
@@ -526,7 +538,7 @@ describe("DocsApp", () => {
     }
   });
 
-  it("když se platformy nejde zeptat, nabídne to, pro co má text", async () => {
+  it("when the platform cannot be asked, offers what it has text for", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.reject(new Error("offline"))),
@@ -542,7 +554,7 @@ describe("DocsApp", () => {
 
   // --- motiv (KAN-627) -----------------------------------------------
 
-  it("nasadí .dark na <html> a volbu si zapamatuje", async () => {
+  it("puts .dark on <html> and remembers the choice", async () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
@@ -557,7 +569,7 @@ describe("DocsApp", () => {
     expect(window.localStorage.getItem(THEME_KEY)).toBe("light");
   });
 
-  it("při načtení respektuje uloženou volbu motivu", () => {
+  it("respects the stored theme choice on load", () => {
     window.localStorage.setItem(THEME_KEY, "dark");
     render(<DocsApp />);
     expect(document.documentElement).toHaveClass("dark");
@@ -569,11 +581,11 @@ describe("DocsApp", () => {
 
   // --- akcent (KAN-648) -----------------------------------------------
 
-  it("nabídne všechny akcentové rodiny a volbu si zapamatuje", async () => {
+  it("offers every accent family and remembers the choice", async () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
-    // Puntíky se berou z ACCENT_CHOICES, takže nová rodina se objeví sama.
+    // The dots come from ACCENT_CHOICES, so a new family shows up by itself.
     for (const choice of ACCENT_CHOICES) {
       expect(screen.getByTestId(`accent-swatch-${choice}`)).toBeInTheDocument();
     }
@@ -583,13 +595,13 @@ describe("DocsApp", () => {
     expect(document.documentElement.dataset.accent).toBe("slate");
     expect(window.localStorage.getItem(ACCENT_KEY)).toBe("slate");
 
-    // Zpátky na výchozí rodinu → atribut zmizí, nepřepíše se na "blue".
+    // Back to the default family → the attribute disappears, it is not rewritten to "blue".
     await user.click(screen.getByTestId("accent-swatch-blue"));
     expect(document.documentElement.dataset.accent).toBeUndefined();
     expect(window.localStorage.getItem(ACCENT_KEY)).toBe("blue");
   });
 
-  it("při načtení respektuje uloženou volbu akcentu", () => {
+  it("respects the stored accent choice on load", () => {
     window.localStorage.setItem(ACCENT_KEY, "orange");
     render(<DocsApp />);
     expect(document.documentElement.dataset.accent).toBe("orange");
@@ -599,29 +611,31 @@ describe("DocsApp", () => {
     );
   });
 
-  it("akcent přežije přepnutí motivu — kaskáda ho nepřepočítává", async () => {
+  it("the accent survives a theme switch — the cascade does not recompute it", async () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
     await user.click(screen.getByTestId("accent-swatch-violet"));
     await user.click(screen.getByTestId("docs-theme-dark"));
 
-    // Rodina se nemění, mění se jen to, který její blok kaskáda vybere.
-    // Kdyby motiv akcent přepisoval (prototypové ``applyTheme`` volalo
-    // ``applyAccent``), tenhle atribut by po přepnutí spadl na výchozí.
+    // The family does not change, only which of its blocks the cascade
+    // picks. If the theme rewrote the accent (the prototype ``applyTheme``
+    // called ``applyAccent``), this attribute would fall to the default
+    // after a switch.
     expect(document.documentElement).toHaveClass("dark");
     expect(document.documentElement.dataset.accent).toBe("violet");
   });
 
-  // Skořápka na úzkém výřezu (drawer s menu):
+  // The shell on a narrow viewport (drawer with the menu):
   //
-  // 🪤 Šířku sloupců tady ověřit NEJDE — jsdom nepočítá layout, takže
-  // každý `getBoundingClientRect` vrátí nuly a test na „obsah je široký
-  // aspoň 360 px" by prošel i nad rozbitou stránkou. Co se ověřit dá a
-  // co při té regresi doopravdy chybělo, je CESTA: pod `md` je menu
-  // skryté a jediný přechod mezi stránkami vede přes tohle tlačítko.
-  // Kdyby zmizelo, doc web nemá na mobilu navigaci žádnou.
-  it("otevře menu v draweru a nabídne v něm celou navigaci", async () => {
+  // Column widths CANNOT be verified here — jsdom does no layout, so every
+  // `getBoundingClientRect` returns zeros and a test for "the content is
+  // at least 360 px wide" would pass over a broken page too. What can be
+  // verified, and what was really missing in that regression, is the PATH:
+  // below `md` the menu is hidden and the only way between pages leads
+  // through this button. If it vanished, the doc web would have no
+  // navigation on mobile at all.
+  it("opens the menu in a drawer and offers the whole navigation there", async () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
@@ -630,8 +644,8 @@ describe("DocsApp", () => {
     await user.click(screen.getByTestId("docs-menu-open"));
 
     const drawer = screen.getByTestId("docs-nav-drawer");
-    // Skupiny jsou tytéž jako ve sloupci — drawer je jiné místo, ne jiný
-    // seznam. Kdyby si držel vlastní, rozejdou se.
+    // The groups are the same as in the column — the drawer is another
+    // place, not another list. If it kept its own, they would drift.
     for (const group of [
       CHROME.groupSystem.cs,
       CHROME.groupApp.cs,
@@ -641,12 +655,13 @@ describe("DocsApp", () => {
         within(drawer).getByRole("navigation", { name: group }),
       ).toBeInTheDocument();
     }
-    // Přepínače tam jsou taky: v liště je pod `md` schová `md:hidden`,
-    // takže bez nich by se motiv ani jazyk na mobilu přepnout nedaly.
+    // The switches are there too: in the bar `md:hidden` hides them below
+    // `md`, so without them neither theme nor language could be switched
+    // on mobile.
     expect(within(drawer).getByTestId("docs-drawer-theme")).toBeInTheDocument();
   });
 
-  it("po výběru stránky se drawer zavře", async () => {
+  it("the drawer closes after a page is picked", async () => {
     const user = userEvent.setup();
     render(<DocsApp />);
 
@@ -655,8 +670,8 @@ describe("DocsApp", () => {
 
     await user.click(within(drawer).getByTestId("docs-drawer-nav-zaklady"));
 
-    // Zůstat otevřený nad obsahem, který si čtenář právě vybral, je to
-    // jediné, co po kliknutí v menu nechce.
+    // Staying open over the content the reader just chose is the one thing
+    // they do not want after a menu click.
     await waitFor(() => {
       expect(screen.queryByTestId("docs-nav-drawer")).not.toBeInTheDocument();
     });
@@ -665,13 +680,13 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
   });
 
-  it("stránka Základy ukáže všech pět rodin", () => {
+  it("the Basics page shows all five families", () => {
     window.location.hash = "#/zaklady";
     render(<DocsApp />);
 
     const table = screen.getByTestId("docs-accent-families");
-    // Řádky se generují z ACCENT_CHOICES — rodina přidaná do kitu se na
-    // stránce objeví, aniž by na ni někdo musel vzpomenout.
+    // The rows are generated from ACCENT_CHOICES — a family added to the kit
+    // shows up on the page without anyone having to remember it.
     expect(
       table.querySelectorAll("tbody tr").length,
     ).toBe(ACCENT_CHOICES.length);

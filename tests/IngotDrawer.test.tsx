@@ -1,17 +1,19 @@
 /**
- * Boční panel pro editaci (KAN-655).
+ * Side panel for editing (KAN-655).
  *
- * Testy měří stejnou a11y laťku jako ``tests/IngotModal.test.tsx`` —
- * drawer je druhý překryv, na který laťka z rozhodnutí vlastníka
- * 2026-08-25 platí celá: trap, ESC, návrat fokusu, scroll lock.
+ * The tests measure the same accessibility bar as
+ * ``tests/IngotModal.test.tsx`` — the drawer is the second overlay the bar
+ * from the owner decision of 2026-08-25 applies to in full: trap, ESC,
+ * focus return, scroll lock.
  *
- * Navíc měří, co je na draweru specifické:
+ * On top they measure what is specific to the drawer:
  *
- * - ``dismissable={false}`` vypíná JEN klik do pozadí; ESC a křížek
- *   fungují dál. Jeden klik vedle nesmí zahodit rozepsaný formulář.
- * - ``width`` má tvrdý strop 560 px ze specu.
- * - zámek scrollu SDÍLÍ čítač s ``IngotModal`` — drawer nad dialogem
- *   nesmí při zavření odemknout pozadí.
+ * - ``dismissable={false}`` turns off ONLY the backdrop click; ESC and the
+ *   close button keep working. One click beside must not throw away a
+ *   half-written form.
+ * - ``width`` has a hard cap of 560 px from the spec.
+ * - the scroll lock SHARES its counter with ``IngotModal`` — a drawer above
+ *   a dialog must not unlock the background on close.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -67,8 +69,8 @@ function Harness({
   );
 }
 
-describe("IngotDrawer — a11y laťka", () => {
-  it("panel je dialog popsaný svým titulkem", () => {
+describe("IngotDrawer — accessibility bar", () => {
+  it("the panel is a dialog labelled by its title", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -81,7 +83,7 @@ describe("IngotDrawer — a11y laťka", () => {
     );
   });
 
-  it("fokus jde po otevření dovnitř draweru", () => {
+  it("focus moves inside the drawer on open", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     expect(screen.getByTestId("probe-panel")).toContainElement(
@@ -90,7 +92,7 @@ describe("IngotDrawer — a11y laťka", () => {
     expect(document.activeElement).toBe(screen.getByTestId("probe-close"));
   });
 
-  it("Tab z posledního prvku se vrací na první (trap), ne ven", () => {
+  it("Tab from the last element returns to the first (trap), not outside", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -100,7 +102,7 @@ describe("IngotDrawer — a11y laťka", () => {
     expect(document.activeElement).toBe(screen.getByTestId("probe-close"));
   });
 
-  it("Shift+Tab z prvního prvku jde na poslední", () => {
+  it("Shift+Tab from the first element goes to the last", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -110,14 +112,14 @@ describe("IngotDrawer — a11y laťka", () => {
     expect(document.activeElement).toBe(screen.getByTestId("last"));
   });
 
-  it("ESC zavírá", () => {
+  it("ESC closes", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     fireEvent.keyDown(screen.getByTestId("probe"), { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("fokus se po zavření vrací na spouštěč", () => {
+  it("focus returns to the trigger after close", () => {
     render(<Harness />);
     const opener = screen.getByTestId("opener");
     opener.focus();
@@ -126,7 +128,7 @@ describe("IngotDrawer — a11y laťka", () => {
     expect(document.activeElement).toBe(opener);
   });
 
-  it("pozadí se zamkne při otevření a odemkne při zavření", () => {
+  it("the background locks on open and unlocks on close", () => {
     render(<Harness />);
     expect(document.body.style.overflow).toBe("");
 
@@ -139,7 +141,7 @@ describe("IngotDrawer — a11y laťka", () => {
 });
 
 describe("IngotDrawer — dismissable", () => {
-  it("výchozí drawer zavře klik do pozadí, klik do panelu ne", () => {
+  it("the default drawer closes on a backdrop click, not on a panel click", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -150,7 +152,7 @@ describe("IngotDrawer — dismissable", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("dismissable={false} nechá klik do pozadí bez účinku, ESC funguje dál", () => {
+  it("dismissable={false} leaves a backdrop click without effect, ESC keeps working", () => {
     render(<Harness dismissable={false} />);
     fireEvent.click(screen.getByTestId("opener"));
 
@@ -163,19 +165,19 @@ describe("IngotDrawer — dismissable", () => {
 });
 
 describe("IngotDrawer — geometrie", () => {
-  it("výchozí šířka je 400 px", () => {
+  it("the default width is 400 px", () => {
     render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     expect(screen.getByTestId("probe-panel").style.width).toBe("400px");
   });
 
-  it("šířka má tvrdý strop 560 px", () => {
+  it("the width has a hard cap of 560 px", () => {
     render(<Harness width={900} />);
     fireEvent.click(screen.getByTestId("opener"));
     expect(screen.getByTestId("probe-panel").style.width).toBe("560px");
   });
 
-  it("side řídí, u které hrany panel stojí", () => {
+  it("side decides which edge the panel stands at", () => {
     const { unmount } = render(<Harness />);
     fireEvent.click(screen.getByTestId("opener"));
     expect(screen.getByTestId("probe").className).toContain("justify-end");
@@ -186,7 +188,7 @@ describe("IngotDrawer — geometrie", () => {
     expect(screen.getByTestId("probe").className).toContain("justify-start");
   });
 
-  it("patka s akcemi je mimo scrolovací tělo, takže je vždy vidět", () => {
+  it("the action footer is outside the scrolling body, so it is always visible", () => {
     render(
       <IngotDrawer
         title="Titulek"
@@ -206,8 +208,8 @@ describe("IngotDrawer — geometrie", () => {
   });
 });
 
-describe("IngotDrawer — soužití s IngotModal", () => {
-  it("drawer nad dialogem neodemkne pozadí, dokud stojí i dialog", () => {
+describe("IngotDrawer — coexistence with IngotModal", () => {
+  it("a drawer above a dialog does not unlock the background while the dialog stands", () => {
     function Stacked() {
       const [drawer, setDrawer] = useState(true);
       return (
@@ -230,7 +232,7 @@ describe("IngotDrawer — soužití s IngotModal", () => {
     expect(document.body.style.overflow).toBe("hidden");
   });
 
-  it("obsah draweru je o úroveň hlouběji — ModalDepthProvider je uvnitř", () => {
+  it("drawer content is one level deeper — ModalDepthProvider is inside", () => {
     render(
       <Harness>
         <DepthProbe />

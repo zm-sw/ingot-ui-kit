@@ -1,20 +1,21 @@
 /**
- * Imperativní toast (KAN-656).
+ * Imperative toast (KAN-656).
  *
- * Testy měří kontrakt ze specu Toast v1.0:
+ * The tests measure the contract from the Toast v1.0 spec:
  *
- * - výchozí život 4 s; toast se zpětnou akcí žije 8 s; ``duration``
- *   obojí přebíjí,
- * - „Zpět" zavolá zpětnou akci a toast zavře,
- * - ``tone="default"`` se hlásí ``polite``, ``tone="danger"``
- *   ``assertive`` — chyba operace nesmí čekat, až odečítač domluví.
+ * - default lifetime 4 s; a toast with an undo action lives 8 s;
+ *   ``duration`` overrides both,
+ * - "Undo" calls the undo action and closes the toast,
+ * - ``tone="default"`` announces ``polite``, ``tone="danger"``
+ *   ``assertive`` — an operation error must not wait until the screen
+ *   reader finishes talking.
  *
- * ⏰ Falešné hodiny se zapínají PŘED renderem, ale bez posunu času —
- * memory: falešné hodiny POSUNUTÉ před mountem plánují časovače do
- * budoucnosti. Tady se čas jen zrychluje ``advanceTimersByTime``.
+ * Fake timers are switched on BEFORE the render, but without shifting
+ * time — fake timers SHIFTED before mount schedule timers into the future.
+ * Here time is only accelerated with ``advanceTimersByTime``.
  *
- * Fronta toastů je modulový sklad, ne stav komponenty — každý test
- * proto končí ``runAllTimers``, aby po sobě frontu vyprázdnil.
+ * The toast queue is a module-level store, not component state — every
+ * test therefore ends with ``runAllTimers`` to empty the queue after itself.
  */
 
 import { act, fireEvent, render, screen } from "@testing-library/react";
@@ -38,7 +39,7 @@ describe("IngotToast", () => {
     vi.useRealTimers();
   });
 
-  it("vypíše text a po 4 s sám zmizí", () => {
+  it("prints the text and disappears by itself after 4 s", () => {
     render(<IngotToast />);
     fire({ text: "Objednávka uložena." });
 
@@ -51,7 +52,7 @@ describe("IngotToast", () => {
     expect(screen.queryByText("Objednávka uložena.")).toBeNull();
   });
 
-  it("toast se zpětnou akcí žije 8 s", () => {
+  it("a toast with an undo action lives 8 s", () => {
     render(<IngotToast />);
     fire({ text: "Materiál odebrán.", undo: vi.fn() });
 
@@ -62,7 +63,7 @@ describe("IngotToast", () => {
     expect(screen.queryByText("Materiál odebrán.")).toBeNull();
   });
 
-  it("duration přebíjí výchozí život i osmivteřinovku se zpětnou akcí", () => {
+  it("duration overrides the default lifetime and the 8 s with an undo action", () => {
     render(<IngotToast />);
     fire({ text: "Krátký toast.", undo: vi.fn(), duration: 1000 });
 
@@ -70,7 +71,7 @@ describe("IngotToast", () => {
     expect(screen.queryByText("Krátký toast.")).toBeNull();
   });
 
-  it("Zpět zavolá zpětnou akci a toast zavře", () => {
+  it("Undo calls the undo action and closes the toast", () => {
     const undo = vi.fn();
     render(<IngotToast />);
     fire({ text: "Materiál odebrán.", undo });
@@ -80,21 +81,21 @@ describe("IngotToast", () => {
     expect(screen.queryByText("Materiál odebrán.")).toBeNull();
   });
 
-  it("undoLabel přebíjí výchozí popisek Zpět", () => {
+  it("undoLabel overrides the default Undo label", () => {
     render(<IngotToast />);
     fire({ text: "Removed.", undo: vi.fn(), undoLabel: "Undo" });
 
     expect(screen.getByRole("button", { name: "Undo" })).toBeInTheDocument();
   });
 
-  it("bez zpětné akce toast žádné tlačítko nemá", () => {
+  it("without an undo action the toast has no button", () => {
     render(<IngotToast />);
     fire({ text: "Objednávka uložena." });
 
     expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("výchozí tone se hlásí polite, danger assertive", () => {
+  it("the default tone announces polite, danger assertive", () => {
     render(<IngotToast />);
     fire({ text: "Objednávka uložena." });
     fire({ text: "Uložení se nepovedlo.", tone: "danger" });
@@ -109,7 +110,7 @@ describe("IngotToast", () => {
     ).toBe("assertive");
   });
 
-  it("víc toastů se řadí pod sebe a mizí každý po svém", () => {
+  it("several toasts stack and each disappears on its own", () => {
     render(<IngotToast />);
     fire({ text: "První." });
     act(() => vi.advanceTimersByTime(2000));

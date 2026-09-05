@@ -1,21 +1,21 @@
 /**
- * Rám aplikace a bloky konfiguračních obrazovek.
+ * Application frame and the blocks of configuration screens.
  *
- * Osm primitiv, která do kitu přibyla při dorovnání na design handoff.
- * Testy měří ta pravidla, která by se jinak ztratila při prvním
- * „drobném" refaktoru — tedy ta, kde je špatná varianta na pohled
- * stejně dobrá jako správná:
+ * Eight primitives that joined the kit during the alignment to the design
+ * handoff. The tests measure the rules that would otherwise be lost at the
+ * first "minor" refactor — the ones where the wrong variant looks just as
+ * good as the right one:
  *
- * - sekce lišty je **tlačítko** s ``aria-expanded``, ne odkaz s
- *   ``aria-current``: nikam sama nevede, jen rozbaluje menu,
- * - poslední drobeček **není odkaz**, i když dostane ``href``, a pod dva
- *   články se drobečky nekreslí vůbec,
- * - hotový krok je poznat **tvarem** (fajfka), ne jen zeleným záhlavím,
- * - řádková akce má **povinný popisek**, jinak je z ní pro odečítač jen
- *   „tlačítko" dvacetkrát pod sebou,
- * - klikatelná je **celá** karta varianty, ne jen kolečko,
- * - hodnota metriky je mono s ``tabular-nums``, aby čísla pod sebou
- *   seděla.
+ * - a bar section is a **button** with ``aria-expanded``, not a link with
+ *   ``aria-current``: it leads nowhere itself, it only unfolds a menu,
+ * - the last crumb is **not a link**, even when given an ``href``, and
+ *   below two crumbs the breadcrumbs are not drawn at all,
+ * - a finished step is told by **shape** (a check), not only by a green
+ *   header,
+ * - a row action has a **required label**, otherwise to a screen reader it
+ *   is just "button" twenty times in a row,
+ * - the **whole** variant card is clickable, not just the radio,
+ * - a metric value is mono with ``tabular-nums`` so digits line up.
  */
 
 import { useState } from "react";
@@ -44,7 +44,7 @@ describe("IngotTopNav", () => {
     { key: "sklad", label: "Sklad" },
   ];
 
-  it("vykreslí sekci jako tlačítko s aria-expanded, ne jako odkaz", async () => {
+  it("renders a section as a button with aria-expanded, not as a link", async () => {
     render(
       <IngotTopNav
         brand="Forgmatic"
@@ -56,7 +56,7 @@ describe("IngotTopNav", () => {
 
     const open = screen.getByRole("button", { name: "Provoz" });
     expect(open).toHaveAttribute("aria-expanded", "true");
-    // Sekce nikam nevede, takže aria-current by lhalo.
+    // The section leads nowhere, so aria-current would lie.
     expect(open).not.toHaveAttribute("aria-current");
     expect(screen.queryByRole("link", { name: "Provoz" })).not.toBeInTheDocument();
 
@@ -66,7 +66,7 @@ describe("IngotTopNav", () => {
     );
   });
 
-  it("najetí myší sekci otevírá a klik jen otevírá — nikdy nezavírá", async () => {
+  it("hover opens a section and click only opens — never closes", async () => {
     const user = userEvent.setup();
     const onOpen = vi.fn();
     render(
@@ -80,16 +80,17 @@ describe("IngotTopNav", () => {
 
     await user.hover(screen.getByRole("button", { name: "Sklad" }));
     expect(onOpen).toHaveBeenLastCalledWith("sklad");
-    // Klik na UŽ otevřenou sekci hlásí zase open, ne zavření: hover ji
-    // otevřel dřív, než klik dopadl, a toggle by ji hned zhasnul.
+    // A click on an ALREADY open section reports open again, not close:
+    // hover opened it before the click landed, and a toggle would put it
+    // out right away.
     await user.click(screen.getByRole("button", { name: "Provoz" }));
     expect(onOpen).toHaveBeenLastCalledWith("provoz");
   });
 
-  // Reálné časovače schválně: prodleva je 120 ms a fake timers se
-  // s userEvent zadrhávaly tak, že pád prvního testu nechal falešné
-  // hodiny zapnuté pro celý zbytek souboru.
-  it("odjezd myší zavírá až po prodlevě — cesta do panelu nezhasne", async () => {
+  // Real timers on purpose: the delay is 120 ms and fake timers stalled
+  // with userEvent in a way that a failing first test left the fake clock
+  // on for the whole rest of the file.
+  it("mouse leave closes only after the delay — the way into the panel stays open", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     render(
@@ -105,20 +106,20 @@ describe("IngotTopNav", () => {
     );
 
     await user.hover(screen.getByRole("button", { name: "Provoz" }));
-    // Odjezd a NÁVRAT do panelu uvnitř prodlevy — zavření se odvolá.
+    // Leaving and RETURNING to the panel within the delay — the close is revoked.
     await user.unhover(screen.getByTestId("nav"));
     expect(onClose).not.toHaveBeenCalled();
     await user.hover(screen.getByTestId("panel"));
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(onClose).not.toHaveBeenCalled();
-    // Odjezd, který nikdo neodvolá, po prodlevě zavře.
+    // A leave nobody revokes closes after the delay.
     await user.unhover(screen.getByTestId("nav"));
     expect(onClose).not.toHaveBeenCalled();
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("sekce s jedinou obrazovkou je odkaz, zamčená je tlačítko se zámkem", async () => {
+  it("a single-screen section is a link, a locked one is a button with a lock", async () => {
     const user = userEvent.setup();
     const onLocked = vi.fn();
     render(
@@ -135,14 +136,14 @@ describe("IngotTopNav", () => {
     const link = screen.getByRole("link", { name: "Sklad" });
     expect(link).toHaveAttribute("href", "/cs/admin/materials");
     expect(link).toHaveAttribute("aria-current", "page");
-    // Odkazová sekce nemá menu, takže ani aria-expanded.
+    // A link section has no menu, so no aria-expanded either.
     expect(link).not.toHaveAttribute("aria-expanded");
 
     await user.click(screen.getByRole("button", { name: "Dílna" }));
     expect(onLocked).toHaveBeenCalledTimes(1);
   });
 
-  it("renderMenu kreslí panel do obalu otevřené sekce", () => {
+  it("renderMenu draws the panel into the wrapper of the open section", () => {
     render(
       <IngotTopNav
         brand="Forgmatic"
@@ -154,13 +155,13 @@ describe("IngotTopNav", () => {
 
     expect(screen.getByTestId("panel-sklad")).toBeInTheDocument();
     expect(screen.queryByTestId("panel-provoz")).toBeNull();
-    // Panel je sourozenec svého tlačítka v témže relativním obalu.
+    // The panel is a sibling of its button in the same relative wrapper.
     expect(
       screen.getByRole("button", { name: "Sklad" }).parentElement,
     ).toContainElement(screen.getByTestId("panel-sklad"));
   });
 
-  it("klik mimo lištu zavírá otevřenou sekci", async () => {
+  it("a click outside the bar closes the open section", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     render(
@@ -179,7 +180,7 @@ describe("IngotTopNav", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("Escape zavírá otevřenou sekci", async () => {
+  it("Escape closes the open section", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     render(
@@ -196,7 +197,7 @@ describe("IngotTopNav", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("účet nese popisek pro odečítač, ne jen iniciály", () => {
+  it("the account carries a screen-reader label, not just initials", () => {
     render(<IngotTopNavAccount initials="8S" label="Menu účtu" expanded />);
     const account = screen.getByRole("button", { name: "Menu účtu" });
     expect(account).toHaveAttribute("aria-expanded", "true");
@@ -205,19 +206,19 @@ describe("IngotTopNav", () => {
 });
 
 /**
- * Klávesnice v otevřeném panelu.
+ * Keyboard in the open panel.
  *
- * Menu, které se otevírá hoverem, se z klávesnice snadno stane past:
- * panel je vidět, ale fokus je pořád na tlačítku a šipka jím jen odroluje
- * stránku. Tyhle testy měří tři místa, kde se to láme a kde je špatná
- * varianta na pohled k nerozeznání od správné — panel v obou případech
- * svítí stejně.
+ * A menu that opens on hover easily becomes a trap from the keyboard: the
+ * panel is visible, but focus is still on the button and an arrow only
+ * scrolls the page. These tests measure three places where it breaks and
+ * where the wrong variant is indistinguishable from the right one by eye —
+ * the panel lights up the same in both cases.
  *
- * Stav sekce drží volající, takže i harness je řízený: kdyby se testovalo
- * proti napevno otevřené sekci, „šipka na zavřené sekci otevře a skočí
- * dovnitř" by se nedalo změřit vůbec.
+ * The caller holds the section state, so the harness is controlled too: if
+ * it tested against a permanently open section, "arrow on a closed section
+ * opens and jumps inside" could not be measured at all.
  */
-describe("IngotTopNav klávesnice", () => {
+describe("IngotTopNav keyboard", () => {
   function Bar(): JSX.Element {
     const [open, setOpen] = useState<string | null>(null);
     return (
@@ -250,7 +251,7 @@ describe("IngotTopNav klávesnice", () => {
 
   const item = (name: string) => screen.getByRole("link", { name });
 
-  it("šipka dolů na zavřené sekci ji otevře a skočí na první položku", async () => {
+  it("arrow down on a closed section opens it and jumps to the first item", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -262,7 +263,7 @@ describe("IngotTopNav klávesnice", () => {
     expect(item("Objednávky")).toHaveFocus();
   });
 
-  it("šipka nahoru na zavřené sekci skočí na poslední položku", async () => {
+  it("arrow up on a closed section jumps to the last item", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -272,7 +273,7 @@ describe("IngotTopNav klávesnice", () => {
     expect(item("Materiály")).toHaveFocus();
   });
 
-  it("šipky procházejí položky a na konci se vrátí na začátek", async () => {
+  it("arrows walk the items and wrap to the start at the end", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -283,7 +284,7 @@ describe("IngotTopNav klávesnice", () => {
     await user.keyboard("{ArrowUp}");
     expect(item("Objednávky")).toHaveFocus();
 
-    // Přes první položku nahoru se vychází na poslední, ne mimo panel.
+    // Going up past the first item exits to the last, not out of the panel.
     await user.keyboard("{ArrowUp}");
     expect(item("Materiály")).toHaveFocus();
 
@@ -291,7 +292,7 @@ describe("IngotTopNav klávesnice", () => {
     expect(item("Objednávky")).toHaveFocus();
   });
 
-  it("Tab z otevřeného panelu nevypadne — obejde jeho položky", async () => {
+  it("Tab does not fall out of the open panel — it cycles its items", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -303,7 +304,7 @@ describe("IngotTopNav klávesnice", () => {
     await user.tab();
     expect(item("Materiály")).toHaveFocus();
 
-    // Poslední položka nevede na sousední sekci, ale zpátky na první.
+    // The last item does not lead to the neighbouring section but back to the first.
     await user.tab();
     expect(item("Objednávky")).toHaveFocus();
     expect(screen.getByRole("button", { name: "Sklad" })).not.toHaveFocus();
@@ -312,7 +313,7 @@ describe("IngotTopNav klávesnice", () => {
     expect(item("Materiály")).toHaveFocus();
   });
 
-  it("Escape zavře panel a vrátí fokus na tlačítko sekce", async () => {
+  it("Escape closes the panel and returns focus to the section button", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -325,12 +326,12 @@ describe("IngotTopNav klávesnice", () => {
 
     expect(provoz).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("link", { name: "Objednávky" })).not.toBeInTheDocument();
-    // Bez tohohle by fokus spadl na <body> a čtenář by se probral na
-    // začátku stránky — u menu otevřeného šipkou o krok zpátky.
+    // Without this, focus would fall to <body> and the reader would wake up
+    // at the top of the page — one step back for a menu opened by arrow.
     expect(provoz).toHaveFocus();
   });
 
-  it("zavřená sekce klávesnici nechává být — Tab jde na další sekci", async () => {
+  it("a closed section leaves the keyboard alone — Tab goes to the next section", async () => {
     const user = userEvent.setup();
     render(<Bar />);
 
@@ -363,12 +364,12 @@ describe("IngotMegaMenu", () => {
     },
   ];
 
-  it("vykreslí skupiny, počty a označí otevřenou položku", () => {
+  it("renders groups and counts and marks the open item", () => {
     render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 
     const nav = screen.getByRole("navigation", { name: "Provoz" });
     expect(within(nav).getAllByRole("link")).toHaveLength(2);
-    // Odkaz uvnitř menu NĚKAM vede, takže tady aria-current sedí.
+    // A link inside the menu leads SOMEWHERE, so aria-current fits here.
     expect(within(nav).getByRole("link", { name: /Objednávky/ })).toHaveAttribute(
       "aria-current",
       "page",
@@ -376,7 +377,7 @@ describe("IngotMegaMenu", () => {
     expect(within(nav).getByText("12")).toBeInTheDocument();
   });
 
-  it("náhled začíná na první položce a sleduje kurzor i fokus", async () => {
+  it("the preview starts on the first item and follows cursor and focus", async () => {
     const user = userEvent.setup();
     render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 
@@ -386,14 +387,15 @@ describe("IngotMegaMenu", () => {
     await user.hover(screen.getByRole("link", { name: /Poptávky/ }));
     expect(preview).toHaveTextContent("Nacenění, která zákazník");
 
-    // Fokus přepíná náhled stejně jako myš — klávesnice není druhá
-    // kategorie (rozhodnutí vlastníka 2026-09-02, bod 01). fireEvent,
-    // ne .focus(): jsdom fokus mimo act() neprobublá do React stavu.
+    // Focus switches the preview just like the mouse — the keyboard is not
+    // a second class (owner decision of 2026-09-02, item 01). fireEvent,
+    // not .focus(): jsdom focus outside act() does not bubble into React
+    // state.
     fireEvent.focus(screen.getByRole("link", { name: /Objednávky/ }));
     expect(preview).toHaveTextContent("Co je přijaté a co čeká");
   });
 
-  it("zamčená položka je tlačítko s callbackem, ne odkaz — a náhled jí funguje", async () => {
+  it("a locked item is a button with a callback, not a link — and its preview works", async () => {
     const user = userEvent.setup();
     const onLocked = vi.fn();
     render(
@@ -425,7 +427,7 @@ describe("IngotMegaMenu", () => {
     );
   });
 
-  it("odečítač slyší popis z odkazu — náhledový sloupec je aria-hidden", () => {
+  it("a screen reader hears the description from the link — the preview column is aria-hidden", () => {
     render(<IngotMegaMenu groups={GROUPS} label="Provoz" testId="mega" />);
 
     expect(screen.getByTestId("mega-preview")).toHaveAttribute(
@@ -442,7 +444,7 @@ describe("IngotMegaMenu", () => {
 });
 
 describe("IngotUserMenu", () => {
-  it("sváže popisek s ovládacím prvkem jen tehdy, když má id", () => {
+  it("binds the label to the control only when it has an id", () => {
     render(
       <IngotUserMenu label="Menu účtu" testId="user">
         <IngotUserMenuSection>
@@ -459,15 +461,15 @@ describe("IngotUserMenu", () => {
     );
 
     expect(screen.getByRole("group", { name: "Menu účtu" })).toBeInTheDocument();
-    // S ``controlId`` je popisek ``<label>``; bez něj by menu slibovalo
-    // vazbu, kterou nemá.
+    // With ``controlId`` the caption is a ``<label>``; without it the menu
+    // would promise a binding it does not have.
     expect(screen.getByText("Jazyk").tagName).toBe("LABEL");
     expect(screen.getByText("Slovník").tagName).toBe("SPAN");
   });
 });
 
 describe("IngotBreadcrumbs", () => {
-  it("poslední článek nevykreslí jako odkaz, ani když dostane href", () => {
+  it("does not render the last crumb as a link, even when given an href", () => {
     render(
       <IngotBreadcrumbs
         items={[
@@ -486,7 +488,7 @@ describe("IngotBreadcrumbs", () => {
     expect(last).toHaveAttribute("aria-current", "page");
   });
 
-  it("pod dva články se nekreslí vůbec", () => {
+  it("does not render at all below two crumbs", () => {
     const { container } = render(
       <IngotBreadcrumbs items={[{ label: "Provoz" }]} label="Kde jste" />,
     );
@@ -495,7 +497,7 @@ describe("IngotBreadcrumbs", () => {
 });
 
 describe("IngotMetrics", () => {
-  it("sází hodnotu mono s tabulárními číslicemi, popisek ne", () => {
+  it("sets the value in mono with tabular digits, the label not", () => {
     render(
       <IngotMetrics
         items={[
@@ -510,12 +512,12 @@ describe("IngotMetrics", () => {
     const value = screen.getByText("2");
     expect(value).toHaveClass("font-mono");
     expect(value).toHaveClass("tabular-nums");
-    // Tón je informace: kritická hodnota se obarví, ostatní ne.
+    // The tone is information: a critical value is coloured, the others not.
     expect(value).toHaveClass("text-danger");
     expect(screen.getByText("18")).toHaveClass("text-ink");
   });
 
-  it("obě hustoty vykreslí táž data", () => {
+  it("both densities render the same data", () => {
     const items = [{ label: "skupiny", value: 2 }];
     const { rerender } = render(
       <IngotMetrics items={items} label="Souhrn" testId="m" />,
@@ -529,7 +531,7 @@ describe("IngotMetrics", () => {
 });
 
 describe("IngotStepCard", () => {
-  it("hotový krok je poznat tvarem, ne jen barvou", () => {
+  it("a finished step is told by shape, not only by colour", () => {
     render(
       <IngotStepCard
         step="01"
@@ -543,12 +545,12 @@ describe("IngotStepCard", () => {
       </IngotStepCard>,
     );
 
-    // Fajfka místo čísla — a je popsaná, takže ji přečte i odečítač.
+    // A check instead of a number — and it is labelled, so a screen reader reads it too.
     expect(screen.getByTitle("Hotovo")).toBeInTheDocument();
     expect(screen.queryByText("01")).not.toBeInTheDocument();
   });
 
-  it("nehotový krok ukazuje své pořadové číslo", () => {
+  it("an unfinished step shows its ordinal", () => {
     render(
       <IngotStepCard step="02" kicker="Krok 02" title="Skupiny" testId="step">
         <p>obsah</p>
@@ -559,7 +561,7 @@ describe("IngotStepCard", () => {
 });
 
 describe("IngotOptionCard", () => {
-  it("klikatelná je celá karta, ne jen kolečko", async () => {
+  it("the whole card is clickable, not just the radio", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -574,14 +576,14 @@ describe("IngotOptionCard", () => {
       />,
     );
 
-    // Klik na vysvětlující větu, ne na radio — past, kterou karta řeší.
+    // A click on the explanatory sentence, not on the radio — the trap the card solves.
     await user.click(screen.getByText("Cena vychází z hmotnosti dílu."));
     expect(onChange).toHaveBeenCalledWith("weight");
   });
 });
 
 describe("IngotRowActions", () => {
-  it("každá akce má popisek, takže odečítač nečte jen „tlačítko“", async () => {
+  it("every action has a label, so a screen reader hears more than a bare button", async () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
     render(

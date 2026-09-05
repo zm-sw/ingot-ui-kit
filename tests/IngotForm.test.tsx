@@ -1,14 +1,17 @@
 /**
- * Deklarativní formulář Ingotu (KAN-382) — první primitivum sdíleného admin UI.
+ * Declarative Ingot form (KAN-382) — the first primitive of the shared
+ * admin UI.
  *
- * Test měří tři věci, na kterých ta sdílenost stojí:
- *   1. render podle popisu pole (boolean / number / integer / text / secret),
- *   2. **write-only chování tajného pole** — netknuté se neodešle, vyplněné
- *      ano. To pravidlo drží Ingot právě proto, aby ho každá obrazovka
- *      neimplementovala po svém a jedna z nich uloženou hodnotu nepřepsala
- *      prázdným řetězcem,
- *   3. že se z manifestu integrace i z ``operation_config_schema`` dostane
- *      týž popis polí — bez toho by „dvě třídy konzumentů" byly dva rendery.
+ * The test measures three things the sharing stands on:
+ *   1. rendering by field description (boolean / number / integer / text /
+ *      secret),
+ *   2. **write-only behaviour of a secret field** — untouched it is not
+ *      submitted, filled it is. Ingot holds that rule precisely so every
+ *      screen does not implement it its own way and one of them does not
+ *      overwrite a stored value with an empty string,
+ *   3. that the integration manifest and ``operation_config_schema`` yield
+ *      the same field description — without that "two classes of
+ *      consumers" would be two renders.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -60,7 +63,7 @@ describe("IngotForm — render podle popisu pole", () => {
     { key: "api_token", kind: "secret", label: "Token", secretConfigured: true },
   ];
 
-  it("dá každému druhu pole vlastní vstup", () => {
+  it("gives every field kind its own input", () => {
     render(<Harness fields={FIELDS} initial={{ enabled: true, gap_mm: 0.2 }} />);
 
     expect(screen.getByTestId("ingot-enabled")).toHaveAttribute(
@@ -79,7 +82,7 @@ describe("IngotForm — render podle popisu pole", () => {
     expect(screen.getByText("volný text")).toBeInTheDocument();
   });
 
-  it("přenese meze a krok čísla ze schématu do vstupu", () => {
+  it("carries number bounds and step from the schema into the input", () => {
     render(<Harness fields={FIELDS} />);
 
     const gap = screen.getByTestId("ingot-gap_mm");
@@ -89,12 +92,12 @@ describe("IngotForm — render podle popisu pole", () => {
 
     const passes = screen.getByTestId("ingot-passes");
     expect(passes).toHaveAttribute("min", "1");
-    // Celé číslo se nesmí dát nastavit na 1,5 — krok je to jediné, čím to
-    // formulář ve schématu deklarované ``integer`` vynutí.
+    // An integer must not be settable to 1.5 — the step is the only thing
+    // by which the form enforces the ``integer`` declared in the schema.
     expect(passes).toHaveAttribute("step", "1");
   });
 
-  it("z čísla dělá číslo a z vymazaného pole null, ne prázdný řetězec", () => {
+  it("turns a number into a number and a cleared field into null, not an empty string", () => {
     render(<Harness fields={FIELDS} initial={{ gap_mm: 0.2 }} />);
 
     fireEvent.change(screen.getByTestId("ingot-gap_mm"), {
@@ -105,12 +108,12 @@ describe("IngotForm — render podle popisu pole", () => {
     fireEvent.change(screen.getByTestId("ingot-gap_mm"), {
       target: { value: "" },
     });
-    // ``null`` je typovaná prázdnota, kterou validace na BE přijme;
-    // "" by se pokusilo projít jako číslo a vrátilo by se 422.
+    // ``null`` is a typed emptiness the backend validation accepts; "" would
+    // try to pass as a number and come back as a 422.
     expect(payload().gap_mm).toBeNull();
   });
 
-  it("o uloženém credentialu řekne jen to, že tam je", () => {
+  it("says only that a stored credential is there", () => {
     render(<Harness fields={FIELDS} />);
 
     expect(screen.getByTestId("ingot-api_token")).toHaveValue("");
@@ -120,7 +123,7 @@ describe("IngotForm — render podle popisu pole", () => {
     );
   });
 
-  it("nenastavený credential se od nastaveného pozná placeholderem", () => {
+  it("an unset credential is told from a set one by the placeholder", () => {
     render(
       <Harness
         fields={[
@@ -135,13 +138,13 @@ describe("IngotForm — render podle popisu pole", () => {
   });
 });
 
-describe("IngotForm — write-only tajné pole", () => {
+describe("IngotForm — write-only secret field", () => {
   const FIELDS: IngotFieldSpec[] = [
     { key: "endpoint_url", kind: "text", label: "endpoint_url" },
     { key: "api_token", kind: "secret", label: "api_token", secretConfigured: true },
   ];
 
-  it("netknuté tajné pole se neodešle", () => {
+  it("an untouched secret field is not submitted", () => {
     render(
       <Harness
         fields={FIELDS}
@@ -153,12 +156,13 @@ describe("IngotForm — write-only tajné pole", () => {
       target: { value: "https://erp.example.test/v2" },
     });
 
-    // Kdyby tady ``api_token: ""`` bylo, uložení by uloženou hodnotu
-    // přepsalo na nic — a admin by o credential přišel editací jiného pole.
+    // If ``api_token: ""`` were here, saving would overwrite the stored
+    // value with nothing — and the admin would lose the credential by
+    // editing another field.
     expect(payload()).toEqual({ endpoint_url: "https://erp.example.test/v2" });
   });
 
-  it("vyplněné tajné pole se odešle", () => {
+  it("a filled secret field is submitted", () => {
     render(<Harness fields={FIELDS} initial={{ api_token: "" }} />);
 
     fireEvent.change(screen.getByTestId("ingot-api_token"), {
@@ -167,7 +171,7 @@ describe("IngotForm — write-only tajné pole", () => {
     expect(payload().api_token).toBe("token-z-konzole");
   });
 
-  it("samé mezery jsou pořád netknuté pole", () => {
+  it("whitespace only is still an untouched field", () => {
     render(<Harness fields={FIELDS} initial={{ api_token: "" }} />);
 
     fireEvent.change(screen.getByTestId("ingot-api_token"), {
@@ -177,8 +181,8 @@ describe("IngotForm — write-only tajné pole", () => {
   });
 });
 
-describe("adaptéry — dvě třídy konzumentů, jeden popis pole", () => {
-  it("přeloží operation_config_schema", () => {
+describe("adapters — two classes of consumers, one field description", () => {
+  it("translates operation_config_schema", () => {
     const fields = fieldsFromConfigSchema(
       {
         enabled: { type: "boolean", title: "Zapnuto", title_en: "Enabled" },
@@ -197,7 +201,7 @@ describe("adaptéry — dvě třídy konzumentů, jeden popis pole", () => {
     expect(fields.map((f) => [f.key, f.kind])).toEqual([
       ["enabled", "boolean"],
       ["gap_mm", "number"],
-      // ``x_options`` přebíjí typ: hodnota je id z množiny, ne volné číslo.
+      // ``x_options`` overrides the type: the value is an id from a set, not a free number.
       ["writer", "options"],
     ]);
     expect(fields[0].label).toBe("Zapnuto");
@@ -205,7 +209,7 @@ describe("adaptéry — dvě třídy konzumentů, jeden popis pole", () => {
     expect(fields[2].optionsSource).toBe("org_member_groups");
   });
 
-  it("v angličtině vezme title_en", () => {
+  it("takes title_en in English", () => {
     const [field] = fieldsFromConfigSchema(
       { enabled: { type: "boolean", title: "Zapnuto", title_en: "Enabled" } },
       { preferEnglish: true },
@@ -213,7 +217,7 @@ describe("adaptéry — dvě třídy konzumentů, jeden popis pole", () => {
     expect(field.label).toBe("Enabled");
   });
 
-  it("přeloží manifest integrace a označí uložené credentialy", () => {
+  it("translates the integration manifest and marks stored credentials", () => {
     const fields = fieldsFromIntegrationManifest({
       required_config_keys: ["endpoint_url"],
       secret_config_keys: ["api_token", "signing_key"],

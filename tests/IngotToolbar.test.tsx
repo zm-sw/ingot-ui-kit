@@ -1,8 +1,8 @@
 /**
- * `IngotToolbar` (KAN-654) — bar je jen rozvržení: filtry a akce dodává
- * volající, primitivum drží mezery, zalamování a pravý konec (`end`).
- * Žádné `role="toolbar"` schválně — ta role slibuje šipkovou navigaci,
- * kterou nikdo nenapsal.
+ * `IngotToolbar` (KAN-654) — the bar is only layout: the caller supplies
+ * filters and actions, the primitive holds spacing, wrapping and the right
+ * end (`end`). No `role="toolbar"` on purpose — that role promises arrow
+ * navigation nobody wrote.
  */
 
 import { render, screen } from "@testing-library/react";
@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest";
 import { IngotToolbar } from "@/ingot";
 
 describe("IngotToolbar", () => {
-  it("vykreslí filtry i pravý konec", () => {
+  it("renders the filters and the right end", () => {
     render(
       <IngotToolbar end={<button type="button">Přidat</button>} testId="bar">
         <input aria-label="Hledat" />
@@ -34,7 +34,7 @@ describe("IngotToolbar", () => {
     expect(screen.getByTestId("bar")).not.toHaveAttribute("role");
   });
 
-  it("bez end nevykresluje prázdný pravý obal", () => {
+  it("does not render an empty right wrapper without end", () => {
     render(
       <IngotToolbar testId="bar">
         <input aria-label="Hledat" />

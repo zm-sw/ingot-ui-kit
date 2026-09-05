@@ -1,18 +1,20 @@
 /**
- * Tabulka + prázdný stav (KAN-585) — čtvrté primitivum Ingotu.
+ * Table + empty state (KAN-585) — the fourth Ingot primitive.
  *
- * Testy míří na to, co tabulka opravuje **strukturálně**, protože právě to
- * ruční `<table>` v repu neuměly:
+ * The tests aim at what the table fixes **structurally**, because that is
+ * exactly what hand-made `<table>` elements in the repo could not do:
  *
- * 1. **`colSpan` se počítá.** Ruční prázdné stavy mají `colSpan={5}` natvrdo
- *    a při přidání sloupce se tiše rozejdou. Test proto neověřuje, že tam
- *    `colSpan` je, ale že se **rovná počtu sloupců** — a že se změní, když
- *    přibude sloupec akcí. Bez toho druhého by test prošel i nad zadrátovanou
- *    konstantou.
- * 2. **`<th scope="col">` na každém sloupci.** Ze 42 souborů s ručním
- *    `<thead>` má `scope` jen 12.
- * 3. **Loading není ticho.** Prázdné tělo se spinnerem zní pro odečítač
- *    stejně jako „nic tu není"; proto `aria-busy` a `role="status"`.
+ * 1. **`colSpan` is computed.** Hand-made empty states have `colSpan={5}`
+ *    hard-coded and drift quietly when a column is added. The test
+ *    therefore does not check that `colSpan` is there, but that it
+ *    **equals the column count** — and that it changes when an actions
+ *    column is added. Without the second part the test would pass over a
+ *    hard-wired constant too.
+ * 2. **`<th scope="col">` on every column.** Of 42 files with a hand-made
+ *    `<thead>` only 12 have `scope`.
+ * 3. **Loading is not silence.** An empty body with a spinner sounds to a
+ *    screen reader just like "nothing here"; hence `aria-busy` and
+ *    `role="status"`.
  */
 
 import { render, screen, within } from "@testing-library/react";
@@ -48,20 +50,20 @@ function renderTable(props: Partial<Parameters<typeof IngotTable<Row>>[0]> = {})
   );
 }
 
-describe("IngotTable — sémantika hlavičky", () => {
-  it("každý sloupec je <th scope=\"col\">", () => {
+describe("IngotTable — header semantics", () => {
+  it("every column is <th scope=\"col\">", () => {
     renderTable();
     const heads = screen.getAllByRole("columnheader");
     expect(heads).toHaveLength(2);
     for (const th of heads) expect(th).toHaveAttribute("scope", "col");
   });
 
-  it("caption popisuje tabulku pro odečítač", () => {
+  it("the caption describes the table for a screen reader", () => {
     renderTable({ caption: "Seznam položek" });
     expect(screen.getByRole("table")).toHaveAccessibleName("Seznam položek");
   });
 
-  it("sloupec akcí má popisek pro odečítač, i když ho není vidět", () => {
+  it("the actions column has a screen-reader label even when it is not visible", () => {
     renderTable({
       actions: (row) => <button type="button">smazat {row.name}</button>,
       actionsLabel: "Akce",
@@ -72,14 +74,14 @@ describe("IngotTable — sémantika hlavičky", () => {
   });
 });
 
-describe("IngotTable — řádky", () => {
-  it("vykreslí buňku pro každý sloupec a řádek", () => {
+describe("IngotTable — rows", () => {
+  it("renders a cell for every column and row", () => {
     renderTable();
     expect(screen.getByText("První")).toBeInTheDocument();
     expect(screen.getByText("40")).toBeInTheDocument();
   });
 
-  it("cell dostane pořadí řádku", () => {
+  it("cell receives the row index", () => {
     renderTable({
       columns: [
         { key: "rank", header: "#", cell: (_row, index) => `#${index + 1}` },
@@ -89,33 +91,33 @@ describe("IngotTable — řádky", () => {
     expect(screen.getByText("#2")).toBeInTheDocument();
   });
 
-  it("rowTestId označí řádek", () => {
+  it("rowTestId marks the row", () => {
     renderTable({ rowTestId: (row) => `radek-${row.id}` });
     expect(screen.getByTestId("radek-a")).toBeInTheDocument();
     expect(screen.getByTestId("radek-b")).toBeInTheDocument();
   });
 
-  it("řádkové akce jsou v poslední buňce a jsou dosažitelné klávesnicí", () => {
+  it("row actions are in the last cell and reachable by keyboard", () => {
     renderTable({
       actions: (row) => <button type="button">smazat {row.name}</button>,
       actionsLabel: "Akce",
     });
     const button = screen.getByRole("button", { name: "smazat První" });
     expect(button).toBeInTheDocument();
-    // Ne za hoverem: `opacity-0 group-hover:…` je pro klávesnici past,
-    // takže primitivum na akce žádnou takovou třídu nedává.
+    // Not behind hover: `opacity-0 group-hover:…` is a trap for the
+    // keyboard, so the primitive puts no such class on the actions.
     expect(button.closest("td")).not.toHaveClass("opacity-0");
   });
 });
 
-describe("IngotTable — colSpan se POČÍTÁ, není zadrátovaný", () => {
-  it("prázdný řádek je široký jako počet sloupců", () => {
+describe("IngotTable — colSpan is COMPUTED, not hard-wired", () => {
+  it("the empty row is as wide as the column count", () => {
     renderTable({ rows: [], empty: <IngotEmptyState title="Nic tu není" /> });
     const cell = screen.getByText("Nic tu není").closest("td");
     expect(cell).toHaveAttribute("colSpan", "2");
   });
 
-  it("sloupec akcí ten počet zvedne", () => {
+  it("the actions column raises that count", () => {
     renderTable({
       rows: [],
       empty: <IngotEmptyState title="Nic tu není" />,
@@ -123,13 +125,13 @@ describe("IngotTable — colSpan se POČÍTÁ, není zadrátovaný", () => {
       actionsLabel: "Akce",
     });
     const cell = screen.getByText("Nic tu není").closest("td");
-    // Kdyby byl colSpan konstanta, tenhle případ ji usvědčí.
+    // If colSpan were a constant, this case would convict it.
     expect(cell).toHaveAttribute("colSpan", "3");
   });
 });
 
-describe("IngotTable — prázdný a loading stav", () => {
-  it("prázdný stav se ukáže jen když nejsou řádky", () => {
+describe("IngotTable — empty and loading state", () => {
+  it("the empty state shows only when there are no rows", () => {
     const { rerender } = render(
       <IngotTable<Row>
         columns={COLUMNS}
@@ -152,7 +154,7 @@ describe("IngotTable — prázdný a loading stav", () => {
     expect(screen.getByText("První")).toBeInTheDocument();
   });
 
-  it("loading řekne odečítači, že se čeká — a nevykreslí řádky ani prázdno", () => {
+  it("loading tells a screen reader it is waiting — and renders neither rows nor the empty state", () => {
     renderTable({
       loading: true,
       loadingLabel: "Načítám…",
@@ -172,7 +174,7 @@ describe("IngotTable — prázdný a loading stav", () => {
 });
 
 describe("IngotEmptyState", () => {
-  it("ukáže titulek, popis i afordanci", () => {
+  it("shows the title, description and affordance", () => {
     render(
       <IngotEmptyState
         title="Zatím tu nic není"
@@ -187,7 +189,7 @@ describe("IngotEmptyState", () => {
     expect(within(box).getByRole("button", { name: "Přidat" })).toBeInTheDocument();
   });
 
-  it("popis ani afordance nejsou povinné", () => {
+  it("neither description nor affordance is required", () => {
     render(<IngotEmptyState title="Prázdno" testId="prazdno" />);
     const box = screen.getByTestId("prazdno");
     expect(box).toHaveTextContent("Prázdno");

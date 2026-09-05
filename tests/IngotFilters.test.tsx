@@ -1,15 +1,15 @@
 /**
- * Filtrační atomy, rám stránky a panel pozornosti (rozhodnutí vlastníka
- * 2026-09-02, body 05–08). Testy měří pravidla, kde je špatná varianta
- * na pohled stejně dobrá jako správná:
+ * Filter atoms, page frame and attention panel (owner decision of
+ * 2026-09-02, items 05–08). The tests measure rules where the wrong
+ * variant looks just as good as the right one:
  *
- * - popisek zaškrtávátka je ``<label>`` obalující input — klik na text
- *   zaškrtává a jméno jede zadarmo,
- * - hledací pole i select nesou jméno přes ``aria-label``, ne přes
- *   placeholder nebo první volbu,
- * - panel pozornosti je pojmenovaná ``section``, ne tmavý div,
- * - křivka metriky je dekorace (``aria-hidden``) a pod dva body se
- *   nekreslí vůbec.
+ * - a checkbox caption is a ``<label>`` wrapping the input — a click on the
+ *   text checks and the name comes for free,
+ * - the search field and the select carry their name via ``aria-label``,
+ *   not via placeholder or the first option,
+ * - the attention panel is a named ``section``, not a dark div,
+ * - a metric curve is decoration (``aria-hidden``) and is not drawn below
+ *   two points at all.
  */
 
 import { createRef } from "react";
@@ -28,7 +28,7 @@ import {
 } from "@/ingot";
 
 describe("IngotSelect", () => {
-  it("nese jméno přes aria-label a hlásí novou hodnotu", async () => {
+  it("carries its name via aria-label and reports the new value", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -50,7 +50,7 @@ describe("IngotSelect", () => {
 });
 
 describe("IngotCheckbox", () => {
-  it("klik na text zaškrtává — popisek je label obalující input", async () => {
+  it("a click on the text checks — the label wraps the input", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -68,7 +68,7 @@ describe("IngotCheckbox", () => {
     ).toBeInTheDocument();
   });
 
-  it("vypnutá volba nehlásí nic", async () => {
+  it("a disabled option reports nothing", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -81,7 +81,7 @@ describe("IngotCheckbox", () => {
 });
 
 describe("IngotSearchInput", () => {
-  it("jméno nese aria-label, ne placeholder; lupa je dekorace", () => {
+  it("the name is carried by aria-label, not placeholder; the magnifier is decoration", () => {
     render(
       <IngotSearchInput
         value=""
@@ -94,11 +94,11 @@ describe("IngotSearchInput", () => {
 
     const input = screen.getByRole("searchbox", { name: "Hledat v položkách" });
     expect(input).toHaveAttribute("type", "search");
-    // Ikona nesmí být druhé jméno vedle labelu.
+    // The icon must not be a second name next to the label.
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
-  it("hlásí každý úhoz", async () => {
+  it("reports every keystroke", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -109,9 +109,9 @@ describe("IngotSearchInput", () => {
     expect(onChange).toHaveBeenCalledWith("a");
   });
 
-  // Zkratka „skoč do hledání“ musí mít cestu k poli v API, ne přes
-  // querySelector do vnitřku obalu.
-  it("pouští ven ref na input, ne na obal", () => {
+  // The "jump to search" shortcut needs a path to the field in the API, not
+  // through querySelector into the wrapper internals.
+  it("exposes a ref to the input, not to the wrapper", () => {
     const ref = createRef<HTMLInputElement>();
     render(
       <IngotSearchInput
@@ -129,7 +129,7 @@ describe("IngotSearchInput", () => {
 });
 
 describe("IngotAttentionPanel", () => {
-  it("je pojmenovaná section — orientační bod, ne tmavý div", () => {
+  it("is a named section — a landmark, not a dark div", () => {
     render(
       <IngotAttentionPanel title="Co řešit teď">
         <p>5 položek vyžaduje pozornost.</p>
@@ -146,7 +146,7 @@ describe("IngotAttentionPanel", () => {
 });
 
 describe("IngotPageLayout", () => {
-  it("rejstřík stojí před obsahem i v DOM", () => {
+  it("the index stands before the content in the DOM too", () => {
     render(
       <IngotPageLayout
         aside={<nav aria-label="Obsah">rejstřík</nav>}
@@ -163,7 +163,7 @@ describe("IngotPageLayout", () => {
 });
 
 describe("IngotMetrics — trend", () => {
-  it("křivka je dekorace a pod dva body se nekreslí", () => {
+  it("the curve is decoration and is not drawn below two points", () => {
     const { container } = render(
       <IngotMetrics
         items={[
@@ -180,7 +180,7 @@ describe("IngotMetrics — trend", () => {
     expect(sparklines[0]).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("okno bez pohybu je čárkovaná linka, ne plná čára", () => {
+  it("a window with no movement is a dashed line, not a solid one", () => {
     const { container } = render(
       <IngotMetrics
         items={[{ label: "Po termínu", value: 0, trend: [0, 0, 0, 0] }]}
@@ -188,8 +188,8 @@ describe("IngotMetrics — trend", () => {
       />,
     );
 
-    // Plná vodorovná čára by tvrdila stabilní nenulovou hodnotu;
-    // čárkovaná říká „tady se nic nedělo".
+    // A solid horizontal line would claim a stable non-zero value; a dashed
+    // one says "nothing happened here".
     expect(container.querySelector("line[stroke-dasharray]")).not.toBeNull();
     expect(container.querySelector("polyline")).toBeNull();
   });

@@ -1,17 +1,20 @@
 /**
- * Slovník Jednoduše/Expert (KAN-662).
+ * Simple/Expert dictionary (KAN-662).
  *
- * Typ registru vynutí, že termín má expert variantu ve všech jazycích —
- * co typ vynutit neumí:
+ * The registry type enforces that a term has an expert variant in every
+ * language — what the type cannot enforce:
  *
- * 1. **Výběr varianty ve všech třech režimech** — simple / expert / both,
- *    včetně formy „Obojí“ (expert + závorka), která je rozhodnutí, ne typ.
- * 2. 🪤 **Fallback**: termín bez ``simple`` varianty se nikdy nesmí ukázat
- *    jako prázdný text nebo klíč — v každém režimu padá na expert.
- * 3. **Neprázdnost**: ``Record<DocLang, string>`` vynutí klíč, ne obsah.
- * 4. **Uložená volba**: neplatná hodnota padá na výchozí ``both``.
- * 5. **Sdílený stav**: ukázka na stránce Překlady se překreslí po
- *    ``setDictionaryMode`` odjinud — to je celý smysl společného modulu.
+ * 1. **Variant selection in all three modes** — simple / expert / both,
+ *    including the form of "Both" (expert + parentheses), which is a
+ *    decision, not a type.
+ * 2. **Fallback**: a term without a ``simple`` variant must never show as
+ *    empty text or as the key — in every mode it falls to expert.
+ * 3. **Non-emptiness**: ``Record<DocLang, string>`` enforces the key, not
+ *    the content.
+ * 4. **Stored choice**: an invalid value falls to the default ``both``.
+ * 5. **Shared state**: the demo on the Translations page re-renders after
+ *    ``setDictionaryMode`` from elsewhere — that is the whole point of the
+ *    shared module.
  */
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -34,17 +37,17 @@ const STORAGE_KEY = "forgmatic.ingot.docs.dictionary";
 describe("termLabel", () => {
   const nesting = DICTIONARY_TERMS.nesting;
 
-  it("vybere jednoduchou variantu v režimu simple", () => {
+  it("picks the simple variant in simple mode", () => {
     expect(termLabel(nesting, "simple", "cs")).toBe(
       "Rozmístění dílů na plech",
     );
   });
 
-  it("vybere expertní variantu v režimu expert", () => {
+  it("picks the expert variant in expert mode", () => {
     expect(termLabel(nesting, "expert", "cs")).toBe("Nesting");
   });
 
-  it("v režimu both spojí expert termín a jednoduchý opis v závorce", () => {
+  it("in both mode joins the expert term and the plain description in parentheses", () => {
     expect(termLabel(nesting, "both", "cs")).toBe(
       "Nesting (Rozmístění dílů na plech)",
     );
@@ -59,9 +62,9 @@ describe("termLabel", () => {
     );
   });
 
-  // 🪤 Fallback: chybějící simple varianta NIKDY neskončí jako prázdný
-  // text — v každém režimu se ukáže expert, v both bez závorky.
-  it("bez simple varianty padá na expert ve všech režimech", () => {
+  // Fallback: a missing simple variant NEVER ends up as empty text — in
+  // every mode expert shows, in both without parentheses.
+  it("falls back to expert in every mode without a simple variant", () => {
     const bare: DictionaryTerm = {
       expert: { cs: "Kerf", en: "Kerf" },
     };
@@ -71,8 +74,8 @@ describe("termLabel", () => {
   });
 });
 
-describe("registr termínů", () => {
-  it("nese tři termíny ze specifikace", () => {
+describe("term registry", () => {
+  it("carries the three terms from the specification", () => {
     expect(Object.keys(DICTIONARY_TERMS).sort()).toEqual([
       "nesting",
       "setup_time",
@@ -80,7 +83,7 @@ describe("registr termínů", () => {
     ]);
   });
 
-  it("každá varianta je neprázdná ve všech jazycích doc webu", () => {
+  it("every variant is non-empty in every doc web language", () => {
     for (const term of Object.values(DICTIONARY_TERMS)) {
       for (const lang of DOC_LANGS) {
         expect(term.expert[lang].trim()).not.toBe("");
@@ -90,21 +93,21 @@ describe("registr termínů", () => {
   });
 });
 
-describe("uložená volba", () => {
+describe("stored choice", () => {
   beforeEach(() => {
     window.localStorage.removeItem(STORAGE_KEY);
   });
 
-  it("bez uložené volby vrací výchozí both", () => {
+  it("returns the default both without a stored choice", () => {
     expect(readStoredDictionaryMode()).toBe(DEFAULT_DICTIONARY_MODE);
   });
 
-  it("neplatná hodnota padá na výchozí, ne na výjimku", () => {
+  it("an invalid value falls back to the default, not to an exception", () => {
     window.localStorage.setItem(STORAGE_KEY, "wizard");
     expect(readStoredDictionaryMode()).toBe(DEFAULT_DICTIONARY_MODE);
   });
 
-  it("setDictionaryMode volbu uloží a readStoredDictionaryMode ji přečte", () => {
+  it("setDictionaryMode stores the choice and readStoredDictionaryMode reads it", () => {
     setDictionaryMode("expert");
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe("expert");
     expect(readStoredDictionaryMode()).toBe("expert");
@@ -116,13 +119,13 @@ describe("DictionaryTermsDemo", () => {
     act(() => setDictionaryMode(DEFAULT_DICTIONARY_MODE));
   });
 
-  it("nese vlastní přepínač — volba stojí u tabulky, kterou ovládá", async () => {
+  it("carries its own switch — the choice stands by the table it controls", async () => {
     const user = userEvent.setup();
     render(<DictionaryTermsDemo lang="cs" />);
 
-    // Do dorovnání seděl přepínač v horní liště vedle motivu a jazyka,
-    // tedy mezi volbami platnými pro celý web — a přitom ovládá jedinou
-    // tabulku. Tady je u ní, takže slib odpovídá dopadu.
+    // Until the alignment the switch sat in the top bar next to theme and
+    // language — among choices valid for the whole web — while controlling
+    // a single table. Here it stands by it, so the promise matches the effect.
     await user.click(screen.getByTestId("docs-dictionary-simple"));
     expect(screen.getByTestId("docs-dictionary-terms")).toHaveTextContent(
       "Rozmístění dílů na plech",
@@ -133,13 +136,14 @@ describe("DictionaryTermsDemo", () => {
     );
   });
 
-  it("překreslí termíny po přepnutí režimu odjinud", () => {
+  it("re-renders the terms after the mode is switched elsewhere", () => {
     render(<DictionaryTermsDemo lang="cs" />);
     const table = screen.getByTestId("docs-dictionary-terms");
     expect(table).toHaveTextContent("Nesting (Rozmístění dílů na plech)");
 
-    // Přepnutí simuluje přepínač ve skořápce — ukázka o něm neví, sdílí
-    // jen modulový stav. Kdyby si držela vlastní kopii, tady to spadne.
+    // The switch simulates the one in the shell — the demo knows nothing
+    // about it, it only shares the module state. If it kept its own copy,
+    // this is where it would fail.
     act(() => setDictionaryMode("simple"));
     expect(table).toHaveTextContent("Rozmístění dílů na plech");
     expect(table).not.toHaveTextContent("Nesting (");

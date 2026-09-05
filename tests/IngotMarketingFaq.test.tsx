@@ -1,9 +1,10 @@
 /**
- * FAQ blok veřejných stránek (KAN-664).
+ * FAQ block of the public pages (KAN-664).
  *
- * Prototyp měl a11y díru (button bez ``aria-expanded``/``aria-controls``);
- * testy drží přesně to, co ticket chce dodělat: ohlášený stav rozbalení,
- * provázání otázky s panelem a ovládání klávesnicí.
+ * The prototype had an accessibility hole (a button without
+ * ``aria-expanded``/``aria-controls``); the tests hold exactly what the
+ * ticket wants finished: the announced expanded state, the binding of the
+ * question to the panel, and keyboard operation.
  */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -16,7 +17,7 @@ const ITEMS = [
 ] as const;
 
 describe("IngotMarketingFaq", () => {
-  it("otázka je button s aria-expanded a aria-controls", async () => {
+  it("the question is a button with aria-expanded and aria-controls", async () => {
     render(<IngotMarketingFaq items={ITEMS} />);
     const question = screen.getByRole("button", { name: "Otázka A?" });
     expect(question).toHaveAttribute("aria-expanded", "false");
@@ -25,14 +26,14 @@ describe("IngotMarketingFaq", () => {
     await userEvent.click(question);
     expect(question).toHaveAttribute("aria-expanded", "true");
 
-    // Panel je provázaný přes id z aria-controls a pojmenovaný otázkou.
+    // The panel is bound via the id from aria-controls and named by the question.
     const panelId = question.getAttribute("aria-controls")!;
     const panel = screen.getByRole("region", { name: "Otázka A?" });
     expect(panel).toHaveAttribute("id", panelId);
     expect(panel).toHaveTextContent("Odpověď A.");
   });
 
-  it("rozbalí se druhá položka, první se zavře", async () => {
+  it("the second item unfolds, the first closes", async () => {
     render(<IngotMarketingFaq items={ITEMS} />);
     await userEvent.click(screen.getByRole("button", { name: "Otázka A?" }));
     await userEvent.click(screen.getByRole("button", { name: "Otázka B?" }));
@@ -44,7 +45,7 @@ describe("IngotMarketingFaq", () => {
     expect(screen.getByText("Odpověď B.")).toBeInTheDocument();
   });
 
-  it("ovládá se klávesnicí (Tab + Enter)", async () => {
+  it("is operated by keyboard (Tab + Enter)", async () => {
     render(<IngotMarketingFaq items={ITEMS} />);
     await userEvent.tab();
     expect(screen.getByRole("button", { name: "Otázka A?" })).toHaveFocus();
@@ -54,7 +55,7 @@ describe("IngotMarketingFaq", () => {
 });
 
 describe("IngotMarketingPricing", () => {
-  it("kreslí výhradně data z props — název, cenu, odznak i vlastnosti", () => {
+  it("draws exclusively data from props — name, price, badge and features", () => {
     render(
       <IngotMarketingPricing
         testId="pricing"

@@ -1,21 +1,21 @@
 /**
- * Nápověda stránky se žárovkou (KAN-659).
+ * Page hint with the bulb (KAN-659).
  *
- * Testy měří kontrakt ze specu PageHint v1.1:
+ * The tests measure the contract from the PageHint v1.1 spec:
  *
- * - klik na žárovku přidá cílům ``.is-hinted`` a po 2400 ms ji zase
- *   odebere (jednorázová akce, ne toggle),
- * - opakovaný klik uprostřed cyklu odpočet restartuje,
- * - ``visible={false}`` nekreslí nic — rozvržení a pořadí fokusu se
- *   nemění,
- * - unmount uprostřed cyklu cíle zhasne (třída žije na cizích
- *   prvcích, React ji sám neuklidí),
- * - reduced-motion větev je v CSS: probliknutí vypnuté, rámeček
- *   zůstane — test hlídá, že pravidlo v tokens.css nezmizí.
+ * - a click on the bulb adds ``.is-hinted`` to the targets and removes it
+ *   again after 2400 ms (a one-shot action, not a toggle),
+ * - a repeated click mid-cycle restarts the countdown,
+ * - ``visible={false}`` renders nothing — layout and focus order do not
+ *   change,
+ * - unmount mid-cycle turns the targets off (the class lives on foreign
+ *   elements, React does not clean it up itself),
+ * - the reduced-motion branch is in CSS: the flash is off, the frame stays
+ *   — the test guards that the rule in tokens.css does not vanish.
  *
- * ⏰ Falešné hodiny se zapínají PŘED renderem, ale bez posunu času —
- * memory: falešné hodiny POSUNUTÉ před mountem plánují časovače do
- * budoucnosti. Tady se čas jen zrychluje ``advanceTimersByTime``.
+ * Fake timers are switched on BEFORE the render, but without shifting
+ * time — fake timers SHIFTED before mount schedule timers into the future.
+ * Here time is only accelerated with ``advanceTimersByTime``.
  */
 
 import { readFileSync } from "node:fs";
@@ -65,7 +65,7 @@ describe("IngotPageHint", () => {
     vi.useRealTimers();
   });
 
-  it("klik na žárovku zvýrazní všechny cíle a po 2400 ms zhasnou", () => {
+  it("a click on the bulb highlights every target and they go dark after 2400 ms", () => {
     render(<Screen />);
 
     fireEvent.click(screen.getByTestId("hint-bulb"));
@@ -80,7 +80,7 @@ describe("IngotPageHint", () => {
     expect(screen.getByTestId("filter")).not.toHaveClass("is-hinted");
   });
 
-  it("opakovaný klik uprostřed cyklu restartuje odpočet", () => {
+  it("a repeated click mid-cycle restarts the countdown", () => {
     render(<Screen />);
 
     fireEvent.click(screen.getByTestId("hint-bulb"));
@@ -94,7 +94,7 @@ describe("IngotPageHint", () => {
     expect(screen.getByTestId("queue")).not.toHaveClass("is-hinted");
   });
 
-  it("žárovka je tlačítko s popisným aria-label", () => {
+  it("the bulb is a button with a descriptive aria-label", () => {
     render(<Screen />);
     expect(
       screen.getByRole("button", {
@@ -103,13 +103,13 @@ describe("IngotPageHint", () => {
     ).toBe(screen.getByTestId("hint-bulb"));
   });
 
-  it("visible=false nekreslí nic", () => {
+  it("visible=false renders nothing", () => {
     render(<Screen visible={false} />);
     expect(screen.queryByTestId("hint")).toBeNull();
     expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("bez cílů se žárovka nekreslí jako tlačítko", () => {
+  it("without targets the bulb is not rendered as a button", () => {
     render(
       <IngotPageHint title="Sklad" testId="bare">
         Naskladněte materiál čtečkou.
@@ -119,7 +119,7 @@ describe("IngotPageHint", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("křížek zavolá onDismiss", () => {
+  it("the close button calls onDismiss", () => {
     const onDismiss = vi.fn();
     render(<Screen dismissible onDismiss={onDismiss} />);
 
@@ -127,7 +127,7 @@ describe("IngotPageHint", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
-  it("unmount uprostřed cyklu cíle zhasne", () => {
+  it("unmount mid-cycle turns the targets off", () => {
     const { unmount } = render(
       <>
         <IngotPageHint
@@ -150,17 +150,17 @@ describe("IngotPageHint", () => {
     expect(outside).not.toHaveClass("is-hinted");
   });
 
-  it("reduced-motion větev v CSS: probliknutí vypnuté, rámeček zůstane", () => {
+  it("reduced-motion branch in CSS: the flash is off, the frame stays", () => {
     const css = readFileSync(
       join(process.cwd(), "src/ingot/tokens.css"),
       "utf-8",
     );
-    // Rámeček je na třídě staticky — nezávisí na animaci.
+    // The frame is on the class statically — independent of the animation.
     expect(css).toMatch(/\.is-hinted\s*\{[^}]*outline:\s*2px solid var\(--accent\)/);
     expect(css).toMatch(/outline-offset:\s*3px/);
-    // Probliknutí trvá 2.4 s — musí sedět s INGOT_HINT_DURATION_MS.
+    // The flash lasts 2.4 s — it has to match INGOT_HINT_DURATION_MS.
     expect(css).toMatch(/animation:\s*ingot-hint-pulse\s*2\.4s/);
-    // Pod prefers-reduced-motion se animace vypíná.
+    // Under prefers-reduced-motion the animation is switched off.
     expect(css).toMatch(
       /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.is-hinted\s*\{\s*animation:\s*none/,
     );
