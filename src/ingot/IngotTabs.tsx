@@ -3,31 +3,30 @@ import { useId, useRef, type JSX, type ReactNode } from "react";
 import { cx } from "./cx";
 
 /**
- * Přepínání pohledů na TENTÝŽ záznam (KAN-657) — spec Tabs v1.1,
- * ingot.css sekce 9.
+ * Switching views of the SAME record — spec Tabs v1.1.
  *
- * Řízená komponenta: ``value``/``onChange`` drží volající. Kit je
- * schválně bez routeru (doc web platil za react-router 7 660 B), takže
- * „hodnota v URL" NENÍ vnitřní záležitost komponenty — admin konzument
- * si ``value`` napojí na searchParams sám (vzorový snippet na doc
- * stránce). ``onChange`` nemění scroll pozici stránky: fokus se při
- * šipkách přesouvá s ``preventScroll``.
+ * A controlled component: the caller holds ``value`` / ``onChange``. The
+ * kit is deliberately router-free, so "the value in the URL" is NOT the
+ * component's internal business — the admin consumer wires ``value`` to
+ * its search params itself (sample snippet on the doc page). ``onChange``
+ * does not move the page's scroll position: focus moves with
+ * ``preventScroll`` on arrow keys.
  *
- * Pravidla ze specu (hlídá doc stránka, ne kód): max. 6 tabů, popisky
- * 1–2 slova; kroky procesu = steps pattern, filtry = chip — taby na to
- * nejsou.
+ * Rules from the spec (held by the doc page, not the code): at most 6
+ * tabs, labels of 1–2 words; process steps = the steps pattern, filters =
+ * chips — tabs are not for those.
  *
- * A11y: ``role="tablist"/"tab"/"tabpanel"``, roving tabindex (Tab
- * zastaví jen na aktivním tabu), šipky + Home/End přepínají. Aktivní
- * tab je poznat i bez barvy: podtržení + tučnost.
+ * A11y: ``role="tablist"/"tab"/"tabpanel"``, roving tabindex (Tab stops
+ * only on the active tab), arrows + Home/End switch. The active tab is
+ * recognisable without colour: underline + weight.
  */
 
 export interface IngotTabItem {
-  /** Klíč pohledu — hodnota pro ``value``/``onChange`` (a URL volajícího). */
+  /** View key — the value for ``value`` / ``onChange`` (and the caller's URL). */
   key: string;
-  /** Popisek, 1–2 slova, dodaný přeložený. */
+  /** Label, 1–2 words, supplied translated. */
   label: string;
-  /** Počet záznamů v pohledu — vykreslí se mono vedle popisku. */
+  /** Record count in the view — rendered mono next to the label. */
   count?: number;
 }
 
@@ -39,17 +38,17 @@ export function IngotTabs({
   label,
   testId,
 }: {
-  /** Pohledy. Max. 6 — víc pohledů už je jiná stránka, ne tab. */
+  /** The views. At most 6 — more views is another page, not a tab. */
   items: readonly IngotTabItem[];
-  /** Klíč aktivního pohledu. Řízené zvenčí — typicky z URL volajícího. */
+  /** Key of the active view. Controlled from outside — typically the caller's URL. */
   value: string;
-  /** Přepnutí pohledu. Nesmí měnit scroll pozici stránky. */
+  /** Switch of view. Must not change the page's scroll position. */
   onChange: (key: string) => void;
-  /** Obsah aktivního pohledu — vykreslí se jako ``tabpanel``. */
+  /** Content of the active view — rendered as the ``tabpanel``. */
   children?: ReactNode;
-  /** Přeložený ``aria-label`` seznamu tabů — Ingot překlady nemá. */
+  /** Translated ``aria-label`` of the tab list — the kit has no translations. */
   label?: string;
-  /** `data-testid` tablistu; tab dostane `${testId}-tab-${key}`. */
+  /** `data-testid` of the tablist; a tab gets `${testId}-tab-${key}`. */
   testId?: string;
 }): JSX.Element {
   const baseId = useId();
@@ -67,7 +66,7 @@ export function IngotTabs({
     const next = listRef.current?.querySelector<HTMLElement>(
       `[id="${tabId(item.key)}"]`,
     );
-    // preventScroll: přepnutí pohledu nesmí odscrolovat stránku jinam.
+    // preventScroll: switching views must not scroll the page elsewhere.
     next?.focus({ preventScroll: true });
   };
 

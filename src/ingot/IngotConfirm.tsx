@@ -57,16 +57,18 @@ import { IngotModal } from "./IngotModal";
  */
 
 /**
- * Kanál, kterým obsah `impact` slotu odvolá potvrzení.
+ * The channel through which the `impact` slot's content withdraws the
+ * confirmation.
  *
- * Kontext, ne prop: důvod zná až komponenta uvnitř slotu (načte usage
- * z API), a ta o dialogu nad sebou nemá referenci.
+ * A context, not a prop: only the component inside the slot knows the
+ * reason (it loads usage from the API), and it has no reference to the
+ * dialog above it.
  */
 const ConfirmVetoContext = createContext<(reason: ReactNode | null) => void>(
   () => {},
 );
 
-/** Zavolej s důvodem → potvrzovací tlačítko se nenabídne; `null` = beze změny. */
+/** Call with a reason → the confirm button is not offered; `null` = no change. */
 export function useConfirmVeto(): (reason: ReactNode | null) => void {
   return useContext(ConfirmVetoContext);
 }
@@ -83,24 +85,24 @@ export function IngotConfirm({
   testId,
   impact,
 }: {
-  /** Krátký titulek („Smazat trvale?"). Ukazuje na něj `aria-labelledby`. */
+  /** Short title ("Delete permanently?"). `aria-labelledby` points at it. */
   title: string;
-  /** Co se stane. */
+  /** What will happen. */
   description: ReactNode;
-  /** Přeložené sloveso potvrzení („Smazat"). */
+  /** Translated confirm verb ("Delete"). */
   confirmLabel: string;
-  /** Přeložený popisek zrušení („Zrušit"). */
+  /** Translated cancel label ("Cancel"). */
   cancelLabel: string;
-  /** Přeložený `aria-label` křížku v hlavičce. */
+  /** Translated `aria-label` of the cross in the header. */
   closeLabel: string;
-  /** Zamkne obě tlačítka, dokud mutace běží. */
+  /** Locks both buttons while the mutation runs. */
   busy?: boolean;
   onConfirm: () => void;
-  /** Zrušit · ESC · křížek · kliknutí do pozadí. */
+  /** Cancel · ESC · cross · click on the backdrop. */
   onClose: () => void;
-  /** `data-testid` overlaye; tlačítka dostanou `${testId}-confirm` / `-cancel`. */
+  /** `data-testid` of the overlay; the buttons get `${testId}-confirm` / `-cancel`. */
   testId?: string;
-  /** Spočítaný dopad; smí přes `useConfirmVeto` potvrzení odvolat. */
+  /** Computed impact; may withdraw the confirmation through `useConfirmVeto`. */
   impact?: ReactNode;
 }): JSX.Element {
   // Wrapped in an object: a bare ReactNode passed to a useState setter
@@ -149,8 +151,8 @@ export function IngotConfirm({
         >
           {cancelLabel}
         </Button>
-        {/* Vetovaný krok tlačítko NENABÍDNE vůbec — zašedlé „Smazat trvale"
-            vedle důvodu čte operátor jako „ještě chvíli". */}
+        {/* A vetoed step does NOT offer the button at all — a greyed-out
+            "Delete permanently" next to the reason reads as "wait a moment". */}
         {!veto && (
           <Button
             variant="danger"

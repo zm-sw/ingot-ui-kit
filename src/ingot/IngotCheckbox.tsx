@@ -31,19 +31,20 @@ export const IngotCheckboxControl = forwardRef<
 });
 
 /**
- * Zaškrtávátko s popiskem — filtr „jen vyžadující zásah“, souhlas ve
- * formuláři, přepínač chování v nastavení.
+ * A checkbox with a label — an "only needs attention" filter, a consent in
+ * a form, a behaviour toggle in settings.
  *
- * Popisek je součást primitiva, ne doprovod: holé zaškrtávátko bez
- * ``<label>`` je pro odečítač bezejmenný čtvereček a pro myš cíl
- * 16 × 16 px. Tady je popisek vždycky ``<label>`` obalující input,
- * takže klik na text zaškrtává a jméno jede zadarmo.
+ * The label is part of the primitive, not an accompaniment: a bare
+ * checkbox without a ``<label>`` is a nameless square to a screen reader
+ * and a 16 × 16 px target to the mouse. Here the label is always a
+ * ``<label>`` wrapping the input, so clicking the text toggles and the
+ * name comes for free.
  *
- * Není to přepínač (switch): zaškrtávátko je volba ve formuláři nebo
- * filtru a projeví se, až se stav použije; přepínač by sliboval okamžitý
- * účinek. Až si o něj obrazovka řekne, bude to vlastní primitivum.
+ * Not a switch: a checkbox is a choice in a form or filter that takes
+ * effect when the state is applied; a switch would promise an immediate
+ * effect. Once a screen asks for one, it will be a primitive of its own.
  *
- * Ingot **nemá vlastní i18n namespace** — popisek dodává volající.
+ * The kit has no i18n namespace of its own — the label comes from the caller.
  */
 export function IngotCheckbox({
   checked,
@@ -55,7 +56,7 @@ export function IngotCheckbox({
 }: {
   checked: boolean;
   onChange: (next: boolean) => void;
-  /** Přeložený viditelný popisek. Nese jméno prvku — proto povinný. */
+  /** Translated visible label. It carries the control's name — hence required. */
   label: ReactNode;
   disabled?: boolean;
   className?: string;

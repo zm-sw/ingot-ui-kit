@@ -46,33 +46,33 @@ export function IngotField({
   disabled = false,
   testId,
 }: {
-  /** Podstatné jméno bez dvojtečky („Počet kusů“), už přeložené. */
+  /** A noun without a colon ("Quantity"), already translated. */
   label: ReactNode;
   value: string;
   onChange: (next: string) => void;
-  /** Celá věta s tečkou pod polem. */
+  /** A full sentence with a full stop, under the field. */
   hint?: ReactNode;
-  /** Text chyby. Jeho přítomnost zapíná error stav a `aria-invalid`. */
+  /** Error text. Its presence turns on the error state and `aria-invalid`. */
   error?: ReactNode;
   /**
-   * Přípona s jednotkou nebo měnou („ks“, „%“). Jednotka NIKDY nepatří do
-   * placeholderu — ten zmizí, jakmile uživatel začne psát.
+   * Affix with a unit or currency ("pcs", "%"). A unit NEVER belongs in
+   * the placeholder — it vanishes the moment the user starts typing.
    */
   affix?: ReactNode;
-  /** Mono + `tabular-nums` pro kódy a čísla, která se čtou po sloupcích. */
+  /** Mono + `tabular-nums` for codes and numbers read down a column. */
   mono?: boolean;
   /**
-   * Přeložené „— nepovinné“ vedle popisku.
+   * Translated "— optional" next to the label.
    *
-   * Jedna vlastnost místo dvojice `optional` + text schválně: `optional`
-   * bez textu by byl stav, který nejde vykreslit, a Ingot ten text sám
-   * nemá odkud vzít.
+   * One prop instead of an `optional` + text pair on purpose: `optional`
+   * without text would be a state that cannot be rendered, and the kit has
+   * nowhere to take the text from.
    */
   optionalLabel?: ReactNode;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
-  /** `data-testid` vstupu — testy sahají na to, co se ovládá. */
+  /** `data-testid` of the input — tests reach for what is operated. */
   testId?: string;
 }): JSX.Element {
   const id = useId();
@@ -80,7 +80,7 @@ export function IngotField({
   const errorId = `${id}-error`;
   const affixId = `${id}-affix`;
 
-  // Pořadí je pořadím čtení: nápověda, jednotka, teprve pak chyba.
+  // The order is reading order: hint, unit, only then the error.
   const describedBy = cx(
     hint != null && hintId,
     affix != null && affixId,

@@ -7,11 +7,12 @@ import { IngotSelect } from "./IngotSelect";
 import { inputChrome } from "./inputChrome";
 
 /**
- * Vstup jednoho pole — nejmenší primitivum Ingotu (KAN-382).
+ * The input of one field — the kit's smallest primitive.
  *
- * Je záměrně **bez popisku**: existují obrazovky, které popisek staví samy
- * (per-uzlová konfigurace operace k němu přidává zaškrtávátko „tento uzel to
- * přenastavuje"). Popisek a nápovědu skládá ``IngotForm`` nad tímhle.
+ * Deliberately **without a label**: some screens build the label
+ * themselves (per-node operation configuration adds an "this node
+ * overrides it" checkbox to it). The label and the hint are composed by
+ * ``IngotForm`` above this.
  */
 export function IngotFieldInput({
   field,
@@ -30,16 +31,16 @@ export function IngotFieldInput({
   testId: string;
   className?: string;
   /**
-   * Přeložený text placeholderu tajného pole. Ingot nemá vlastní i18n
-   * namespace; konzument, který překlad má (integrace ho mají od KAN-379),
-   * ho podstrčí, ostatní dostanou český výchozí text.
+   * Translated placeholder text of a secret field. The kit has no i18n
+   * namespace; a consumer that has the translation supplies it, the others
+   * get the default text.
    */
   secretPlaceholder?: (field: IngotFieldSpec) => string;
   /**
-   * Výběr z pojmenované množiny (``x_options``). Ingot sám žádnou množinu
-   * nezná — data by ho svázala s jednou doménou. Konzument, který pole
-   * typu ``options`` má, sem podstrčí svůj výběr; bez něj Ingot spadne
-   * zpátky na textové pole, přesně jak to dělal formulář před sloučením.
+   * Picker over a named set (``optionsSource``). The kit knows no set
+   * itself — data would tie it to one domain. A consumer that has
+   * ``options`` fields supplies its picker here; without it the field
+   * renders as a disabled select holding only the current value.
    */
   renderOptions?: (args: {
     field: IngotFieldSpec;
@@ -103,7 +104,7 @@ export function IngotFieldInput({
         autoComplete="new-password"
         disabled={disabled}
         value={typeof value === "string" ? value : ""}
-        // Jediné, co formulář o uložené hodnotě smí říct, je že tam je.
+        // The only thing the form may say about a stored value is that it is there.
         placeholder={
           secretPlaceholder
             ? secretPlaceholder(field)
@@ -143,10 +144,11 @@ export function IngotFieldInput({
 }
 
 /**
- * Placeholdery tajného pole. Ingot nemá vlastní i18n namespace, a text je
- * jednoslovný stav, ne věta — konzumenti, kteří mají přeložený řetězec
- * (integrace ho mají od KAN-379), si ho podstrčí přes ``field.label``
- * nezávisle; tohle je výchozí hodnota pro ty ostatní.
+ * Placeholders of a secret field. The kit has no i18n namespace and the
+ * text is a one-word state, not a sentence — consumers that have the
+ * translated string supply it through ``secretPlaceholder``; this is the
+ * default for the others. (Czech defaults are a known gap tracked for the
+ * IngotProvider work.)
  */
 export const SECRET_PLACEHOLDER_SET = "nastaveno";
 export const SECRET_PLACEHOLDER_UNSET = "nenastaveno";

@@ -57,45 +57,45 @@ export function IngotModal({
   bodyClassName = "p-4",
   testId,
 }: {
-  /** Vykreslí se do `<h2>`, na které ukazuje `aria-labelledby`. */
+  /** Rendered into the `<h2>` that `aria-labelledby` points at. */
   title: ReactNode;
   /**
-   * Druhý řádek hlavičky — drobečková cesta, kontext, od čeho se
-   * odchyluješ.
+   * Second header line — a breadcrumb trail, the context you are
+   * departing from.
    *
-   * 🚨 **Není součástí `aria-labelledby`.** Přístupné jméno dialogu má
-   * být krátké a stabilní; drobečková cesta („Sklad Praha / Regál 1 /
-   * Police 2“) by z něj udělala odstavec, který čtečka přečte při
-   * každém návratu fokusu do dialogu. Podtitulek si proto nese
-   * `aria-describedby`, ne `-labelledby`.
+   * **Not part of `aria-labelledby`.** The dialog's accessible name should
+   * be short and stable; a breadcrumb trail ("Warehouse Prague / Rack 1 /
+   * Shelf 2") would turn it into a paragraph the reader hears every time
+   * focus returns to the dialog. The subtitle therefore carries
+   * `aria-describedby`, not `-labelledby`.
    */
   subtitle?: ReactNode;
-  /** Volá ESC, kliknutí do pozadí i zavírací tlačítko. */
+  /** Called by ESC, a click on the backdrop and the close button. */
   onClose: () => void;
   children: ReactNode;
   /**
-   * Lišta akcí pod obsahem, oddělená linkou. Nescroluje s obsahem
-   * (`sticky bottom-0`) — u vysokého formuláře je „Uložit“ jinak pod
-   * ohybem a operátor ho hledá scrollováním.
+   * Action bar under the content, separated by a line. Does not scroll
+   * with the content (`sticky bottom-0`) — on a tall form "Save" would
+   * otherwise be below the fold and the operator scrolls to find it.
    */
   footer?: ReactNode;
-  /** Přeložený `aria-label` zavíracího tlačítka — Ingot překlady nemá. */
+  /** Translated `aria-label` of the close button — the kit has no translations. */
   closeLabel: string;
-  /** Maximální šířka panelu v px. */
+  /** Maximum panel width in px. */
   width?: number;
   /**
-   * Třídy obalu obsahu. Výchozí `p-4` sedí formulářům; dvousloupcový
-   * layout, kde si odsazení nese každý sloupec sám a dělicí linka má
-   * jít od kraje ke kraji, si předá `""`.
+   * Classes of the content wrapper. The default `p-4` suits forms; a
+   * two-column layout where each column carries its own padding and the
+   * divider must run edge to edge passes `""`.
    */
   bodyClassName?: string;
-  /** `data-testid` overlaye; panel dostane `${testId}-panel`. */
+  /** `data-testid` of the overlay; the panel gets `${testId}-panel`. */
   testId?: string;
 }): JSX.Element {
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
-  // Poslední otevřený dialog leží nahoře — pevný ``z-50`` na všech
-  // nechal rozhodovat pořadí v DOM, které pořadí otevírání nekopíruje.
+  // The last opened dialog lies on top — a fixed ``z-50`` on all of them
+  // let the DOM order decide, which does not follow the opening order.
   const layer = useModalLayer();
   const subtitleId = `${titleId}-sub`;
 
@@ -119,9 +119,10 @@ export function IngotModal({
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/40 p-4"
       style={{ zIndex: layer }}
-      // Zachytává se na overlayi, ne na dokumentu: dva otevřené dialogy nad
-      // sebou by jinak na jeden ESC zavřely oba. Fokus je uvnitř panelu, takže
-      // událost sem bublá jen z toho vrchního — a ten ji zastaví.
+      // Caught on the overlay, not on the document: two open dialogs on top
+      // of each other would otherwise both close on one ESC. Focus is inside
+      // the panel, so the event bubbles here only from the top one — and
+      // that one stops it.
       onKeyDown={onKeyDown}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();

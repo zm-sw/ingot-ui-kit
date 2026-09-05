@@ -59,17 +59,18 @@ export function IngotAccentSwatches({
             data-accent={choice}
             onClick={() => onChange(choice)}
             className={cx(
-              // 🪤 Terč je 28×28, tečka zůstává 18×18. Sáhnout se musí dát
-              // prstem (WCAG 2.2 AA, 2.5.8 chce aspoň 24×24), ale zvětšit
-              // kolečko by rozbilo lištu z handoffu — proto roste plocha
-              // kolem něj, ne ono samo. Tlačítko nic nekreslí; kreslí
-              // vnitřní ``span``.
+              // The target is 28×28, the dot stays 18×18. It must be reachable
+              // with a finger (WCAG 2.2 AA, 2.5.8 wants at least 24×24), but
+              // enlarging the circle would break the bar from the handoff —
+              // hence the area around it grows, not the dot itself. The
+              // button draws nothing; the inner ``span`` draws.
               "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 disabled:opacity-60",
             )}
             data-testid={`accent-swatch-${choice}`}
           >
-            {/* ``data-accent`` sedí na tlačítku výš, takže ``var(--accent)``
-                se sem dědí — tečku pořád barví ten blok, který inzeruje. */}
+            {/* ``data-accent`` sits on the button above, so ``var(--accent)``
+                is inherited here — the dot is still coloured by the very block
+                it advertises. */}
             <span
               aria-hidden="true"
               className="h-[18px] w-[18px] rounded-full border-2 transition-colors"

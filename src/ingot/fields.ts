@@ -1,14 +1,15 @@
 /**
- * Popis jednoho pole deklarativního formuláře — jádro Ingotu v1 (KAN-382).
+ * Description of one field of the declarative form — the core of Ingot v1.
  *
- * Ingot se nestaví na zelené louce: tenhle popis je zobecněním toho, co už
- * renderoval ``OperationConfigPanel`` z ``operation_config_schema``, plus
- * jeden druh pole navíc (``secret``), který si vyžádal config integrací.
+ * Ingot is not built on a green field: this description generalises what
+ * the operation configuration panel already rendered from its JSON
+ * schema, plus one extra kind of field (``secret``) the integration
+ * config asked for.
  *
- * Popis je **zdrojově neutrální**. Nezná ani JSON Schema, ani manifest
- * integrace — obojí se do něj překládá adaptérem (``fieldsFromConfigSchema``,
- * ``fieldsFromIntegrationManifest``). Díky tomu je renderer jeden a přibývají
- * jen adaptéry, ne varianty formuláře.
+ * The description is **source-neutral**. It knows neither JSON Schema nor
+ * an integration manifest — both are translated into it by an adapter
+ * (``fieldsFromConfigSchema``, ``fieldsFromIntegrationManifest``). That
+ * keeps one renderer; only adapters are added, not form variants.
  */
 
 export type IngotFieldKind =
@@ -17,14 +18,14 @@ export type IngotFieldKind =
   | "integer"
   | "text"
   /**
-   * Write-only pole. Server hodnotu nikdy nevrací, takže se do formuláře
-   * nemá čím naplnit; prázdné pole znamená „nesahat" a při odeslání se
-   * vynechá (viz ``ingotFormPayload``). Zda je hodnota uložená, se pozná
-   * jedině z ``secretConfigured`` — a jediné, co o ní formulář smí říct,
-   * je právě to.
+   * Write-only field. The server never returns the value, so there is
+   * nothing to fill the form with; an empty field means "do not touch" and
+   * is left out on submit (see ``ingotFormPayload``). Whether a value is
+   * stored is known only from ``secretConfigured`` — and that is the only
+   * thing the form may say about it.
    */
   | "secret"
-  /** Hodnota se vybírá z množiny, kterou pojmenovává ``optionsSource``. */
+  /** The value is picked from a set named by ``optionsSource``. */
   | "options";
 
 export interface IngotFieldSpec {
@@ -34,16 +35,16 @@ export interface IngotFieldSpec {
   description?: string;
   minimum?: number;
   maximum?: number;
-  /** Jen pro ``kind === "options"`` — jméno zdroje, ne jméno knobu. */
+  /** Only for ``kind === "options"`` — the name of the source, not of the knob. */
   optionsSource?: string;
-  /** Jen pro ``kind === "secret"`` — je hodnota na serveru uložená? */
+  /** Only for ``kind === "secret"`` — is a value stored on the server? */
   secretConfigured?: boolean;
 }
 
 export const isNumericKind = (kind: IngotFieldKind): boolean =>
   kind === "number" || kind === "integer";
 
-/** Vlastnost ``operation_config_schema`` tak, jak ji posílá API. */
+/** A property of the operation configuration schema as the API sends it. */
 export interface IngotSchemaProperty {
   type?: "boolean" | "number" | "integer" | "string";
   title?: string;
@@ -56,11 +57,12 @@ export interface IngotSchemaProperty {
 }
 
 /**
- * JSON-Schema ``properties`` → pole Ingotu.
+ * JSON-Schema ``properties`` → Ingot fields.
  *
- * ``preferEnglish`` řeší jazyk titulku stejně, jak to dělaly oba panely
- * konfigurace operací před sloučením: anglicky ``title_en`` s propadem na
- * ``title``, jinak obráceně, a jako poslední záchrana klíč sám.
+ * ``preferEnglish`` resolves the title language the way both operation
+ * configuration panels did before they merged: in English ``title_en``
+ * falling back to ``title``, otherwise the other way round, and the key
+ * itself as the last resort.
  */
 export function fieldsFromConfigSchema(
   properties: Record<string, IngotSchemaProperty>,
@@ -91,11 +93,13 @@ export function fieldsFromConfigSchema(
 }
 
 /**
- * Manifest integrace (a stejně tvarovaný manifest aplikace) → pole Ingotu.
+ * An integration manifest (and the identically shaped app manifest) →
+ * Ingot fields.
  *
- * Manifest nenese typy — deklaruje jen dvě množiny klíčů: běžné a tajné.
- * Běžný klíč je proto text, tajný je ``secret``. Až manifest začne typy
- * nést, přeloží se tady; renderer se měnit nebude.
+ * The manifest carries no types — it declares only two sets of keys:
+ * ordinary and secret. An ordinary key is therefore text, a secret one is
+ * ``secret``. Once the manifest starts carrying types, they are translated
+ * here; the renderer will not change.
  */
 export function fieldsFromIntegrationManifest(manifest: {
   required_config_keys: readonly string[];

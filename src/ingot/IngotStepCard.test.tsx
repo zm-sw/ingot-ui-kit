@@ -1,16 +1,17 @@
 /**
- * `IngotStepCard` — sbalování a hotový stav.
+ * `IngotStepCard` — collapsing and the done state.
  *
- * Proč zrovna tyhle dvě věci: obě jsou stav, který se neprojeví jinak než
- * tím, co uživatel vidí a co uslyší odečítač, takže je typecheck ani
- * smoke render nechytí. Sbalený krok, ze kterého v DOM zůstane tělo bez
- * `hidden`, vypadá v testu stejně jako rozbalený; `aria-expanded`, které
- * se nehne, projde vykreslením úplně.
+ * Why exactly these two: both are state that shows only in what the user
+ * sees and what a screen reader hears, so neither the typecheck nor a smoke
+ * render catches them. A collapsed step whose body stays in the DOM without
+ * `hidden` looks the same in a test as an expanded one; an `aria-expanded`
+ * that does not move passes rendering entirely.
  *
- * Tvrzení o VÝCHOZÍM chování (nesbalitelná karta nemá tlačítko ani `hidden`)
- * váží stejně jako ta o zapnutém: karta stojí pod celým vedeným nastavením
- * a prop, který svoje chování protlačí i k volajícím, co o něj nepožádali,
- * je regrese na všech těch obrazovkách naráz.
+ * Assertions about the DEFAULT behaviour (a non-collapsible card has no
+ * button and no `hidden`) weigh as much as those about the enabled one: the
+ * card sits under the whole guided setup, and a prop that pushes its
+ * behaviour onto callers who did not ask for it is a regression on all
+ * those screens at once.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -36,7 +37,7 @@ function renderCard(extra: Record<string, unknown> = {}) {
 const body = () => screen.getByText("Materiály a povrchové úpravy.").parentElement;
 
 describe("IngotStepCard collapsible", () => {
-  it("nesbalitelná karta nemá tlačítko a tělo neschovává", () => {
+  it("a non-collapsible card has no button and does not hide its body", () => {
     renderCard();
 
     expect(screen.queryByRole("button", { name: "Sbalit krok" })).toBeNull();
@@ -44,7 +45,7 @@ describe("IngotStepCard collapsible", () => {
     expect(screen.getByText("Přidat vlastnost")).toBeInTheDocument();
   });
 
-  it("tlačítko sbalí tělo i patičku a ohlásí to přes aria-expanded", () => {
+  it("the button collapses body and footer and announces it via aria-expanded", () => {
     renderCard({ collapsible: true, toggleLabel: "Sbalit krok" });
 
     const toggle = screen.getByRole("button", { name: "Sbalit krok" });
@@ -58,7 +59,7 @@ describe("IngotStepCard collapsible", () => {
     expect(screen.queryByText("Přidat vlastnost")).toBeNull();
   });
 
-  it("aria-controls míří na tělo, které v DOM zůstává i sbalené", () => {
+  it("aria-controls points at the body, which stays in the DOM when collapsed", () => {
     renderCard({ collapsible: true, toggleLabel: "Sbalit krok" });
 
     const toggle = screen.getByRole("button", { name: "Sbalit krok" });
@@ -72,7 +73,7 @@ describe("IngotStepCard collapsible", () => {
 });
 
 describe("IngotStepCard done", () => {
-  it("hotový krok se sbalí sám, nehotový zůstane otevřený", () => {
+  it("a done step collapses by itself, an unfinished one stays open", () => {
     const { unmount } = renderCard({
       collapsible: true,
       toggleLabel: "Rozbalit krok",
@@ -94,7 +95,7 @@ describe("IngotStepCard done", () => {
     );
   });
 
-  it("krok dokončený až na obrazovce se sbalí bez reloadu", () => {
+  it("a step finished on screen collapses without a reload", () => {
     const { rerender } = renderCard({
       collapsible: true,
       toggleLabel: "Sbalit krok",
@@ -121,13 +122,13 @@ describe("IngotStepCard done", () => {
     expect(body()).toHaveAttribute("hidden");
   });
 
-  it("hotový stav nese i text pro odečítač, ne jen zelenou", () => {
+  it("the done state carries text for a screen reader, not only green", () => {
     renderCard({ done: true, doneLabel: "Hotovo" });
 
     expect(screen.getByTitle("Hotovo")).toBeInTheDocument();
   });
 
-  it("sbalení hotového kroku jde přepnout ručně", () => {
+  it("the collapse of a done step can be toggled by hand", () => {
     renderCard({
       collapsible: true,
       toggleLabel: "Rozbalit krok",

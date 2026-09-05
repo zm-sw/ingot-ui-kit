@@ -5,17 +5,17 @@ import { IngotFieldInput } from "./IngotFieldInput";
 import type { IngotFieldSpec } from "./fields";
 
 /**
- * Deklarativní formulář — první primitivum admin Ingotu (KAN-382).
+ * Declarative form — the kit's first admin primitive.
  *
- * Dostane popis polí (``IngotFieldSpec[]``) a hodnoty; vykreslí popisky, vstupy
- * a nápovědy. Tlačítka, nadpis ani ukládání sem nepatří: každý konzument má
- * jinou akci (uložit override, zapnout integraci) a formulář, který by je
- * znal, by byl zase komponentou jedné obrazovky.
+ * It takes field descriptions (``IngotFieldSpec[]``) and values; it renders
+ * labels, inputs and hints. Buttons, a heading and saving do not belong
+ * here: every consumer has a different action (save an override, enable an
+ * integration) and a form that knew them would again be one screen's
+ * component.
  *
- * Konzumenti dnes: konfigurace operace per tenant
- * (``OperationConfigPanel``), per uzel (``NodeOperationConfigPanel`` —
- * skládá si popisky sám a bere jen ``IngotFieldInput``) a config integrace
- * (``IntegrationCard``).
+ * Consumers: per-tenant operation configuration, per-node operation
+ * configuration (which composes its own labels and takes only
+ * ``IngotFieldInput``) and integration configuration.
  */
 export function IngotForm({
   fields,
@@ -31,12 +31,12 @@ export function IngotForm({
   fields: readonly IngotFieldSpec[];
   values: Record<string, unknown>;
   onChange: (key: string, next: unknown) => void;
-  /** ``data-testid`` vstupu je ``${testIdPrefix}-${key}``. */
+  /** An input's ``data-testid`` is ``${testIdPrefix}-${key}``. */
   testIdPrefix: string;
   renderOptions?: React.ComponentProps<typeof IngotFieldInput>["renderOptions"];
   secretPlaceholder?: (field: IngotFieldSpec) => string;
   className?: string;
-  /** Třída vstupu — obrazovky se liší šířkou pole, ne tvarem formuláře. */
+  /** Input class — screens differ in field width, not in the form's shape. */
   inputClassName?: string;
   labelClassName?: string;
 }): JSX.Element {
@@ -54,9 +54,9 @@ export function IngotForm({
             secretPlaceholder={secretPlaceholder}
           />
         );
-        // Zaškrtávátko čte svůj popisek vpravo od sebe; ostatní pole mají
-        // popisek nad vstupem. Je to jediná odchylka a drží ji formulář,
-        // aby ji konzumenti neopisovali.
+        // A checkbox reads its label to its right; every other field has
+        // the label above the input. It is the one deviation and the form
+        // holds it so consumers do not copy it.
         if (field.kind === "boolean") {
           // The labelled checkbox already exists as a primitive; the form
           // used to redraw its label wrapper by hand.
