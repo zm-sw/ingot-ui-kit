@@ -43,6 +43,42 @@ version and exactly one tree.
 Available tags are on the [releases page](https://github.com/zm-sw/ingot-ui-kit/releases);
 what each one changed is in [CHANGELOG.md](CHANGELOG.md).
 
+## Two ways to install it
+
+**From a tag.** What everything here assumes, and what works today:
+
+```
+"@forgmatic/ingot": "github:zm-sw/ingot-ui-kit#v1.1.1"
+```
+
+**From GitHub Packages.** Once a release has been published there, the
+same package is available under a semver range with an integrity hash,
+which a git pin cannot give you:
+
+```
+@forgmatic:registry=https://npm.pkg.github.com
+```
+
+Publishing is off by default. It is the one step of the release that
+cannot be taken back, so it happens only when the repository variable
+`INGOT_PUBLISH` is set to `true`; until then every release still tags and
+still cuts its GitHub release, and the tag is the pin.
+
+## Is the package enough to build with?
+
+`examples/consumer/` answers that from outside. It is a small application
+that installs the **packed** kit — the same file list a consumer receives
+— and never reaches into `src/`. A leaked relative path, a forgotten
+export, an undeclared peer, or a type only this repository's tsconfig
+supplies all fail there instead of at somebody's first install.
+
+```bash
+npm run consumer:pack
+```
+
+Then `npm install && npm run build` inside `examples/consumer`. CI runs it
+on `main`, and on a pull request labelled `consumer`.
+
 ## Setting up a consumer
 
 Three things, all of them once.

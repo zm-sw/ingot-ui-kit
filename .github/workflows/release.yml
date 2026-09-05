@@ -17,6 +17,10 @@ permissions:
   contents: write
   pull-requests: write
   actions: write
+  # Pushing the package to GitHub Packages, and signing the provenance
+  # attestation that says which workflow built it.
+  packages: write
+  id-token: write
 
 jobs:
   release:
@@ -24,6 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      NODE_AUTH_TOKEN: ${{ github.token }}
+      # Publishing cannot be taken back, so it is a decision somebody makes
+      # by setting this repository variable to "true" — not something a
+      # merge does on its own. Without it the release still tags, still
+      # cuts the GitHub release, and the tag stays the pin.
+      INGOT_PUBLISH: ${{ vars.INGOT_PUBLISH }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -166,6 +166,51 @@ function gh(...args) {
   return execFileSync("gh", args, { encoding: "utf-8" }).trim();
 }
 
+/**
+ * Publishes the tagged version to GitHub Packages — if the repository says
+ * so.
+ *
+ * A git tag is a fine pin and a poor contract: no semver range, no
+ * integrity, and npm caches a ``github:`` dependency under a version
+ * number that names many different trees. A registry fixes all three.
+ *
+ * It is behind ``INGOT_PUBLISH`` because publishing is the one step in
+ * this script that cannot be taken back. A wrong tag can be moved and a
+ * wrong release edited; a published version is out, and deleting it breaks
+ * whoever already installed it. So the first publish is a decision
+ * somebody makes by setting the variable, not a side effect of merging.
+ *
+ * Failure here is deliberately not fatal. The tag and the GitHub release
+ * are the record of what shipped; a registry that was down must not leave
+ * the repository looking as though the version never happened.
+ */
+function publishToRegistry(version) {
+  if (process.env.INGOT_PUBLISH !== "true") {
+    console.log(
+      `v${version} not published to the registry (INGOT_PUBLISH is not set) -> the tag is the pin`,
+    );
+    return;
+  }
+  try {
+    // The token is the workflow's own; `packages: write` is what lets it
+    // push, and provenance needs `id-token: write` next to it.
+    writeFileSync(
+      ".npmrc",
+      [
+        "@forgmatic:registry=https://npm.pkg.github.com",
+        `//npm.pkg.github.com/:_authToken=${process.env.NODE_AUTH_TOKEN ?? ""}`,
+        "",
+      ].join("\n"),
+    );
+    execFileSync("npm", ["publish", "--provenance"], { stdio: "inherit" });
+    console.log(`v${version} published to GitHub Packages`);
+  } catch {
+    console.log(
+      `v${version} could not be published to the registry -> the tag still holds`,
+    );
+  }
+}
+
 // The identity must come before anything that writes to history. An
 // annotated tag is a full object with an author, so it needs it just like
 // a commit does — and the shortcut below, which only finishes the tag,
@@ -183,6 +228,7 @@ const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
 if (pkg.version === next) {
   console.log(`package.json už je na v${next} -> dotahuje se jen tag a release`);
   publish(next, notes);
+  publishToRegistry(next);
   process.exit(0);
 }
 
@@ -306,3 +352,4 @@ git("reset", "--hard", "origin/main");
 git("push", "origin", "--delete", branch);
 
 publish(next, notes);
+publishToRegistry(next);
