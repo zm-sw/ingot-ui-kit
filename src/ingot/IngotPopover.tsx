@@ -165,7 +165,7 @@ export function IngotPopover({
         visibility: position === null ? "hidden" : undefined,
       }}
       className={cx(
-        "rounded-lg border border-border bg-surface p-2 shadow-lg",
+        "animate-ingot-fade-in rounded-lg border border-border bg-surface p-2 shadow-lg motion-reduce:animate-none",
         className,
       )}
       data-testid={testId}

@@ -171,13 +171,56 @@ export default {
         snug: "-0.01em",
         normal: "-0.005em",
       },
+      // The kit's two motion tokens, wired into the utilities that use them
+      // most. `--dur` and `--ease` lived in tokens.css from the start and
+      // no component read them, so every transition picked Tailwind's
+      // defaults and the timings drifted apart component by component.
+      transitionDuration: {
+        DEFAULT: "var(--dur, 0.22s)",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "var(--ease, cubic-bezier(0.2, 0.6, 0.3, 1))",
+      },
       animation: {
         "fade-up": "fade-up 0.3s ease-out",
         "pulse-dot": "pulse-dot 1.4s ease-in-out infinite",
         marquee: "marquee 30s linear infinite",
+        // Enter animations for the overlays. One duration and one curve,
+        // both from the tokens, so a dialog and a drawer opening on the
+        // same screen move at the same speed.
+        "ingot-fade-in": "ingot-fade-in var(--dur, 0.22s) var(--ease) both",
+        "ingot-scale-in": "ingot-scale-in var(--dur, 0.22s) var(--ease) both",
+        "ingot-slide-in-right":
+          "ingot-slide-in-right var(--dur, 0.22s) var(--ease) both",
+        "ingot-slide-in-left":
+          "ingot-slide-in-left var(--dur, 0.22s) var(--ease) both",
+        "ingot-slide-in-up": "ingot-slide-in-up var(--dur, 0.22s) var(--ease) both",
       },
       keyframes: {
         "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "ingot-fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        // A dialog grows a little rather than sliding: it belongs to the
+        // middle of the screen, and a slide would suggest it came from an
+        // edge it has nothing to do with.
+        "ingot-scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.97)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "ingot-slide-in-right": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        "ingot-slide-in-left": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        "ingot-slide-in-up": {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },

@@ -8,7 +8,8 @@ export const IngotModalDoc: IngotDocPage = {
   status: "stable",
   // 1.1 — header markup shared with IngotDrawer (internal OverlayHeader); no visible change.
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
-  version: "1.2",
+  // 1.3 (KAN-849) — the backdrop fades and the panel scales in, from the kit's motion tokens; motion-reduce turns the movement off, not the dialog.
+  version: "1.3",
   tag: ".modal",
   tokens: [
     "--surface",

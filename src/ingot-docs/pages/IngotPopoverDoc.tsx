@@ -9,7 +9,8 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotPopoverDoc: IngotDocPage = {
   name: "IngotPopover",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-849) — the panel fades in, from the kit's motion tokens; motion-reduce turns the movement off.
+  version: "1.1",
   tag: ".popover",
   tokens: ["--surface", "--border", "--r-lg", "--shadow-lg"],
   classNameNote: {

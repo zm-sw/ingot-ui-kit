@@ -120,7 +120,7 @@ export function IngotMegaMenu({
       // MENU_LAYER, not a fixed z-index: a menu belongs above every open
       // dialog (see modalLayer.ts); a hard-coded 60 ended up under the
       // second dialog opened.
-      className="absolute left-0 top-[calc(100%+6px)] flex gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg"
+      className="absolute left-0 top-[calc(100%+6px)] flex animate-ingot-fade-in gap-5 rounded-lg border border-border bg-surface p-3 shadow-lg motion-reduce:animate-none"
       style={{ zIndex: MENU_LAYER }}
       data-testid={testId}
     >

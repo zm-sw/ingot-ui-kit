@@ -602,6 +602,69 @@ function AccentFamilies({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * Motion — one duration and one curve for the whole kit.
+ *
+ * The two tokens existed from the start and nothing read them, so every
+ * transition took Tailwind's defaults and the timings drifted apart. The
+ * preset now maps the default duration and easing onto them, which is why
+ * this section names the tokens rather than the utility classes.
+ */
+function Motion({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Pohyb má v systému jedno trvání a jednu křivku. Dialog, boční panel, toast i menu se tak otevírají stejně rychle — a když se má rychlost změnit, mění se na jednom místě."
+          : "Motion has one duration and one curve across the system. A dialog, a drawer, a toast and a menu therefore open at the same speed — and when that speed should change, it changes in one place."}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>--dur</IngotCode> — 0,22 s. Dost dlouho, aby bylo vidět,
+                  odkud panel přišel; dost krátko, aby se na něj nečekalo.
+                </>,
+                <>
+                  <IngotCode>--ease</IngotCode> — křivka, která rychle vyjede a měkce
+                  dosedne. Lineární pohyb působí mechanicky.
+                </>,
+                <>
+                  Překryv <strong>vjíždí</strong>, nemizí animovaně: zavření má být
+                  okamžité, protože uživatel už ví, co chtěl.
+                </>,
+                <>
+                  Při systémovém nastavení „omezit pohyb“ se vypíná pohyb, ne panel.
+                  Zmizet by znamenalo vzít obsah, ne zklidnit ho.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>--dur</IngotCode> — 0.22 s. Long enough to show where a
+                  panel came from; short enough not to be waited on.
+                </>,
+                <>
+                  <IngotCode>--ease</IngotCode> — a curve that leaves quickly and lands
+                  softly. Linear motion reads as mechanical.
+                </>,
+                <>
+                  An overlay <strong>enters</strong>; it does not animate away. Closing
+                  should be immediate, because the user already knows what they wanted.
+                </>,
+                <>
+                  Under the system's “reduce motion” setting the movement is dropped,
+                  not the panel. Dropping the panel would take the content away rather
+                  than calm it down.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 export const BasicsGuide: IngotGuidePage = {
   slug: "zaklady",
   group: "system",
@@ -717,6 +780,11 @@ export const BasicsGuide: IngotGuidePage = {
         cs: <SpacesAndRadii lang="cs" />,
         en: <SpacesAndRadii lang="en" />,
       },
+    },
+    {
+      id: "motion",
+      title: { cs: "Pohyb", en: "Motion" },
+      body: { cs: <Motion lang="cs" />, en: <Motion lang="en" /> },
     },
   ],
 };

@@ -121,7 +121,7 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
   return (
     <div
       className={cx(
-        "pointer-events-auto flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm shadow-lg dark:border dark:border-border-strong",
+        "pointer-events-auto flex animate-ingot-slide-in-up items-center gap-3 rounded-lg px-4 py-2.5 text-sm shadow-lg motion-reduce:animate-none dark:border dark:border-border-strong",
         tone === "danger" ? "bg-danger text-white dark:text-bg" : "bg-ink text-bg",
       )}
       data-testid="ingot-toast"
