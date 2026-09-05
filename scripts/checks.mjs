@@ -1,5 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit. Five guards:
+ * Repo checks for the Ingot UI Kit. Six guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -26,6 +26,10 @@
  *    file under `src/ingot/` carries Czech text outside comments. The two
  *    exemptions are the IngotProvider dictionary and the bilingual
  *    operation icon library.
+ *
+ *  - ingot-tokens-fresh: the generated token files match tokens.json, and
+ *    the Tailwind preset offers a utility for every colour in it. Three
+ *    copies of one palette is how a design system starts lying.
  *
  * Exit code 0 = all green; 1 = at least one guard failed.
  */
@@ -525,6 +529,72 @@ function guardIngotNoHardcodedText() {
   }
 }
 
+// --- ingot-tokens-fresh -----------------------------------------------------
+
+/** Line endings are the checkout's business, not the generator's. */
+const normalise = (text) => text.split("\r\n").join("\n");
+
+async function guardIngotTokensFresh() {
+  const guard = "ingot-tokens-fresh";
+  const { readTokens, buildCss, buildModule } = await import("./build-tokens.mjs");
+  const tokens = readTokens(join(ROOT, "src/ingot/tokens.json"));
+
+  const stale = [];
+  for (const [file, built] of [
+    ["src/ingot/tokens.generated.css", buildCss(tokens)],
+    ["src/ingot/tokens.generated.ts", buildModule(tokens)],
+  ]) {
+    const onDisk = existsSync(join(ROOT, file)) ? read(join(ROOT, file)) : "";
+    if (normalise(onDisk) !== built) stale.push(file);
+  }
+
+  // A colour in the source that no utility offers is a token nobody can
+  // reach; a utility pointing at a token the source no longer has resolves
+  // to nothing at all. Both are silent.
+  const preset = read(join(ROOT, "src/ingot/tailwind-preset.ts"));
+  const offered = new Set(
+    [...preset.matchAll(/token\("--([\w-]+)"\)/g)].map((match) => match[1]),
+  );
+  const declared = new Set(
+    Object.keys(tokens.light).filter((name) => name !== "$description"),
+  );
+  const unreachable = [...declared].filter(
+    (name) =>
+      !offered.has(name) &&
+      // The blue-* values exist so the default family can reference them;
+      // what a caller reaches for is --accent.
+      !name.startsWith("blue-") &&
+      !name.startsWith("code-"),
+  );
+  const dangling = [...offered].filter((name) => !declared.has(name));
+
+  if (stale.length || dangling.length) {
+    fail(guard, [
+      ...(stale.length
+        ? [
+            `${stale.length} generated file(s) no longer match tokens.json:`,
+            ...stale.map((file) => `  ${file}`),
+            "Run `npm run tokens`.",
+          ]
+        : []),
+      ...(dangling.length
+        ? [
+            `${dangling.length} Tailwind utility(ies) point at a token the source does not declare:`,
+            ...dangling.map((name) => `  --${name}`),
+          ]
+        : []),
+    ]);
+  } else {
+    ok(
+      guard,
+      `tokens.json drives ${declared.size} colour(s) and the generated files match` +
+        (unreachable.length
+          ? `; ${unreachable.length} declared but not offered as a utility`
+          : ""),
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 guardIngotDocPages();
@@ -532,6 +602,7 @@ guardIngotDocsKitOnly();
 guardIngotDocsNoInternalProse();
 guardIngotCommentsEnglish();
 guardIngotNoHardcodedText();
+await guardIngotTokensFresh();
 
 if (failures.length) {
   for (const failure of failures) console.error(`\n${failure}`);

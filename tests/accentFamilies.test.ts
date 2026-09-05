@@ -1,5 +1,9 @@
 /**
- * Accent families in ``tokens.css``.
+ * Accent families in the generated stylesheet.
+ *
+ * The declarations moved into ``tokens.generated.css`` when tokens.json
+ * became the source; the test follows the values, because what ships to a
+ * browser is what it measures.
  *
  * **A family dot holds no colour of its own — it takes it from the family
  * table.** Every dot in the switch carries ``data-accent`` and is drawn
@@ -22,7 +26,10 @@ import { describe, expect, it } from "vitest";
 
 import { ACCENT_CHOICES, DEFAULT_ACCENT } from "@/lib/accent";
 
-const CSS = readFileSync(join(process.cwd(), "src/ingot/tokens.css"), "utf-8");
+const CSS = readFileSync(
+  join(process.cwd(), "src/ingot/tokens.generated.css"),
+  "utf-8",
+);
 
 /** Family blocks for the given surface — light (``:not(.dark)``) and dark. */
 function descendantBlocks(choice: string): readonly string[] {

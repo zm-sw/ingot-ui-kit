@@ -64,6 +64,11 @@ export default {
       // Every colour MUST go through ``token()``. Do not write a bare
       // ``"var(--x)"`` here — its ``/opacity`` modifier would be dropped
       // silently.
+      //
+      // The NAMES below are checked against tokens.json by the
+      // ``ingot-tokens-fresh`` guard: a colour added to the source and not
+      // offered as a utility here is a token nobody can use, and a utility
+      // pointing at a token that no longer exists resolves to nothing.
       colors: {
         bg: token("--bg"),
         surface: token("--surface"),
