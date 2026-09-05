@@ -3,45 +3,47 @@ import type { JSX, ReactNode } from "react";
 import { IngotIcon } from "./IngotIcon";
 
 /**
- * Ceník (KAN-664) — tři ``.pricecard`` z handoffu Veřejné stránky,
- * prostřední ``.is-featured`` s odznakem; odrážky s fajfkou 14 px.
+ * Pricing — three ``.pricecard`` from the "Public pages" handoff, the
+ * middle one ``.is-featured`` with a badge; bullets with a 14 px check.
  *
- * 🪤 **Zvýraznění je obrys ``--ink`` a stín, ne akcentový rámeček.**
- * Akcent v sekci nese odznak; kdyby ho nesla i karta, sekce má dva
- * akcentové prvky a čtenář neví, který z nich má číst jako důraz.
+ * **The highlight is an ``--ink`` outline and a shadow, not an accent
+ * border.** The accent in the section is carried by the badge; if the card
+ * carried it too, the section would have two accent elements and the
+ * reader would not know which one to read as emphasis.
  *
- * 🪤 **Odznak sedí v hlavičce karty, ne absolutně přes horní hranu.**
- * Absolutní odznak vyžaduje, aby mu volající nechal místo nad ceníkem
- * (a když zapomene, uřízne se) — tichá vazba mezi kartou a jejím okolím.
+ * **The badge sits in the card's header, not absolutely across the top
+ * edge.** An absolute badge requires the caller to leave room above the
+ * pricing (and gets clipped when they forget) — a silent coupling between
+ * the card and its surroundings.
  *
- * 🪤 **Akce je povinná a na patě karty.** Plán bez akce je slepá ulička,
- * a nezarovnaná akce dělá ze tří karet tři různě vysoké schody.
+ * **The action is required and on the card's foot.** A plan without an
+ * action is a dead end, and an unaligned action turns three cards into
+ * three differently tall steps.
  *
- * 🚨 **Žádné částky v kódu.** Ceny v prototypu (4 900 Kč…) jsou
- * placeholder — reálný ceník jsou platformní data (zdroj plánů,
- * memory ``plans-json-column-read-mutate-write``; entitlementy epic
- * KAN-499). Komponenta proto NEUMÍ vykreslit nic, co nedostane přes
- * ``plans``: název, cenu i výčet vlastností dodává volající z dat.
- * ``price`` je už naformátovaný řetězec — formátování měny patří tam,
- * kde se ví, jakou měnu a locale tenant má.
+ * **No amounts in code.** The prices in the prototype are placeholders —
+ * the real pricing is platform data. The component therefore CANNOT render
+ * anything it does not receive through ``plans``: name, price and the
+ * feature list all come from the caller's data. ``price`` is an already
+ * formatted string — currency formatting belongs where the tenant's
+ * currency and locale are known.
  */
 export interface IngotMarketingPlan {
-  /** Stabilní klíč plánu z dat (ne index — plány se přeskládávají). */
+  /** Stable plan key from the data (not an index — plans get reordered). */
   id: string;
   name: string;
-  /** Naformátovaná cena z dat plánů — nikdy konstanta v JSX. */
+  /** Formatted price from the plans data — never a constant in JSX. */
   price: string;
-  /** Perioda za cenou („měsíčně"…). Obsah, dodaný přeložený. */
+  /** Period after the price ("monthly"…). Content, supplied translated. */
   period?: string;
   description?: string;
   features: readonly string[];
-  /** Zvýrazněná karta s odznakem. Nejvýš jedna. */
+  /** The highlighted card with a badge. At most one. */
   featured?: boolean;
-  /** Text odznaku zvýrazněné karty („Nejoblíbenější"…). */
+  /** Badge text of the highlighted card ("Most popular"…). */
   badge?: string;
   /**
-   * CTA karty — typicky odkaz na registraci; dodává volající. Povinná:
-   * karta plánu, ze které se nedá pokračovat, je slepá ulička.
+   * The card's CTA — typically a link to sign-up; supplied by the caller.
+   * Required: a plan card you cannot proceed from is a dead end.
    */
   action: ReactNode;
 }
@@ -99,8 +101,8 @@ export function IngotMarketingPricing({
               </li>
             ))}
           </ul>
-          {/* ``mt-auto`` = paty karet sedí na jedné lince i s různě
-              dlouhými výčty vlastností. */}
+          {/* ``mt-auto`` = the cards' feet sit on one line even with feature
+              lists of different lengths. */}
           <div className="mt-auto pt-6">{plan.action}</div>
         </div>
       ))}

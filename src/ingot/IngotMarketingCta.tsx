@@ -3,27 +3,29 @@ import type { JSX } from "react";
 import { Button } from "./Button";
 
 /**
- * Závěrečné CTA (KAN-664) — tmavý blok se dvěma velkými tlačítky
- * z handoffu Veřejné stránky.
+ * Closing CTA — the dark block with two large buttons from the "Public
+ * pages" handoff.
  *
- * Pravidlo handoffu: tmavý blok smí být na stránce nejvýš DVAKRÁT
- * (tohle CTA + patička) — to hlídá skladba stránky, ne komponenta.
+ * Handoff rule: a dark block may appear on a page at most TWICE (this CTA
+ * + the footer) — the page composition holds that, not the component.
  *
- * Blok je „inverzní": kreslí se tokeny ``ink``/``bg`` prohozeně, takže
- * v tmavém motivu se obrátí sám a žádnou vlastní barvu nezavádí.
+ * The block is "inverse": drawn with the ``ink`` / ``bg`` tokens swapped,
+ * so in the dark theme it inverts by itself and introduces no colour of
+ * its own.
  *
- * Akce jsou ``Button as="a"`` — marketingové CTA naviguje (registrace,
- * kontakt), nic nespouští, takže je to odkaz. Vzhled se z ``Button``
- * NEOPISUJE, bere se z něj: do KAN-664 tu stály ručně psané ``<a>``
- * s okopírovanými třídami, a s nimi i kopie rozhodnutí o kontrastu
- * akcentu v tmavém motivu (``dark:text-bg``). Kopie a11y rozhodnutí je
- * to nejhorší, co se dá zdvojit — nerozbije se, jen tiše zestárne.
+ * The actions are ``Button as="a"`` — a marketing CTA navigates (sign-up,
+ * contact), it triggers nothing, so it is a link. The look is NOT copied
+ * from ``Button``, it is taken from it: hand-written ``<a>`` elements with
+ * copied classes used to stand here, and with them a copy of the decision
+ * about accent contrast in the dark theme (``dark:text-bg``). A copied
+ * accessibility decision is the worst thing to duplicate — it does not
+ * break, it quietly ages.
  *
- * 🪤 **Hlavní akce není neutrální.** Na tmavé ploše je světlé neutrální
- * tlačítko k nerozeznání od vedlejšího a závěrečná výzva pak nemá kam
- * poslat oko. Akcent je tady jediný barevný prvek bloku; vedlejší akce
- * je ``variant="inverse"``, tedy obrys barvou stránky pod obrácenou
- * plochou.
+ * **The main action is not neutral.** On a dark surface a light neutral
+ * button is indistinguishable from the secondary one and the closing call
+ * has nowhere to send the eye. The accent is the block's only coloured
+ * element here; the secondary action is ``variant="inverse"``, an outline
+ * in the page colour under the inverted surface.
  */
 export interface IngotMarketingCtaAction {
   label: string;
@@ -39,9 +41,9 @@ export function IngotMarketingCta({
 }: {
   title: string;
   text?: string;
-  /** Hlavní akce — akcentové vyplněné tlačítko na tmavé ploše. */
+  /** Main action — the filled accent button on the dark surface. */
   primary: IngotMarketingCtaAction;
-  /** Vedlejší akce — obrysové tlačítko. */
+  /** Secondary action — the outline button. */
   secondary?: IngotMarketingCtaAction;
   testId?: string;
 }): JSX.Element {

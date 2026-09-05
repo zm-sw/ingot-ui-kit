@@ -3,20 +3,20 @@ import type { JSX } from "react";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
- * Trojice featur pod hlavičkou sekce (KAN-664) — ``.tri`` z handoffu
- * Veřejné stránky: ikona 18 px v akcentovém rámečku + h3 + malý text.
+ * Three features under a section header — ``.tri`` from the "Public
+ * pages" handoff: an 18 px icon in an accent frame + h3 + small text.
  *
- * 🪤 **Jeden zaoblený rám, panely oddělené vlasovou linkou.** Handoff to
- * dělá ``gap:1px`` na podkladu ``--border`` — mezera JE ta linka, takže
- * je vždycky přesně 1 px a nemá kde se rozejít s rámem. Volné sloupce
- * s mezerou by byly tři kartičky, ne jedna trojice.
+ * **One rounded frame, panels separated by a hairline.** The handoff does
+ * it with ``gap:1px`` on a ``--border`` background — the gap IS the line,
+ * so it is always exactly 1 px and has nowhere to diverge from the frame.
+ * Loose columns with a gap would be three little cards, not one trio.
  *
- * Trojsloupcová mřížka je výchozí tvar veřejných stránek; pod 1100 px
- * jeden sloupec (handoff, ne Tailwind ``lg``).
+ * A three-column grid is the default shape of the public pages; below
+ * 1100 px one column (the handoff, not Tailwind's ``lg``).
  */
 export interface IngotMarketingTriItem {
   icon: IngotIconName;
-  /** Titulek featury (h3). Obsah — dodává volající přeložený. */
+  /** Feature title (h3). Content — supplied translated by the caller. */
   title: string;
   text: string;
 }
@@ -25,7 +25,7 @@ export function IngotMarketingTri({
   items,
   testId,
 }: {
-  /** Tři featury. Víc jich mřížka unese, ale handoff počítá se třemi. */
+  /** Three features. The grid can hold more, but the handoff counts on three. */
   items: readonly IngotMarketingTriItem[];
   testId?: string;
 }): JSX.Element {

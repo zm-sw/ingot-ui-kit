@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * Built-in library of manufacturing-operation icons ("Výrobní operace").
+ * Built-in library of manufacturing-operation icons.
  *
  * Line-art set (24×24 viewBox, stroke currentColor, width 1.6, round
  * caps/joins) ported from the design reference "Vyrobni operace
@@ -13,7 +13,7 @@ import type { ReactNode } from "react";
  * Token format (what the BE stores):
  *   - ``laser``        → icon inked with the PROCESS's system operation
  *                        category colour (``operation_category_color``,
- *                        admin-managed in "Systémové kategorie") — NOT a
+ *                        admin-managed in the system categories) — NOT a
  *                        library-side palette
  *   - ``laser:black``  → black icon, transparent background
  *   - ``laser:white``  → white icon, transparent background
