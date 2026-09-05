@@ -14,3 +14,4 @@ src/ingot
 examples/*/dist/
 examples/*/vendor/
 examples/*/public/
+dist-ssr/

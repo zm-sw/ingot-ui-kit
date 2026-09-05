@@ -43,7 +43,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && node scripts/build-tokens.mjs --figma",
+    "build": "tsc --noEmit && vite build && vite build --ssr src/ingot-docs/prerender.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/build-tokens.mjs --figma",
     "consumer:pack": "node scripts/pack-for-consumer.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

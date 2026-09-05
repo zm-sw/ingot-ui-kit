@@ -3,9 +3,11 @@
  * Catalyst pattern: menu on the left, description + live demo + props in
  * the middle, "On this page" on the right.
  *
- * Routing is by **hash**, not react-router. The doc web is its own entry
- * point and a router would pull in a dependency that a handful of static
- * pages does not need.
+ * Routing is by **path**, without react-router. Every address is a real
+ * URL that the build writes a real HTML file for (``routes.ts`` is the one
+ * list both halves read), so a crawler, a link preview and a chat client
+ * all get the page they asked for. A router library would add a dependency
+ * for what is a lookup in an array the site already has.
  *
  * **Drawn ONLY with kit components.** The doc web teaches the kit, so a
  * page that composes its own classes contradicts it by its own example.
@@ -33,7 +35,7 @@
  * the product the account is the source of truth and localStorage is a
  * mirror against a flash on load.
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 import {
   Button,
@@ -69,12 +71,20 @@ import {
 } from "@/ingot-docs/platformLanguages";
 import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
+import {
+  ALL_PAGES,
+  DEFAULT_PAGE,
+  locationFromPath,
+  pageSlug,
+  pathFromLegacyHash,
+  pathOf,
+  type DocsPage,
+} from "@/ingot-docs/routes";
 import pkg from "../../package.json";
 import type {
   IngotDocPage,
   IngotExtraPropGroup,
   IngotGuideGroup,
-  IngotGuidePage,
   IngotPropRow,
 } from "@/ingot-docs/types";
 import {
@@ -327,20 +337,6 @@ const STATUS_LABEL = {
 } as const;
 
 /**
- * What is currently shown. The doc web has two kinds of pages and tells
- * them apart by type, not by a flag: a guide has no ``props`` and no demo,
- * and a component has no free sections, so one shared shape would always
- * be half empty.
- */
-type ActivePage =
-  { kind: "guide"; guide: IngotGuidePage } | { kind: "component"; doc: IngotDocPage };
-
-const DEFAULT_PAGE: ActivePage = {
-  kind: "guide",
-  guide: INGOT_GUIDE_PAGES[0],
-};
-
-/**
  * Sections of the page currently shown — the single source for the content
  * and for the anchors.
  *
@@ -487,30 +483,7 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
   return sections;
 }
 
-/**
- * Page from the hash; an unknown one falls back to the default (intro).
- *
- * ``null`` means "this is not a route", not "page not found". The right
- * column anchors to ``#ukazka`` / ``#vlastnosti`` inside the SAME page — if
- * such a hash were taken as a route too, clicking an anchor would throw
- * the content back to the default page.
- *
- * Guides are looked up FIRST. A guide slug and a primitive name share one
- * hash space, so a collision would silently shadow one of them — hence the
- * ``ingot-doc-pages`` guard refuses it, and this order only decides who
- * wins should one slip through anyway.
- */
-function pageFromHash(hash: string): ActivePage | null {
-  if (!hash.startsWith("#/")) return null;
-  const wanted = hash.slice(2);
-  const guide = INGOT_GUIDE_PAGES.find((entry) => entry.slug === wanted);
-  if (guide) return { kind: "guide", guide };
-  const doc = INGOT_DOC_PAGES.find((entry) => entry.name === wanted);
-  if (doc) return { kind: "component", doc };
-  return DEFAULT_PAGE;
-}
-
-function titleOf(active: ActivePage, lang: DocLang): string {
+function titleOf(active: DocsPage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.title, lang)
     : // Without the prefix on the page; the address and the code listings
@@ -518,13 +491,13 @@ function titleOf(active: ActivePage, lang: DocLang): string {
       displayName(active.doc.name);
 }
 
-function summaryOf(active: ActivePage, lang: DocLang): string {
+function summaryOf(active: DocsPage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.summary, lang)
     : pick(active.doc.summary, lang);
 }
 
-function sectionsOf(active: ActivePage, lang: DocLang): readonly DocSection[] {
+function sectionsOf(active: DocsPage, lang: DocLang): readonly DocSection[] {
   if (active.kind === "component") return sectionsFor(active.doc, lang);
   return active.guide.sections.map((section) => ({
     id: section.id,
@@ -533,35 +506,42 @@ function sectionsOf(active: ActivePage, lang: DocLang): readonly DocSection[] {
   }));
 }
 
-/** The hash a page lives under — the only place where that path is built. */
-function hrefOf(active: ActivePage): string {
-  return `#/${active.kind === "guide" ? active.guide.slug : active.doc.name}`;
+/**
+ * The address a page lives at. Built in ``routes.ts`` and nowhere else, so
+ * the menu, the pager, the sitemap and the prerendered files cannot
+ * disagree about where a page is.
+ */
+function hrefOf(active: DocsPage, lang: DocLang): string {
+  return pathOf(active, lang);
 }
 
 function navItem(
-  entry: ActivePage,
+  entry: DocsPage,
   activeHref: string,
   lang: DocLang,
   /** Tells the column (``docs-``) apart from the drawer (``docs-drawer-``). */
   idPrefix: string,
   extra?: Partial<IngotNavItem>,
 ): IngotNavItem {
-  const href = hrefOf(entry);
+  const href = hrefOf(entry, lang);
   return {
     href,
     label: titleOf(entry, lang),
     current: href === activeHref,
-    testId: `${idPrefix}nav-${href.slice(2)}`,
+    // The slug, not the address: the testids were written before the pages
+    // had a language prefix, and a query for `docs-nav-table` should not
+    // start failing because the reader is reading in English.
+    testId: `${idPrefix}nav-${pageSlug(entry)}`,
     ...extra,
   };
 }
 
-const GUIDE_ENTRIES: readonly ActivePage[] = INGOT_GUIDE_PAGES.map((guide) => ({
+const GUIDE_ENTRIES: readonly DocsPage[] = INGOT_GUIDE_PAGES.map((guide) => ({
   kind: "guide" as const,
   guide,
 }));
 
-const COMPONENT_ENTRIES: readonly ActivePage[] = INGOT_DOC_PAGES.map((doc) => ({
+const COMPONENT_ENTRIES: readonly DocsPage[] = INGOT_DOC_PAGES.map((doc) => ({
   kind: "component" as const,
   doc,
 }));
@@ -590,7 +570,7 @@ const GROUP_LABELS: Record<IngotGuideGroup, keyof typeof CHROME> = {
  * ``INGOT_GUIDE_PAGES``.
  */
 function guideGroups(
-  active: ActivePage,
+  active: DocsPage,
   lang: DocLang,
   /**
    * The menu is drawn twice — in the column (from ``md``) and in the drawer
@@ -602,7 +582,7 @@ function guideGroups(
    */
   idPrefix: string,
 ): readonly { group: IngotGuideGroup; items: readonly IngotNavItem[] }[] {
-  const activeHref = hrefOf(active);
+  const activeHref = hrefOf(active, lang);
   // The component list nests ONLY while the reader is in the components
   // section (the overview or a component page) — owner's instruction of
   // 2026-09-02. Thirty-one items unfolded on every page turned the menu
@@ -635,18 +615,18 @@ function guideGroups(
  * last guide should have "Next" continue to the first component, not end
  * in a dead end.
  */
-const ALL_ENTRIES: readonly ActivePage[] = [...GUIDE_ENTRIES, ...COMPONENT_ENTRIES];
+const ALL_ENTRIES: readonly DocsPage[] = ALL_PAGES;
 
 /** Prev/next footer — between guides, components, and across the boundary of both. */
 function PagerFooter({
   page,
   lang,
 }: {
-  page: ActivePage;
+  page: DocsPage;
   lang: DocLang;
 }): JSX.Element | null {
-  const href = hrefOf(page);
-  const index = ALL_ENTRIES.findIndex((entry) => hrefOf(entry) === href);
+  const href = hrefOf(page, lang);
+  const index = ALL_ENTRIES.findIndex((entry) => hrefOf(entry, lang) === href);
   if (index < 0) return null;
   const prev = index > 0 ? ALL_ENTRIES[index - 1] : null;
   const next = index < ALL_ENTRIES.length - 1 ? ALL_ENTRIES[index + 1] : null;
@@ -664,7 +644,7 @@ function PagerFooter({
   return (
     <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between sm:gap-4">
       {prev ? (
-        <a className={cardClass} href={hrefOf(prev)} data-testid="docs-prev">
+        <a className={cardClass} href={hrefOf(prev, lang)} data-testid="docs-prev">
           <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.prevPage, lang)}
           </IngotEyebrow>
@@ -678,7 +658,7 @@ function PagerFooter({
       {next ? (
         <a
           className={`${cardClass} sm:ml-auto sm:items-end sm:text-right`}
-          href={hrefOf(next)}
+          href={hrefOf(next, lang)}
           data-testid="docs-next"
         >
           <IngotEyebrow as="span" tone="muted">
@@ -710,25 +690,83 @@ const ACCENT_LABELS: Record<AccentChoice, keyof typeof CHROME> = {
   slate: "accentSlate",
 };
 
+/**
+ * What the address bar says right now.
+ *
+ * The path decides the language too: ``/en/...`` is English, everything
+ * else is Czech. That order matters — a reader who was sent an English
+ * link must read English even if their own stored choice is Czech, because
+ * the sender chose the language of the thing they shared. Only when the
+ * address says nothing (the site root) does the stored choice, and then
+ * the browser, get to decide.
+ */
+function locationNow(): { page: DocsPage; lang: DocLang } {
+  const here = locationFromPath(window.location.pathname);
+  if (here === null) return { page: DEFAULT_PAGE, lang: initialLang() };
+  const atRoot = window.location.pathname.replace(/\/+$/, "") === "";
+  return { page: here.page, lang: atRoot ? initialLang() : here.lang };
+}
+
 export function DocsApp(): JSX.Element {
-  const [page, setPage] = useState<ActivePage>(
-    () => pageFromHash(window.location.hash) ?? DEFAULT_PAGE,
-  );
-  const [lang, setLang] = useState<DocLang>(initialLang);
+  const [{ page, lang }, setLocation] = useState(locationNow);
+  const setLang = (next: DocLang) => setLocation((prev) => ({ ...prev, lang: next }));
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
   const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
   /** Drawer with the menu and switches — only below ``md``, see the header. */
   const [navOpen, setNavOpen] = useState(false);
 
+  // Back and forward. The browser changes the address without asking; this
+  // is the only place that reads it back.
   useEffect(() => {
-    const onHashChange = () => {
-      const next = pageFromHash(window.location.hash);
-      if (next) setPage(next);
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    const onPopState = () => setLocation(locationNow());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  /**
+   * Every link shared before the addresses existed is a hash. They are
+   * also the only links to this site that exist, so they are translated
+   * once, on arrival, and the address bar is corrected in place —
+   * ``replaceState``, not ``pushState``: the hash was never a page the
+   * reader chose, and Back should leave the site rather than return to it.
+   */
+  useEffect(() => {
+    const target = pathFromLegacyHash(window.location.hash, lang);
+    if (target === null) return;
+    window.history.replaceState(null, "", target);
+    setLocation(locationNow());
+    // Once, on arrival. A hash that appears later is an anchor inside the
+    // page, and translating that would throw the reader to another page
+    // mid-scroll.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * One click handler for the whole document instead of a callback on
+   * every link.
+   *
+   * The links stay real ``<a href>`` with real addresses — that is the
+   * point of having them, and it is what a crawler, a middle-click and
+   * "copy link address" all need. This only spares the reader a full
+   * reload when the destination is a page we already have.
+   */
+  function onNavigate(event: MouseEvent<HTMLDivElement>): void {
+    if (event.defaultPrevented || event.button !== 0) return;
+    // A modified click means the reader asked for a new tab or a download.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const anchor = (event.target as HTMLElement | null)?.closest?.("a");
+    if (!anchor || anchor.target === "_blank") return;
+    const href = anchor.getAttribute("href");
+    if (!href || !href.startsWith("/")) return;
+    const here = locationFromPath(href);
+    if (here === null) return;
+    event.preventDefault();
+    if (href === window.location.pathname) return;
+    window.history.pushState(null, "", href);
+    setLocation({ page: here.page, lang: here.lang });
+    window.scrollTo({ top: 0 });
+  }
 
   // Which languages are offered is decided by the platform — not the
   // bundle. Until it answers (or when it does not), we hold what the doc
@@ -855,8 +893,13 @@ export function DocsApp(): JSX.Element {
             }))}
             value={lang}
             onChange={(next) => {
-              setLang(next as DocLang);
-              writeStoredLang(next as DocLang);
+              const chosen = next as DocLang;
+              writeStoredLang(chosen);
+              // The same page, in the other language — so switching the
+              // language keeps the reader where they were AND leaves an
+              // address they can share in that language.
+              window.history.pushState(null, "", pathOf(page, chosen));
+              setLang(chosen);
             }}
             label={pick(CHROME.language, lang)}
             testId={`${idPrefix}lang`}
@@ -883,7 +926,11 @@ export function DocsApp(): JSX.Element {
     ));
 
   return (
-    <div className="min-h-screen">
+    /* The handler adds nothing a keyboard user needs: the links underneath
+       it are real links and work on Enter exactly as they always did. It
+       only spares a mouse click a full page reload. */
+    /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
+    <div className="min-h-screen" onClick={onNavigate}>
       {/* Top bar from the handoff: brand and version on the left, accent /
           theme / language on the right. Sticky so the switches do not run
           away with the scroll of a long page.

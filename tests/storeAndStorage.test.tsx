@@ -93,6 +93,19 @@ describe("storage keys", () => {
     setItem.mockRestore();
   });
 
+  it("the language script reads the same key as the doc web does", () => {
+    // Same reason as the anti-flash script below: it runs before any module
+    // loads, so it cannot import the key and spells it by hand. It decides
+    // the language of the site root, which is the one page whose language
+    // is the reader's rather than the address's.
+    const script = readFileSync(
+      join(__dirname, "..", "public", "lang-init.js"),
+      "utf-8",
+    );
+    expect(script).toContain(`"${DOCS_STORAGE_KEYS.lang}"`);
+    expect(script).toContain(`"${LEGACY_DOCS_STORAGE_KEYS.lang}"`);
+  });
+
   it("the shipped anti-flash script reads the same key as the theme module", () => {
     // It cannot import them: it runs before any module loads. So the two
     // spellings are pinned together here instead.

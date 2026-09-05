@@ -31,6 +31,7 @@ export default tseslint.config(
       // The reference consumer builds its own app against a vendored copy
       // of the kit. Both are build output: linting them would mean linting
       // this repository's own source a second time, minified.
+      "dist-ssr/**",
       "examples/*/dist/**",
       "examples/*/vendor/**",
       "examples/*/public/**",
@@ -106,16 +107,17 @@ export default tseslint.config(
     },
   },
   {
-    // The anti-flash script is browser code a consumer serves as a static
-    // file, not part of any bundle, so it gets the browser globals and
-    // nothing else. It ships from the kit, which is why it is matched there
-    // and not under public/ — that copy is gone.
-    files: ["src/ingot/**/*.js"],
+    // Scripts that run before anything is bundled: the kit's anti-flash
+    // script, which a consumer serves as a static file, and the doc web's
+    // own one that decides the language of the site root. Browser globals
+    // and nothing else.
+    files: ["src/ingot/**/*.js", "public/**/*.js"],
     languageOptions: {
       globals: {
         window: "readonly",
         document: "readonly",
         localStorage: "readonly",
+        navigator: "readonly",
       },
     },
   },

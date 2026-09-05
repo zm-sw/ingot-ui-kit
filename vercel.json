@@ -7,7 +7,11 @@
       "source": "/api/:path*",
       "destination": "https://dxf-api.onrender.com/api/:path*"
     },
-    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+    {
+      "comment": "Every real page is written as a file by the prerender step, so this only catches an address that has none. The exclusions keep it off the assets and off the two files a crawler asks for by name — a robots.txt that answers with the application shell is worse than none, because it looks like an answer.",
+      "source": "/((?!assets/|.*\\.(?:xml|txt|json|png|svg|ico|js|css|woff2?)$).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {

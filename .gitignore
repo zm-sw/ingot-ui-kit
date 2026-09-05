@@ -9,3 +9,7 @@ examples/consumer/vendor/
 examples/consumer/*.tgz
 examples/consumer/public/theme-init.js
 examples/consumer/package-lock.json
+
+# Build output of the prerender step: an SSR bundle used once, at build
+# time, to render each address into dist/.
+dist-ssr/
