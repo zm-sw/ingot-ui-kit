@@ -8,7 +8,9 @@ export const IngotToastDoc: IngotDocPage = {
   status: "beta",
   // 1.1 — class composition via cx(); no visible change.
   // 1.2 — queue moved to the kit's shared store; no visible change.
-  version: "1.2",
+  // 1.3 (KAN-841) — the undo label defaults to the IngotProvider
+  // dictionary (English without a provider) instead of a Czech constant.
+  version: "1.3",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   summary: {
@@ -147,8 +149,8 @@ export const IngotToastDoc: IngotDocPage = {
           type: "string",
           required: false,
           note: {
-            cs: "Přeložený popisek zpětné akce. Výchozí „Zpět“.",
-            en: 'Translated label of the undo action. Defaults to "Zpět".',
+            cs: "Popisek zpětné akce. Výchozí ze slovníku IngotProvider („Undo“, s lang=\"cs\" „Zpět“).",
+            en: 'Label of the undo action. Defaults to the IngotProvider dictionary ("Undo"; "Zpět" with lang="cs").',
           },
         },
         {
@@ -211,8 +213,10 @@ export const IngotToastDoc: IngotDocPage = {
         vlastní překlady.
       </>,
       <>
-        <IngotCode>undoLabel</IngotCode> přebíjí výchozí „Zpět“ pro aplikace v
-        jiném jazyce.
+        Popisek zpětné akce bere toast ze slovníku{" "}
+        <IngotCode>IngotProvider</IngotCode> — bez providera „Undo“, s{" "}
+        <IngotCode>lang=&quot;cs&quot;</IngotCode> „Zpět“.{" "}
+        <IngotCode>undoLabel</IngotCode> ho přebíjí pro jeden toast.
       </>,
     ],
     en: [
@@ -221,8 +225,10 @@ export const IngotToastDoc: IngotDocPage = {
         the Ingot has no translations of its own.
       </>,
       <>
-        <IngotCode>undoLabel</IngotCode> overrides the default "Zpět" for
-        applications in another language.
+        The undo label comes from the <IngotCode>IngotProvider</IngotCode>{" "}
+        dictionary — “Undo” without a provider, “Zpět” with{" "}
+        <IngotCode>lang=&quot;cs&quot;</IngotCode>.{" "}
+        <IngotCode>undoLabel</IngotCode> overrides it for a single toast.
       </>,
     ],
   },

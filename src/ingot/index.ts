@@ -21,6 +21,20 @@
  * longer live in this repository. The `version-guard` CI check refuses a
  * change to `src/ingot/` that does not move a doc-page version.
  */
+// --- kit-wide defaults --------------------------------------------------
+//
+// The kit has no translation namespace. The handful of labels a primitive
+// has to say itself (undo, hint bulb, secret placeholder) come from this
+// provider — English without one, so a consumer in another language is
+// never handed Czech by default.
+export {
+  IngotProvider,
+  useIngotLabels,
+  INGOT_LABELS,
+  type IngotLang,
+  type IngotLabels,
+} from "./IngotProvider";
+
 // --- atoms without the Ingot prefix ---------------------------------
 //
 // Button and Card predate the prefix convention. Renaming them would touch
@@ -109,11 +123,7 @@ export { IngotEmptyState } from "./IngotEmptyState";
 export { IngotToolbar } from "./IngotToolbar";
 export { IngotPagination } from "./IngotPagination";
 export { IngotField } from "./IngotField";
-export {
-  IngotFieldInput,
-  SECRET_PLACEHOLDER_SET,
-  SECRET_PLACEHOLDER_UNSET,
-} from "./IngotFieldInput";
+export { IngotFieldInput } from "./IngotFieldInput";
 export {
   fieldsFromConfigSchema,
   fieldsFromIntegrationManifest,

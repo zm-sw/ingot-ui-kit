@@ -37,7 +37,7 @@ function descendantBlocks(choice: string): readonly string[] {
 
 describe("accent families", () => {
   it.each(ACCENT_CHOICES.map((choice) => [choice] as const))(
-    "rodina %s má blok i pro prvek uvnitř stránky, ne jen pro <html>",
+    "family %s has a block for an element inside the page too, not only for <html>",
     (choice) => {
       // Without the descendant selector the dot would inherit the family
       // from <html> — the one currently selected, not the one it names.

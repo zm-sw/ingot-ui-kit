@@ -85,7 +85,7 @@ export function IngotOpIcon({
   const resolved = resolveProcessIcon(token);
   if (resolved === null) {
     if (import.meta.env.DEV && token) {
-      console.warn(`[IngotOpIcon] neznámý icon_key: "${token}"`);
+      console.warn(`[IngotOpIcon] unknown icon_key: "${token}"`);
     }
     return null;
   }

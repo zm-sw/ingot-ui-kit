@@ -154,6 +154,14 @@ export const TranslationsGuide: IngotGuidePage = {
                 </>,
               ]}
             />
+            <p>
+              Pár popisků říká kit sám — „Zpět“ na toastu, žárovka a křížek
+              nápovědy, „nastaveno“ u tajného pole. Ty bere ze slovníku{" "}
+              <IngotCode>IngotProvider</IngotCode>: bez providera jsou anglicky,
+              s <IngotCode>lang=&quot;cs&quot;</IngotCode> česky a přes{" "}
+              <IngotCode>labels</IngotCode> se dají přepsat jednotlivě. Vlastní
+              prop komponenty má vždycky přednost.
+            </p>
           </div>
         ),
         en: (
@@ -185,6 +193,15 @@ export const TranslationsGuide: IngotGuidePage = {
                 </>,
               ]}
             />
+            <p>
+              A few labels the kit says itself — “Undo” on a toast, the hint’s
+              bulb and close button, “set” on a secret field. Those come from
+              the <IngotCode>IngotProvider</IngotCode> dictionary: English
+              without a provider, Czech with{" "}
+              <IngotCode>lang=&quot;cs&quot;</IngotCode>, and overridable one
+              by one through <IngotCode>labels</IngotCode>. A component’s own
+              prop always wins.
+            </p>
           </div>
         ),
       },

@@ -53,6 +53,7 @@ import { IngotPageHeaderDoc } from "@/ingot-docs/pages/IngotPageHeaderDoc";
 import { IngotPageHintDoc } from "@/ingot-docs/pages/IngotPageHintDoc";
 import { IngotPageLayoutDoc } from "@/ingot-docs/pages/IngotPageLayoutDoc";
 import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
+import { IngotProviderDoc } from "@/ingot-docs/pages/IngotProviderDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
@@ -156,6 +157,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotPageHintDoc,
   IngotPageLayoutDoc,
   IngotPaginationDoc,
+  IngotProviderDoc,
   IngotRowActionsDoc,
   IngotSearchInputDoc,
   IngotSectionDoc,

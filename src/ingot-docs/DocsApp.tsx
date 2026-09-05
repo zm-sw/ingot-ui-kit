@@ -44,6 +44,7 @@ import {
   IngotIcon,
   IngotList,
   IngotPageHeader,
+  IngotProvider,
   IngotSection,
   IngotAccentSwatches,
   IngotSegmented,
@@ -269,7 +270,9 @@ function DemoWithSource({
           data-testid="docs-demo-stage"
         >
           <div className="mx-auto w-fit p-4 md:p-8">
-            <page.Demo />
+            <IngotProvider lang={lang}>
+              <page.Demo />
+            </IngotProvider>
           </div>
         </div>
       ) : (
@@ -389,12 +392,22 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       cap: true,
       body: (
         <div className="space-y-3">
-          <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
-          <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
-            {page.tokens.map((token) => (
-              <IngotCode key={token}>{token}</IngotCode>
-            ))}
-          </div>
+          {page.tokens.length === 0 ? (
+            // An empty list is a statement, not an omission: the primitive
+            // renders nothing, so review knows no token change reaches it.
+            <p className="text-sm text-ink-2" data-testid="docs-tokens">
+              {pick(CHROME.tokensNone, lang)}
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
+              <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
+                {page.tokens.map((token) => (
+                  <IngotCode key={token}>{token}</IngotCode>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       ),
     },

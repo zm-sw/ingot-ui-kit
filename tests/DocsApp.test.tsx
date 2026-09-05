@@ -124,7 +124,7 @@ describe("DocsApp", () => {
   });
 
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
-    "%s má v každém jazyce a v každé povinné sekci aspoň jednu položku",
+    "%s has at least one item in every language and every required section",
     (_name, page) => {
       // Record<DocLang, …> enforces that the KEY exists. Not that there is
       // something behind it — and an empty section is exactly the half
@@ -136,7 +136,11 @@ describe("DocsApp", () => {
       // The selector and the tokens are a contract for review: what to call
       // the element and what a token change breaks.
       expect(page.tag.trim().length).toBeGreaterThan(0);
-      expect(page.tokens.length).toBeGreaterThan(0);
+      // The list may be empty (a primitive that renders nothing), but every
+      // entry is a real token: a CSS custom property or currentColor.
+      for (const token of page.tokens) {
+        expect(token).toMatch(/^(?:--[\w-]+|currentColor)$/);
+      }
       for (const lang of DOC_LANGS) {
         expect(page.summary[lang].trim().length).toBeGreaterThan(0);
         expect(page.useWhen[lang].length).toBeGreaterThan(0);
@@ -156,7 +160,7 @@ describe("DocsApp", () => {
   );
 
   it.each(INGOT_GUIDE_PAGES.map((guide) => [guide.slug, guide] as const))(
-    "průvodce %s má text ve všech jazycích",
+    "guide %s has text in every language",
     (_slug, guide) => {
       for (const lang of DOC_LANGS) {
         expect(guide.title[lang].trim().length).toBeGreaterThan(0);
@@ -444,7 +448,7 @@ describe("DocsApp", () => {
   });
 
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
-    "%s vypisuje zdroj ukázky ze SKUTEČNÉHO modulu, ne z ručního řetězce",
+    "%s lists the demo source from the REAL module, not from a hand-written string",
     (name, page) => {
       // A ?raw import returns the WHOLE file, so it has to contain its
       // imports and the function header too — not just a piece of JSX that

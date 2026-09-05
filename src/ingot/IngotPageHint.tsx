@@ -2,6 +2,7 @@ import { useEffect, useRef, type JSX, type ReactNode } from "react";
 
 import { IconButton } from "./IconButton";
 import { IngotIcon } from "./IngotIcon";
+import { useIngotLabels } from "./IngotProvider";
 
 /**
  * Page hint with a bulb — spec PageHint v1.1 (its CSS section lives in
@@ -52,8 +53,8 @@ export function IngotPageHint({
   dismissible = false,
   onDismiss,
   visible = true,
-  bulbLabel = "Zvýraznit, čeho se nápověda týká",
-  dismissLabel = "Skrýt nápovědu na této stránce",
+  bulbLabel,
+  dismissLabel,
   testId,
 }: {
   /** Name of the screen or task the strip talks about — not "Help". */
@@ -80,13 +81,17 @@ export function IngotPageHint({
    * account menu. ``false`` draws nothing and the layout does not change.
    */
   visible?: boolean;
-  /** Translated label of the bulb — the kit has no translations. */
+  /**
+   * Label of the bulb. Defaults to the ``pageHintBulb`` entry of
+   * ``IngotProvider`` — English when no provider is mounted.
+   */
   bulbLabel?: string;
-  /** Translated label of the cross. */
+  /** Label of the cross. Defaults to the provider's ``pageHintDismiss``. */
   dismissLabel?: string;
   /** `data-testid` of the strip; the bulb gets `${testId}-bulb`, the cross `${testId}-dismiss`. */
   testId?: string;
 }): JSX.Element | null {
+  const labels = useIngotLabels();
   const timerRef = useRef<number>();
   const litRef = useRef<Element[]>([]);
 
@@ -135,7 +140,7 @@ export function IngotPageHint({
     >
       {targets.length > 0 ? (
         <IconButton
-          label={bulbLabel}
+          label={bulbLabel ?? labels.pageHintBulb}
           tone="accent"
           onClick={flash}
           className="-my-1 -ml-1.5"
@@ -152,7 +157,7 @@ export function IngotPageHint({
       </div>
       {dismissible && (
         <IconButton
-          label={dismissLabel}
+          label={dismissLabel ?? labels.pageHintDismiss}
           onClick={onDismiss}
           className="-my-1 -mr-1.5 ml-auto"
           data-testid={testId ? `${testId}-dismiss` : undefined}

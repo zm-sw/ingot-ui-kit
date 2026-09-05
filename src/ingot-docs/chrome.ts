@@ -31,6 +31,8 @@ export interface ChromeStrings {
   tokens: Localized<string>;
   /** Sentence above that list — why it is there. */
   tokensNote: Localized<string>;
+  /** Shown instead of the list when a primitive renders nothing of its own. */
+  tokensNone: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -95,6 +97,10 @@ export const CHROME: ChromeStrings = {
   tokensNote: {
     cs: "Změna kteréhokoli z těchto tokenů se na téhle komponentě projeví všude v produktu.",
     en: "Changing any of these tokens shows up on this component everywhere in the product.",
+  },
+  tokensNone: {
+    cs: "Primitivum nic nevykresluje — žádná změna tokenu se na něm neprojeví.",
+    en: "The primitive renders nothing of its own — no token change reaches it.",
   },
   propName: { cs: "Vlastnost", en: "Property" },
   propType: { cs: "Typ", en: "Type" },
