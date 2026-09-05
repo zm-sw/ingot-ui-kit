@@ -1,6 +1,8 @@
 import type { JSX, ReactNode } from "react";
 
+import { cx } from "./cx";
 import { isNumericKind, type IngotFieldSpec } from "./fields";
+import { inputChrome } from "./inputChrome";
 
 /**
  * Vstup jednoho pole — nejmenší primitivum Ingotu (KAN-382).
@@ -46,9 +48,9 @@ export function IngotFieldInput({
     className?: string;
   }) => ReactNode;
 }): JSX.Element {
-  const inputClass =
-    className ??
-    "w-full max-w-xs rounded border border-border-strong px-2 py-1 text-sm disabled:bg-surface-2 disabled:text-ink-3";
+  // The frame is the kit's one input chrome; `className` replaces it whole
+  // because callers that pass it lay the input into their own grid.
+  const inputClass = className ?? cx("w-full max-w-xs", inputChrome());
 
   if (field.kind === "boolean") {
     return (

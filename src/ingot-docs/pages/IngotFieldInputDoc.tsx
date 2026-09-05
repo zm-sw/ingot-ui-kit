@@ -6,9 +6,11 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotFieldInputDoc: IngotDocPage = {
   name: "IngotFieldInput",
   status: "stable",
-  version: "1.0",
+  // 1.1 — the frame comes from the kit's shared input chrome (focus ring,
+  // `--r-md`, Button-md height) instead of its own smaller box.
+  version: "1.1",
   tag: ".input",
-  tokens: ["--surface-2", "--border-strong", "--ink-3", "--r-sm"],
+  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
   summary: {
     cs: "Jedno pole podle svého kind. Nezná žádnou doménu — množinu voleb i překlady dodává volající.",
     en: "A single field driven by its kind. It knows no domain — the option set and the translations both come from the caller.",

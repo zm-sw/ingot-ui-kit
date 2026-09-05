@@ -6,10 +6,11 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotSearchInputDoc: IngotDocPage = {
   name: "IngotSearchInput",
   status: "beta",
-  // 1.1 — přibyl ``inputRef``. Volající nemusí sáhnout na nic.
-  version: "1.1",
+  // 1.1 — `inputRef` added; callers touch nothing.
+  // 1.2 — shared input chrome: accent focus ring, Button-md height.
+  version: "1.2",
   tag: ".search",
-  tokens: ["--surface", "--border-strong", "--ink", "--ink-4", "--r-md", "--shadow-sm"],
+  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
   summary: {
     cs: "Hledací pole nad seznamem — první prvek filtr baru. Filtruje, nevyhledává: zužuje seznam každým úhozem, žádné tlačítko Hledat.",
     en: "A search field above a list — the first element of the filter bar. It filters, it does not search: it narrows the list on every keystroke, no Search button.",

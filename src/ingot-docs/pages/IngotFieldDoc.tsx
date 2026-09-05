@@ -6,9 +6,11 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotFieldDoc: IngotDocPage = {
   name: "IngotField",
   status: "stable",
-  version: "1.0",
+  // 1.1 — the frame comes from the kit's shared input chrome: `--surface`
+  // instead of `--bg`, `--border-strong`, `--r-md`, same height as Button md.
+  version: "1.1",
   tag: ".field",
-  tokens: ["--bg", "--border", "--ink", "--ink-2", "--ink-3", "--accent", "--accent-bg", "--danger", "--font-mono", "--r-sm"],
+  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-2", "--ink-3", "--ink-4", "--accent", "--accent-bg", "--danger", "--font-mono", "--r-md", "--shadow-sm"],
   summary: {
     cs: "Popsané textové pole: popisek, nápověda, chyba, jednotka. Pro ruční formuláře, které pole nemají odkud odvodit.",
     en: "A labelled text field: label, hint, error, unit. For hand-written forms whose fields cannot be derived from anything.",

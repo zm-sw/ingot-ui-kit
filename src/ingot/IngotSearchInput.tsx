@@ -2,6 +2,7 @@ import { type JSX, type Ref } from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
+import { inputChrome } from "./inputChrome";
 
 /**
  * Hledací pole nad seznamem — první prvek filtr baru (``IngotToolbar``).
@@ -64,11 +65,9 @@ export function IngotSearchInput({
         aria-label={label}
         placeholder={placeholder}
         disabled={disabled}
-        className={cx(
-          "w-full rounded-md border border-border-strong bg-surface py-2 pl-8 pr-3 text-sm text-ink shadow-sm",
-          "placeholder:text-ink-4 focus:border-ink focus:outline-none",
-          "disabled:cursor-not-allowed disabled:text-ink-4",
-        )}
+        // `pl-8` after the chrome overrides its `px-3` on the left so the
+        // magnifier has room; Tailwind resolves the later utility.
+        className={cx("w-full", inputChrome(), "pl-8")}
         data-testid={testId}
       />
     </span>
