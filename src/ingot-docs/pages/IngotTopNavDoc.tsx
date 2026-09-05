@@ -22,7 +22,8 @@ export const IngotTopNavDoc: IngotDocPage = {
   // 2.7: klávesnice v otevřeném panelu — šipky procházejí položky, Tab
   // z panelu nevypadne a Escape vrací fokus na tlačítko sekce. Návrat
   // fokusu tahle stránka slibovala od 2.0, ale kód ho nedělal.
-  version: "2.7",
+  // 2.8 — row states (current, open, muted, locked, hover) come from the kit's shared menu row.
+  version: "2.8",
   tag: ".topnav",
   tokens: ["--surface", "--surface-2", "--surface-3", "--border", "--ink", "--ink-2", "--r-sm"],
   summary: {
