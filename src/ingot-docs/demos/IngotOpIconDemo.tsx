@@ -1,9 +1,16 @@
 import { IngotCode, IngotSection } from "@/ingot";
 import { IngotOpIcon, INGOT_OP_ICON_KEYS } from "@/ingot/forgmatic";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
 const SAMPLE = INGOT_OP_ICON_KEYS.slice(0, 6);
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: { variants: "Varianty inkoustu" },
+  en: { variants: "Ink variants" },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap gap-5">
@@ -17,7 +24,7 @@ export function Demo(): JSX.Element {
           </span>
         ))}
       </div>
-      <IngotSection title="Varianty inkoustu" level={3}>
+      <IngotSection title={t.variants} level={3}>
         <span className="inline-flex items-center gap-4">
           <IngotOpIcon token={SAMPLE[0]} categoryColor="var(--accent)" size={22} />
           <IngotOpIcon token={`${SAMPLE[0]}:black`} size={22} />

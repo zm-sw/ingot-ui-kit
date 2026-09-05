@@ -1,9 +1,39 @@
 import { useState } from "react";
 
 import { Button, IngotDrawer, IngotField } from "@/ingot";
-export function Demo(): JSX.Element {
+import type { DocLang, Localized } from "@/ingot-docs/lang";
+
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    open: "Upravit materiál",
+    subtitle: "Sklad Praha · Regál 1",
+    close: "Zavřít",
+    save: "Uložit",
+    cancel: "Zrušit",
+    nameLabel: "Název",
+    material: "Ocel S235JR",
+    noteLabel: "Poznámka",
+    optional: "— nepovinné",
+    notePlaceholder: "Např. hlídat minimální zásobu",
+  },
+  en: {
+    open: "Edit material",
+    subtitle: "Prague store · Rack 1",
+    close: "Close",
+    save: "Save",
+    cancel: "Cancel",
+    nameLabel: "Name",
+    material: "Steel S235JR",
+    noteLabel: "Note",
+    optional: "— optional",
+    notePlaceholder: "e.g. watch the minimum stock",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("Ocel S235JR");
+  const [name, setName] = useState(t.material);
   const [note, setNote] = useState("");
   return (
     <div>
@@ -13,40 +43,40 @@ export function Demo(): JSX.Element {
         onClick={() => setOpen(true)}
         data-testid="docs-drawer-open"
       >
-        Upravit materiál
+        {t.open}
       </Button>
       {open ? (
         <IngotDrawer
-          title="Upravit materiál"
-          subtitle="Sklad Praha · Regál 1"
+          title={t.open}
+          subtitle={t.subtitle}
           onClose={() => setOpen(false)}
-          closeLabel="Zavřít"
+          closeLabel={t.close}
           dismissable={false}
           testId="docs-drawer"
           footer={
             <>
               <Button variant="primary" size="sm" onClick={() => setOpen(false)}>
-                Uložit
+                {t.save}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
-                Zrušit
+                {t.cancel}
               </Button>
             </>
           }
         >
           <div className="space-y-4">
             <IngotField
-              label="Název"
+              label={t.nameLabel}
               value={name}
               onChange={setName}
               testId="docs-drawer-name"
             />
             <IngotField
-              label="Poznámka"
+              label={t.noteLabel}
               value={note}
               onChange={setNote}
-              optionalLabel="— nepovinné"
-              placeholder="Např. hlídat minimální zásobu"
+              optionalLabel={t.optional}
+              placeholder={t.notePlaceholder}
               testId="docs-drawer-note"
             />
           </div>

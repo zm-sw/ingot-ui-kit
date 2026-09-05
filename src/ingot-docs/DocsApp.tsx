@@ -279,7 +279,7 @@ function DemoWithSource({
         <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
             <IngotProvider lang={lang}>
-              <page.Demo />
+              <page.Demo lang={lang} />
             </IngotProvider>
           </div>
         </div>

@@ -1,4 +1,45 @@
 import { IngotIcon, IngotMegaMenu } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
+
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    label: "Provoz",
+    daily: "Denní provoz",
+    orders: "Objednávky",
+    ordersText:
+      "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu.",
+    enquiries: "Poptávky",
+    enquiriesText:
+      "Nacenění, která zákazník zatím nepotvrdil. Stárnoucí poptávka je první kandidát na telefonát.",
+    dispatch: "Expedice",
+    dispatchText:
+      "Zabalené zakázky a štítky dopravců. Co tu leží přes noc, mělo být pryč.",
+    catalogue: "Katalog",
+    materials: "Materiály",
+    materialsText: "Skladové položky a jejich vlastnosti — tloušťky, jakosti, ceny.",
+    operations: "Operace",
+    operationsText: "Výrobní operace a jejich parametry. Změna se projeví v nacenění.",
+  },
+  en: {
+    label: "Shop floor",
+    daily: "Day to day",
+    orders: "Orders",
+    ordersText:
+      "What has been taken and what waits for production to confirm it. An order enters the plan from here.",
+    enquiries: "Enquiries",
+    enquiriesText:
+      "Prices the customer has not confirmed yet. An ageing enquiry is the first candidate for a phone call.",
+    dispatch: "Dispatch",
+    dispatchText:
+      "Packed jobs and carrier labels. Whatever sits here overnight should have gone.",
+    catalogue: "Catalogue",
+    materials: "Materials",
+    materialsText: "Stock items and their properties — thickness, grade, price.",
+    operations: "Operations",
+    operationsText:
+      "Production operations and their parameters. A change shows up in the pricing.",
+  },
+};
 
 function SectionArt(): JSX.Element {
   return (
@@ -44,63 +85,59 @@ function SectionArt(): JSX.Element {
   );
 }
 
-export function Demo(): JSX.Element {
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   return (
     <div className="relative h-[300px] w-full min-w-0">
       <IngotMegaMenu
         groups={[
           {
-            title: "Denní provoz",
+            title: t.daily,
             items: [
               {
                 href: "#objednavky",
-                label: "Objednávky",
-                description:
-                  "Co je přijaté a co čeká na potvrzení výroby. Odsud se objednávka pouští do plánu.",
+                label: t.orders,
+                description: t.ordersText,
                 icon: <IngotIcon name="file" size={15} />,
                 count: 12,
                 current: true,
               },
               {
                 href: "#poptavky",
-                label: "Poptávky",
-                description:
-                  "Nacenění, která zákazník zatím nepotvrdil. Stárnoucí poptávka je první kandidát na telefonát.",
+                label: t.enquiries,
+                description: t.enquiriesText,
                 icon: <IngotIcon name="chat" size={15} />,
                 count: 48,
               },
               {
                 href: "#expedice",
-                label: "Expedice",
-                description:
-                  "Zabalené zakázky a štítky dopravců. Co tu leží přes noc, mělo být pryč.",
+                label: t.dispatch,
+                description: t.dispatchText,
                 icon: <IngotIcon name="truck" size={15} />,
                 count: 3,
               },
             ],
           },
           {
-            title: "Katalog",
+            title: t.catalogue,
             items: [
               {
                 href: "#materialy",
-                label: "Materiály",
-                description:
-                  "Skladové položky a jejich vlastnosti — tloušťky, jakosti, ceny.",
+                label: t.materials,
+                description: t.materialsText,
                 icon: <IngotIcon name="grid" size={15} />,
               },
               {
                 href: "#operace",
-                label: "Operace",
-                description:
-                  "Výrobní operace a jejich parametry. Změna se projeví v nacenění.",
+                label: t.operations,
+                description: t.operationsText,
                 icon: <IngotIcon name="bolt" size={15} />,
               },
             ],
           },
         ]}
         art={<SectionArt />}
-        label="Provoz"
+        label={t.label}
         testId="docs-megamenu"
       />
     </div>

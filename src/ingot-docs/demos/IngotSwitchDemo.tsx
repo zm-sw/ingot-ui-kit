@@ -1,8 +1,29 @@
 import { useState } from "react";
 
 import { IngotSwitch } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    notify: "Upozornění na skluz",
+    notifyHint: "Pošle e-mail, jakmile se zakázka dostane po termínu.",
+    autoplan: "Automatické plánování",
+    autoplanHint: "Nové operace se zařadí do fronty samy.",
+    share: "Sdílení s dodavateli",
+    shareHint: "Vyžaduje vyšší tarif.",
+  },
+  en: {
+    notify: "Slippage alerts",
+    notifyHint: "Sends an e-mail as soon as a job goes past its date.",
+    autoplan: "Automatic planning",
+    autoplanHint: "New operations join the queue on their own.",
+    share: "Sharing with suppliers",
+    shareHint: "Needs a higher plan.",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   const [notify, setNotify] = useState(true);
   const [autoplan, setAutoplan] = useState(false);
 
@@ -11,22 +32,22 @@ export function Demo(): JSX.Element {
       <IngotSwitch
         checked={notify}
         onChange={setNotify}
-        label="Upozornění na skluz"
-        hint="Pošle e-mail, jakmile se zakázka dostane po termínu."
+        label={t.notify}
+        hint={t.notifyHint}
         testId="docs-switch-notify"
       />
       <IngotSwitch
         checked={autoplan}
         onChange={setAutoplan}
-        label="Automatické plánování"
-        hint="Nové operace se zařadí do fronty samy."
+        label={t.autoplan}
+        hint={t.autoplanHint}
         testId="docs-switch-autoplan"
       />
       <IngotSwitch
         checked={false}
         onChange={() => undefined}
-        label="Sdílení s dodavateli"
-        hint="Vyžaduje vyšší tarif."
+        label={t.share}
+        hint={t.shareHint}
         disabled
         testId="docs-switch-share"
       />

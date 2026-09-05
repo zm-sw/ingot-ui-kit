@@ -1,9 +1,47 @@
 import { useState } from "react";
 
 import { IngotBadge, IngotMegaMenu, IngotTopNav, IngotTopNavAccount } from "@/ingot";
+import type { DocLang, Localized } from "@/ingot-docs/lang";
 
-export function Demo(): JSX.Element {
+const TEXT: Localized<Record<string, string>> = {
+  cs: {
+    shop: "Provoz",
+    processes: "Procesy a kapacity",
+    store: "Sklad",
+    finance: "Finance",
+    daily: "Denní provoz",
+    orders: "Objednávky",
+    ordersText: "Co je přijaté a co čeká na potvrzení výroby.",
+    enquiries: "Poptávky",
+    enquiriesText: "Nacenění, která zákazník zatím nepotvrdil.",
+    operations: "Operace",
+    operationsText: "Výrobní operace a jejich parametry.",
+    machines: "Stroje",
+    machinesText: "Kapacity strojů a jejich směny.",
+    account: "Menu účtu",
+  },
+  en: {
+    shop: "Shop floor",
+    processes: "Processes and capacity",
+    store: "Store",
+    finance: "Finance",
+    daily: "Day to day",
+    orders: "Orders",
+    ordersText: "What has been taken and what waits for production to confirm.",
+    enquiries: "Enquiries",
+    enquiriesText: "Prices the customer has not confirmed yet.",
+    operations: "Operations",
+    operationsText: "Production operations and their parameters.",
+    machines: "Machines",
+    machinesText: "Machine capacity and its shifts.",
+    account: "Account menu",
+  },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
   const [open, setOpen] = useState<string | null>(null);
+  const here = "/komponenty/top-nav";
   return (
     <div className="min-h-[300px] w-full min-w-0">
       <IngotTopNav
@@ -13,10 +51,10 @@ export function Demo(): JSX.Element {
           </>
         }
         sections={[
-          { key: "provoz", label: "Provoz" },
-          { key: "procesy", label: "Procesy a kapacity" },
-          { key: "sklad", label: "Sklad", href: "#/IngotTopNav", current: true },
-          { key: "finance", label: "Finance", href: "#/IngotTopNav" },
+          { key: "provoz", label: t.shop },
+          { key: "procesy", label: t.processes },
+          { key: "sklad", label: t.store, href: here, current: true },
+          { key: "finance", label: t.finance, href: here },
         ]}
         openSection={open}
         onOpenSection={setOpen}
@@ -26,24 +64,24 @@ export function Demo(): JSX.Element {
             <IngotMegaMenu
               groups={[
                 {
-                  title: "Denní provoz",
+                  title: t.daily,
                   items: [
                     {
                       href: "#objednavky",
-                      label: "Objednávky",
-                      description: "Co je přijaté a co čeká na potvrzení výroby.",
+                      label: t.orders,
+                      description: t.ordersText,
                       count: 12,
                     },
                     {
                       href: "#poptavky",
-                      label: "Poptávky",
-                      description: "Nacenění, která zákazník zatím nepotvrdil.",
+                      label: t.enquiries,
+                      description: t.enquiriesText,
                       count: 48,
                     },
                   ],
                 },
               ]}
-              label="Provoz"
+              label={t.shop}
             />
           ) : (
             <IngotMegaMenu
@@ -52,22 +90,22 @@ export function Demo(): JSX.Element {
                   items: [
                     {
                       href: "#operace",
-                      label: "Operace",
-                      description: "Výrobní operace a jejich parametry.",
+                      label: t.operations,
+                      description: t.operationsText,
                     },
                     {
                       href: "#stroje",
-                      label: "Stroje",
-                      description: "Kapacity strojů a jejich směny.",
+                      label: t.machines,
+                      description: t.machinesText,
                     },
                   ],
                 },
               ]}
-              label="Procesy a kapacity"
+              label={t.processes}
             />
           )
         }
-        account={<IngotTopNavAccount initials="8S" label="Menu účtu" />}
+        account={<IngotTopNavAccount initials="8S" label={t.account} />}
         testId="docs-topnav"
       />
     </div>

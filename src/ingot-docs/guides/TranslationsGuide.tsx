@@ -14,6 +14,16 @@ import type { IngotGuidePage } from "@/ingot-docs/types";
  *
  * The doc web is a PUBLIC page.
  */
+const DEMO_SHAPE = `const TEXT: Localized<Record<string, string>> = {
+  cs: { save: "Uložit změny" },
+  en: { save: "Save changes" },
+};
+
+export function Demo({ lang }: { lang: DocLang }): JSX.Element {
+  const t = TEXT[lang];
+  return <Button>{t.save}</Button>;
+}`;
+
 export const TranslationsGuide: IngotGuidePage = {
   slug: "preklady",
   group: "rules",
@@ -333,6 +343,59 @@ export const TranslationsGuide: IngotGuidePage = {
                 </>,
               ]}
             />
+          </div>
+        ),
+      },
+    },
+    {
+      id: "ukazky",
+      title: {
+        cs: "Jak se píše ukázka",
+        en: "How a demo is written",
+      },
+      body: {
+        cs: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Ukázka je ta část stránky, na kterou se čtenář dívá nejdřív. Stránka,
+              která přeloží všechno kromě ní, vypadá hotově a není — a je to horší, než
+              kdyby nepřekládala nic, protože si toho nikdo nevšimne.
+            </p>
+            <p>
+              Ukázka proto dostane jazyk čtenáře a všechny své texty drží{" "}
+              <strong>v jedné konstantě nahoře v modulu</strong>. Nahoře záměrně: výpis
+              kódu pod ukázkou je ten samý soubor, takže čtenář vidí i to, odkud se
+              texty berou.
+            </p>
+            <IngotCode block lang="tsx">
+              {DEMO_SHAPE}
+            </IngotCode>
+            <p>
+              Česky psaný text kdekoli jinde v ukázce je chyba, kterou zachytí kontrola
+              repozitáře — ne až anglický čtenář.
+            </p>
+          </div>
+        ),
+        en: (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              The demo is the part of the page a reader looks at first. A page that
+              translates everything except the demo looks finished and is not — which is
+              worse than translating nothing, because nobody notices.
+            </p>
+            <p>
+              So a demo takes the reader's language and keeps every text it says{" "}
+              <strong>in one constant at the top of the module</strong>. At the top on
+              purpose: the code listing under the demo is that same file, so the reader
+              sees where the texts come from as well.
+            </p>
+            <IngotCode block lang="tsx">
+              {DEMO_SHAPE}
+            </IngotCode>
+            <p>
+              Text written in one language anywhere else in a demo is a mistake the
+              repository's checks catch — not the reader in the other language.
+            </p>
           </div>
         ),
       },
