@@ -8,16 +8,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { MarketingFaq, MarketingPricing } from "@/marketing";
+import { IngotMarketingFaq, IngotMarketingPricing } from "@/ingot";
 
 const ITEMS = [
   { id: "a", question: "Otázka A?", answer: "Odpověď A." },
   { id: "b", question: "Otázka B?", answer: "Odpověď B." },
 ] as const;
 
-describe("MarketingFaq", () => {
+describe("IngotMarketingFaq", () => {
   it("otázka je button s aria-expanded a aria-controls", async () => {
-    render(<MarketingFaq items={ITEMS} />);
+    render(<IngotMarketingFaq items={ITEMS} />);
     const question = screen.getByRole("button", { name: "Otázka A?" });
     expect(question).toHaveAttribute("aria-expanded", "false");
     expect(question).toHaveAttribute("aria-controls");
@@ -33,7 +33,7 @@ describe("MarketingFaq", () => {
   });
 
   it("rozbalí se druhá položka, první se zavře", async () => {
-    render(<MarketingFaq items={ITEMS} />);
+    render(<IngotMarketingFaq items={ITEMS} />);
     await userEvent.click(screen.getByRole("button", { name: "Otázka A?" }));
     await userEvent.click(screen.getByRole("button", { name: "Otázka B?" }));
 
@@ -45,7 +45,7 @@ describe("MarketingFaq", () => {
   });
 
   it("ovládá se klávesnicí (Tab + Enter)", async () => {
-    render(<MarketingFaq items={ITEMS} />);
+    render(<IngotMarketingFaq items={ITEMS} />);
     await userEvent.tab();
     expect(screen.getByRole("button", { name: "Otázka A?" })).toHaveFocus();
     await userEvent.keyboard("{Enter}");
@@ -53,10 +53,10 @@ describe("MarketingFaq", () => {
   });
 });
 
-describe("MarketingPricing", () => {
+describe("IngotMarketingPricing", () => {
   it("kreslí výhradně data z props — název, cenu, odznak i vlastnosti", () => {
     render(
-      <MarketingPricing
+      <IngotMarketingPricing
         testId="pricing"
         plans={[
           {

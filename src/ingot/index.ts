@@ -176,3 +176,63 @@ export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
+
+// --- volba akcentu a přepínač chromu ---------------------------------
+// Akcentové rodiny jsou tokeny kitu (``tokens.css``, bloky
+// ``[data-accent]``), takže jejich výčet i puntíky, kterými se vybírají,
+// patří sem. Ukládání volby (localStorage, účet) zůstává aplikaci.
+export {
+  ACCENT_CHOICES,
+  DEFAULT_ACCENT,
+  type AccentChoice,
+} from "./accent";
+export { IngotAccentSwatches } from "./IngotAccentSwatches";
+export { IngotSegmented, type IngotSegmentedOption } from "./IngotSegmented";
+
+// --- marketingové bloky veřejných stránek ----------------------------
+//
+// Handoff „Veřejné stránky", ingot.css sekce 13. Bydlely mimo kit
+// s odůvodněním „v adminu nemají konzumenta", jenže tím se ocitly i mimo
+// distribuci: ``files`` pouští ven jen ``src/ingot``, takže veřejný web,
+// pro který vznikly, si je nemohl nainstalovat a musel by je opsat.
+// Opsaný blok je přesně ta druhá pravda, které se kit brání jinde.
+//
+// Kreslí se výhradně tokeny kitu — žádná vlastní barva, žádný gradient —
+// jen s většími rozestupy a trojsloupcovou mřížkou. Pravidla skladby
+// (akcent nejvýš na jednom prvku sekce, tmavý blok nejvýš 2× na stránku,
+// pod 1100 px jeden sloupec) drží stránka, ne komponenta; popisuje je
+// průvodce „Veřejné stránky".
+//
+// Texty i ceny jsou OBSAH (branding/CMS/plány) — chodí přes props,
+// nikdy jako konstanty v JSX.
+export { IngotMarketingSectionHead } from "./IngotMarketingSectionHead";
+export {
+  IngotMarketingTri,
+  type IngotMarketingTriItem,
+} from "./IngotMarketingTri";
+export {
+  IngotMarketingSteps,
+  type IngotMarketingStepItem,
+} from "./IngotMarketingSteps";
+export {
+  IngotMarketingSegments,
+  type IngotMarketingSegmentItem,
+} from "./IngotMarketingSegments";
+export {
+  IngotMarketingComparison,
+  type IngotMarketingComparisonCell,
+  type IngotMarketingComparisonHeaders,
+  type IngotMarketingComparisonRow,
+} from "./IngotMarketingComparison";
+export {
+  IngotMarketingPricing,
+  type IngotMarketingPlan,
+} from "./IngotMarketingPricing";
+export {
+  IngotMarketingFaq,
+  type IngotMarketingFaqItem,
+} from "./IngotMarketingFaq";
+export {
+  IngotMarketingCta,
+  type IngotMarketingCtaAction,
+} from "./IngotMarketingCta";

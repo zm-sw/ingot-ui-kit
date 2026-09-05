@@ -27,6 +27,14 @@ export function Demo(): JSX.Element {
         </svg>
       </Button>
       <Button disabled>Nedostupné</Button>
+      <Button as="a" href="#/Button" variant="accent">
+        Přejít na ceník
+      </Button>
+      <span className="inline-flex rounded-md bg-ink p-2">
+        <Button as="a" href="#/Button" variant="inverse">
+          Na tmavé ploše
+        </Button>
+      </span>
     </div>
   );
 }

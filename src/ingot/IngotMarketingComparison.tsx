@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { IngotIcon, type IngotIconName } from "@/ingot";
+import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
  * Srovnání (KAN-664) — ŘÁDKOVÁ tabulka z handoffu Veřejné stránky:
@@ -18,23 +18,23 @@ import { IngotIcon, type IngotIconName } from "@/ingot";
  * jediným akcentovým prvkem sekce. Na úzkém viewportu se tabulka roluje
  * vodorovně — mřížka se nesmí složit, protože složená přestane srovnávat.
  */
-export interface MarketingComparisonCell {
+export interface IngotMarketingComparisonCell {
   icon?: IngotIconName;
   text: string;
 }
 
-export interface MarketingComparisonRow {
+export interface IngotMarketingComparisonRow {
   /** Stabilní klíč řádku z dat (ne index — řádky se přeskládávají). */
   id: string;
   /** Úkol, který se srovnává — první sloupec. */
   task: string;
   /** Jak to vypadá dnes. */
-  before: MarketingComparisonCell;
+  before: IngotMarketingComparisonCell;
   /** Jak to vypadá s platformou — zvýrazněný sloupec. */
-  after: MarketingComparisonCell;
+  after: IngotMarketingComparisonCell;
 }
 
-export interface MarketingComparisonHeaders {
+export interface IngotMarketingComparisonHeaders {
   task: string;
   before: string;
   after: string;
@@ -44,7 +44,7 @@ function Cell({
   cell,
   highlighted,
 }: {
-  cell: MarketingComparisonCell;
+  cell: IngotMarketingComparisonCell;
   highlighted?: boolean;
 }): JSX.Element {
   return (
@@ -65,14 +65,14 @@ function Cell({
   );
 }
 
-export function MarketingComparison({
+export function IngotMarketingComparison({
   headers,
   rows,
   testId,
 }: {
   /** Záhlaví tří sloupců — obsah, dodaný přeložený. */
-  headers: MarketingComparisonHeaders;
-  rows: readonly MarketingComparisonRow[];
+  headers: IngotMarketingComparisonHeaders;
+  rows: readonly IngotMarketingComparisonRow[];
   testId?: string;
 }): JSX.Element {
   return (

@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+import { Button } from "./Button";
+
 /**
  * Závěrečné CTA (KAN-664) — tmavý blok se dvěma velkými tlačítky
  * z handoffu Veřejné stránky.
@@ -9,25 +11,26 @@ import type { JSX } from "react";
  *
  * Blok je „inverzní": kreslí se tokeny ``ink``/``bg`` prohozeně, takže
  * v tmavém motivu se obrátí sám a žádnou vlastní barvu nezavádí.
- * Akce jsou odkazy, ne buttony — marketingové CTA naviguje (registrace,
- * kontakt), nic nespouští. Vzhled si ale berou z ``Button``: hlavní akce
- * je AKCENTOVÁ (``variant="accent"``), vedlejší duchová.
+ *
+ * Akce jsou ``Button as="a"`` — marketingové CTA naviguje (registrace,
+ * kontakt), nic nespouští, takže je to odkaz. Vzhled se z ``Button``
+ * NEOPISUJE, bere se z něj: do KAN-664 tu stály ručně psané ``<a>``
+ * s okopírovanými třídami, a s nimi i kopie rozhodnutí o kontrastu
+ * akcentu v tmavém motivu (``dark:text-bg``). Kopie a11y rozhodnutí je
+ * to nejhorší, co se dá zdvojit — nerozbije se, jen tiše zestárne.
  *
  * 🪤 **Hlavní akce není neutrální.** Na tmavé ploše je světlé neutrální
  * tlačítko k nerozeznání od vedlejšího a závěrečná výzva pak nemá kam
- * poslat oko. Akcent je tady jediný barevný prvek bloku.
- *
- * Třídy akcentu jsou tytéž jako ``Button variant="accent"`` včetně
- * ``dark:text-bg``: tmavá paleta ``--accent`` rozsvěcuje, takže bílý
- * text na něm v tmavém motivu spadne pod AA — proto se v tmavém obrací
- * na inkoust plochy stránky. To řešení tady zůstává beze změny.
+ * poslat oko. Akcent je tady jediný barevný prvek bloku; vedlejší akce
+ * je ``variant="inverse"``, tedy obrys barvou stránky pod obrácenou
+ * plochou.
  */
-export interface MarketingCtaAction {
+export interface IngotMarketingCtaAction {
   label: string;
   href: string;
 }
 
-export function MarketingCta({
+export function IngotMarketingCta({
   title,
   text,
   primary,
@@ -37,9 +40,9 @@ export function MarketingCta({
   title: string;
   text?: string;
   /** Hlavní akce — akcentové vyplněné tlačítko na tmavé ploše. */
-  primary: MarketingCtaAction;
+  primary: IngotMarketingCtaAction;
   /** Vedlejší akce — obrysové tlačítko. */
-  secondary?: MarketingCtaAction;
+  secondary?: IngotMarketingCtaAction;
   testId?: string;
 }): JSX.Element {
   return (
@@ -56,19 +59,13 @@ export function MarketingCta({
         </p>
       )}
       <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href={primary.href}
-          className="inline-flex h-[42px] items-center justify-center rounded-md bg-accent px-5 text-[15px] font-medium text-white transition-colors hover:bg-accent-ink dark:text-bg"
-        >
+        <Button as="a" href={primary.href} variant="accent" size="lg">
           {primary.label}
-        </a>
+        </Button>
         {secondary !== undefined && (
-          <a
-            href={secondary.href}
-            className="inline-flex h-[42px] items-center justify-center rounded-md border border-bg/40 px-5 text-[15px] font-medium text-bg hover:bg-bg/10"
-          >
+          <Button as="a" href={secondary.href} variant="inverse" size="lg">
             {secondary.label}
-          </a>
+          </Button>
         )}
       </div>
     </div>

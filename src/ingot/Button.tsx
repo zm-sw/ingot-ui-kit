@@ -1,4 +1,10 @@
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  type Ref,
+} from "react";
 
 import { cx } from "./cx";
 
@@ -8,18 +14,45 @@ type ButtonVariant =
   | "ok"
   | "secondary"
   | "ghost"
-  | "danger";
+  | "danger"
+  | "inverse";
 type ButtonSize = "sm" | "md" | "lg";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonBaseProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  loading?: boolean;
   /** Čtvercové tlačítko jen s ikonou. Vyžaduje ``aria-label``. */
   iconOnly?: boolean;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
 }
+
+/**
+ * 🪤 **``as="a"`` je odkaz, ne tlačítko, které vypadá jako odkaz.**
+ * Vykreslí se ``<a href>``, takže odečítač ho hlásí jako odkaz, dá se
+ * otevřít v novém panelu a funguje bez JavaScriptu. Tlačítko, které
+ * naviguje, o všech třech věcech lže.
+ *
+ * Proto ``href`` POVINNÝ: ``<a>`` bez něj není odkaz — do pořadí
+ * tabulátoru se nedostane a Enter na něm nic nedělá.
+ *
+ * ``loading`` a ``disabled`` tahle větev NEMÁ, a to schválně. Odkaz se
+ * nedá zakázat ani označit za rozpracovaný; kdo potřebuje obojí,
+ * potřebuje tlačítko. Typ to říká dřív, než se to zkusí.
+ */
+type ButtonAsLinkProps = ButtonBaseProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+    as: "a";
+    href: string;
+  };
+
+type ButtonAsButtonProps = ButtonBaseProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    as?: "button";
+    loading?: boolean;
+  };
+
+export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const VARIANT: Record<ButtonVariant, string> = {
   primary:
@@ -42,6 +75,13 @@ const VARIANT: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-ink-2 hover:bg-surface-2 disabled:text-ink-4",
   danger:
     "bg-danger text-white dark:text-bg hover:bg-danger/90 disabled:bg-ink-4 disabled:text-white/70 dark:disabled:text-bg/70",
+  //: Vedlejší akce na OBRÁCENÉ ploše (tmavý blok CTA, patička). Kreslí
+  //: se ``--bg``, tedy barvou stránky, protože plocha pod ní je
+  //: ``--ink`` — v tmavém motivu se obrátí spolu s ní a žádnou vlastní
+  //: barvu nezavádí. Na běžné ploše je neviditelná, a to je záměr: je
+  //: to varianta pro obrácený blok, ne světlejší ``ghost``.
+  inverse:
+    "bg-transparent text-bg border border-bg/40 hover:bg-bg/10 disabled:text-bg/50",
 };
 
 // Výšky 28 / 34 / 42 px z Ingot handoffu v0.1 (``.btn-icon`` 34×34,
@@ -62,27 +102,25 @@ const SIZE_ICON_ONLY: Record<ButtonSize, string> = {
   lg: "h-[42px] w-[42px] text-[15px]",
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  {
+export const Button = forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  ButtonProps
+>(function Button(props, ref) {
+  const {
     variant = "secondary",
     size = "md",
-    loading = false,
     iconOnly = false,
     leadingIcon,
     trailingIcon,
-    disabled,
     className,
     children,
-    type = "button",
-    ...rest
-  },
-  ref,
-) {
+  } = props;
+
   if (
     import.meta.env.DEV &&
     iconOnly &&
-    !rest["aria-label"] &&
-    !rest["aria-labelledby"]
+    !props["aria-label"] &&
+    !props["aria-labelledby"]
   ) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -91,18 +129,72 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     );
   }
 
+  //: Vzhled je JEDEN výpočet pro obě větve. Kdyby si ho každá počítala
+  //: po svém, byl by odkaz „skoro jako" tlačítko a rozdíl by se objevil
+  //: až na obrazovce, kde stojí vedle sebe.
+  const classes = cx(
+    "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
+    VARIANT[variant],
+    iconOnly ? SIZE_ICON_ONLY[size] : SIZE[size],
+    className,
+  );
+
+  function label(loading: boolean): ReactNode {
+    return (
+      <span
+        className={cx(
+          "inline-flex items-center justify-center gap-2",
+          loading && "invisible",
+        )}
+      >
+        {leadingIcon}
+        <span>{children}</span>
+        {trailingIcon}
+      </span>
+    );
+  }
+
+  if (props.as === "a") {
+    const {
+      as: _as,
+      variant: _variant,
+      size: _size,
+      iconOnly: _iconOnly,
+      leadingIcon: _leadingIcon,
+      trailingIcon: _trailingIcon,
+      className: _className,
+      children: _children,
+      ...rest
+    } = props;
+    return (
+      <a ref={ref as Ref<HTMLAnchorElement>} className={classes} {...rest}>
+        {label(false)}
+      </a>
+    );
+  }
+
+  const {
+    as: _as,
+    variant: _variant,
+    size: _size,
+    iconOnly: _iconOnly,
+    leadingIcon: _leadingIcon,
+    trailingIcon: _trailingIcon,
+    className: _className,
+    children: _children,
+    loading = false,
+    disabled,
+    type = "button",
+    ...rest
+  } = props;
+
   return (
     <button
-      ref={ref}
+      ref={ref as Ref<HTMLButtonElement>}
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={cx(
-        "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
-        VARIANT[variant],
-        iconOnly ? SIZE_ICON_ONLY[size] : SIZE[size],
-        className,
-      )}
+      className={classes}
       {...rest}
     >
       {/* Spinner leží PŘES obsah, obsah zůstává ve flow a jen zprůhlední.
@@ -117,16 +209,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-r-transparent" />
         </span>
       )}
-      <span
-        className={cx(
-          "inline-flex items-center justify-center gap-2",
-          loading && "invisible",
-        )}
-      >
-        {leadingIcon}
-        <span>{children}</span>
-        {trailingIcon}
-      </span>
+      {label(loading)}
     </button>
   );
 });

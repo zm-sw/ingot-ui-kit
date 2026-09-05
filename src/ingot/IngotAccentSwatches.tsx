@@ -9,17 +9,17 @@
  *
  * 🪤 The dots do not know their colours. Each carries ``data-accent`` and
  * paints itself with ``var(--accent)``, so the swatch is drawn by the very
- * block it advertises — see the accent-family section in
- * ``styles/globals.css``. A hex list here would be a second truth about
+ * block it advertises — see the ``[data-accent]`` families in
+ * ``tokens.css``. A hex list here would be a second truth about
  * what "emerald" looks like, and the two would drift.
  */
 
 import type { JSX } from "react";
 
-import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
-import { cx } from "../ingot/cx";
+import { ACCENT_CHOICES, type AccentChoice } from "./accent";
+import { cx } from "./cx";
 
-interface AccentSwatchesProps {
+interface IngotAccentSwatchesProps {
   value: AccentChoice;
   onChange: (choice: AccentChoice) => void;
   /** Names the group for screen readers, e.g. "Akcent". */
@@ -30,14 +30,14 @@ interface AccentSwatchesProps {
   className?: string;
 }
 
-export function AccentSwatches({
+export function IngotAccentSwatches({
   value,
   onChange,
   groupLabel,
   optionLabel,
   disabled,
   className,
-}: AccentSwatchesProps): JSX.Element {
+}: IngotAccentSwatchesProps): JSX.Element {
   return (
     <div
       role="radiogroup"

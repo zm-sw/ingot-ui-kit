@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 
-import { IngotIcon } from "@/ingot";
+import { IngotIcon } from "./IngotIcon";
 
 /**
  * Ceník (KAN-664) — tři ``.pricecard`` z handoffu Veřejné stránky,
@@ -25,7 +25,7 @@ import { IngotIcon } from "@/ingot";
  * ``price`` je už naformátovaný řetězec — formátování měny patří tam,
  * kde se ví, jakou měnu a locale tenant má.
  */
-export interface MarketingPlan {
+export interface IngotMarketingPlan {
   /** Stabilní klíč plánu z dat (ne index — plány se přeskládávají). */
   id: string;
   name: string;
@@ -46,11 +46,11 @@ export interface MarketingPlan {
   action: ReactNode;
 }
 
-export function MarketingPricing({
+export function IngotMarketingPricing({
   plans,
   testId,
 }: {
-  plans: readonly MarketingPlan[];
+  plans: readonly IngotMarketingPlan[];
   testId?: string;
 }): JSX.Element {
   return (
