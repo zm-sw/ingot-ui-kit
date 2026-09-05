@@ -4,7 +4,7 @@
  * Ingot ships five accent families (KAN-648). Each is four tokens —
  * ``--accent``, ``--accent-ink``, ``--accent-bg``, ``--accent-border`` —
  * with separate light and dark values; the values themselves live in
- * ``styles/globals.css`` and are selected by ``data-accent`` on <html>.
+ * ``ingot/tokens.css`` and are selected by ``data-accent`` on <html>.
  *
  * Why an attribute and not ``style.setProperty``: the theme redefines the
  * SAME four variables, so a value pushed inline at runtime would outrank
@@ -13,6 +13,9 @@
  * the theme recomputes the accent by itself — there is nothing to
  * recompute by hand.
  *
+ * This module owns the PERSISTENCE only; which families exist is the
+ * kit's answer, because the kit is where their tokens are.
+ *
  * The choice is persisted on the account (``AuthMe.ui_accent`` via ``PATCH
  * /auth/profile``) so it follows the operator across devices; this module
  * owns only the fast **localStorage mirror** that the ``theme-init.js``
@@ -20,18 +23,19 @@
  * resolves. Same split as ``lib/theme.ts``, deliberately.
  */
 
-export type AccentChoice = "blue" | "emerald" | "orange" | "violet" | "slate";
+/**
+ * The families themselves live in the kit (``ingot/accent.ts``), next to
+ * the ``[data-accent]`` blocks in ``tokens.css`` that give them values.
+ * Re-exported here so the app keeps ONE import for the whole accent
+ * story — the list and the persistence that hangs off it.
+ */
+import {
+  ACCENT_CHOICES,
+  DEFAULT_ACCENT,
+  type AccentChoice,
+} from "@/ingot/accent";
 
-/** Order is the order the switchers render in — blue first, it is the default. */
-export const ACCENT_CHOICES: readonly AccentChoice[] = [
-  "blue",
-  "emerald",
-  "orange",
-  "violet",
-  "slate",
-];
-
-export const DEFAULT_ACCENT: AccentChoice = "blue";
+export { ACCENT_CHOICES, DEFAULT_ACCENT, type AccentChoice };
 
 /** Kept in sync with ``theme-init.js`` (the anti-flash script) — change both together. */
 export const ACCENT_STORAGE_KEY = "forgmatic.accent";

@@ -2,7 +2,7 @@
  * Segmented switch for the doc-web top bar — the handoff's `.top .seg`
  * pattern (theme and language pickers in the sticky header).
  *
- * Lives next to ``AccentSwatches`` on purpose: it is doc-web chrome, not
+ * Lives next to ``IngotAccentSwatches`` on purpose: it is doc-web chrome, not
  * a kit primitive. The admin shell has its own controls for these
  * choices; promoting this to ``@/ingot`` would document a component the
  * app never uses.
@@ -10,21 +10,21 @@
 
 import type { JSX } from "react";
 
-import { cx } from "../ingot/cx";
+import { cx } from "./cx";
 
-export interface DocSegmentedOption {
+export interface IngotSegmentedOption {
   value: string;
   label: string;
 }
 
-export function DocSegmented({
+export function IngotSegmented({
   options,
   value,
   onChange,
   label,
   testId,
 }: {
-  options: readonly DocSegmentedOption[];
+  options: readonly IngotSegmentedOption[];
   value: string;
   onChange: (value: string) => void;
   /** Names the group for screen readers, e.g. "Motiv". */

@@ -1,6 +1,6 @@
 import { useId, useState, type JSX, type ReactNode } from "react";
 
-import { IngotIcon } from "@/ingot";
+import { IngotIcon } from "./IngotIcon";
 
 /**
  * FAQ (KAN-664) — ``.faq-item`` z handoffu Veřejné stránky, otázka jako
@@ -15,8 +15,14 @@ import { IngotIcon } from "@/ingot";
  * Klávesnice zadarmo přes nativní ``<button>`` (Enter/mezerník);
  * rozbalený panel je ``role="region"`` pojmenovaný otázkou, aby se
  * v odečítači dal přeskočit jako celek.
+ *
+ * Odpověď má VLASTNÍ horní odsazení. Spodní ``py-4`` otázky patří
+ * tlačítku — na hoveru je podbarvené — takže odpověď bez ``pt`` začínala
+ * přesně na hraně podbarveného řádku a četla se jako jeho pokračování,
+ * ne jako odstavec. S ``s-2`` nahoře je nad odpovědí i pod ní stejných
+ * 24 px a obě čísla stojí na krokové škále; původních 20 px na ní nebylo.
  */
-export interface MarketingFaqItem {
+export interface IngotMarketingFaqItem {
   /** Stabilní klíč položky (obsah přijde z dat, index není klíč). */
   id: string;
   question: string;
@@ -24,11 +30,11 @@ export interface MarketingFaqItem {
   answer: ReactNode;
 }
 
-export function MarketingFaq({
+export function IngotMarketingFaq({
   items,
   testId,
 }: {
-  items: readonly MarketingFaqItem[];
+  items: readonly IngotMarketingFaqItem[];
   testId?: string;
 }): JSX.Element {
   const baseId = useId();
@@ -70,7 +76,7 @@ export function MarketingFaq({
                 id={panelId}
                 role="region"
                 aria-labelledby={buttonId}
-                className="px-6 pb-5 text-[13px] leading-relaxed text-ink-2"
+                className="px-6 pt-2 pb-6 text-[13px] leading-relaxed text-ink-2"
                 data-testid={testId ? `${testId}-answer-${item.id}` : undefined}
               >
                 {item.answer}

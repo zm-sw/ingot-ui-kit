@@ -16,7 +16,7 @@ import type { JSX } from "react";
  * Texty jsou obsah (CMS/branding data), ne hardcode — komponenta je
  * proto bere výhradně přes props.
  */
-export function MarketingSectionHead({
+export function IngotMarketingSectionHead({
   eyebrow,
   title,
   lede,

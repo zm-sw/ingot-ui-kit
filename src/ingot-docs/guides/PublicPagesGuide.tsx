@@ -4,24 +4,24 @@ import { Button, IngotCode, IngotList } from "@/ingot";
 import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 import {
-  MarketingComparison,
-  MarketingCta,
-  MarketingFaq,
-  MarketingPricing,
-  MarketingSectionHead,
-  MarketingSegments,
-  MarketingSteps,
-  MarketingTri,
-} from "@/marketing";
+  IngotMarketingComparison,
+  IngotMarketingCta,
+  IngotMarketingFaq,
+  IngotMarketingPricing,
+  IngotMarketingSectionHead,
+  IngotMarketingSegments,
+  IngotMarketingSteps,
+  IngotMarketingTri,
+} from "@/ingot";
 
 /**
  * Stránka „Veřejné stránky" (KAN-664) — marketingové bloky z handoffu
  * Veřejné stránky, s živými ukázkami.
  *
- * Bloky nejsou export ``@/ingot`` (v adminu nemají konzumenta), takže
- * nemají komponentní doc stránku — komponentní registr je párovaný
- * s barrel exporty 1 : 1 a marketing by tu obousměrnost rozbil. Proto
- * průvodce.
+ * Bloky jsou primitiva kitu a každý má vlastní komponentní stránku.
+ * Tenhle průvodce je o něčem jiném: o SKLADBĚ stránky — o pravidlech,
+ * která žádná jednotlivá komponenta uhlídat nemůže, protože platí přes
+ * celou stránku (kolik akcentů, kolik tmavých bloků, kdy čtyři sloupce).
  *
  * ⚠️ Doc web je VEŘEJNÁ stránka: žádné klíče úkolů ani interní cesty
  * v renderovaném textu. Ukázková data (názvy plánů, ceny) jsou zjevně
@@ -33,7 +33,7 @@ function SectionHeadExample({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
       <div className="space-y-10">
-        <MarketingSectionHead
+        <IngotMarketingSectionHead
           eyebrow={cs ? "Jak to funguje" : "How it works"}
           title={
             cs
@@ -46,7 +46,7 @@ function SectionHeadExample({ lang }: { lang: DocLang }): JSX.Element {
               : "The same tokens as the admin, just larger spacing. Typography and the line carry the section — no gradients, no illustrations."
           }
         />
-        <MarketingTri
+        <IngotMarketingTri
           items={[
             {
               icon: "upload",
@@ -80,7 +80,7 @@ function StepsExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingSteps
+      <IngotMarketingSteps
         items={[
           {
             title: cs ? "Nahrajte díl" : "Upload the part",
@@ -110,7 +110,7 @@ function SegmentsExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingSegments
+      <IngotMarketingSegments
         items={[
           {
             title: cs ? "Zakázková kovovýroba" : "Custom metal fabrication",
@@ -147,7 +147,7 @@ function ComparisonExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingComparison
+      <IngotMarketingComparison
         headers={{
           task: cs ? "Úkol" : "Task",
           before: cs ? "Dnes" : "Today",
@@ -205,7 +205,7 @@ function PricingExample({ lang }: { lang: DocLang }): JSX.Element {
   const contact = cs ? "Kontaktovat" : "Get in touch";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingPricing
+      <IngotMarketingPricing
         plans={[
           {
             id: "start",
@@ -274,7 +274,7 @@ function FaqExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingFaq
+      <IngotMarketingFaq
         items={[
           {
             id: "data",
@@ -311,7 +311,7 @@ function CtaExample({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
     <div className="rounded-lg border border-border bg-bg p-6">
-      <MarketingCta
+      <IngotMarketingCta
         title={cs ? "Začněte nacenit první díl" : "Start pricing your first part"}
         text={
           cs
@@ -331,10 +331,10 @@ function Principles({ lang }: { lang: DocLang }): JSX.Element {
     <div className="space-y-3 text-sm text-ink-2">
       <p>
         {cs
-          ? "Veřejné stránky se kreslí stejnými tokeny jako administrace — mají jen větší rozestupy a trojsloupcovou mřížku. Sekce nese typografie a linka; gradienty a ilustrace do bloků nepatří. Bloky se importují z modulu "
-          : "Public pages are drawn with the same tokens as the admin — just with larger spacing and a three-column grid. Typography and the line carry a section; gradients and illustrations do not belong in the blocks. The blocks are imported from the "}
-        <IngotCode>@/marketing</IngotCode>
-        {cs ? " a řídí se čtyřmi pravidly:" : " module and follow four rules:"}
+          ? "Veřejné stránky se kreslí stejnými tokeny jako administrace — mají jen větší rozestupy a trojsloupcovou mřížku. Sekce nese typografie a linka; gradienty a ilustrace do bloků nepatří. Bloky jsou primitiva kitu a importují se z "
+          : "Public pages are drawn with the same tokens as the admin — just with larger spacing and a three-column grid. Typography and the line carry a section; gradients and illustrations do not belong in the blocks. The blocks are kit primitives, imported from "}
+        <IngotCode>@/ingot</IngotCode>
+        {cs ? " a řídí se čtyřmi pravidly:" : " and follow four rules:"}
       </p>
       <IngotList
         items={

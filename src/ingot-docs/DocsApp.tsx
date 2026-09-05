@@ -43,14 +43,14 @@ import {
   IngotList,
   IngotPageHeader,
   IngotSection,
+  IngotAccentSwatches,
+  IngotSegmented,
   IngotSideNav,
   IngotTable,
   IngotTabs,
   type IngotColumn,
   type IngotNavItem,
 } from "@/ingot";
-import { AccentSwatches } from "@/components/AccentSwatches";
-import { DocSegmented } from "@/components/DocSegmented";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
   initialLang,
@@ -763,7 +763,7 @@ export function DocsApp(): JSX.Element {
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
           {pick(CHROME.accent, lang)}
         </span>
-        <AccentSwatches
+        <IngotAccentSwatches
           value={accent}
           onChange={(next) => {
             setAccent(next);
@@ -779,7 +779,7 @@ export function DocsApp(): JSX.Element {
         />
       </div>
       {stacked ? null : separator}
-      <DocSegmented
+      <IngotSegmented
         options={THEME_CHOICES.map((choice) => ({
           value: choice,
           label:
@@ -802,7 +802,7 @@ export function DocsApp(): JSX.Element {
       {options.length > 1 && (
         <>
           {stacked ? null : separator}
-          <DocSegmented
+          <IngotSegmented
             options={options.map((option) => ({
               value: option.code,
               label: option.code.toUpperCase(),

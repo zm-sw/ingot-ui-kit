@@ -19,6 +19,7 @@ import { TranslationsGuide } from "@/ingot-docs/guides/TranslationsGuide";
 import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
+import { IngotAccentSwatchesDoc } from "@/ingot-docs/pages/IngotAccentSwatchesDoc";
 import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
@@ -33,6 +34,14 @@ import { IngotFieldInputDoc } from "@/ingot-docs/pages/IngotFieldInputDoc";
 import { IngotFormDoc } from "@/ingot-docs/pages/IngotFormDoc";
 import { IngotIconDoc } from "@/ingot-docs/pages/IngotIconDoc";
 import { IngotListDoc } from "@/ingot-docs/pages/IngotListDoc";
+import { IngotMarketingComparisonDoc } from "@/ingot-docs/pages/IngotMarketingComparisonDoc";
+import { IngotMarketingCtaDoc } from "@/ingot-docs/pages/IngotMarketingCtaDoc";
+import { IngotMarketingFaqDoc } from "@/ingot-docs/pages/IngotMarketingFaqDoc";
+import { IngotMarketingPricingDoc } from "@/ingot-docs/pages/IngotMarketingPricingDoc";
+import { IngotMarketingSectionHeadDoc } from "@/ingot-docs/pages/IngotMarketingSectionHeadDoc";
+import { IngotMarketingSegmentsDoc } from "@/ingot-docs/pages/IngotMarketingSegmentsDoc";
+import { IngotMarketingStepsDoc } from "@/ingot-docs/pages/IngotMarketingStepsDoc";
+import { IngotMarketingTriDoc } from "@/ingot-docs/pages/IngotMarketingTriDoc";
 import { IngotMegaMenuDoc } from "@/ingot-docs/pages/IngotMegaMenuDoc";
 import { IngotMetricsDoc } from "@/ingot-docs/pages/IngotMetricsDoc";
 import { IngotModalDoc } from "@/ingot-docs/pages/IngotModalDoc";
@@ -45,6 +54,7 @@ import { IngotPaginationDoc } from "@/ingot-docs/pages/IngotPaginationDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
+import { IngotSegmentedDoc } from "@/ingot-docs/pages/IngotSegmentedDoc";
 import { IngotSelectDoc } from "@/ingot-docs/pages/IngotSelectDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
 import { IngotStepCardDoc } from "@/ingot-docs/pages/IngotStepCardDoc";
@@ -86,9 +96,9 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   ComponentsGuide,
   IconsGuide,
   ShellGuide,
-  // Marketingové bloky veřejného webu (KAN-664) — bloky nejsou export
-  // ``@/ingot`` (v adminu nemají konzumenta), proto průvodce, ne
-  // komponentní stránka.
+  // Marketingové bloky veřejného webu (KAN-664). Bloky SAMY mají od
+  // přesunu do kitu vlastní komponentní stránky; tenhle průvodce je
+  // o jejich skladbě — která pravidla drží stránka a ne komponenta.
   PublicPagesGuide,
   UsageGuide,
   FormatsGuide,
@@ -105,6 +115,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   // 🪤 Řadí se podle ZOBRAZENÉHO jména, ne podle jména exportu — jinak
   // by Button a Card skončily před vším ostatním, protože prefix nemají.
   // Pořadí hlídá test; ručně se netrefuje.
+  IngotAccentSwatchesDoc,
   IngotAttentionPanelDoc,
   IngotBadgeDoc,
   IngotBreadcrumbsDoc,
@@ -121,6 +132,14 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotFormDoc,
   IngotIconDoc,
   IngotListDoc,
+  IngotMarketingComparisonDoc,
+  IngotMarketingCtaDoc,
+  IngotMarketingFaqDoc,
+  IngotMarketingPricingDoc,
+  IngotMarketingSectionHeadDoc,
+  IngotMarketingSegmentsDoc,
+  IngotMarketingStepsDoc,
+  IngotMarketingTriDoc,
   IngotMegaMenuDoc,
   IngotMetricsDoc,
   IngotModalDoc,
@@ -133,6 +152,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotRowActionsDoc,
   IngotSearchInputDoc,
   IngotSectionDoc,
+  IngotSegmentedDoc,
   IngotSelectDoc,
   IngotSideNavDoc,
   IngotStepCardDoc,

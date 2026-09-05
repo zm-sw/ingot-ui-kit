@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { IngotIcon, type IngotIconName } from "@/ingot";
+import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
  * Trojice featur pod hlavičkou sekce (KAN-664) — ``.tri`` z handoffu
@@ -14,19 +14,19 @@ import { IngotIcon, type IngotIconName } from "@/ingot";
  * Trojsloupcová mřížka je výchozí tvar veřejných stránek; pod 1100 px
  * jeden sloupec (handoff, ne Tailwind ``lg``).
  */
-export interface MarketingTriItem {
+export interface IngotMarketingTriItem {
   icon: IngotIconName;
   /** Titulek featury (h3). Obsah — dodává volající přeložený. */
   title: string;
   text: string;
 }
 
-export function MarketingTri({
+export function IngotMarketingTri({
   items,
   testId,
 }: {
   /** Tři featury. Víc jich mřížka unese, ale handoff počítá se třemi. */
-  items: readonly MarketingTriItem[];
+  items: readonly IngotMarketingTriItem[];
   testId?: string;
 }): JSX.Element {
   return (

@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { IngotIcon } from "@/ingot";
+import { IngotIcon } from "./IngotIcon";
 
 /**
  * Kroky „jak to funguje" (KAN-664) — karty se ``.step-num`` „01/02/03"
@@ -20,7 +20,7 @@ import { IngotIcon } from "@/ingot";
  * a jen jako dvě povolené hodnoty — „kolik chceš" by z pravidla udělalo
  * doporučení.
  */
-export interface MarketingStepItem {
+export interface IngotMarketingStepItem {
   title: string;
   text: string;
 }
@@ -30,12 +30,12 @@ const COLUMNS: Record<3 | 4, string> = {
   4: "min-[1100px]:grid-cols-4",
 };
 
-export function MarketingSteps({
+export function IngotMarketingSteps({
   items,
   columns = 3,
   testId,
 }: {
-  items: readonly MarketingStepItem[];
+  items: readonly IngotMarketingStepItem[];
   /** 3 je výchozí; 4 jen pro kroky procesu. */
   columns?: 3 | 4;
   testId?: string;

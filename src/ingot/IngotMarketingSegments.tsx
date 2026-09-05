@@ -11,18 +11,18 @@ import type { JSX } from "react";
  * je to technický údaj o provozu, ne stav entity. Kulatá pilulka
  * s verzálkami je odznak stavu (``IngotBadge``) a plete si s ním role.
  */
-export interface MarketingSegmentItem {
+export interface IngotMarketingSegmentItem {
   title: string;
   text: string;
   /** Tag pilulky — krátké štítky, dodané přeložené. */
   tags: readonly string[];
 }
 
-export function MarketingSegments({
+export function IngotMarketingSegments({
   items,
   testId,
 }: {
-  items: readonly MarketingSegmentItem[];
+  items: readonly IngotMarketingSegmentItem[];
   testId?: string;
 }): JSX.Element {
   return (

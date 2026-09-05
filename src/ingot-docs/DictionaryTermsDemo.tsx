@@ -21,8 +21,12 @@
  * Žije mimo ``demos/`` schválně: není to ukázka primitiva kitu (ty se
  * publikují doslovně pod přepínačem kódu), ale kus obsahu stránky.
  */
-import { IngotCode, IngotTable, type IngotColumn } from "@/ingot";
-import { DocSegmented } from "@/components/DocSegmented";
+import {
+  IngotCode,
+  IngotSegmented,
+  IngotTable,
+  type IngotColumn,
+} from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import {
   DICTIONARY_MODES,
@@ -72,7 +76,7 @@ export function DictionaryTermsDemo({ lang }: { lang: DocLang }): JSX.Element {
         <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
           {CHROME.dictionary[lang]}
         </span>
-        <DocSegmented
+        <IngotSegmented
           options={DICTIONARY_MODES.map((option) => ({
             value: option,
             label:
