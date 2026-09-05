@@ -42,8 +42,7 @@ export function Demo(): JSX.Element {
         />
       </label>
       <p className="text-xs text-ink-3">
-        Tajné pole hlásí jen to, že hodnota existuje — placeholder bere z
-        IngotProvider.
+        Tajné pole hlásí jen to, že hodnota existuje — placeholder bere z IngotProvider.
       </p>
     </div>
   );
