@@ -9,6 +9,10 @@ export const IngotPaginationDoc: IngotDocPage = {
   version: "1.0",
   tag: ".pager",
   tokens: ["--ink-3"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Stránkování pod tabulkou. Řízené volajícím — s tabulkou se nepře o to, kdo drží stav stránky.",
     en: "Pagination under a table. Controlled by the caller — it never fights the table over who owns the page state.",

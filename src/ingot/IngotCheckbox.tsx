@@ -45,23 +45,27 @@ export const IngotCheckboxControl = forwardRef<
  * effect. Once a screen asks for one, it will be a primitive of its own.
  *
  * The kit has no i18n namespace of its own — the label comes from the caller.
+ *
+ * ``ref`` reaches the ``<input>``, not the ``<label>`` around it: a caller
+ * that focuses the first invalid control of a form needs the control, and
+ * ``indeterminate`` cannot be set any other way.
  */
-export function IngotCheckbox({
-  checked,
-  onChange,
-  label,
-  disabled = false,
-  className,
-  testId,
-}: {
-  checked: boolean;
-  onChange: (next: boolean) => void;
-  /** Translated visible label. It carries the control's name — hence required. */
-  label: ReactNode;
-  disabled?: boolean;
-  className?: string;
-  testId?: string;
-}): JSX.Element {
+export const IngotCheckbox = forwardRef<
+  HTMLInputElement,
+  {
+    checked: boolean;
+    onChange: (next: boolean) => void;
+    /** Translated visible label. It carries the control's name — hence required. */
+    label: ReactNode;
+    disabled?: boolean;
+    /** Layout only — margins and alignment of the row; the look is the primitive's. */
+    className?: string;
+    testId?: string;
+  }
+>(function IngotCheckbox(
+  { checked, onChange, label, disabled = false, className, testId },
+  ref,
+): JSX.Element {
   return (
     <label
       className={cx(
@@ -71,6 +75,7 @@ export function IngotCheckbox({
       )}
     >
       <IngotCheckboxControl
+        ref={ref}
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
         disabled={disabled}
@@ -79,4 +84,4 @@ export function IngotCheckbox({
       {label}
     </label>
   );
-}
+});

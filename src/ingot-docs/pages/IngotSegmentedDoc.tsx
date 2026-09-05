@@ -10,6 +10,10 @@ export const IngotSegmentedDoc: IngotDocPage = {
   version: "1.0",
   tag: ".seg",
   tokens: ["--border", "--surface", "--surface-2", "--ink", "--ink-3"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Přepínač lišty — dvě až tři krátké volby vedle sebe, vybraná vystoupí na plochu. Volba se projeví hned.",
     en: "A top-bar switch — two or three short choices side by side, the selected one lifted onto the surface. The choice applies at once.",

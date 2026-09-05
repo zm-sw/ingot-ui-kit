@@ -357,6 +357,12 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       cap: true,
       body: (
         <div className="space-y-6">
+          {/* The className policy stands ABOVE the table: a primitive that
+              does not take it has no row to say so, and "may I pass
+              className?" is the first question a consumer asks. */}
+          <p className="text-sm text-ink-2" data-testid="docs-classname-note">
+            {pick(page.classNameNote, lang)}
+          </p>
           <PropsTable
             rows={page.props}
             caption={`${pick(CHROME.props, lang)} — ${page.name}`}

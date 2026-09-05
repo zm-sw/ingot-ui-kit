@@ -13,6 +13,10 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
   version: "1.0",
   tag: ".cta",
   tokens: ["--ink", "--bg", "--accent", "--accent-ink"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Závěrečná výzva — tmavý blok se dvěma akcemi. Hlavní akce je akcentová a je jediným barevným prvkem bloku.",
     en: "The closing call to action — a dark block with two actions. The primary one is accented and the block's only colour.",

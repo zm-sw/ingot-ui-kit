@@ -21,6 +21,10 @@ export const IngotTabsDoc: IngotDocPage = {
   version: "1.0",
   tag: ".tabs",
   tokens: ["--border", "--ink", "--ink-3", "--font-mono"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Přepínání pohledů na tentýž záznam: řízené value/onChange, role tablist a šipky mezi taby.",
     en: "Switching views of the same record: controlled value/onChange, the tablist role and arrow keys between tabs.",

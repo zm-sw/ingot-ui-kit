@@ -17,6 +17,10 @@ export const IngotOptionCardDoc: IngotDocPage = {
     "--accent",
     "--r-md",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Výběr jedné varianty, kde volba potřebuje vysvětlení. Klikatelná je celá karta, vybraná varianta je poznat obrysem v akcentu.",
     en: "Picking one option where the choice needs an explanation. The whole card is clickable, and the selected option is marked by an accent outline.",

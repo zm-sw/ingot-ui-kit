@@ -9,6 +9,10 @@ export const IngotBadgeDoc: IngotDocPage = {
   version: "1.0",
   tag: ".badge",
   tokens: ["--surface-2", "--border", "--ink", "--ink-2", "--accent-ink", "--accent-bg", "--accent-border", "--ok", "--ok-bg", "--ok-border", "--warn", "--warn-bg", "--warn-border", "--danger", "--danger-bg", "--danger-border", "--font-mono", "--r-xs"],
+  classNameNote: {
+    cs: "`className` nebere schválně: `bg-*` zvenčí by tiše přebilo tón a dvě různá sdělení by se kreslila stejně.",
+    en: "Deliberately does not take `className`: a `bg-*` from outside would quietly override the tone and two different messages would look alike.",
+  },
   summary: {
     cs: "Stavový štítek: stav entity jedním slovem, mono a verzálkami. Pojmenovává stav, ne akci.",
     en: "A status badge: the state of an entity in one word, mono and upper-case. It names a state, not an action.",

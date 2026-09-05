@@ -10,6 +10,10 @@ export const IngotListDoc: IngotDocPage = {
   version: "1.1",
   tag: ".list",
   tokens: ["--ink-2"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Výčet: odrážky, čísla, nebo holý seznam bez značek. Značka i odsazení patří k sobě a rozhoduje se o nich na jednom místě.",
     en: "A list: bullets, numbers, or no markers at all. The marker and the indent belong together, and one place decides both.",

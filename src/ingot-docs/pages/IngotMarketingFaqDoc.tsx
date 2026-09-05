@@ -20,6 +20,10 @@ export const IngotMarketingFaqDoc: IngotDocPage = {
     "--ink-2",
     "--ink-3",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Časté dotazy — otázka je ovládací prvek hlásící svůj stav, odpověď pojmenovaná oblast. Odpověď je povinná.",
     en: "A FAQ — the question is a control announcing its state, the answer a named region. The answer is required.",

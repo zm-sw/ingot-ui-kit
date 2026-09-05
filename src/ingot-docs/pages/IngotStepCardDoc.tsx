@@ -24,6 +24,10 @@ export const IngotStepCardDoc: IngotDocPage = {
     "--font-mono",
     "--r-md",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Karta jednoho kroku vícekrokového nastavení. Nese svůj stav natrvalo — hotový krok zůstane hotový a je vidět i po návratu na obrazovku.",
     en: "A card for one step of a multi-step setup. It carries its state permanently — a finished step stays finished and is still visible when you come back to the screen.",

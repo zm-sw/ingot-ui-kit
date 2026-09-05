@@ -118,7 +118,7 @@ describe("IngotSearchInput", () => {
         value=""
         onChange={() => undefined}
         label="Hledat"
-        inputRef={ref}
+        ref={ref}
       />,
     );
 

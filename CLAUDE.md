@@ -168,6 +168,34 @@ Approvals are not required. A gate nobody can satisfy is a gate that gets
 switched off; the checks are the gate here, and a reviewer is welcome
 rather than mandatory.
 
+## The API rules every primitive follows
+
+These four hold for every export of `src/ingot/`, and a new primitive
+that breaks one of them is a finding in review, not a variation.
+
+- **`className` is layout, never look.** Width, spacing, placement in a
+  grid — nothing that changes colour, radius, weight or padding of the
+  primitive itself. A primitive whose whole point is to look the same
+  everywhere (a status badge, an overlay, a page heading) does not take
+  it at all: that is a decision, not an omission, and its doc page says
+  so in `classNameNote`.
+- **Anything with a DOM target takes `ref`.** A caller that focuses a
+  field, scrolls a row into view or sets `indeterminate` must reach the
+  element through the API. Reaching in with `querySelector` binds the
+  caller to the primitive's insides, and renaming an element inside the
+  kit then breaks a screen no kit test covers. `forwardRef` points at the
+  element the caller means — the `<input>`, not the wrapper.
+- **A label a screen reader needs is a required prop.** Not an optional
+  one with a default: an optional label is a label somebody forgets, and
+  nobody sees the hole on screen. The few labels the kit says itself live
+  in the `IngotProvider` dictionary and default to English.
+- **Every visible string arrives translated.** The kit has no i18n
+  namespace; `ingot-no-hardcoded-text` keeps it that way.
+
+Both `classNameNote` on the doc page and the guards are how these stay
+true: the page answers "may I pass `className` here?" for every
+primitive, and `npm run check` fails a page that does not answer.
+
 ## Comments are English
 
 Every comment in code is English: JSDoc, `//` lines, JSX comments, HTML,

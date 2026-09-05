@@ -11,6 +11,10 @@ export const IngotModalDoc: IngotDocPage = {
   version: "1.2",
   tag: ".modal",
   tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-3", "--accent-bg", "--r-sm", "--r-lg", "--shadow-lg"],
+  classNameNote: {
+    cs: "`className` nebere. Geometrie překryvu je součástí přístupnostní laťky (past fokusu, zámek rolování) — šířku řídí `size`.",
+    en: "Does not take `className`. The overlay's geometry is part of the accessibility bar (focus trap, scroll lock) — `size` drives the width.",
+  },
   summary: {
     cs: "Skořápka dialogu s a11y laťkou: focus trap, ESC, scroll lock, aria-modal a návrat fokusu na spouštěč.",
     en: "Dialog shell with the accessibility floor built in: focus trap, ESC, scroll lock, aria-modal and focus returned to the trigger.",

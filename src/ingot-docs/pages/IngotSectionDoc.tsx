@@ -9,6 +9,10 @@ export const IngotSectionDoc: IngotDocPage = {
   version: "1.0",
   tag: ".section",
   tokens: ["--ink"],
+  classNameNote: {
+    cs: "`className` nebere. Sekce drží osnovu stránky; odsazení mezi sekcemi patří rámu stránky.",
+    en: "Does not take `className`. The section holds the page outline; spacing between sections belongs to the page frame.",
+  },
   summary: {
     cs: "Sekce obrazovky: nadpis správné úrovně a kotva, která sedí na sekci, ne na nadpisu.",
     en: "A screen section: a heading at the right level and an anchor that sits on the section, not on the heading.",

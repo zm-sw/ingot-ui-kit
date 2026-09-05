@@ -19,6 +19,10 @@ export const IngotMarketingTriDoc: IngotDocPage = {
     "--ink",
     "--ink-3",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Trojice featur pod hlavičkou sekce — ikona v akcentovém rámečku, titulek a věta. Jeden rám, panely oddělené vlasovou linkou.",
     en: "Three features under a section head — an icon in an accent frame, a title and a sentence. One frame, panels split by a hairline.",

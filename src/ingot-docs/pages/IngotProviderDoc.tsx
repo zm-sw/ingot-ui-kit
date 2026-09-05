@@ -16,6 +16,10 @@ export const IngotProviderDoc: IngotDocPage = {
   // Empty on purpose: the provider renders nothing, so no token change
   // reaches it. The doc web prints that as a sentence instead of a list.
   tokens: [],
+  classNameNote: {
+    cs: "`className` nebere — nic nevykresluje, jen nese slovník popisků.",
+    en: "Does not take `className` — it renders nothing, it only carries the label dictionary.",
+  },
   summary: {
     cs: "Slovník několika popisků, které kit říká sám — zpět, žárovka nápovědy, tajné pole. Bez providera anglicky; lang=\"cs\" přepne celou sadu.",
     en: "The dictionary of the few labels the kit says itself — undo, the hint bulb, the secret field. English without a provider; lang=\"cs\" switches the whole set.",

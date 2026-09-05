@@ -20,6 +20,10 @@ export const IngotDisclosureDoc: IngotDocPage = {
   version: "1.1",
   tag: ".disclosure",
   tokens: ["--border", "--surface-2", "--ink-2", "--ink-3", "--ink-4", "--font-mono"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Sbalitelná sekce postranního panelu — popisek, počet a obsah, který se schová. Stav drží prohlížeč, ne React.",
     en: "A collapsible section in a side panel — a label, a count and a body that hides. The browser holds the state, not React.",

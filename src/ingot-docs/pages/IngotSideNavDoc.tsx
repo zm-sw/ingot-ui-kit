@@ -12,6 +12,10 @@ export const IngotSideNavDoc: IngotDocPage = {
   version: "1.3",
   tag: ".sidenav",
   tokens: ["--surface", "--surface-2", "--border", "--ink", "--ink-2", "--ink-3", "--ink-4", "--font-mono", "--r-sm", "--shadow-sm"],
+  classNameNote: {
+    cs: "`className` nebere. Šířku a přilnutí menu drží sloupec kolem něj, ne položky uvnitř.",
+    en: "Does not take `className`. The column around it holds the menu's width and stickiness, not the items inside.",
+  },
   summary: {
     cs: "Pojmenovaná skupina odkazů, jeden z nich aktivní. Popisek navigace a aria-current drží primitivum, ne domluva.",
     en: "A named group of links with one of them active. The primitive owns the navigation label and aria-current — not an agreement to remember them.",

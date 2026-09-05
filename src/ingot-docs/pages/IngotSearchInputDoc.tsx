@@ -7,10 +7,16 @@ export const IngotSearchInputDoc: IngotDocPage = {
   name: "IngotSearchInput",
   status: "beta",
   // 1.1 — `inputRef` added; callers touch nothing.
+  // 1.3 (KAN-842) — the field is a forwardRef, so `ref` reaches the input;
+  // `inputRef` stays as a deprecated alias until the next major.
   // 1.2 — shared input chrome: accent focus ring, Button-md height.
-  version: "1.2",
+  version: "1.3",
   tag: ".search",
   tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
+  classNameNote: {
+    cs: "Bere `className`, ale jen na rozvržení — šířku, mezery, umístění v mřížce. Vzhled drží primitivum.",
+    en: "Takes `className`, but for layout only — width, spacing, placement in a grid. The look stays with the primitive.",
+  },
   summary: {
     cs: "Hledací pole nad seznamem — první prvek filtr baru. Filtruje, nevyhledává: zužuje seznam každým úhozem, žádné tlačítko Hledat.",
     en: "A search field above a list — the first element of the filter bar. It filters, it does not search: it narrows the list on every keystroke, no Search button.",
@@ -110,7 +116,7 @@ export const IngotSearchInputDoc: IngotDocPage = {
       },
     },
     {
-      name: "inputRef",
+      name: "ref",
       type: "React.Ref<HTMLInputElement>",
       required: false,
       note: {
@@ -150,7 +156,7 @@ export const IngotSearchInputDoc: IngotDocPage = {
       </>,
       <>
         Klávesová zkratka, která do hledání skáče, si pole vezme přes{" "}
-        <IngotCode>inputRef</IngotCode> — ne hledáním{" "}
+        <IngotCode>ref</IngotCode> — ne hledáním{" "}
         <IngotCode>&lt;input&gt;</IngotCode> uvnitř obalu. Vnitřek primitiva
         se smí přejmenovat, vlastnost ne.
       </>,
@@ -167,7 +173,7 @@ export const IngotSearchInputDoc: IngotDocPage = {
       </>,
       <>
         A keyboard shortcut that jumps into search takes the field through{" "}
-        <IngotCode>inputRef</IngotCode> — not by looking for the{" "}
+        <IngotCode>ref</IngotCode> — not by looking for the{" "}
         <IngotCode>&lt;input&gt;</IngotCode> inside the wrapper. The inside of
         a primitive may be renamed; a prop may not.
       </>,

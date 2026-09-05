@@ -9,6 +9,10 @@ export const IngotPageHeaderDoc: IngotDocPage = {
   version: "1.0",
   tag: ".pagehead",
   tokens: ["--ink", "--ink-3"],
+  classNameNote: {
+    cs: "`className` nebere. Sazba nadpisu stránky patří systému, ne obrazovce — mezery pod ním řeší rám stránky.",
+    en: "Does not take `className`. The page heading's typesetting belongs to the system, not to a screen — the page frame holds the spacing below it.",
+  },
   summary: {
     cs: "Hlavička obrazovky: nadpis, věta pod ním, akce vpravo. Typografický spec má jedno místo a nenese s sebou router.",
     en: "The screen header: a title, a sentence under it, actions on the right. One home for the type spec, and it drags no router along.",

@@ -10,6 +10,10 @@ export const IngotTableDoc: IngotDocPage = {
   version: "1.1",
   tag: ".table-wrap",
   tokens: ["--surface-2", "--border", "--ink", "--ink-3", "--ink-4", "--accent", "--accent-bg", "--accent-border", "--r-md"],
+  classNameNote: {
+    cs: "Bere `className` na rozvržení tabulky — typicky `min-w-[40rem]` pod vodorovným posuvníkem.",
+    en: "Takes `className` for the table's layout — typically `min-w-[40rem]` under a horizontal scroller.",
+  },
   summary: {
     cs: "Tabulka se sloupci jako daty. Drží scope na záhlaví, jeden zdroj pravdy pro colSpan a řádkové akce neschovává za hover.",
     en: "A table whose columns are data. It keeps scope on the headers, one source of truth for colSpan, and never hides row actions behind hover.",
