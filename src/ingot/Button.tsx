@@ -21,24 +21,24 @@ type ButtonSize = "sm" | "md" | "lg";
 interface ButtonBaseProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** Čtvercové tlačítko jen s ikonou. Vyžaduje ``aria-label``. */
+  /** A square button with only an icon. Requires ``aria-label``. */
   iconOnly?: boolean;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
 }
 
 /**
- * 🪤 **``as="a"`` je odkaz, ne tlačítko, které vypadá jako odkaz.**
- * Vykreslí se ``<a href>``, takže odečítač ho hlásí jako odkaz, dá se
- * otevřít v novém panelu a funguje bez JavaScriptu. Tlačítko, které
- * naviguje, o všech třech věcech lže.
+ * **``as="a"`` is a link, not a button that looks like a link.** It
+ * renders ``<a href>``, so a screen reader announces it as a link, it can
+ * be opened in a new tab and it works without JavaScript. A button that
+ * navigates lies about all three.
  *
- * Proto ``href`` POVINNÝ: ``<a>`` bez něj není odkaz — do pořadí
- * tabulátoru se nedostane a Enter na něm nic nedělá.
+ * Hence ``href`` is REQUIRED: an ``<a>`` without it is not a link — it
+ * does not enter the tab order and Enter does nothing on it.
  *
- * ``loading`` a ``disabled`` tahle větev NEMÁ, a to schválně. Odkaz se
- * nedá zakázat ani označit za rozpracovaný; kdo potřebuje obojí,
- * potřebuje tlačítko. Typ to říká dřív, než se to zkusí.
+ * This branch has NO ``loading`` and ``disabled``, on purpose. A link
+ * cannot be disabled or marked as in progress; whoever needs both needs a
+ * button. The type says so before it is tried.
  */
 type ButtonAsLinkProps = ButtonBaseProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
@@ -75,27 +75,27 @@ const VARIANT: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-ink-2 hover:bg-surface-2 disabled:text-ink-4",
   danger:
     "bg-danger text-white dark:text-bg hover:bg-danger/90 disabled:bg-ink-4 disabled:text-white/70 dark:disabled:text-bg/70",
-  //: Vedlejší akce na OBRÁCENÉ ploše (tmavý blok CTA, patička). Kreslí
-  //: se ``--bg``, tedy barvou stránky, protože plocha pod ní je
-  //: ``--ink`` — v tmavém motivu se obrátí spolu s ní a žádnou vlastní
-  //: barvu nezavádí. Na běžné ploše je neviditelná, a to je záměr: je
-  //: to varianta pro obrácený blok, ne světlejší ``ghost``.
+  // Secondary action on an INVERTED surface (a dark CTA block, a footer).
+  // Drawn with ``--bg``, the page colour, because the surface under it is
+  // ``--ink`` — in dark mode it inverts along with it and introduces no
+  // colour of its own. On an ordinary surface it is invisible, and that is
+  // intent: a variant for the inverted block, not a lighter ``ghost``.
   inverse:
     "bg-transparent text-bg border border-bg/40 hover:bg-bg/10 disabled:text-bg/50",
 };
 
-// Výšky 28 / 34 / 42 px z Ingot handoffu v0.1 (``.btn-icon`` 34×34,
-// ``.btn-icon.btn-sm`` 28×28, ``.btn-lg`` padding 12px na 14.5px textu).
-// Tailwind spacing škála nese jen 28 (``h-7``), zbylé dvě jsou proto
-// arbitrary — přidávat kvůli nim dvě položky do ``theme.spacing`` by
-// znamenalo dvě jména navíc pro hodnoty, které používá jediný soubor.
+// Heights 28 / 34 / 42 px from the Ingot v0.1 handoff (``.btn-icon`` 34×34,
+// ``.btn-icon.btn-sm`` 28×28, ``.btn-lg`` padding 12px on 14.5px text).
+// The Tailwind spacing scale carries only 28 (``h-7``); the other two are
+// arbitrary values — adding two entries to ``theme.spacing`` for them would
+// mean two extra names for values used by a single file.
 const SIZE: Record<ButtonSize, string> = {
   sm: "h-7 px-3 text-xs",
   md: "h-[34px] px-4 text-sm",
   lg: "h-[42px] px-5 text-[15px]",
 };
 
-//: Ikonová varianta je čtvercová: šířka = výška, žádné vodorovné odsazení.
+// The icon-only variant is square: width = height, no horizontal padding.
 const SIZE_ICON_ONLY: Record<ButtonSize, string> = {
   sm: "h-7 w-7 text-xs",
   md: "h-[34px] w-[34px] text-sm",
@@ -129,9 +129,9 @@ export const Button = forwardRef<
     );
   }
 
-  //: Vzhled je JEDEN výpočet pro obě větve. Kdyby si ho každá počítala
-  //: po svém, byl by odkaz „skoro jako" tlačítko a rozdíl by se objevil
-  //: až na obrazovce, kde stojí vedle sebe.
+  // The look is ONE computation for both branches. If each computed it
+  // itself, the link would be "almost like" the button and the difference
+  // would surface on the screen where they stand side by side.
   const classes = cx(
     "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
     VARIANT[variant],
@@ -197,10 +197,10 @@ export const Button = forwardRef<
       className={classes}
       {...rest}
     >
-      {/* Spinner leží PŘES obsah, obsah zůstává ve flow a jen zprůhlední.
-          Kdyby ho spinner nahradil, tlačítko by se v půlce akce zúžilo na
-          šířku spinneru a přeskládalo řádek pod sebou — proto ten zámek
-          šířky z handoffu (Button v1.4). */}
+      {/* The spinner lies OVER the content; the content stays in flow and
+          only turns transparent. If the spinner replaced it, the button
+          would shrink to the spinner's width mid-action and reflow the row
+          beneath — hence the width lock from the handoff (Button v1.4). */}
       {loading && (
         <span
           aria-hidden="true"

@@ -4,58 +4,59 @@ import { cx } from "./cx";
 import { IngotEyebrow } from "./IngotEyebrow";
 
 /**
- * Čísla, podle kterých se obrazovka čte na první pohled.
+ * The numbers a screen is read by at first glance.
  *
- * Dvě hustoty, jedna komponenta:
+ * Two densities, one component:
  *
- * * ``strip`` — pruh pod hlavičkou, buňky ve mřížce. Pro čtyři až šest
- *   čísel, která popisují celou obrazovku.
- * * ``inline`` — kompaktní shluk do pravé části hlavičky. Pro dvě až tři
- *   čísla, která se vejdou vedle akcí.
+ * * ``strip`` — a strip under the header, cells in a grid. For four to
+ *   six numbers that describe the whole screen.
+ * * ``inline`` — a compact cluster in the right part of the header. For
+ *   two or three numbers that fit next to the actions.
  *
- * Jsou to dvě hustoty téhož, ne dvě komponenty: kdyby to byly dvě,
- * rozejdou se v okamžiku, kdy někdo jednu z nich doladí.
+ * They are two densities of the same thing, not two components: as two,
+ * they would drift the moment someone fine-tuned one of them.
  *
- * 🪤 **Hodnota je mono, popisek ne.** Čísla se v pruhu čtou pod sebou
- * a proporcionální číslice je rozhodí; ``tabular-nums`` je proto součást
- * specifikace, ne detail. Popisek je běžný text — je to věta, ne údaj.
+ * **The value is mono, the label is not.** Numbers in the strip are read
+ * down a column and proportional digits scatter them; ``tabular-nums`` is
+ * therefore part of the spec, not a detail. The label is ordinary text —
+ * a sentence, not a figure.
  *
- * ⚠️ **Tón je informace, ne důraz.** ``danger`` na buňce znamená, že to
- * číslo je problém — ne že je nejdůležitější. Obarvená polovina pruhu
- * nesděluje nic.
+ * **Tone is information, not emphasis.** ``danger`` on a cell means that
+ * number is a problem — not that it is the most important. A half-coloured
+ * strip says nothing.
  *
- * Ingot **nemá vlastní i18n namespace** — popisky dodává volající.
+ * The kit has no i18n namespace of its own — labels arrive translated.
  */
 
 export interface IngotMetric {
-  /** Popisek — mono verzálky nad hodnotou (``strip``), nebo za ní. */
+  /** Label — mono uppercase above the value (``strip``), or after it. */
   label: string;
-  /** Hodnota. Číslo, ale klidně i „12 / 40". */
+  /** The value. A number, but "12 / 40" is fine too. */
   value: ReactNode;
-  /** Věta pod hodnotou. Jen ve variantě ``strip``. */
+  /** A sentence under the value. Only in the ``strip`` variant. */
   note?: ReactNode;
-  /** Kritická hodnota se obarví. Výchozí je neutrální. */
+  /** A critical value gets a colour. Default is neutral. */
   tone?: "neutral" | "warn" | "danger";
   /**
-   * Křivka vývoje — syrové hodnoty v čase, zleva doprava. Jen ve
-   * variantě ``strip``. Kreslí se normalizovaná (vypovídá tvar, ne
-   * měřítko) a je dekorativní: číslo je údaj, křivka kontext. Co období
-   * ukazuje, říká volající vedle pruhu — třeba „posledních 12 týdnů".
-   * (Rozhodnutí vlastníka 2026-09-02, bod 07 — právě tenhle jeden tvar,
-   * žádný obecný graf.)
+   * Trend line — raw values over time, left to right. Only in the
+   * ``strip`` variant. Drawn normalised (the shape speaks, not the scale)
+   * and decorative: the number is the figure, the line is context. What
+   * period it shows is said by the caller next to the strip — e.g. "last
+   * 12 weeks". (Owner's decision, 2026-09-02, point 07 — exactly this one
+   * shape, no general chart.)
    */
   trend?: readonly number[];
-  /** Kotva testu na buňce — testy míří na konkrétní číslo, ne na pruh. */
+  /** Test anchor on the cell — tests aim at a concrete number, not the strip. */
   testId?: string;
 }
 
 /**
- * Normalizovaná čára 72 × 24 se zvýrazněným koncem.
+ * A normalised 72 × 24 line with an emphasised endpoint.
  *
- * Okno bez pohybu (všechny hodnoty stejné) se kreslí jako ČÁRKOVANÁ
- * linka bez koncového bodu: plná vodorovná čára by tvrdila stabilní
- * nenulovou hodnotu, čárkovaná říká „tady se nic nedělo". Převzato
- * z platformního přehledu, kde to chránil test.
+ * A window without movement (all values equal) is drawn as a DASHED line
+ * without an endpoint: a solid horizontal line would claim a stable
+ * non-zero value, a dashed one says "nothing happened here". Taken from
+ * the platform overview, where a test protected it.
  */
 function Sparkline({ trend }: { trend: readonly number[] }): JSX.Element {
   const width = 72;
@@ -126,9 +127,9 @@ export function IngotMetrics({
   testId,
 }: {
   items: readonly IngotMetric[];
-  /** ``strip`` pruh pod hlavičkou · ``inline`` shluk v hlavičce. */
+  /** ``strip`` under the header · ``inline`` cluster in the header. */
   variant?: "strip" | "inline";
-  /** Přeložený ``aria-label`` skupiny. */
+  /** Translated ``aria-label`` of the group. */
   label: string;
   testId?: string;
 }): JSX.Element {

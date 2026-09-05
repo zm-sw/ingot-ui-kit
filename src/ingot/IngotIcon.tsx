@@ -1,45 +1,43 @@
 import type { ReactNode } from "react";
 
 /**
- * Ikonová vrstva kitu — sada rozhraní (KAN-649).
+ * The kit's icon layer — the interface set.
  *
- * Geometrie je převzatá z design handoffu Ingot v0.1
- * (``design_handoff_ingot/assets/icons.js``) a — u poštovní pětice,
- * hvězdy, archivu a tří teček — z návrhu obrazovky Pošta, který kreslí
- * touž rukou. Technika je handoffu:
- * viewBox 24×24, ``fill="none"``, ``stroke="currentColor"``, tloušťka
- * 1.6 se jmenovitými výjimkami, kulaté konce i spoje. Ikona se tedy
- * barví ``color`` rodiče a škáluje ``size`` — žádná vlastní paleta.
+ * Geometry comes from the Ingot v0.1 design handoff and — for the mail
+ * five, the star, the archive and the three dots — from the Mail screen
+ * design drawn by the same hand. The technique is the handoff's:
+ * viewBox 24×24, ``fill="none"``, ``stroke="currentColor"``, width 1.6
+ * with named exceptions, round caps and joins. An icon therefore takes
+ * its colour from the parent's ``color`` and scales with ``size`` — no
+ * palette of its own.
  *
- * Výplň je v sadě JEDNA výjimka a je pojmenovaná: ``star-filled``. Smí
- * vzniknout jen jako ``currentColor`` a jen jako druhý TVAR k čárovému
- * glyfu, který nese stav — dva tvary se čtou i v šedotónu, dvě barvy ne.
- * Dekorativní ani vícebarevná výplň do sady nepatří.
+ * Fill is ONE named exception in the set: ``star-filled``. It may only
+ * exist as ``currentColor`` and only as a second SHAPE to a stroked glyph
+ * that carries state — two shapes read in greyscale, two colours do not.
+ * Decorative or multi-colour fills do not belong in the set.
  *
- * 🚨 **Nekresli novou ikonu inline.** Před tímhle souborem byl v repu
- * pět nesouvisejících ostrůvků (``processIconLibrary``,
- * ``platformProcessesIcons``, ``plans/icons``, ``storageTypeIcons``,
- * ``cart/OperationIcon``) plus křížek namalovaný přímo v těle
- * ``IngotModal``. Ostrůvky dožívají tam, kde jsou; **nové použití jde
- * přes kit.** Chybí-li ti glyf, přidej ho sem — ne k sobě do souboru.
+ * **Do not draw a new icon inline.** Before this file the product had
+ * five unrelated islands of icons plus a close cross painted straight
+ * into the modal's body. New usage goes through the kit: if a glyph is
+ * missing, add it here — not to your own file.
  *
- * Výrobní operace tady NEJSOU. Ty mají vlastní sadu a vlastní
- * pravidla (``IngotOpIcon``): jejich klíč ukládá backend a ikona bez
- * názvu operace je hádanka, ne popisek.
+ * Production operations are NOT here. They have their own set and their
+ * own rules (``IngotOpIcon``): their key is stored by the backend and an
+ * icon without the operation's name is a riddle, not a label.
  *
- * 🪤 ``Arrow`` a ``X`` z handoffu vlastní klíč nedostaly — jejich
- * geometrie je znak po znaku shodná s ``ArrowRight`` resp. ``Close``,
- * takže by to byla dvě jména pro tutéž věc a call-site by se rozdělily
- * podle toho, kdo co našel dřív.
+ * ``Arrow`` and ``X`` from the handoff got no key of their own — their
+ * geometry is character for character the same as ``ArrowRight`` and
+ * ``Close``, so they would be two names for one thing and call sites
+ * would split by who found which first.
  */
 
 /**
- * Glyf = jen vnitřek ``<svg>``. Obálku (viewBox, stroke, velikost,
- * přístupnost) skládá ``IngotIcon``, aby se ta pravidla nedala u jedné
- * ikony nedopatřením obejít.
+ * A glyph is only the inside of the ``<svg>``. The envelope (viewBox,
+ * stroke, size, accessibility) is composed by ``IngotIcon`` so those rules
+ * cannot be bypassed by accident on one icon.
  */
 const GLYPHS = {
-  // --- akce a přenos souborů ---
+  // --- actions and file transfer ---
   "upload": (
     <>
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -89,7 +87,7 @@ const GLYPHS = {
       <line x1={10} y1={12} x2={14} y2={12} />
     </>
   ),
-  // --- stav ---
+  // --- state ---
   "check": <polyline points="20 6 9 17 4 12" />,
   "alert": (
     <>
@@ -106,15 +104,16 @@ const GLYPHS = {
     </>
   ),
   "star": <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />,
-  // 🪤 Jediná výplň v sadě, a je to výjimka s důvodem. Označené vlákno
-  // se od neoznačeného dnes liší jen barvou, a žluto-šedý pár je přesně
-  // ten, který barvosleposti stírají nejvíc; odečítač má ``aria-pressed``,
-  // ale sighted barvoslepý uživatel ho nikdy neuslyší. Druhý TVAR je
-  // čitelný i v šedotónu.
+  // The only fill in the set, and an exception with a reason. A starred
+  // thread differed from an unstarred one by colour alone, and the
+  // yellow/grey pair is exactly the one colour blindness erases most; a
+  // screen reader has ``aria-pressed``, but a sighted colour-blind user
+  // never hears it. A second SHAPE reads in greyscale too.
   //
-  // Podmínky, za kterých výplň do sady patří, drží sekce Limity na doc
-  // stránce: jen ``currentColor``, jen jako druhý tvar k existujícímu
-  // čárovému glyfu, který nese stav. Dekorativní výplň v sadě není.
+  // The conditions under which a fill belongs in the set are held by the
+  // Limits section of the doc page: only ``currentColor``, only as a second
+  // shape to an existing stroked glyph that carries state. No decorative
+  // fills.
   "star-filled": (
     <polygon
       points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
@@ -123,7 +122,7 @@ const GLYPHS = {
   ),
   "shield": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
   "bolt": <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />,
-  // --- šipky a navigace ---
+  // --- arrows and navigation ---
   "arrow-right": (
     <>
       <line x1={5} y1={12} x2={19} y2={12} />
@@ -138,7 +137,7 @@ const GLYPHS = {
       <line x1={6} y1={6} x2={18} y2={18} />
     </>
   ),
-  // --- početní ---
+  // --- arithmetic ---
   "plus": (
     <>
       <line x1={12} y1={5} x2={12} y2={19} />
@@ -146,7 +145,7 @@ const GLYPHS = {
     </>
   ),
   "minus": <line x1={5} y1={12} x2={19} y2={12} />,
-  // --- objekty domény a rozhraní ---
+  // --- domain and interface objects ---
   "truck": (
     <>
       <rect x={1} y={7} width={13} height={10} rx={1} />
@@ -182,11 +181,12 @@ const GLYPHS = {
     </>
   ),
   "chat": <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
-  // --- pošta ---
+  // --- mail ---
   //
-  // ``mail`` a ``chat`` výše jsou o kanálu; tahle pětice je o tom, co
-  // se se zprávou dělá. Schránka má vlastní glyf, protože „složka
-  // s poštou" a „obálka" znamenají v jednom rozhraní dvě různé věci.
+  // ``mail`` and ``chat`` above are about the channel; these five are about
+  // what is done with a message. The inbox has its own glyph because "a
+  // folder of mail" and "an envelope" mean two different things in one
+  // interface.
   "inbox": (
     <>
       <path d="M22 12h-6l-2 3h-4l-2-3H2" />
@@ -217,7 +217,7 @@ const GLYPHS = {
       <line x1={7} y1={7} x2={7.01} y2={7} />
     </>
   ),
-  // --- lidé a firmy ---
+  // --- people and companies ---
   "user": (
     <>
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -255,9 +255,10 @@ const GLYPHS = {
       <line x1={3} y1={18} x2={3.01} y2={18} />
     </>
   ),
-  // 🪤 Odrážky ``list`` sem nestačí. Tlačítko, které otevírá navigaci,
-  // je na úzkém výřezu jediná cesta mezi obrazovkami, a čtenář ho hledá
-  // podle tvaru, který zná — tři plné linky, ne seznam s puntíky.
+  // The ``list`` bullets are not enough here. The button that opens the
+  // navigation is, on a narrow viewport, the only way between screens, and
+  // the reader looks for the shape they know — three full lines, not a
+  // bulleted list.
   "menu": (
     <>
       <line x1={3} y1={6} x2={21} y2={6} />
@@ -265,7 +266,7 @@ const GLYPHS = {
       <line x1={3} y1={18} x2={21} y2={18} />
     </>
   ),
-  // --- hledání a pohled ---
+  // --- search and view ---
   "search": (
     <>
       <circle cx={11} cy={11} r={7} />
@@ -330,7 +331,7 @@ const GLYPHS = {
       <circle cx={19} cy={12} r={1} />
     </>
   ),
-  // --- doplněk mimo handoff ---
+  // --- addition outside the handoff ---
   bulb: (
     <>
       <path d="M9 18h6M10 22h4" />
@@ -340,9 +341,9 @@ const GLYPHS = {
 } satisfies Record<string, ReactNode>;
 
 /**
- * Jmenovité výjimky z tloušťky 1.6, přesně jak je má handoff. Fajfka je
- * silnější schválně — v malé velikosti je to jediný tvar, který se čte
- * jako gesto, ne jako vlásek.
+ * Named exceptions to the 1.6 stroke width, exactly as the handoff has
+ * them. The check mark is heavier on purpose — at small sizes it is the
+ * only shape that reads as a gesture rather than a hairline.
  */
 const STROKE_WIDTHS: Partial<Record<IngotIconName, number>> = {
   "check": 2.2,
@@ -358,24 +359,24 @@ const STROKE_WIDTHS: Partial<Record<IngotIconName, number>> = {
 
 const DEFAULT_STROKE_WIDTH = 1.6;
 
-/** Klíče, které sada zná. Neznámý klíč typecheck neprojde. */
+/** The keys the set knows. An unknown key fails the typecheck. */
 export type IngotIconName = keyof typeof GLYPHS;
 
-/** Setříděný výčet — doc web i pickery ho vypisují, ať nikdo neopisuje. */
+/** Sorted list — the doc web and pickers print it, so nobody copies it out. */
 export const INGOT_ICON_NAMES = Object.keys(GLYPHS).sort() as IngotIconName[];
 
 export interface IngotIconProps {
   name: IngotIconName;
   /**
-   * Hrana čtverce v px. Výchozích 14 je velikost uvnitř tlačítka; sazbu
-   * ostatních velikostí drží doc stránka, ne tenhle výchozí stav.
+   * Edge of the square in px. The default 14 is the size inside a button;
+   * the other sizes are set by the doc page, not by this default.
    */
   size?: number;
   /**
-   * Vyplň, jen když ikona stojí SAMA a nese význam (tlačítko bez
-   * popisku). Přidá ``<title>`` a ``role="img"``, takže ji odečítač
-   * přečte. Vedle textu ji nech prázdnou — jinak čtečka řekne totéž
-   * dvakrát.
+   * Fill in only when the icon stands ALONE and carries meaning (a button
+   * without a label). Adds ``<title>`` and ``role="img"`` so a screen
+   * reader reads it. Next to text leave it empty — otherwise the reader
+   * says the same thing twice.
    */
   title?: string;
   className?: string;
@@ -383,10 +384,11 @@ export interface IngotIconProps {
 }
 
 /**
- * Ikona z rozhraní sady.
+ * An icon from the interface set.
  *
- * Dekorativní je VÝCHOZÍ stav (``aria-hidden``): drtivá většina ikon
- * v aplikaci stojí vedle svého popisku a odečítač je má přeskočit.
+ * Decorative is the DEFAULT (``aria-hidden``): the vast majority of icons
+ * in the product stand next to their label and a screen reader should
+ * skip them.
  */
 export function IngotIcon({
   name,
@@ -397,9 +399,9 @@ export function IngotIcon({
 }: IngotIconProps): JSX.Element | null {
   const glyph: ReactNode | undefined = GLYPHS[name];
   if (glyph === undefined) {
-    // Klíč sice hlídá typecheck, ale do téhle komponenty umí přitéct
-    // i z dat (uložená volba v adminu). Tiché nic by se hledalo přes
-    // půl aplikace, tak ať to aspoň ve vývoji řekne nahlas.
+    // The typecheck guards the key, but it can also arrive from data (a
+    // stored choice in the admin). A silent nothing would be hunted across
+    // half the app, so at least say it out loud in development.
     if (import.meta.env.DEV) {
       console.warn(`[IngotIcon] neznámý název ikony: "${String(name)}"`);
     }

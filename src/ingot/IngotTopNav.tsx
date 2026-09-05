@@ -11,107 +11,109 @@ import { IngotIcon } from "./IngotIcon";
 import { LockedRow, menuRowClass } from "./menuRow";
 
 /**
- * Horní lišta aplikace — jediná navigace, kterou admin má.
+ * The application's top bar — the only navigation the admin has.
  *
- * 🚨 **Admin nemá boční menu.** Nahoře je jeden řádek s brandem, sekcemi
- * a účtem; obsah pod ním jde na plnou šířku. Není to estetická volba:
- * konfigurační obrazovky téhle aplikace jsou široké tabulky, a sloupec
- * ukousnutý vlevo je sloupec, který v tabulce chybí. ``IngotSideNav``
- * zůstává pro dokumentaci a jiné rejstříky, ne pro rám aplikace.
+ * **The admin has no side menu.** One row at the top holds the brand, the
+ * sections and the account; the content below runs full width. Not an
+ * aesthetic choice: this product's configuration screens are wide tables,
+ * and a column bitten off on the left is a column missing from the table.
+ * `IngotSideNav` stays for documentation and other indexes, not for the
+ * application frame.
  *
- * Sekce s víc obrazovkami je **tlačítko, ne odkaz**: rozbaluje mega menu
- * (``IngotMegaMenu``), takže nikam sama nevede — a proto nese
- * ``aria-expanded``, ne ``aria-current``. Sekce s JEDINOU obrazovkou je
- * naopak rovnou odkaz (``href``): menu s jednou položkou je krok navíc.
- * Zamčená sekce (``locked``) je ztlumené tlačítko se zámkem a klik volá
- * vysvětlení, ne navigaci.
+ * A section with several screens is a **button, not a link**: it unfolds a
+ * mega menu (`IngotMegaMenu`) and leads nowhere itself — hence
+ * `aria-expanded`, not `aria-current`. A section with a SINGLE screen is a
+ * plain link (`href`): a menu with one item is a step too many. A locked
+ * section (`locked`) is a muted button with a lock; its click calls an
+ * explanation, not navigation.
  *
- * **Sekce se otevírá najetím i klikem** (rozhodnutí vlastníka
- * 2026-09-02, bod 02 — chování nasazené administrace). Klik jen otevírá,
- * nezavírá: ukazovátko projde přes tlačítko dřív, než dopadne klik,
- * takže panel už je v tu chvíli hoverem otevřený a toggle by ho zase
- * zhasnul. Zavírá odjezd myší (se 120ms prodlevou, aby cesta z tlačítka
- * do panelu nezhasla), klik mimo lištu, ``Escape`` a volající po
- * prokliku položky.
+ * **A section opens on hover and on click** (owner's decision, 2026-09-02,
+ * point 02 — the behaviour of the deployed admin). Click only opens, never
+ * closes: the pointer crosses the button before the click lands, so the
+ * panel is already open from hover and a toggle would put it out again.
+ * Closing: mouse leave (with a 120 ms delay so the path from button to
+ * panel does not go dark), click outside the bar, `Escape`, and the caller
+ * after an item is followed.
  *
- * **Z klávesnice je panel obsluha sama pro sebe.** ``ArrowDown`` /
- * ``ArrowUp`` na tlačítku sekci otevře a skočí na první / poslední
- * položku, uvnitř panelu procházejí položky dokola. ``Tab`` z otevřeného
- * panelu NEVYPADNE — obchází jeho položky, protože odejít doprostřed
- * lišty a nechat si panel viset za zády je stav, ze kterého se čtenář
- * nedostane zpátky. Ven vede ``Escape``: zavře panel a vrátí fokus na
- * tlačítko sekce (zmizelý panel by ho jinak zahodil na začátek stránky).
- * ``Enter`` otevírá jako klik.
+ * **From the keyboard the panel is self-contained.** `ArrowDown` /
+ * `ArrowUp` on the button opens the section and jumps to the first / last
+ * item; inside the panel they cycle through items. `Tab` from an open panel
+ * does NOT fall out — it cycles the items, because leaving into the middle
+ * of the bar with the panel hanging behind is a state the reader cannot
+ * get back from. `Escape` is the way out: it closes the panel and returns
+ * focus to the section button (a vanished panel would otherwise drop it to
+ * the start of the page). `Enter` opens like a click.
  *
- * **Panel se kotví pod svou sekcí**, ne pod levým okrajem lišty:
- * ``renderMenu(key)`` se vykreslí do relativního obalu otevřené sekce.
- * S hover-otevíráním je to nutnost — panel u levého okraje by nutil
- * kurzor přejet přes triggery ostatních sekcí a cestou je otvírat.
+ * **The panel anchors under its section**, not under the bar's left edge:
+ * `renderMenu(key)` renders into the relative wrapper of the open section.
+ * With hover-open this is a necessity — a panel at the left edge would
+ * force the cursor across the other sections' triggers, opening them on
+ * the way.
  *
- * Stav drží volající (``openSection`` + ``onOpenSection``/
- * ``onCloseSection``): jen on ví, jestli se menu zavírá po prokliku
- * nebo po změně routy. Prodlevu odjezdu ale měří lišta — je to detail
- * chování, ne stav.
+ * The caller owns the state (`openSection` + `onOpenSection` /
+ * `onCloseSection`): only the caller knows whether the menu closes after a
+ * follow or after a route change. The leave delay, though, is measured by
+ * the bar — it is a detail of behaviour, not state.
  *
- * Ingot **nemá vlastní i18n namespace** — popisky dodává volající
- * přeložené.
+ * The kit has no i18n namespace of its own — labels arrive translated.
  */
 
 export interface IngotTopNavSection {
-  /** Klíč sekce — hodnota pro ``openSection``/``onOpenSection``. */
+  /** Section key — the value for `openSection` / `onOpenSection`. */
   key: string;
-  /** Popisek sekce, 1–3 slova. */
+  /** Section label, 1–3 words. */
   label: string;
   /**
-   * Sekce s jedinou obrazovkou: rovnou odkaz, žádné menu. SPA volající
-   * naviguje v ``onNavigate`` s ``preventDefault``; ``href`` zůstává
-   * kvůli střednímu kliku.
+   * A section with a single screen: a plain link, no menu. An SPA caller
+   * navigates in `onNavigate` with `preventDefault`; `href` stays for the
+   * middle click.
    */
   href?: string;
-  /** Klik na odkazovou sekci (``href``). */
+  /** Click on a link section (`href`). */
   onNavigate?: (event: MouseEvent<HTMLAnchorElement>) => void;
   /**
-   * Sekce drží právě otevřenou obrazovku. U odkazové sekce nasadí
-   * ``aria-current``; u menu sekce jen zvýraznění (tlačítko nikam
-   * nevede, takže ``aria-current`` by lhalo — kde čtenář je, říká
-   * ``aria-current`` na položce uvnitř menu).
+   * The section holds the currently open screen. On a link section it sets
+   * `aria-current`; on a menu section only the highlight (the button leads
+   * nowhere, so `aria-current` would lie — where the reader is, the
+   * `aria-current` on the item inside the menu says).
    */
   current?: boolean;
   /**
-   * Zamčená sekce (modul, který si tenant nezapnul): ztlumené tlačítko
-   * se zámkem, klik volá ``onLockedClick`` místo menu či navigace.
+   * Locked section (a module the tenant has not enabled): a muted button
+   * with a lock; click calls `onLockedClick` instead of a menu or
+   * navigation.
    */
   locked?: boolean;
-  /** Klik na zamčenou sekci — typicky modal s vysvětlením. */
+  /** Click on a locked section — typically a modal with an explanation. */
   onLockedClick?: () => void;
-  /** Odznak za popiskem — počet čekající práce u odkazové sekce. */
+  /** Badge after the label — pending work count on a link section. */
   badge?: ReactNode;
   /**
-   * Ztlumená ODKAZOVÁ sekce — naviguje normálně, jen je jemně
-   * odlišená (modul, jehož výlohou je stránka s bránou).
+   * Muted LINK section — navigates normally, only softly de-emphasised (a
+   * module whose storefront is a gate page).
    */
   muted?: boolean;
   /**
-   * Vlastní kotva testu sekce. Bez ní se odvodí
-   * ``{testId}-section-{key}`` z kotvy lišty; existující testy a e2e
-   * ale často drží vlastní jména a konverze je nemá přejmenovávat.
+   * The section's own test anchor. Without it `{testId}-section-{key}` is
+   * derived from the bar's anchor; existing tests and e2e often keep their
+   * own names and a conversion must not rename them.
    */
   testId?: string;
 }
 
-/** Prodleva zavření po odjezdu myší — cesta z tlačítka do panelu nesmí zhasnout. */
+/** Close delay after mouse leave — the path from button to panel must not go dark. */
 const CLOSE_DELAY_MS = 120;
 
 /** Geometry of a section in the bar; colours come from menuRowClass. */
 const SECTION_ROW = "inline-flex items-center gap-1.5 rounded px-2.5 py-1.5 text-sm";
 
 /**
- * Položky otevřeného panelu v pořadí, v jakém je čtenář vidí.
+ * Items of the open panel in the order the reader sees them.
  *
- * Panel je poslední dítě obalu sekce (první je tlačítko), takže se
- * hledá pozicí, ne třídou ani ``data-`` značkou: ``renderMenu`` smí
- * vrátit cokoli a klávesnice mu do markupu nemá co mluvit. Zamčená
- * položka je tlačítko, ne odkaz — proto oboje.
+ * The panel is the last child of the section wrapper (the first is the
+ * button), so it is found by position, not by class or `data-` marker:
+ * `renderMenu` may return anything and the keyboard has no say in its
+ * markup. A locked item is a button, not a link — hence both selectors.
  */
 function menuItems(section: HTMLElement | null): HTMLElement[] {
   const panel = section?.lastElementChild;
@@ -140,43 +142,43 @@ export function IngotTopNav({
   sectionsEnd,
   testId,
 }: {
-  /** Značka vlevo. Odznak režimu (např. platformy) patří sem. */
+  /** Brand on the left. A mode badge (e.g. platform) belongs here. */
   brand: ReactNode;
-  /** Tlačítko mobilního menu — kreslí se úplně vlevo, před brandem. */
+  /** Mobile menu button — drawn at the very left, before the brand. */
   menuButton?: ReactNode;
-  /** Sekce aplikace. Vejít se musí všechny na 1280 px — lišta se nezalamuje. */
+  /** Application sections. All must fit at 1280 px — the bar does not wrap. */
   sections?: readonly IngotTopNavSection[];
-  /** Klíč právě rozbalené sekce, nebo ``null``. Řízené zvenčí. */
+  /** Key of the currently unfolded section, or `null`. Controlled from outside. */
   openSection?: string | null;
-  /** Otevři sekci — volá se z hoveru, kliku i klávesnice. */
+  /** Open a section — called from hover, click and keyboard. */
   onOpenSection?: (key: string) => void;
-  /** Zavři otevřenou sekci — odjezd myší (po prodlevě), klik vedle, ``Escape``. */
+  /** Close the open section — mouse leave (after the delay), click outside, `Escape`. */
   onCloseSection?: () => void;
   /**
-   * Menu otevřené sekce — typicky ``IngotMegaMenu``. Kreslí se do
-   * relativního obalu té sekce, takže panel stojí pod svým tlačítkem.
+   * The open section's menu — typically `IngotMegaMenu`. Rendered into that
+   * section's relative wrapper, so the panel stands under its button.
    */
   renderMenu?: (key: string) => ReactNode;
-  /** Ikonové akce vpravo před účtem — zprávy, notifikace. */
+  /** Icon actions on the right, before the account — messages, notifications. */
   actions?: ReactNode;
-  /** Účet úplně vpravo. Typicky ``IngotTopNavAccount``. */
+  /** The account at the far right. Typically `IngotTopNavAccount`. */
   account?: ReactNode;
-  /** Obsah pod lištou pozicovaný vůči ní (bannery, celolištové překryvy). */
+  /** Content under the bar positioned relative to it (banners, bar-wide overlays). */
   children?: ReactNode;
   /**
-   * Třída vnitřního řádku — sem patří rám shellu (``mx-auto
-   * max-w-[1440px]``, výška, odsazení). Ohraničení a plocha lišty
-   * zůstávají na kitu, rám na shellu.
+   * Class of the inner row — the shell's frame goes here (`mx-auto
+   * max-w-[1440px]`, height, padding). The bar's border and surface stay
+   * with the kit, the frame with the shell.
    */
   contentClassName?: string;
-  /** Přeložený ``aria-label`` bloku sekcí — z lišty dělá pojmenovanou navigaci. */
+  /** Translated `aria-label` of the sections block — makes the bar a named navigation. */
   sectionsLabel?: string;
   /**
-   * Třída obalu sekcí — typicky responsivní schování na mobilu
-   * (``hidden lg:flex``), kde navigaci nese hamburger.
+   * Class of the sections wrapper — typically responsive hiding on mobile
+   * (`hidden lg:flex`), where the hamburger carries navigation.
    */
   sectionsClassName?: string;
-  /** Za poslední sekcí, uvnitř navigace — např. „Odemknout vše" day-1 režimu. */
+  /** After the last section, inside the navigation — e.g. "Unlock all" in day-1 mode. */
   sectionsEnd?: ReactNode;
   testId?: string;
 }): JSX.Element {
@@ -197,9 +199,10 @@ export function IngotTopNav({
   };
   useEffect(() => cancelClose, []);
 
-  //: Šipka na ZAVŘENÉ sekci musí nejdřív otevřít panel a teprve pak do něj
-  //: skočit — v tu chvíli ale panel ještě není vykreslený, protože stav drží
-  //: volající. Přání se proto odloží sem a vybere ho efekt po překreslení.
+  // An arrow on a CLOSED section must first open the panel and only then
+  // jump into it — but at that moment the panel is not rendered yet,
+  // because the caller owns the state. The wish is parked here and picked
+  // up by the effect after the re-render.
   const pendingFocus = useRef<"first" | "last" | null>(null);
   useEffect(() => {
     const want = pendingFocus.current;
@@ -213,7 +216,7 @@ export function IngotTopNav({
     (want === "first" ? items[0] : items[items.length - 1])?.focus();
   }, [openSection]);
 
-  // Klik mimo lištu zavírá. Posluchač visí jen při otevřené sekci.
+  // Click outside the bar closes. The listener hangs only while a section is open.
   useEffect(() => {
     if (openSection === null) return;
     function onDown(event: globalThis.MouseEvent) {
@@ -299,10 +302,11 @@ export function IngotTopNav({
                 const index = items.indexOf(document.activeElement as HTMLElement);
 
                 if (e.key === "Escape") {
-                  //: Zavření obstará posluchač celé lišty (Escape odtud k němu
-                  //: bublá). Sem patří jen návrat fokusu: zmizelý panel ho
-                  //: zahodí na <body> a čtenář by se probral na začátku stránky
-                  //: — u menu, které se otevírá i hoverem, o krok zpátky.
+                  // Closing is handled by the whole bar's listener (Escape
+                  // bubbles up to it from here). Only the focus return
+                  // belongs here: a vanished panel drops focus to <body> and
+                  // the reader would wake up at the top of the page — for a
+                  // menu that also opens on hover, a step backwards.
                   if (open) button?.focus();
                   return;
                 }
@@ -321,9 +325,10 @@ export function IngotTopNav({
                   return;
                 }
 
-                //: Tab z otevřeného panelu nevypadne — jinak by čtenář odešel
-                //: doprostřed lišty a panel by mu zůstal viset za zády. Ven
-                //: vede Escape, který ho zavře a vrátí fokus na tlačítko.
+                // Tab does not fall out of an open panel — otherwise the
+                // reader would leave into the middle of the bar with the
+                // panel hanging behind. Escape is the way out: it closes the
+                // panel and returns focus to the button.
                 if (e.key === "Tab" && open && items.length > 0) {
                   e.preventDefault();
                   const step = e.shiftKey ? -1 : 1;
@@ -365,10 +370,10 @@ export function IngotTopNav({
 }
 
 /**
- * Účet v pravém rohu lišty — iniciály a šipka.
+ * The account in the bar's right corner — initials and a chevron.
  *
- * Iniciály, ne fotka: aplikaci používají provozy, kde účet často nemá
- * avatar, a prázdné kolečko vypadá jako chyba načtení.
+ * Initials, not a photo: the product is used by workshops where an account
+ * rarely has an avatar, and an empty circle looks like a failed load.
  */
 export function IngotTopNavAccount({
   initials,
@@ -377,11 +382,11 @@ export function IngotTopNavAccount({
   onClick,
   testId,
 }: {
-  /** Dvě písmena. Delší se do kolečka nevejde. */
+  /** Two letters. Longer does not fit the circle. */
   initials: string;
-  /** Přeložený ``aria-label`` — odečítač jinak přečte jen iniciály. */
+  /** Translated `aria-label` — a screen reader would otherwise read only the initials. */
   label: string;
-  /** Je menu účtu otevřené? */
+  /** Is the account menu open? */
   expanded?: boolean;
   onClick?: () => void;
   testId?: string;

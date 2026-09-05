@@ -6,55 +6,58 @@ import { MENU_LAYER } from "./modalLayer";
 import { createStore } from "./store";
 
 /**
- * Imperativní toast (KAN-656) — spec Toast v1.0, ingot.css sekce 10.
+ * Imperative toast — spec Toast v1.0.
  *
- * Potvrzení výsledku akce, které nezastaví práci. Dělba překryvů:
- * editace → Drawer, potvrzení → Modal, **výsledek → Toast**. Výsledek
- * uložení je toast se zpětnou akcí, ne modal „Hotovo".
+ * Confirmation of an action's result that does not stop the work. The
+ * division of overlays: editing → Drawer, confirmation → Modal, **result
+ * → Toast**. The result of a save is a toast with an undo action, not a
+ * "Done" modal.
  *
- * ## Proč imperativní API, ne JSX
+ * ## Why an imperative API, not JSX
  *
- * Výsledek akce hlásí kód, který akci provedl — mutace, handler, effect.
- * Deklarativní ``<Toast open={…}>`` by každého volajícího nutil držet
- * stav „toast je vidět" a časovač po svém; přesně ta duplicita, kvůli
- * které primitivum vzniká. Volá se ``toast({ text, undo })``, zobrazení
- * obstará JEDNOU namountovaný ``<IngotToast />``.
+ * The result of an action is reported by the code that performed it — a
+ * mutation, a handler, an effect. A declarative ``<Toast open={…}>`` would
+ * force every caller to hold the "toast is visible" state and a timer of
+ * its own; exactly the duplication the primitive exists to remove. You
+ * call ``toast({ text, undo })``; display is handled by ONE mounted
+ * ``<IngotToast />``.
  *
- * ## Sklad je modul, ne kontext
+ * ## The store is a module, not a context
  *
- * Fronta toastů žije v modulu (``useSyncExternalStore``), ne v React
- * kontextu. ``toast()`` se tak dá volat odkudkoli — i mimo strom, kde
- * žádný provider není (doc web nemá admin provider stack). Cena: druhý
- * namountovaný ``<IngotToast />`` by tutéž frontu vykreslil dvakrát,
- * proto patří do aplikace právě jeden (v demu doc webu je lokální).
+ * The toast queue lives in a module store, not in React context, so
+ * ``toast()`` can be called from anywhere — even outside the tree where no
+ * provider exists. The price: a second mounted ``<IngotToast />`` would
+ * render the same queue twice, so an application has exactly one (the doc
+ * web demo keeps a local one).
  *
- * ## Časování
+ * ## Timing
  *
- * Výchozích 4 s; toast se zpětnou akcí žije 8 s — operátor musí stihnout
- * text přečíst, pochopit a kliknout. ``duration`` obojí přebíjí.
+ * 4 s by default; a toast with an undo action lives 8 s — the operator
+ * must manage to read, understand and click. ``duration`` overrides both.
  *
  * ## A11y
  *
- * Region ``aria-live="polite"``; ``tone="danger"`` (chyba operace)
- * hlásí ``assertive``. Toast stojí vlevo dole, aby nepřekryl primární
- * akci stránky (ta bydlí vpravo nahoře v hlavičce). V dark motivu
- * dostává border — per-komponentní override z handoffu: inverzní plocha
- * toastu se jinak na tmavém pozadí ztratí.
+ * Region ``aria-live="polite"``; ``tone="danger"`` (an operation error)
+ * announces ``assertive``. The toast stands bottom-left so it does not
+ * cover the page's primary action (which lives top-right in the header).
+ * In dark mode it gets a border — a per-component override from the
+ * handoff: the toast's inverted surface would otherwise vanish on the dark
+ * background.
  */
 
 export interface IngotToastOptions {
-  /** Jedna věta v minulém čase — „Objednávka uložena." */
+  /** One sentence in the past tense — "Order saved." */
   text: string;
   /**
-   * ``danger`` = chyba operace („Uložení se nepovedlo."). NE validace
-   * formuláře — ta patří k poli, ne do toastu.
+   * ``danger`` = an operation error ("Saving failed."). NOT form
+   * validation — that belongs to the field, not the toast.
    */
   tone?: "default" | "danger";
-  /** Zpětná akce. Přidá tlačítko a prodlouží život toastu na 8 s. */
+  /** Undo action. Adds a button and extends the toast's life to 8 s. */
   undo?: () => void;
-  /** Přeložený popisek zpětné akce — Ingot překlady nemá. Výchozí „Zpět". */
+  /** Translated label of the undo action — the kit has no translations. */
   undoLabel?: string;
-  /** Jak dlouho toast žije v ms. Výchozí 4000; s ``undo`` 8000. */
+  /** How long the toast lives, in ms. Default 4000; with ``undo`` 8000. */
   duration?: number;
 }
 
@@ -69,7 +72,7 @@ function dismiss(id: number): void {
   toasts.set((items) => items.filter((item) => item.id !== id));
 }
 
-/** Ohlásí výsledek akce. Zobrazí ho jednou namountovaný ``<IngotToast />``. */
+/** Reports an action's result. Displayed by the one mounted ``<IngotToast />``. */
 export function toast(options: IngotToastOptions): void {
   nextId += 1;
   const item: ToastItem = { ...options, id: nextId };
@@ -114,16 +117,17 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
 export function IngotToast({
   testId,
 }: {
-  /** `data-testid` regionu s toasty. */
+  /** `data-testid` of the toast region. */
   testId?: string;
 }): JSX.Element {
   const current = toasts.use();
   const polite = current.filter((item) => item.tone !== "danger");
   const assertive = current.filter((item) => item.tone === "danger");
 
-  // Portál do body ze stejného důvodu jako u dialogů: region renderovaný
-  // inline by se pohřbil pod stacking kontexty stránky. Vrstva nad všemi
-  // dialogy — výsledek akce má být vidět i nad otevřeným překryvem.
+  // Portal into body for the same reason as the dialogs: a region rendered
+  // inline would be buried under the page's stacking contexts. The layer is
+  // above every dialog — an action's result must show even over an open
+  // overlay.
   return createPortal(
     <div
       className="pointer-events-none fixed bottom-4 left-4 flex max-w-sm flex-col gap-2"

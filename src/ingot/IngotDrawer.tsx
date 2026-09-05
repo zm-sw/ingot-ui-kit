@@ -13,30 +13,31 @@ import {
 } from "./overlayChrome";
 
 /**
- * Boční panel pro editaci (KAN-655) — spec Drawer v1.0, ingot.css sekce 11.
+ * Side panel for editing — spec Drawer v1.0.
  *
- * Drawer je pro editaci, u které operátor potřebuje vidět seznam za ní.
- * Pravidlo z Pravidel: **delší editace → drawer, ne modal**; obsah delší
- * než dvě obrazovky → samostatná stránka. Dělba překryvů: editace →
- * Drawer, potvrzení → Modal, výsledek → Toast — a nikdy dva překryvy
- * nad sebou.
+ * A drawer is for editing where the operator needs to see the list behind
+ * it. The rule from the guide: **longer editing → drawer, not modal**;
+ * content longer than two screens → a page of its own. Division of
+ * overlays: editing → Drawer, confirmation → Modal, result → Toast — and
+ * never two overlays on top of each other.
  *
- * A11y laťka je stejná jako u ``IngotModal`` (rozhodnutí vlastníka
- * 2026-08-25): focus trap, ESC, scroll lock, ``role="dialog"`` +
- * ``aria-modal``, návrat fokusu na spouštěč. Sdílená logika bydlí v
- * ``overlayChrome.ts`` — hlavně čítač zámku scrollu, který musí platit
- * přes modal i drawer najednou.
+ * The accessibility bar is the same as ``IngotModal``'s (owner's
+ * decision, 2026-08-25): focus trap, ESC, scroll lock, ``role="dialog"`` +
+ * ``aria-modal``, focus returned to the opener. The shared logic lives in
+ * ``overlayChrome.ts`` — above all the scroll-lock counter, which must
+ * span modal and drawer at once.
  *
- * Panel je flex sloupec na plnou výšku: hlavička a patka jsou vždy
- * vidět, scroluje jen tělo. Patka s akcemi se tak netlačí pod ohyb —
- * u vysokého formuláře je „Uložit" jinak potřeba hledat scrollováním.
+ * The panel is a full-height flex column: header and footer always
+ * visible, only the body scrolls. The footer with actions thus never
+ * slides below the fold — on a tall form "Save" would otherwise have to be
+ * found by scrolling.
  *
- * Portál do ``document.body`` ze stejného důvodu jako u modalu: overlay
- * renderovaný inline ze sticky buňky se pohřbí pod stacking kontexty
- * řádků pod sebou.
+ * Portal into ``document.body`` for the same reason as the modal: an
+ * overlay rendered inline from a sticky cell gets buried under the
+ * stacking contexts of the rows below.
  */
 
-/** Tvrdý strop šířky ze specu — širší editace už je stránka, ne drawer. */
+/** Hard width ceiling from the spec — wider editing is a page, not a drawer. */
 const MAX_DRAWER_WIDTH = 560;
 
 export function IngotDrawer({
@@ -51,35 +52,36 @@ export function IngotDrawer({
   dismissable = true,
   testId,
 }: {
-  /** Vykreslí se do `<h2>`, na které ukazuje `aria-labelledby`. */
+  /** Rendered into the `<h2>` that `aria-labelledby` points at. */
   title: ReactNode;
   /**
-   * Druhý řádek hlavičky — kontext editovaného záznamu. Stejně jako u
-   * ``IngotModal`` nese ``aria-describedby``, ne ``-labelledby``:
-   * přístupné jméno má zůstat krátké a stabilní.
+   * Second header line — context of the record being edited. Like in
+   * ``IngotModal`` it carries ``aria-describedby``, not ``-labelledby``:
+   * the accessible name should stay short and stable.
    */
   subtitle?: ReactNode;
-  /** Volá ESC, zavírací tlačítko a (při ``dismissable``) klik do pozadí. */
+  /** Called by ESC, the close button and (when ``dismissable``) a click on the backdrop. */
   onClose: () => void;
   children: ReactNode;
   /**
-   * Lišta akcí pod obsahem. Je VŽDY viditelná — panel je flex sloupec,
-   * takže patka nescroluje s tělem a netlačí se pod ohyb.
+   * Action bar under the content. ALWAYS visible — the panel is a flex
+   * column, so the footer does not scroll with the body and never slides
+   * below the fold.
    */
   footer?: ReactNode;
-  /** Přeložený `aria-label` zavíracího tlačítka — Ingot překlady nemá. */
+  /** Translated `aria-label` of the close button — the kit has no translations. */
   closeLabel: string;
-  /** Ze které strany panel vyjíždí. */
+  /** Which side the panel slides in from. */
   side?: "right" | "left";
-  /** Šířka panelu v px. Výchozí 400, tvrdý strop 560. */
+  /** Panel width in px. Default 400, hard ceiling 560. */
   width?: number;
   /**
-   * Jestli klik do pozadí zavírá. U rozepsaného formuláře vypnout —
-   * jeden klik vedle by zahodil rozdělanou práci. ESC a zavírací
-   * tlačítko fungují vždy.
+   * Whether a click on the backdrop closes. Turn off for a form in
+   * progress — one stray click would discard the work. ESC and the close
+   * button always work.
    */
   dismissable?: boolean;
-  /** `data-testid` overlaye; panel dostane `${testId}-panel`. */
+  /** `data-testid` of the overlay; the panel gets `${testId}-panel`. */
   testId?: string;
 }): JSX.Element {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -110,9 +112,9 @@ export function IngotDrawer({
         side === "left" ? "justify-start" : "justify-end",
       )}
       style={{ zIndex: layer }}
-      // Zachytává se na overlayi, ne na dokumentu — stejný důvod jako u
-      // IngotModal: dva otevřené překryvy nad sebou by jinak na jeden ESC
-      // zavřely oba.
+      // Caught on the overlay, not on the document — same reason as in
+      // IngotModal: two open overlays on top of each other would otherwise
+      // both close on one ESC.
       onKeyDown={onKeyDown}
       onMouseDown={(event) => {
         if (dismissable && event.target === event.currentTarget) onClose();
