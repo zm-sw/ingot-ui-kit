@@ -1,6 +1,7 @@
 import { type JSX } from "react";
 
 import { cx } from "./cx";
+import { inputChrome } from "./inputChrome";
 
 /**
  * Výběr jedné hodnoty z krátké množiny — filtr nad seznamem, přepínač
@@ -59,11 +60,7 @@ export function IngotSelect({
       onChange={(event) => onChange(event.target.value)}
       aria-label={label}
       disabled={disabled}
-      className={cx(
-        "rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-ink shadow-sm",
-        "focus:border-ink focus:outline-none disabled:cursor-not-allowed disabled:text-ink-4",
-        className,
-      )}
+      className={cx(inputChrome(), className)}
       data-testid={testId}
     >
       {options.map((option) => (

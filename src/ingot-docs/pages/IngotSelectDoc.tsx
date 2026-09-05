@@ -6,9 +6,11 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 export const IngotSelectDoc: IngotDocPage = {
   name: "IngotSelect",
   status: "beta",
-  version: "1.0",
+  // 1.1 — shared input chrome: accent focus ring instead of `focus:border-ink`,
+  // Button-md height.
+  version: "1.1",
   tag: ".select",
-  tokens: ["--surface", "--border-strong", "--ink", "--ink-4", "--r-md", "--shadow-sm"],
+  tokens: ["--surface", "--surface-2", "--border-strong", "--ink", "--ink-4", "--accent", "--accent-bg", "--r-md", "--shadow-sm"],
   summary: {
     cs: "Výběr jedné hodnoty z krátké množiny — filtr nad seznamem, přepínač varianty v nastavení. Nativní select: klávesnice, odečítač i mobil zadarmo.",
     en: "Picking one value from a short set — a filter above a list, a variant switch in settings. A native select: keyboard, screen reader and mobile behaviour for free.",

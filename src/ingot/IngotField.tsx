@@ -1,6 +1,7 @@
 import { useId, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { INPUT_PAD, inputFrameChrome } from "./inputChrome";
 
 /**
  * Popsané textové pole (KAN-651) — ruční stavební kámen běžných formulářů.
@@ -94,13 +95,11 @@ export function IngotField({
           <span className="ml-1 font-normal text-ink-3">{optionalLabel}</span>
         )}
       </label>
-      <div
-        className={cx(
-          "flex items-center rounded border bg-bg",
-          "focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent-bg",
-          error != null ? "border-danger" : "border-border",
-        )}
-      >
+      {/* The frame (radius, border, focus ring) comes from inputChrome, the
+          same source as IngotSelect and IngotSearchInput, so a field next
+          to a filter select has the same box. The frame is focus-within
+          because the affix sits inside it. */}
+      <div className={cx("flex items-center", inputFrameChrome({ error: error != null }))}>
         <input
           id={id}
           type="text"
@@ -112,13 +111,14 @@ export function IngotField({
           aria-invalid={error != null || undefined}
           aria-describedby={describedBy || undefined}
           className={cx(
-            "w-full bg-transparent px-2 py-1 text-sm text-ink outline-none disabled:text-ink-3",
+            "w-full bg-transparent outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
+            INPUT_PAD,
             mono && "font-mono tabular-nums",
           )}
           data-testid={testId}
         />
         {affix != null && (
-          <span id={affixId} className="shrink-0 pr-2 text-xs text-ink-3">
+          <span id={affixId} className="shrink-0 pr-3 text-xs text-ink-3">
             {affix}
           </span>
         )}
