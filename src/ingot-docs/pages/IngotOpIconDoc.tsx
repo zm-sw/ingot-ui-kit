@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotOpIconDemo";
-import demoSource from "@/ingot-docs/demos/IngotOpIconDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.1 (KAN-853): the component is unchanged, the import path is not. It
@@ -12,6 +10,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 // inside our source, on a file they never wrote, unless their
 // tsconfig happened to include the bundler's types. Nothing a
 // caller passes or sees changed.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotOpIconDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotOpIconDemo?raw");
+
 export const IngotOpIconDoc: IngotDocPage = {
   name: "IngotOpIcon",
   status: "stable",
@@ -26,7 +30,7 @@ export const IngotOpIconDoc: IngotDocPage = {
     cs: "Ikona výrobní operace. Kresbu bere z knihovny operací, barvu z kategorie procesu a klíč z databáze — sama si nevymýšlí nic.",
     en: "A manufacturing-operation icon. It takes the drawing from the operation library, the ink from the process category and the key from the database — it invents nothing.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotFieldDemo";
-import demoSource from "@/ingot-docs/demos/IngotFieldDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotFieldDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotFieldDemo?raw");
 
 export const IngotFieldDoc: IngotDocPage = {
   name: "IngotField",
@@ -36,7 +40,7 @@ export const IngotFieldDoc: IngotDocPage = {
     cs: "Popsané textové pole: popisek, nápověda, chyba, jednotka. Pro ruční formuláře, které pole nemají odkud odvodit.",
     en: "A labelled text field: label, hint, error, unit. For hand-written forms whose fields cannot be derived from anything.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

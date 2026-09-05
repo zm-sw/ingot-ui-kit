@@ -1,10 +1,14 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingComparisonDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingComparisonDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. Pairing is a property of the ROW, not the column — hence rows,
 // not three separate columns that can shift by an item.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingComparisonDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingComparisonDemo?raw");
+
 export const IngotMarketingComparisonDoc: IngotDocPage = {
   name: "IngotMarketingComparison",
   status: "beta",
@@ -28,7 +32,7 @@ export const IngotMarketingComparisonDoc: IngotDocPage = {
     cs: "Řádkové srovnání „dnes / s platformou“. Dvojice patří k jednomu úkolu, takže ji nejde napsat rozpojenou.",
     en: "A row-wise “today / with the platform” comparison. The pair belongs to one task, so it cannot be written apart.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

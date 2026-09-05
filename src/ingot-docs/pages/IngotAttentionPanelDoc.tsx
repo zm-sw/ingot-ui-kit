@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotAttentionPanelDemo";
-import demoSource from "@/ingot-docs/demos/IngotAttentionPanelDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotAttentionPanelDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotAttentionPanelDemo?raw");
 
 export const IngotAttentionPanelDoc: IngotDocPage = {
   name: "IngotAttentionPanel",
@@ -19,7 +23,7 @@ export const IngotAttentionPanelDoc: IngotDocPage = {
     cs: "Tmavý panel „co po tobě obrazovka chce teď“ v hlavě přehledu. Jediné místo, kde je karta tmavší než pozadí — signál, který drží, jen dokud je vzácný.",
     en: "The dark “what this screen wants from you now” panel at the head of an overview. The one place where a card is darker than the page — a signal that holds only while it stays rare.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotStepCardDemo";
-import demoSource from "@/ingot-docs/demos/IngotStepCardDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotStepCardDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotStepCardDemo?raw");
 
 export const IngotStepCardDoc: IngotDocPage = {
   name: "IngotStepCard",
@@ -32,7 +36,7 @@ export const IngotStepCardDoc: IngotDocPage = {
     cs: "Karta jednoho kroku vícekrokového nastavení. Nese svůj stav natrvalo — hotový krok zůstane hotový a je vidět i po návratu na obrazovku.",
     en: "A card for one step of a multi-step setup. It carries its state permanently — a finished step stays finished and is still visible when you come back to the screen.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

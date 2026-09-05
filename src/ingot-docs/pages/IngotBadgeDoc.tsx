@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotBadgeDemo";
-import demoSource from "@/ingot-docs/demos/IngotBadgeDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotBadgeDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotBadgeDemo?raw");
 
 export const IngotBadgeDoc: IngotDocPage = {
   name: "IngotBadge",
@@ -36,7 +40,7 @@ export const IngotBadgeDoc: IngotDocPage = {
     cs: "Stavový štítek: stav entity jedním slovem, mono a verzálkami. Pojmenovává stav, ne akci.",
     en: "A status badge: the state of an entity in one word, mono and upper-case. It names a state, not an action.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

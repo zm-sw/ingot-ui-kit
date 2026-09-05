@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotOptionCardDemo";
-import demoSource from "@/ingot-docs/demos/IngotOptionCardDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotOptionCardDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotOptionCardDemo?raw");
 
 export const IngotOptionCardDoc: IngotDocPage = {
   name: "IngotOptionCard",
@@ -25,7 +29,7 @@ export const IngotOptionCardDoc: IngotDocPage = {
     cs: "Výběr jedné varianty, kde volba potřebuje vysvětlení. Klikatelná je celá karta, vybraná varianta je poznat obrysem v akcentu.",
     en: "Picking one option where the choice needs an explanation. The whole card is clickable, and the selected option is marked by an accent outline.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

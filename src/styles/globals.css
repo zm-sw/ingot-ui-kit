@@ -1,7 +1,10 @@
+/* Five faces, not six. Each one is a file every reader downloads, and the
+   700 weight was used in exactly one place — the brand in the top bar,
+   which now sits at 600 like every other heading. A weight nobody can tell
+   apart is not worth 40 kB on a phone. */
 @import "@fontsource/geist-sans/400.css";
 @import "@fontsource/geist-sans/500.css";
 @import "@fontsource/geist-sans/600.css";
-@import "@fontsource/geist-sans/700.css";
 @import "@fontsource/geist-mono/400.css";
 @import "@fontsource/geist-mono/500.css";
 

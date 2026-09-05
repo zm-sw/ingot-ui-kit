@@ -15,6 +15,13 @@
   ],
   "headers": [
     {
+      "comment": "Every file under assets/ carries a content hash in its name, so its content can never change — a new build produces a new name. Caching it forever is therefore not a bet: a reader who returns fetches only the HTML and whatever chunk is genuinely new.",
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
       "source": "/((?!api/).*)",
       "headers": [
         {

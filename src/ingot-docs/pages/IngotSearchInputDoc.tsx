@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSearchInputDemo";
-import demoSource from "@/ingot-docs/demos/IngotSearchInputDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSearchInputDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSearchInputDemo?raw");
 
 export const IngotSearchInputDoc: IngotDocPage = {
   name: "IngotSearchInput",
@@ -31,7 +35,7 @@ export const IngotSearchInputDoc: IngotDocPage = {
     cs: "Hledací pole nad seznamem — první prvek filtr baru. Filtruje, nevyhledává: zužuje seznam každým úhozem, žádné tlačítko Hledat.",
     en: "A search field above a list — the first element of the filter bar. It filters, it does not search: it narrows the list on every keystroke, no Search button.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -277,15 +277,20 @@ function guardIngotDocPages() {
         "Demos MUST render the real component; copied JSX drifts silently.",
       ]);
     }
+    // Both imports are dynamic: a demo arrives when the reader opens its
+    // page, not in the first payload with sixty-five others. The pairing is
+    // what matters and is unchanged — the same module, twice.
     const spec = `@/ingot-docs/demos/${name}Demo`;
     for (const [suffix, why] of [
       ["", "renders the live demo"],
       ["?raw", "is listed under the 'show code' toggle"],
     ]) {
-      if (!src.includes(`from "${spec}${suffix}"`)) {
+      if (!src.includes(`import("${spec}${suffix}")`)) {
         fail(guard, [
           `${pageRel} does not import '${spec}${suffix}', the module that ${why}.`,
-          "The page must import the SAME module twice: as code and as ?raw text.",
+          "The page must import the SAME module twice, both times lazily:",
+          `  const demo = () => import("${spec}").then((m) => ({ default: m.Demo }));`,
+          `  const demoSource = () => import("${spec}?raw");`,
         ]);
       }
     }

@@ -1,12 +1,16 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingFaqDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingFaqDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. The prototype had an accessibility hole: the question was a
 // button without ``aria-expanded``/``aria-controls`` and 2 of 3 answers were
 // empty. Both are held by contract — the attributes by the component,
 // ``answer`` by the type.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingFaqDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingFaqDemo?raw");
+
 export const IngotMarketingFaqDoc: IngotDocPage = {
   name: "IngotMarketingFaq",
   status: "beta",
@@ -21,7 +25,7 @@ export const IngotMarketingFaqDoc: IngotDocPage = {
     cs: "Časté dotazy — otázka je ovládací prvek hlásící svůj stav, odpověď pojmenovaná oblast. Odpověď je povinná.",
     en: "A FAQ — the question is a control announcing its state, the answer a named region. The answer is required.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

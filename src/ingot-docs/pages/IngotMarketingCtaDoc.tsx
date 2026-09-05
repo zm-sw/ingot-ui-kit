@@ -1,12 +1,16 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingCtaDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingCtaDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. The actions are links, not buttons: a marketing CTA navigates,
 // it triggers nothing. The look is not copied from Button, it is taken from
 // it — ``as="a"`` was added to Button precisely for this block, and with it
 // the ``inverse`` variant for the secondary action on an inverted surface.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingCtaDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingCtaDemo?raw");
+
 export const IngotMarketingCtaDoc: IngotDocPage = {
   name: "IngotMarketingCta",
   status: "beta",
@@ -21,7 +25,7 @@ export const IngotMarketingCtaDoc: IngotDocPage = {
     cs: "Závěrečná výzva — tmavý blok se dvěma akcemi. Hlavní akce je akcentová a je jediným barevným prvkem bloku.",
     en: "The closing call to action — a dark block with two actions. The primary one is accented and the block's only colour.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

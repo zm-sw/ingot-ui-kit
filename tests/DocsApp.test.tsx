@@ -130,15 +130,16 @@ describe("DocsApp", () => {
     }
   });
 
-  it("renders the live demo of the selected primitive, not just its description", () => {
+  it("renders the live demo of the selected primitive, not just its description", async () => {
     goto(componentPath("IngotEmptyState"));
     render(<DocsApp />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "EmptyState" }),
     ).toBeInTheDocument();
-    // The real IngotEmptyState, not text about it: its own testid.
-    expect(screen.getByTestId("docs-empty")).toBeInTheDocument();
+    // The demo arrives on demand, so it is awaited — and the real
+    // IngotEmptyState is what has to arrive, not text about it.
+    expect(await screen.findByTestId("docs-empty")).toBeInTheDocument();
     expect(screen.getByText("Zatím tu nic není")).toBeInTheDocument();
   });
 
@@ -388,7 +389,10 @@ describe("DocsApp", () => {
     await user.click(screen.getByTestId("docs-copy"));
 
     const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
-    expect(await window.navigator.clipboard.readText()).toBe(page!.demoSource);
+    const { default: source } = await page!.demoSource();
+    await waitFor(async () => {
+      expect(await window.navigator.clipboard.readText()).toBe(source);
+    });
     // The confirmation shows in the button label and disappears again after a moment.
     expect(screen.getByTestId("docs-copy")).toHaveTextContent(CHROME.copiedCode.cs);
   });
@@ -464,13 +468,14 @@ describe("DocsApp", () => {
 
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
     "%s lists the demo source from the REAL module, not from a hand-written string",
-    (name, page) => {
+    async (name, page) => {
       // A ?raw import returns the WHOLE file, so it has to contain its
       // imports and the function header too — not just a piece of JSX that
       // could be copied.
-      expect(page.demoSource).toContain('from "@/ingot"');
-      expect(page.demoSource).toContain("export function Demo(");
-      expect(page.demoSource).toContain(name);
+      const { default: source } = await page.demoSource();
+      expect(source).toContain('from "@/ingot"');
+      expect(source).toContain("export function Demo(");
+      expect(source).toContain(name);
     },
   );
 

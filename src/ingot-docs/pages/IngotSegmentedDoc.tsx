@@ -1,9 +1,13 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSegmentedDemo";
-import demoSource from "@/ingot-docs/demos/IngotSegmentedDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // The ``.top .seg`` pattern from the handoff (theme and language switches in the bar).
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSegmentedDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSegmentedDemo?raw");
+
 export const IngotSegmentedDoc: IngotDocPage = {
   name: "IngotSegmented",
   status: "beta",
@@ -18,7 +22,7 @@ export const IngotSegmentedDoc: IngotDocPage = {
     cs: "Přepínač lišty — dvě až tři krátké volby vedle sebe, vybraná vystoupí na plochu. Volba se projeví hned.",
     en: "A top-bar switch — two or three short choices side by side, the selected one lifted onto the surface. The choice applies at once.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

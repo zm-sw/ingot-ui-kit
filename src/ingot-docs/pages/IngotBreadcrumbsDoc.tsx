@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotBreadcrumbsDemo";
-import demoSource from "@/ingot-docs/demos/IngotBreadcrumbsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotBreadcrumbsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotBreadcrumbsDemo?raw");
 
 export const IngotBreadcrumbsDoc: IngotDocPage = {
   name: "IngotBreadcrumbs",
@@ -18,7 +22,7 @@ export const IngotBreadcrumbsDoc: IngotDocPage = {
     cs: "Drobečky nad hlavičkou stránky — kde jsem a jak zpátky. V aplikaci bez bočního menu nesou celou orientaci do hloubky.",
     en: "Breadcrumbs above the page header — where I am and how to get back. In an application without a side menu they carry all the orientation in depth.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

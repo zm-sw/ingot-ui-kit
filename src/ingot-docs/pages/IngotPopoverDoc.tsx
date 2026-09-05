@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotPopoverDemo";
-import demoSource from "@/ingot-docs/demos/IngotPopoverDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-847. The gap that showed everywhere: TopNav owned a close delay, a
 // click-outside listener and a roving focus; MegaMenu and UserMenu could
 // not position themselves. One answer instead of four.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotPopoverDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotPopoverDemo?raw");
+
 export const IngotPopoverDoc: IngotDocPage = {
   name: "IngotPopover",
   status: "beta",
@@ -21,7 +25,7 @@ export const IngotPopoverDoc: IngotDocPage = {
     cs: "Panel ukotvený k prvku, který ho otevřel: pozice, klik mimo, Escape a návrat fokusu na jednom místě.",
     en: "A panel anchored to what opened it: position, click outside, Escape and focus return, all in one place.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

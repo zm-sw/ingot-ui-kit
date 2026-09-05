@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotEmptyStateDemo";
-import demoSource from "@/ingot-docs/demos/IngotEmptyStateDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotEmptyStateDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotEmptyStateDemo?raw");
 
 export const IngotEmptyStateDoc: IngotDocPage = {
   name: "IngotEmptyState",
@@ -17,7 +21,7 @@ export const IngotEmptyStateDoc: IngotDocPage = {
     cs: "Prázdný stav: jedna věta, co tu není, volitelně proč a volitelně afordance, jak to změnit.",
     en: "Empty state: one sentence saying what is missing, optionally why, and optionally the affordance that changes it.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotPaginationDemo";
-import demoSource from "@/ingot-docs/demos/IngotPaginationDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotPaginationDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotPaginationDemo?raw");
 
 export const IngotPaginationDoc: IngotDocPage = {
   name: "IngotPagination",
@@ -17,7 +21,7 @@ export const IngotPaginationDoc: IngotDocPage = {
     cs: "Stránkování pod tabulkou. Řízené volajícím — s tabulkou se nepře o to, kdo drží stav stránky.",
     en: "Pagination under a table. Controlled by the caller — it never fights the table over who owns the page state.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

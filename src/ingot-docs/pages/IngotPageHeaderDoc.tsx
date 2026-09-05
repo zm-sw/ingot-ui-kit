@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotPageHeaderDemo";
-import demoSource from "@/ingot-docs/demos/IngotPageHeaderDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotPageHeaderDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotPageHeaderDemo?raw");
 
 export const IngotPageHeaderDoc: IngotDocPage = {
   name: "IngotPageHeader",
@@ -17,7 +21,7 @@ export const IngotPageHeaderDoc: IngotDocPage = {
     cs: "Hlavička obrazovky: nadpis, věta pod ním, akce vpravo. Typografický spec má jedno místo a nenese s sebou router.",
     en: "The screen header: a title, a sentence under it, actions on the right. One home for the type spec, and it drags no router along.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

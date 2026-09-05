@@ -1,10 +1,14 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingSegmentsDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingSegmentsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. The tag is square mono in lowercase — a technical fact about the
 // workshop, not an entity state. A round uppercase pill is IngotBadge.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingSegmentsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingSegmentsDemo?raw");
+
 export const IngotMarketingSegmentsDoc: IngotDocPage = {
   name: "IngotMarketingSegments",
   status: "beta",
@@ -19,7 +23,7 @@ export const IngotMarketingSegmentsDoc: IngotDocPage = {
     cs: "Karty „pro koho“ — titulek, věta a štítky provozu. Žádný štítek nenese akcent; ten patří hlavičce sekce.",
     en: "The “who it is for” cards — a title, a sentence and shop-floor tags. No tag carries the accent; that belongs to the section head.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

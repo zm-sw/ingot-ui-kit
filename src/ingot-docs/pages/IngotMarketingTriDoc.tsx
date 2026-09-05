@@ -1,10 +1,14 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingTriDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingTriDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. One rounded frame, panels separated by a hairline: ``gap:1px``
 // on a ``--border`` background, so the gap IS the line.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingTriDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingTriDemo?raw");
+
 export const IngotMarketingTriDoc: IngotDocPage = {
   name: "IngotMarketingTri",
   status: "beta",
@@ -27,7 +31,7 @@ export const IngotMarketingTriDoc: IngotDocPage = {
     cs: "Trojice featur pod hlavičkou sekce — ikona v akcentovém rámečku, titulek a věta. Jeden rám, panely oddělené vlasovou linkou.",
     en: "Three features under a section head — an icon in an accent frame, a title and a sentence. One frame, panels split by a hairline.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

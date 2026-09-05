@@ -30,7 +30,9 @@ jobs:
         # The full build, not just `vite build`: the prerender step writes
         # one HTML file per address, and a page whose content cannot be
         # rendered in node must fail here rather than ship as an empty
-        # shell that still looks like a page.
+        # shell that still looks like a page. The bundle budget runs inside
+        # it too — a bundle does not get big in one commit, it gets big in
+        # forty that were each obviously fine.
         run: npm run build
 
   version-guard:

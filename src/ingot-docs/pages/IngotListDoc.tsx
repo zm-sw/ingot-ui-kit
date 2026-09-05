@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotListDemo";
-import demoSource from "@/ingot-docs/demos/IngotListDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotListDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotListDemo?raw");
 
 export const IngotListDoc: IngotDocPage = {
   name: "IngotList",
@@ -18,7 +22,7 @@ export const IngotListDoc: IngotDocPage = {
     cs: "Výčet: odrážky, čísla, nebo holý seznam bez značek. Značka i odsazení patří k sobě a rozhoduje se o nich na jednom místě.",
     en: "A list: bullets, numbers, or no markers at all. The marker and the indent belong together, and one place decides both.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

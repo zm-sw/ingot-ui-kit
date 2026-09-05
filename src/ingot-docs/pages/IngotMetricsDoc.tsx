@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMetricsDemo";
-import demoSource from "@/ingot-docs/demos/IngotMetricsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMetricsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMetricsDemo?raw");
 
 export const IngotMetricsDoc: IngotDocPage = {
   name: "IngotMetrics",
@@ -32,7 +36,7 @@ export const IngotMetricsDoc: IngotDocPage = {
     cs: "Čísla, podle kterých se obrazovka čte na první pohled. Dvě hustoty jedné komponenty: pruh pod hlavičkou a kompaktní shluk do hlavičky.",
     en: "The numbers by which a screen is read at a glance. Two densities of one component: a strip below the header and a compact cluster inside it.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -250,7 +250,7 @@ export function IngotTopNav({
       <div className="border-b border-border bg-surface">
         <div className={cx("flex items-center gap-1 px-4 py-2.5", contentClassName)}>
         {menuButton}
-        <div className="mr-3 flex items-center gap-2.5 text-base font-bold tracking-[-0.02em] text-ink">
+        <div className="mr-3 flex items-center gap-2.5 text-base font-semibold tracking-[-0.02em] text-ink">
           {brand}
         </div>
         <nav

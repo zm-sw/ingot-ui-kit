@@ -1,6 +1,10 @@
-import { Demo } from "@/ingot-docs/demos/IngotRadioGroupDemo";
-import demoSource from "@/ingot-docs/demos/IngotRadioGroupDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotRadioGroupDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotRadioGroupDemo?raw");
 
 export const IngotRadioGroupDoc: IngotDocPage = {
   name: "IngotRadioGroup",
@@ -16,7 +20,7 @@ export const IngotRadioGroupDoc: IngotDocPage = {
     cs: "Jedna volba z několika, všechny vidět naráz. Nativní skupina, takže šipky i odesílání formuláře jedou samy.",
     en: "One choice out of several, all visible at once. A native group, so the arrows and form submission work by themselves.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

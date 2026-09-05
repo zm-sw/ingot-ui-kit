@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotModalDemo";
-import demoSource from "@/ingot-docs/demos/IngotModalDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.4 (KAN-853): the component is untouched — the quick-create rule left the module this dialog carries the depth for.
 // Nothing a caller passes or sees changed; the version moves because
 // the module underneath it did.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotModalDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotModalDemo?raw");
+
 export const IngotModalDoc: IngotDocPage = {
   name: "IngotModal",
   status: "stable",
@@ -33,7 +37,7 @@ export const IngotModalDoc: IngotDocPage = {
     cs: "Skořápka dialogu s a11y laťkou: focus trap, ESC, scroll lock, aria-modal a návrat fokusu na spouštěč.",
     en: "Dialog shell with the accessibility floor built in: focus trap, ESC, scroll lock, aria-modal and focus returned to the trigger.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

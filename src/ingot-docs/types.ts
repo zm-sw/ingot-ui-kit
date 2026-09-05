@@ -188,16 +188,20 @@ export interface IngotDocPage {
   /** One sentence for the menu and above the demo. */
   summary: Localized<string>;
   /**
-   * Live demo. MUST render the real component from ``@/ingot``.
+   * Loads the live demo. It MUST render the real component from ``@/ingot``.
    *
-   * It is handed the reader's language, because a demo is part of the page
-   * and a page that translates everything except the one thing the reader
-   * is looking at is worse than one that translates nothing: it looks
-   * finished. The demo holds its own texts as a ``Localized`` constant at
-   * the top of the module, where the code listing shows them — the guard
-   * refuses Czech anywhere else in a demo.
+   * A loader rather than the component, because sixty-six demos in the
+   * first payload is sixty-five demos nobody asked for. The reader opens
+   * one page; the rest arrive if and when they go there. The shape is
+   * exactly what ``React.lazy`` takes, so the shell hands it straight over.
+   *
+   * The demo is given the reader's language: a page that translates
+   * everything except the one thing the reader is looking at is worse than
+   * one that translates nothing, because it looks finished. Its texts live
+   * in a ``Localized`` constant at the top of the module, where the code
+   * listing shows them — the guard refuses Czech anywhere else in a demo.
    */
-  Demo: (props: { lang: DocLang }) => JSX.Element;
+  demo: () => Promise<{ default: (props: { lang: DocLang }) => JSX.Element }>;
   /**
    * Source of that demo, printed under the "Show code" toggle.
    *
@@ -210,8 +214,9 @@ export interface IngotDocPage {
    * that ``Demo`` comes from:
    *
    * ```ts
-   * import { Demo } from "@/ingot-docs/demos/IngotTableDemo";
-   * import demoSource from "@/ingot-docs/demos/IngotTableDemo?raw";
+   * const demo = () =>
+   *   import("@/ingot-docs/demos/IngotTableDemo").then((m) => ({ default: m.Demo }));
+   * const demoSource = () => import("@/ingot-docs/demos/IngotTableDemo?raw");
    * ```
    *
    * That removes the question "what keeps the listing and the demo from
@@ -219,9 +224,13 @@ export interface IngotDocPage {
    * one file read twice. The ``ingot-doc-pages`` guard checks both
    * pairings so the pair cannot be disconnected quietly.
    *
+   * A loader for the same reason as ``demo``, and one more: the listing is
+   * behind a toggle most readers never open, so its text has no business in
+   * the first payload at all.
+   *
    * Not translated on purpose — code is code.
    */
-  demoSource: string;
+  demoSource: () => Promise<{ default: string }>;
   /**
    * When to reach for the primitive. Situations, not features — the reader
    * decides by what they are building, not by what the component can do.

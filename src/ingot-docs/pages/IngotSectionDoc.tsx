@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSectionDemo";
-import demoSource from "@/ingot-docs/demos/IngotSectionDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSectionDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSectionDemo?raw");
 
 export const IngotSectionDoc: IngotDocPage = {
   name: "IngotSection",
@@ -17,7 +21,7 @@ export const IngotSectionDoc: IngotDocPage = {
     cs: "Sekce obrazovky: nadpis správné úrovně a kotva, která sedí na sekci, ne na nadpisu.",
     en: "A screen section: a heading at the right level and an anchor that sits on the section, not on the heading.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

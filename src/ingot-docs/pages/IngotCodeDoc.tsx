@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotCodeDemo";
-import demoSource from "@/ingot-docs/demos/IngotCodeDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotCodeDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotCodeDemo?raw");
 
 export const IngotCodeDoc: IngotDocPage = {
   name: "IngotCode",
@@ -29,7 +33,7 @@ export const IngotCodeDoc: IngotDocPage = {
     cs: "Kód v textu, nebo výpis přes celou šířku. Výpis se umí posunout do strany — což je ta jediná věc, na které ruční výpisy padají.",
     en: "Code inside a sentence, or a listing across the full width. The listing scrolls sideways — the one thing hand-rolled listings get wrong.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSelectDemo";
-import demoSource from "@/ingot-docs/demos/IngotSelectDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSelectDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSelectDemo?raw");
 
 export const IngotSelectDoc: IngotDocPage = {
   name: "IngotSelect",
@@ -30,7 +34,7 @@ export const IngotSelectDoc: IngotDocPage = {
     cs: "Výběr jedné hodnoty z krátké množiny — filtr nad seznamem, přepínač varianty v nastavení. Nativní select: klávesnice, odečítač i mobil zadarmo.",
     en: "Picking one value from a short set — a filter above a list, a variant switch in settings. A native select: keyboard, screen reader and mobile behaviour for free.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

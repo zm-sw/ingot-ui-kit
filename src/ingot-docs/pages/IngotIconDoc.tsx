@@ -1,12 +1,16 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotIconDemo";
-import demoSource from "@/ingot-docs/demos/IngotIconDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // 1.4 (KAN-854): the development-only warning no longer reaches for a bundler's field directly. A consumer's typecheck used to fail
 // inside our source, on a file they never wrote, unless their
 // tsconfig happened to include the bundler's types. Nothing a
 // caller passes or sees changed.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotIconDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotIconDemo?raw");
+
 export const IngotIconDoc: IngotDocPage = {
   name: "IngotIcon",
   status: "stable",
@@ -31,7 +35,7 @@ export const IngotIconDoc: IngotDocPage = {
     cs: "Ikony rozhraní — jedna sada, jedna technika. Kreslí se čárou v mřížce 24×24, barví se textem rodiče a škáluje se jedním číslem.",
     en: "Interface icons — one set, one technique. Line art on a 24×24 grid, inked by the parent's text colour, scaled by a single number.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

@@ -1,9 +1,13 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMarketingStepsDemo";
-import demoSource from "@/ingot-docs/demos/IngotMarketingStepsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-664. The number is computed from the order so "01, 02, 04" cannot be written.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMarketingStepsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMarketingStepsDemo?raw");
+
 export const IngotMarketingStepsDoc: IngotDocPage = {
   name: "IngotMarketingSteps",
   status: "beta",
@@ -26,7 +30,7 @@ export const IngotMarketingStepsDoc: IngotDocPage = {
     cs: "Kroky „jak to funguje“ — karty s pořadovým číslem a šipkou k dalšímu kroku. Číslo se počítá z pořadí, nepíše se.",
     en: "The “how it works” steps — cards with an ordinal and an arrow to the next one. The number comes from the order, it is not typed.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

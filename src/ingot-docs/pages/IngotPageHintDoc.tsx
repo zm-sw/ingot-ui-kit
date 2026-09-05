@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotPageHintDemo";
-import demoSource from "@/ingot-docs/demos/IngotPageHintDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // IngotPageHint is the kit's only page-level help; earlier help mechanisms
 // of the product are not part of the kit. The rendered text must not name
 // them (internal names), hence this comment.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotPageHintDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotPageHintDemo?raw");
+
 export const IngotPageHintDoc: IngotDocPage = {
   name: "IngotPageHint",
   status: "beta",
@@ -34,7 +38,7 @@ export const IngotPageHintDoc: IngotDocPage = {
     cs: "Nápověda stránky se žárovkou: klik jednorázově zvýrazní prvky, kterých se nápověda týká.",
     en: "A page hint with a bulb: a click highlights the elements the hint talks about, once.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

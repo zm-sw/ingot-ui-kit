@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotToolbarDemo";
-import demoSource from "@/ingot-docs/demos/IngotToolbarDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotToolbarDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotToolbarDemo?raw");
 
 export const IngotToolbarDoc: IngotDocPage = {
   name: "IngotToolbar",
@@ -17,7 +21,7 @@ export const IngotToolbarDoc: IngotDocPage = {
     cs: "Filtr bar nad seznamem. Drží mezery, zalamování a pravý konec; čím se filtruje, dodává volající.",
     en: "A filter bar above a list. It owns spacing, wrapping and the right end; what filters, the caller supplies.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

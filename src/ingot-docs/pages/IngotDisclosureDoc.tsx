@@ -1,6 +1,4 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotDisclosureDemo";
-import demoSource from "@/ingot-docs/demos/IngotDisclosureDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-786. Born from a context panel that drew its own collapsible section
@@ -13,6 +11,12 @@ import type { IngotDocPage } from "@/ingot-docs/types";
 //
 // The group (accordion) is part of the first version, also by owner
 // decision.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotDisclosureDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotDisclosureDemo?raw");
+
 export const IngotDisclosureDoc: IngotDocPage = {
   name: "IngotDisclosure",
   status: "beta",
@@ -28,7 +32,7 @@ export const IngotDisclosureDoc: IngotDocPage = {
     cs: "Sbalitelná sekce postranního panelu — popisek, počet a obsah, který se schová. Stav drží prohlížeč, ne React.",
     en: "A collapsible section in a side panel — a label, a count and a body that hides. The browser holds the state, not React.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [

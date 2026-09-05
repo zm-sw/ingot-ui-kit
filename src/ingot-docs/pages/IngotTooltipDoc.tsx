@@ -1,11 +1,15 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotTooltipDemo";
-import demoSource from "@/ingot-docs/demos/IngotTooltipDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
 // KAN-847. Replaces the title attribute, which IngotRowActions used to
 // lean on: a browser tooltip never shows on touch and a screen reader may
 // skip it, which for a row of icon buttons is the whole label.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotTooltipDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotTooltipDemo?raw");
+
 export const IngotTooltipDoc: IngotDocPage = {
   name: "IngotTooltip",
   status: "beta",
@@ -20,7 +24,7 @@ export const IngotTooltipDoc: IngotDocPage = {
     cs: "Krátký popisek u prvku, na hover i na fokus. Popisuje, nepojmenovává — jméno prvku zůstává na něm.",
     en: "A short description next to a control, on hover and on focus. It describes, it does not name — the control keeps its own name.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
