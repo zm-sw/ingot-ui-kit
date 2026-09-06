@@ -67,6 +67,7 @@
   --focus-ring: 2px;
   --focus-ring-offset: 2px;
   --frame: 1440px;
+  --aside: 224px;
   --font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
   --ease: cubic-bezier(0.2, 0.6, 0.3, 1);
