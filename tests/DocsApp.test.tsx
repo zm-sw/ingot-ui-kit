@@ -397,13 +397,18 @@ describe("DocsApp", () => {
 
     await user.click(screen.getByTestId("docs-copy"));
 
+    // The confirmation shows in the button label, and it is the LAST thing
+    // the handler does — so waiting for it also proves the clipboard was
+    // written. Waiting for the clipboard first and checking the label
+    // afterwards is a race: the label clears itself after two seconds, and
+    // under a loaded full-suite run the wait can outlast that.
+    await waitFor(() =>
+      expect(screen.getByTestId("docs-copy")).toHaveTextContent(CHROME.copiedCode.cs),
+    );
+
     const page = INGOT_DOC_PAGES.find((p) => p.name === "IngotEmptyState");
     const { default: source } = await page!.demoSource();
-    await waitFor(async () => {
-      expect(await window.navigator.clipboard.readText()).toBe(source);
-    });
-    // The confirmation shows in the button label and disappears again after a moment.
-    expect(screen.getByTestId("docs-copy")).toHaveTextContent(CHROME.copiedCode.cs);
+    expect(await window.navigator.clipboard.readText()).toBe(source);
   });
 
   it("renders the Tokens section with the component token list", () => {

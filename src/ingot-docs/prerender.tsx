@@ -24,32 +24,21 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 import { IngotCode, IngotList, IngotPageHeader, IngotSection } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
+import { headFor, type PageHead } from "@/ingot-docs/head";
 import type { DocLang } from "@/ingot-docs/lang";
-import { displayName } from "@/ingot-docs/naming";
-import {
-  ALL_ROUTES,
-  pathOf,
-  type DocsLocation,
-  type DocsPage,
-} from "@/ingot-docs/routes";
+import { ALL_ROUTES, type DocsLocation, type DocsPage } from "@/ingot-docs/routes";
 
 export interface PrerenderedRoute {
   /** ``/komponenty/table`` — where the file goes and what the sitemap lists. */
   path: string;
   lang: DocLang;
-  title: string;
-  description: string;
-  /** The other language's address, for ``hreflang``. */
-  alternates: { lang: DocLang; path: string }[];
+  /**
+   * Everything the ``<head>`` says, from the same function the client uses
+   * when it navigates. Two independent tellings were how the first load
+   * came out right and every click after it wrong.
+   */
+  head: PageHead;
   html: string;
-}
-
-function titleOf(page: DocsPage, lang: DocLang): string {
-  return page.kind === "guide" ? page.guide.title[lang] : displayName(page.doc.name);
-}
-
-function summaryOf(page: DocsPage, lang: DocLang): string {
-  return page.kind === "guide" ? page.guide.summary[lang] : page.doc.summary[lang];
 }
 
 /**
@@ -109,31 +98,20 @@ function Body({ page, lang }: { page: DocsPage; lang: DocLang }): JSX.Element {
  * on stderr so the gap is visible rather than silent.
  */
 export function renderRoute({ page, lang }: DocsLocation): PrerenderedRoute {
-  const title = titleOf(page, lang);
-  const description = summaryOf(page, lang);
-  const path = pathOf(page, lang);
+  const head = headFor(page, lang);
 
   let body = "";
   try {
     body = renderToStaticMarkup(<Body page={page} lang={lang} />);
   } catch (error) {
-    console.error(`[prerender] ${path}: body skipped — ${String(error)}`);
+    console.error(`[prerender] ${head.path}: body skipped — ${String(error)}`);
   }
 
   const heading = renderToStaticMarkup(
-    <IngotPageHeader title={title} description={description} />,
+    <IngotPageHeader title={head.heading} description={head.description} />,
   );
 
-  return {
-    path,
-    lang,
-    title,
-    description,
-    alternates: (["cs", "en"] as const)
-      .filter((other) => other !== lang)
-      .map((other) => ({ lang: other, path: pathOf(page, other) })),
-    html: heading + body,
-  };
+  return { path: head.path, lang, head, html: heading + body };
 }
 
 export function renderAllRoutes(): PrerenderedRoute[] {

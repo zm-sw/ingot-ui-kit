@@ -95,11 +95,11 @@ describe("what a crawler is given", () => {
     ALL_ROUTES.slice(0, 8).map((route) => [pathOf(route.page, route.lang), route]),
   )("%s carries its own title and a description", (_path, route) => {
     const rendered = renderRoute(route);
-    expect(rendered.title.length).toBeGreaterThan(0);
-    expect(rendered.description.length).toBeGreaterThan(20);
+    expect(rendered.head.title.length).toBeGreaterThan(0);
+    expect(rendered.head.description.length).toBeGreaterThan(20);
     // The heading is drawn by the kit's page header, like everywhere else
     // on this site, so it is an <h1> with the kit's classes on it.
-    expect(rendered.html).toMatch(new RegExp(`<h1[^>]*>${rendered.title}</h1>`));
+    expect(rendered.html).toMatch(new RegExp(`<h1[^>]*>${rendered.head.heading}</h1>`));
   });
 
   it("renders a component page's own content, not a shell", () => {
@@ -125,7 +125,11 @@ describe("what a crawler is given", () => {
 
   it("points each language at the other one", () => {
     const rendered = renderRoute(ALL_ROUTES[0]);
-    expect(rendered.alternates).toHaveLength(1);
-    expect(rendered.alternates[0].lang).not.toBe(rendered.lang);
+    // Both languages, this one included — a crawler that finds only one of
+    // the pair still learns the other exists.
+    expect(rendered.head.alternates.map((alt) => alt.lang).sort()).toEqual([
+      "cs",
+      "en",
+    ]);
   });
 });
