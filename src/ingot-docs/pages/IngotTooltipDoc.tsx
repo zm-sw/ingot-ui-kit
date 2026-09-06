@@ -13,7 +13,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotTooltipDemo?raw");
 export const IngotTooltipDoc: IngotDocPage = {
   name: "IngotTooltip",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-966) - the bubble is positioned before paint like the popover, so it
+  // no longer appears once at the previous opening's coordinates and jumps.
+  version: "1.1",
   tag: ".tooltip",
   tokens: ["--ink", "--bg", "--r-md", "--shadow-lg"],
   classNameNote: {

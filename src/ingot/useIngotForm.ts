@@ -86,6 +86,17 @@ export function useIngotForm(
     }));
   }, []);
 
+  // The rule reads this as "a conditional value, so its identity may change
+  // every render". Here it cannot: taking that branch calls `setState`
+  // during render, and what it sets is exactly what makes both conditions
+  // false — `values` stops being null, `key` becomes `resetKey`. The
+  // branch cannot fire on two renders in a row, so the fresh object exists
+  // only on the pass React immediately discards and re-runs.
+  //
+  // A `useMemo` would not help either: its dependency would be `initial`,
+  // whose identity this hook deliberately ignores — that is the whole
+  // point of `resetKey`, and of the data-loss bug described above.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const values = needsSeed || needsReset ? (initial ? { ...initial } : null) : state.values;
 
   const payload = useCallback(

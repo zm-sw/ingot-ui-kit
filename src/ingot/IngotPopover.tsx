@@ -101,10 +101,7 @@ export function IngotPopover({
   // Before paint, so the panel never shows up in the top-left corner first
   // and jumps into place after.
   useLayoutEffect(() => {
-    if (!open) {
-      setPosition(null);
-      return;
-    }
+    if (!open) return;
     reposition();
   }, [open, reposition]);
 

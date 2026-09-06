@@ -59,13 +59,20 @@ export function useOverlayScrollLock(): void {
  */
 export function useOverlayFocusReturn(): void {
   const openerRef = useRef<Element | null>(null);
-  if (openerRef.current === null && typeof document !== "undefined") {
-    openerRef.current = document.activeElement;
-  }
 
+  // Captured in an effect rather than while rendering. A ref read during
+  // render is a bug waiting for the day React renders the component twice
+  // before mounting it — the second pass would find the ref already set,
+  // or, worse, a first pass that never mounted would have taken the
+  // reading. In an effect it happens exactly once, at mount.
+  //
+  // It still catches the right element: this hook is called BEFORE the one
+  // that moves focus into the overlay, and effects run in call order, so
+  // the opener is what has focus when this line runs.
   useEffect(() => {
-    const opener = openerRef.current;
+    openerRef.current = document.activeElement;
     return () => {
+      const opener = openerRef.current;
       if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
     };
   }, []);
