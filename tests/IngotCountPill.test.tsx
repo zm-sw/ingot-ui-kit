@@ -80,8 +80,8 @@ describe("IngotTabs draws its count with the pill", () => {
     );
 
     const tab = screen.getByTestId("tabs-tab-items");
-    // The pill sits inside the tab, so the tab's own name already reads
-    // "Položky 12" — a second label would only repeat it.
+    // The pill sits inside the tab, so the tab's own name already ends in
+    // the count — a second label would only repeat it.
     expect(tab).toHaveAccessibleName("Položky 12");
     expect(within(tab).getByText("12").className).toContain("rounded-full");
   });
