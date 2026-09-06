@@ -139,6 +139,12 @@ export { IngotField, type IngotFieldType } from "./IngotField";
 export { IngotSwitch } from "./IngotSwitch";
 export { IngotRadioGroup, type IngotRadioOption } from "./IngotRadioGroup";
 export { IngotCallout, type IngotCalloutTone } from "./IngotCallout";
+// A chip is a CONTROL, unlike IngotBadge one line above: a filter switched
+// on, or a choice taken back off a list.
+export { IngotChip, IngotChipGroup, type IngotChipProps } from "./IngotChip";
+// The round pill with a number in it. IngotTabs draws its counts with this
+// one, so a tab's count and a section heading's count are the same element.
+export { IngotCountPill } from "./IngotCountPill";
 export { IngotFieldInput } from "./IngotFieldInput";
 export {
   isNumericKind,

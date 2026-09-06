@@ -15,7 +15,11 @@ export const IngotFieldDoc: IngotDocPage = {
   // 1.2 (KAN-848) — `type` (text, number, password, e-mail, url,
   // tel) and `textarea` with `rows`. The value stays a string: an empty
   // numeric box is ambiguous and only the screen knows what it means.
-  version: "1.2",
+  // 1.3 (KAN-942) — the handoff's `.textarea` sizing (min-height, reading
+  // line-height) and an optional soft character count under the field.
+  // Several lines stay a `type`, not a component of their own: the
+  // accessible wiring is the same and two copies of it would drift.
+  version: "1.3",
   tag: ".field",
   tokens: [
     "--surface",
@@ -159,6 +163,15 @@ export const IngotFieldDoc: IngotDocPage = {
       },
     },
     {
+      name: "counterMax",
+      type: "number",
+      required: false,
+      note: {
+        cs: "Měkký počet znaků pod polem („128 / 160“). Text neusekne — limit hlídá server.",
+        en: "A soft character count under the field (“128 / 160”). It never truncates — the server holds the limit.",
+      },
+    },
+    {
       name: "label",
       type: "ReactNode",
       required: true,
@@ -290,6 +303,13 @@ export const IngotFieldDoc: IngotDocPage = {
         <IngotCode>accent</IngotCode> a ring 3px <IngotCode>accent-bg</IngotCode>. Kdyby
         seděl jen na <IngotCode>&lt;input&gt;</IngotCode>, přípona by z něj vypadla.
       </>,
+      <>
+        Počet znaků je ozdoba pro oko a odečítač ho nečte: číslo, které se mění při
+        každém stisku, by mluvilo přes psaní. Limit patří do <IngotCode>hint</IngotCode>{" "}
+        jako věta — ta se nehýbe a jde přes <IngotCode>aria-describedby</IngotCode>.
+        Pole s <IngotCode>counterMax</IngotCode> bez takové věty limit neřekne nikomu,
+        kdo na něj nevidí.
+      </>,
     ],
     en: [
       <>
@@ -313,6 +333,14 @@ export const IngotFieldDoc: IngotDocPage = {
         <IngotCode>accent</IngotCode> border and a 3px <IngotCode>accent-bg</IngotCode>{" "}
         ring. On the <IngotCode>&lt;input&gt;</IngotCode> alone the affix would fall
         outside it.
+      </>,
+      <>
+        The character count is decoration for the eye and a screen reader does not read
+        it: a number that changes on every keystroke would talk over the typing. The
+        limit belongs in <IngotCode>hint</IngotCode> as a sentence — that one does not
+        move and goes through <IngotCode>aria-describedby</IngotCode>. A field with{" "}
+        <IngotCode>counterMax</IngotCode> and no such sentence states its limit to
+        nobody who cannot see it.
       </>,
     ],
   },

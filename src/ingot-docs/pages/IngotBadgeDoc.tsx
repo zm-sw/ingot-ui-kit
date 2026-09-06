@@ -10,7 +10,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotBadgeDemo?raw");
 export const IngotBadgeDoc: IngotDocPage = {
   name: "IngotBadge",
   status: "stable",
-  version: "1.0",
+  // 1.1 (KAN-945) — the aside on what a badge is NOT said the kit had no
+  // primitive for a count. It has one now, and the note names it.
+  version: "1.1",
   tag: ".badge",
   tokens: [
     "--surface-2",

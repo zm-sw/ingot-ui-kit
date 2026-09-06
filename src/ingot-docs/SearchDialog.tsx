@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
-import { IngotEyebrow, IngotList, IngotModal, IngotSearchInput } from "@/ingot";
+import { IngotEyebrow, IngotModal, IngotSearchInput } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang } from "@/ingot-docs/lang";
-import { search, type SearchHit } from "@/ingot-docs/search";
+import { search } from "@/ingot-docs/search";
+
+const LISTBOX_ID = "docs-search-listbox";
+const optionId = (index: number) => `docs-search-option-${index}`;
 
 /**
  * Find a page by anything the reader remembers about it.
@@ -21,6 +24,18 @@ import { search, type SearchHit } from "@/ingot-docs/search";
  * uses: Ctrl/Cmd+K opens it, arrows walk the results, Enter opens one and
  * Escape closes. That is also why the results are plain links — Enter is
  * then the browser's, not ours, and middle-click and "copy link" work.
+ *
+ * The arrows move a highlight, not the focus: the caret has to stay in the
+ * field so the next letter goes where the reader expects. To a screen
+ * reader that is invisible unless it is said out loud, which is what the
+ * combobox wiring is for — the field names the list, the list names its
+ * options, and ``aria-activedescendant`` follows the highlight. Without it
+ * the reader arrows through silence.
+ *
+ * It also says how many matched and admits when it cut the list. Showing
+ * twenty of thirty-one without a word is the worst answer available: the
+ * reader believes they have seen everything, and the page they wanted is
+ * one of the eleven that were dropped.
  */
 export function SearchDialog({
   lang,
@@ -36,7 +51,16 @@ export function SearchDialog({
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const hits: SearchHit[] = search(query, lang);
+  const { hits, total } = search(query, lang);
+
+  const status =
+    hits.length === 0
+      ? CHROME.searchEmpty[lang]
+      : total > hits.length
+        ? CHROME.searchCut[lang]
+            .replace("{n}", String(hits.length))
+            .replace("{total}", String(total))
+        : CHROME.searchCount[lang].replace("{n}", String(total));
 
   // A new query means the old highlight points at a different page — or at
   // nothing. Landing on the first result is the only choice that is right
@@ -90,28 +114,54 @@ export function SearchDialog({
           label={CHROME.searchLabel[lang]}
           placeholder={CHROME.searchPlaceholder[lang]}
           ref={inputRef}
+          combobox={{
+            controls: LISTBOX_ID,
+            expanded: hits.length > 0,
+            activeOption: hits.length > 0 ? optionId(active) : null,
+          }}
           testId="docs-search-input"
         />
+        {/* Said out loud on every change of the query, and shown, because a
+            reader who can see the list still cannot count it. `polite`
+            waits for a pause in typing rather than interrupting it. */}
+        <p
+          aria-live="polite"
+          className="text-xs text-ink-3"
+          data-testid="docs-search-status"
+        >
+          {status}
+        </p>
         <div
           ref={listRef}
           className="max-h-[50vh] overflow-y-auto"
           data-testid="docs-search-results"
         >
-          {hits.length === 0 ? (
-            <p className="px-1 py-6 text-center text-sm text-ink-3">
-              {CHROME.searchEmpty[lang]}
-            </p>
-          ) : (
-            <IngotList
-              variant="plain"
-              items={hits.map((hit, index) => (
+          {hits.length > 0 && (
+            /* A listbox, not a list of links in a list: `role="option"` may
+               only sit inside `role="listbox"`, with nothing between. The
+               anchors keep their `href` all the same, so middle-click and
+               "copy link" still work — the role changes what is announced,
+               not what the element is. */
+            <div id={LISTBOX_ID} role="listbox" aria-label={CHROME.searchTitle[lang]}>
+              {hits.map((hit, index) => (
                 <a
                   key={hit.path}
+                  id={optionId(index)}
+                  role="option"
+                  aria-selected={index === active}
                   href={hit.path}
                   data-active={index === active}
                   onMouseEnter={() => setActive(index)}
                   className="block rounded-md px-2 py-1.5 hover:bg-surface-2 data-[active=true]:bg-surface-2"
                 >
+                  {/* Which of the two kinds this is. A guide and a component
+                      with related names are otherwise the same row, and the
+                      reader finds out only after opening the wrong one. */}
+                  <IngotEyebrow as="span" tone="muted" className="block">
+                    {hit.page.kind === "guide"
+                      ? CHROME.searchKindGuide[lang]
+                      : CHROME.searchKindComponent[lang]}
+                  </IngotEyebrow>
                   <span className="block text-sm font-medium text-ink">
                     {hit.title}
                   </span>
@@ -120,7 +170,7 @@ export function SearchDialog({
                   </span>
                 </a>
               ))}
-            />
+            </div>
           )}
         </div>
         <IngotEyebrow as="p" tone="muted">

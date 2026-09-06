@@ -21,7 +21,6 @@ import { dirname, join } from "node:path";
 
 import { renderAllRoutes } from "../dist-ssr/prerender.js";
 
-const SITE = "https://ingot.forgmatic.com";
 const DIST = "dist";
 
 const template = readFileSync(join(DIST, "index.html"), "utf-8");
@@ -35,25 +34,26 @@ function escape(text) {
     .replaceAll('"', "&quot;");
 }
 
+// The fields themselves come from `headFor` in the application, which the
+// running site calls too — otherwise the first load of an address would be
+// right and every click after it wrong. This function only formats them.
 function head(route) {
-  const url = `${SITE}${route.path}`;
-  const title = `${escape(route.title)} — Ingot UI Kit`;
+  const { title, description, canonical, ogLocale, alternates } = route.head;
+  const escaped = escape(title);
   return [
-    `<title>${title}</title>`,
-    `<meta name="description" content="${escape(route.description)}" />`,
-    `<link rel="canonical" href="${url}" />`,
+    `<title>${escaped}</title>`,
+    `<meta name="description" content="${escape(description)}" />`,
+    `<link rel="canonical" href="${canonical}" />`,
     // Both languages name each other AND themselves: a crawler that finds
     // only one of the two still learns the pair exists.
-    `<link rel="alternate" hreflang="${route.lang}" href="${url}" />`,
-    ...route.alternates.map(
-      (alt) =>
-        `<link rel="alternate" hreflang="${alt.lang}" href="${SITE}${alt.path}" />`,
+    ...alternates.map(
+      (alt) => `<link rel="alternate" hreflang="${alt.lang}" href="${alt.href}" />`,
     ),
     `<meta property="og:type" content="article" />`,
-    `<meta property="og:title" content="${title}" />`,
-    `<meta property="og:description" content="${escape(route.description)}" />`,
-    `<meta property="og:url" content="${url}" />`,
-    `<meta property="og:locale" content="${route.lang === "cs" ? "cs_CZ" : "en_GB"}" />`,
+    `<meta property="og:title" content="${escaped}" />`,
+    `<meta property="og:description" content="${escape(description)}" />`,
+    `<meta property="og:url" content="${canonical}" />`,
+    `<meta property="og:locale" content="${ogLocale}" />`,
     `<meta name="twitter:card" content="summary" />`,
   ].join("\n    ");
 }
@@ -79,10 +79,12 @@ for (const route of routes) {
 
 // The site root is the first guide, in the language the reader's browser
 // asks for. It cannot be prerendered per language — there is one file —
-// so it keeps the shell's own head and gets the Czech content, which is
-// what an unprefixed address means everywhere else on the site.
+// so it gets the Czech one, which is what an unprefixed address means
+// everywhere else on the site. Its canonical therefore names
+// `/pruvodce/uvod` rather than `/`, which is exactly right: the two
+// addresses are the same page and only one of them should be indexed.
 const root = routes.find((route) => route.path === "/pruvodce/uvod");
-if (root) writeFileSync(join(DIST, "index.html"), pageHtml({ ...root, path: "/" }));
+if (root) writeFileSync(join(DIST, "index.html"), pageHtml(root));
 
 // Written by hand rather than with a library: it is nine lines of XML, and
 // a dependency for nine lines is a dependency to keep up to date forever.
@@ -90,10 +92,10 @@ const urls = routes
   .map((route) =>
     [
       "  <url>",
-      `    <loc>${SITE}${route.path}</loc>`,
-      ...route.alternates.map(
+      `    <loc>${route.head.canonical}</loc>`,
+      ...route.head.alternates.map(
         (alt) =>
-          `    <xhtml:link rel="alternate" hreflang="${alt.lang}" href="${SITE}${alt.path}"/>`,
+          `    <xhtml:link rel="alternate" hreflang="${alt.lang}" href="${alt.href}"/>`,
       ),
       "  </url>",
     ].join("\n"),
