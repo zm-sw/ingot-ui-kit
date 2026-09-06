@@ -139,6 +139,9 @@ export { IngotField, type IngotFieldType } from "./IngotField";
 export { IngotSwitch } from "./IngotSwitch";
 export { IngotRadioGroup, type IngotRadioOption } from "./IngotRadioGroup";
 export { IngotCallout, type IngotCalloutTone } from "./IngotCallout";
+// A chip is a CONTROL, unlike IngotBadge one line above: a filter switched
+// on, or a choice taken back off a list.
+export { IngotChip, IngotChipGroup, type IngotChipProps } from "./IngotChip";
 export { IngotFieldInput } from "./IngotFieldInput";
 export {
   isNumericKind,

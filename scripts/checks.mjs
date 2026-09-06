@@ -111,6 +111,9 @@ const SUBCOMPONENTS = new Map([
   // extraProps the way IngotUserMenuSection is. A page of its own would
   // be a page about a context provider.
   ["IngotDisclosureGroup", "IngotDisclosure"],
+  // IngotChipGroup wraps its parent the way IngotDisclosureGroup does: it
+  // is the row's name for a screen reader and nothing without chips in it.
+  ["IngotChipGroup", "IngotChip"],
   ["IngotTopNavAccount", "IngotTopNav"],
   ["IngotUserMenuSection", "IngotUserMenu"],
   ["IngotUserMenuRow", "IngotUserMenu"],
