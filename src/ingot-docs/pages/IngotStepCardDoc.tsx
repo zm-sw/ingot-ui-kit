@@ -16,7 +16,9 @@ export const IngotStepCardDoc: IngotDocPage = {
   // tokens now, instead of being left to the browser.
   // 1.5 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: the type narrows the shared one instead of repeating its members.
-  version: "1.5",
+  // 1.6 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.6",
   tag: ".stepcard",
   tokens: [
     "--surface",
