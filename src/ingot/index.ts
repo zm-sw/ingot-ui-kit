@@ -207,6 +207,13 @@ export { IngotActionBar } from "./IngotActionBar";
 // then a jump, and every screen invented its own way of saying so.
 export { IngotSkeleton, type IngotSkeletonShape } from "./IngotSkeleton";
 export { IngotSpinner, type IngotSpinnerSize } from "./IngotSpinner";
+// The facts about a record, and the person beside them. Both were drawn by
+// hand in every screen that needed them, three different ways each.
+export {
+  IngotDescriptionList,
+  type IngotDescriptionItem,
+} from "./IngotDescriptionList";
+export { IngotAvatar, type IngotAvatarSize } from "./IngotAvatar";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------
