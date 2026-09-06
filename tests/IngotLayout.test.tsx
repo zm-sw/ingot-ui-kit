@@ -13,6 +13,7 @@
  * a screen reader meets, the name it hears, and the state it is told.
  */
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -114,6 +115,23 @@ describe("IngotSideNav", () => {
   });
 });
 
+function Segmented({ initial = "light" }: { initial?: string }) {
+  const [theme, setTheme] = useState(initial);
+  return (
+    <IngotSegmented
+      options={[
+        { value: "light", label: "Světlý" },
+        { value: "dark", label: "Tmavý" },
+        { value: "system", label: "Systém" },
+      ]}
+      value={theme}
+      onChange={setTheme}
+      label="Motiv"
+      testId="theme"
+    />
+  );
+}
+
 describe("IngotSegmented", () => {
   it("is a named radio group and reports the new value", () => {
     const onChange = vi.fn();
@@ -135,6 +153,39 @@ describe("IngotSegmented", () => {
 
     fireEvent.click(within(group).getByRole("radio", { name: "Tmavý" }));
     expect(onChange).toHaveBeenCalledWith("dark");
+  });
+
+  it("is one tab stop, entered at the selected choice", () => {
+    render(<Segmented initial="system" />);
+
+    const radios = screen.getAllByRole("radio");
+    expect(radios.map((radio) => radio.tabIndex)).toEqual([-1, -1, 0]);
+  });
+
+  it("arrows, Home and End move the selection", () => {
+    render(<Segmented />);
+    const group = screen.getByRole("radiogroup", { name: "Motiv" });
+
+    fireEvent.keyDown(group, { key: "ArrowRight" });
+    expect(screen.getByRole("radio", { name: "Tmavý" })).toBeChecked();
+
+    fireEvent.keyDown(group, { key: "End" });
+    expect(screen.getByRole("radio", { name: "Systém" })).toBeChecked();
+
+    fireEvent.keyDown(group, { key: "Home" });
+    expect(screen.getByRole("radio", { name: "Světlý" })).toBeChecked();
+
+    // The ends wrap, so a reader never lands on a dead key.
+    fireEvent.keyDown(group, { key: "ArrowLeft" });
+    expect(screen.getByRole("radio", { name: "Systém" })).toBeChecked();
+  });
+
+  it("moves focus with the selection, so the group is operable by keyboard alone", () => {
+    render(<Segmented />);
+    const group = screen.getByRole("radiogroup", { name: "Motiv" });
+
+    fireEvent.keyDown(group, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(screen.getByRole("radio", { name: "Tmavý" }));
   });
 });
 
