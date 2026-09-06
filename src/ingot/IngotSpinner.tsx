@@ -1,6 +1,7 @@
 import { type JSX } from "react";
 
 import { cx } from "./cx";
+import type { IngotSize } from "./vocabulary";
 
 /**
  * Something is happening and there is no shape to hold.
@@ -19,7 +20,8 @@ import { cx } from "./cx";
  * reader, a picture of nothing — the reader learns that something is
  * happening only if the page says so.
  */
-export type IngotSpinnerSize = "sm" | "md";
+/** No `lg`: both sizes match a Button, and nothing waits bigger than that. */
+export type IngotSpinnerSize = Extract<IngotSize, "sm" | "md">;
 
 /** Matched to `Button` so a spinner beside a button is the same height. */
 const SIZE: Record<IngotSpinnerSize, string> = {

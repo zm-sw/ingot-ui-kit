@@ -16,7 +16,9 @@ export const IngotRowActionsDoc: IngotDocPage = {
   // may skip.
   // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.3",
+  // 1.4 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.4",
   tag: ".rowactions",
   tokens: [
     "--surface-2",
@@ -163,7 +165,7 @@ export const IngotRowActionsDoc: IngotDocPage = {
         },
         {
           name: "tone",
-          type: '"default" | "danger"',
+          type: 'Extract<IngotTone, "neutral" | "danger">',
           required: false,
           note: {
             cs: "Nevratná akce zčervená při najetí. Výchozí je default.",

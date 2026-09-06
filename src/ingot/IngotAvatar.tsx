@@ -1,6 +1,7 @@
 import { type JSX } from "react";
 
 import { cx } from "./cx";
+import type { IngotSize } from "./vocabulary";
 
 /**
  * A person, as small as a person gets: initials, or their picture.
@@ -16,7 +17,8 @@ import { cx } from "./cx";
  * subtly wrong on exactly the names the kit's authors do not have, and
  * the caller already knows how it wants to abbreviate its people.
  */
-export type IngotAvatarSize = "sm" | "md";
+/** No `lg`: a big circle is a photograph, and that is a different block. */
+export type IngotAvatarSize = Extract<IngotSize, "sm" | "md">;
 
 /** `sm` matches the account in the top bar; `md` is for a list row or a detail. */
 const SIZE: Record<IngotAvatarSize, string> = {

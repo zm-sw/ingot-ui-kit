@@ -3,6 +3,7 @@ import { type JSX } from "react";
 import { IconButton } from "./IconButton";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 import { IngotTooltip } from "./IngotTooltip";
+import type { IngotTone } from "./vocabulary";
 
 /**
  * Actions of one table row — icon buttons at the end of the row.
@@ -39,7 +40,8 @@ export interface IngotRowAction {
   label: string;
   onClick: () => void;
   /** Irreversible action — turns red on hover. */
-  tone?: "default" | "danger";
+  /** Two of the shared six: an action is ordinary, or it destroys something. */
+  tone?: Extract<IngotTone, "neutral" | "danger">;
   disabled?: boolean;
   testId?: string;
 }
@@ -61,7 +63,7 @@ export function IngotRowActions({
         <IngotTooltip key={action.label} text={action.label}>
           <IconButton
             label={action.label}
-            tone={action.tone === "danger" ? "danger" : "default"}
+            tone={action.tone === "danger" ? "danger" : "neutral"}
             disabled={action.disabled}
             onClick={action.onClick}
             data-testid={action.testId}

@@ -15,6 +15,9 @@
  *    A prop that does not exist has no row in the props table, so
  *    "does it take className?" can only be answered by this sentence.
  */
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -103,4 +106,90 @@ describe("every doc page states its className policy", () => {
       }
     },
   );
+});
+
+/**
+ * 4. **`size` and `tone` mean one thing across the kit** (KAN-962).
+ *
+ * `size` used to exist on five primitives with four different types and
+ * `tone` on eight with five different enumerations. The same word meant
+ * something different in each: a callout's `info` and a badge's `accent`
+ * were the same colour under two names, `default` and `neutral` were the
+ * same absence of emphasis. Nobody could carry what they had learned from
+ * one component to the next — which is the failure a design system exists
+ * to prevent.
+ *
+ * Re-fragmenting is easy and invisible: a fresh `"sm" | "md"` union in a
+ * new primitive typechecks, renders correctly and reads fine in review.
+ * So the source is read here, and a declaration that does not reach the
+ * shared type has to say why out loud.
+ */
+describe("the kit has one vocabulary for size and tone", () => {
+  const KIT = join(process.cwd(), "src", "ingot");
+
+  /** Every `.tsx`/`.ts` in the kit, including the Forgmatic layer. */
+  function kitSources(dir: string): { file: string; source: string }[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) return kitSources(full);
+      if (!/\.tsx?$/.test(entry.name)) return [];
+      return [{ file: entry.name, source: readFileSync(full, "utf-8") }];
+    });
+  }
+
+  /**
+   * A declaration that spells out string literals instead of narrowing the
+   * shared type — `type XSize = "sm" | "md"` rather than
+   * `Extract<IngotSize, "sm" | "md">`.
+   */
+  const LITERAL_UNION =
+    /(?:type\s+\w*(?:Size|Tone)\s*=|(?:size|tone)\??\s*:)\s*(?:\|\s*)?"[^"]+"\s*\|/;
+
+  it("declares no size or tone as a union of bare literals", () => {
+    const offenders = kitSources(KIT)
+      .filter(({ file }) => !file.includes(".test."))
+      // The vocabulary is where the literals are supposed to be. The test
+      // above pins its contents, so it is not unguarded, just not this
+      // guard's business.
+      .filter(({ file }) => file !== "vocabulary.ts")
+      .filter(({ source }) => LITERAL_UNION.test(source))
+      .map(({ file }) => file);
+
+    expect(
+      offenders,
+      `${offenders.join(", ")} spell out a size or tone instead of narrowing ` +
+        "IngotSize / IngotTone with Extract<>. A fresh union of the same " +
+        "strings says nothing and drifts the day the shared set changes.",
+    ).toEqual([]);
+  });
+
+  it("keeps the vocabulary itself to the words it promises", () => {
+    // Guarding the guard: if `IngotTone` quietly grew "info" back, every
+    // Extract<> above would still typecheck and the two names for one
+    // colour would be back.
+    const source = readFileSync(join(KIT, "vocabulary.ts"), "utf-8");
+    const tone = source.match(/export type IngotTone =([^;]+);/)?.[1] ?? "";
+    const size = source.match(/export type IngotSize =([^;]+);/)?.[1] ?? "";
+    expect([...tone.matchAll(/"([^"]+)"/g)].map((m) => m[1])).toEqual([
+      "neutral",
+      "accent",
+      "ok",
+      "warn",
+      "danger",
+      "ink",
+    ]);
+    expect([...size.matchAll(/"([^"]+)"/g)].map((m) => m[1])).toEqual([
+      "sm",
+      "md",
+      "lg",
+    ]);
+  });
+
+  it("gives an icon a number, not a size word", () => {
+    // An icon's size is a pixel value matched to the type beside it — 13
+    // next to a 12px eyebrow, 15 in a search field. Three names cannot
+    // carry that without inventing a scale the handoff does not have.
+    const icon = readFileSync(join(KIT, "IngotIcon.tsx"), "utf-8");
+    expect(icon).toMatch(/size\??\s*:\s*number/);
+  });
 });

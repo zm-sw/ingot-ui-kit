@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { cx } from "./cx";
+import type { IngotSize } from "./vocabulary";
 
 // Development-only warnings read a bundler's flag, and ``ImportMeta`` has
 // no ``env`` unless the consumer's tsconfig happens to include the
@@ -30,7 +31,8 @@ type ButtonVariant =
   | "ghost"
   | "danger"
   | "inverse";
-type ButtonSize = "sm" | "md" | "lg";
+/** The whole shared scale — a button is the primitive the scale was cut for. */
+type ButtonSize = IngotSize;
 
 interface ButtonBaseProps {
   variant?: ButtonVariant;

@@ -15,7 +15,9 @@ export const IngotConfirmDoc: IngotDocPage = {
   status: "stable",
   // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.2",
+  // 1.3 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.3",
   tag: ".confirm",
   tokens: ["--bg", "--border", "--ink-2", "--warn", "--r-md"],
   classNameNote: {

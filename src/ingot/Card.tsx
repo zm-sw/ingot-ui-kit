@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 
 // ``elevated`` (``shadow-lg``) used to be here and had not a single
 // consumer — the spec does not know it and a shadow of that size belongs
@@ -13,7 +14,13 @@ import { cx } from "./cx";
 // they stay as a documented deviation from a spec that does not address
 // surface elevation at all.
 type CardElevation = "flat" | "raised";
-type CardTone = "default" | "dark";
+/**
+ * One of the shared six, plus one word that is not a tone: `dark` is an
+ * INVERTED SURFACE, not an emphasis — the card changes what it stands on
+ * rather than what it means. Folding it into the vocabulary would offer
+ * "dark" on a badge, where it means nothing.
+ */
+type CardTone = Extract<IngotTone, "neutral"> | "dark";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   elevation?: CardElevation;
@@ -44,7 +51,7 @@ const SURFACE_DARK =
 // would stay on ``--ink`` — near-black text on a near-black surface in the
 // light theme. A context, not an ``[&_h3]`` variant: that would silently
 // miss every heading ``CardTitle`` wraps.
-const CardToneContext = createContext<CardTone>("default");
+const CardToneContext = createContext<CardTone>("neutral");
 
 const SHADOW: Record<CardElevation, string> = {
   flat: "",
@@ -56,7 +63,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     elevation = "flat",
     padded = true,
     hover = false,
-    tone = "default",
+    tone = "neutral",
     className,
     children,
     ...rest

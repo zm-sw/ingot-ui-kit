@@ -207,7 +207,10 @@ describe("IngotCallout", () => {
     // An info block that shouted would teach people to skip the ones that
     // matter.
     expect(screen.queryByRole("alert")).toBeNull();
-    expect(screen.getByTestId("info")).toHaveAttribute("data-tone", "info");
+    // `accent` rather than `info`: the callout's default tone is the
+    // product's own colour, which the rest of the kit already called
+    // `accent`. One of the two names had to go.
+    expect(screen.getByTestId("info")).toHaveAttribute("data-tone", "accent");
   });
 
   it("carries an icon with every tone, so colour is never the only signal", () => {

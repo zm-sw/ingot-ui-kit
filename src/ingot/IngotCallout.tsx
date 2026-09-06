@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 
 /**
@@ -28,14 +29,26 @@ import { IngotIcon, type IngotIconName } from "./IngotIcon";
  * translated.
  */
 
-export type IngotCalloutTone = "info" | "ok" | "warn" | "danger";
+/**
+ * Four of the shared six. `info` used to be the word here and `accent`
+ * everywhere else, for the same colour — one of the two had to go, and the
+ * one that names the product's own colour is the one the rest of the kit
+ * already used.
+ */
+export type IngotCalloutTone = Extract<
+  IngotTone,
+  "accent" | "ok" | "warn" | "danger"
+>;
 
 const TONE: Record<
   IngotCalloutTone,
   { surface: string; icon: IngotIconName; iconColor: string }
 > = {
-  info: {
+  accent: {
     surface: "border-accent-border bg-accent-bg text-ink-2",
+    // The ICON is still called `info` — that is the picture's name in the
+    // icon set, not the tone's. Renaming it would be a second, unrelated
+    // break for a word nobody passes in.
     icon: "info",
     iconColor: "text-accent",
   },
@@ -57,7 +70,7 @@ const TONE: Record<
 };
 
 export function IngotCallout({
-  tone = "info",
+  tone = "accent",
   title,
   children,
   actions,

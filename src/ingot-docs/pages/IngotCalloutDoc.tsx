@@ -9,7 +9,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotCalloutDemo?raw");
 export const IngotCalloutDoc: IngotDocPage = {
   name: "IngotCallout",
   status: "beta",
-  version: "1.0",
+  // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: a tone was renamed: `info` is now `accent`.
+  version: "2.0",
   tag: ".callout",
   tokens: [
     "--accent",
@@ -93,7 +95,7 @@ export const IngotCalloutDoc: IngotDocPage = {
   props: [
     {
       name: "tone",
-      type: '"info" | "ok" | "warn" | "danger"',
+      type: 'Extract<IngotTone, "accent" | "ok" | "warn" | "danger">',
       required: false,
       note: {
         cs: "Význam bloku. Výchozí info. warn a danger se hlásí jako alert.",

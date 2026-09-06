@@ -8,7 +8,9 @@ const demoSource = () => import("@/ingot-docs/demos/CardDemo?raw");
 export const CardDoc: IngotDocPage = {
   name: "Card",
   status: "stable",
-  version: "1.0",
+  // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: a tone was renamed: `default` is now `neutral`.
+  version: "2.0",
   tag: ".card",
   tokens: [
     "--bg",
@@ -117,7 +119,7 @@ export const CardDoc: IngotDocPage = {
     },
     {
       name: "tone",
-      type: '"default" | "dark"',
+      type: 'Extract<IngotTone, "neutral"> | "dark"',
       required: false,
       note: {
         cs: "Obrácená plocha pro sdělení platformy. Na obrazovce nejvýš jedna.",

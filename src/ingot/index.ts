@@ -21,6 +21,12 @@
  * longer live in this repository. The `version-guard` CI check refuses a
  * change to `src/ingot/` that does not move a doc-page version.
  */
+// --- the kit's vocabulary ---------------------------------------------
+// `size` had four different types across five primitives and `tone` five
+// enumerations across eight. The same word meant something different in
+// each, which is the failure a design system exists to prevent.
+export type { IngotSize, IngotTone } from "./vocabulary";
+
 // --- kit-wide defaults --------------------------------------------------
 //
 // The kit has no translation namespace. The handful of labels a primitive
