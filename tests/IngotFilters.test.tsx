@@ -135,7 +135,11 @@ describe("IngotAttentionPanel", () => {
 describe("IngotPageLayout", () => {
   it("the index stands before the content in the DOM too", () => {
     render(
-      <IngotPageLayout aside={<nav aria-label="Obsah">rejstřík</nav>} testId="layout">
+      <IngotPageLayout
+        aside={<nav aria-label="Obsah">rejstřík</nav>}
+        asideLabel="Obsah"
+        testId="layout"
+      >
         <p>obsah</p>
       </IngotPageLayout>,
     );

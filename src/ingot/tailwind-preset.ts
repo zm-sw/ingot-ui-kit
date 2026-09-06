@@ -172,6 +172,12 @@ export default {
       maxWidth: {
         frame: "var(--frame, 1440px)",
       },
+      // The standing side index. Same reasoning as the frame: a number
+      // written into each screen is a number that stops agreeing with the
+      // next screen.
+      width: {
+        aside: "var(--aside, 224px)",
+      },
       boxShadow: {
         sm: "var(--shadow-sm)",
         DEFAULT: "var(--shadow-md)",
