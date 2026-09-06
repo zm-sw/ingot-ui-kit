@@ -79,3 +79,86 @@ jobs:
         # install, not ci: the example has no lockfile of its own — it would
         # record the kit's version and go stale at every release.
         run: npm install --no-audit --no-fund && npm run build
+
+  # Lighthouse on the built doc web.
+  #
+  # Two tickets carried a Lighthouse number in their acceptance and nobody
+  # ever measured one, because it needs a served site — so the figures that
+  # existed came from curl, and a transfer size is not a score. Without a
+  # score there is no way to say whether the site is getting slower.
+  #
+  # Measured against the built site served locally, not against the Vercel
+  # preview: a job that waits for a bot's comment to appear is a job that
+  # fails for reasons no reader can act on. What this does not see is the
+  # CDN's compression and caching, so Performance reads LOWER here than on
+  # the live site — the safe direction for a budget to be wrong in.
+  #
+  # `continue-on-error` on purpose, and with a date on it. The scores land
+  # as a comment from today; on 2026-10-06 the flag comes off and this
+  # becomes a required check. A threshold nobody has watched for a month is
+  # a threshold that blocks the first unrelated pull request and then gets
+  # switched off.
+  lighthouse:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build doc web
+        run: npm run build
+      - name: Serve it and measure
+        id: measure
+        continue-on-error: true
+        run: |
+          npx vite preview --port 4173 --strictPort &
+          npx wait-on http://localhost:4173 --timeout 60000
+          npx --yes @lhci/cli@0.14.x autorun
+      - name: Summarise the scores
+        id: summary
+        if: always()
+        run: |
+          {
+            echo 'body<<LIGHTHOUSE_EOF'
+            node scripts/lighthouse-summary.mjs
+            echo LIGHTHOUSE_EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Say so on the pull request
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = process.env.BODY;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            // One comment that gets edited, not one per push: a pull
+            // request with nine Lighthouse comments is a pull request
+            // nobody reads the review of.
+            const existing = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100,
+            });
+            const mine = existing.data.find(
+              (comment) =>
+                comment.user.type === "Bot" && comment.body.startsWith("### Lighthouse"),
+            );
+            if (mine) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: mine.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+        env:
+          BODY: ${{ steps.summary.outputs.body }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          if-no-files-found: ignore

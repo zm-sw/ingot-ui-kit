@@ -20,7 +20,9 @@ export const IngotDrawerDoc: IngotDocPage = {
   // tokens now, instead of being left to the browser.
   // 1.6 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: the type narrows the shared one instead of repeating its members.
-  version: "1.6",
+  // 1.7 (KAN-966) - the overlay captures the opener in an effect rather than while
+  // rendering; focus returns to the same element.
+  version: "1.7",
   tag: ".drawer",
   tokens: [
     "--surface",

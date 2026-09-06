@@ -256,11 +256,12 @@ function DemoWithSource({
   const [copied, setCopied] = useState(false);
   const [source, setSource] = useState<string | null>(null);
 
-  useEffect(() => {
-    setView("preview");
-    setCopied(false);
-    setSource(null);
-  }, [page.name]);
+  // All three used to be reset by an effect watching `page.name`. The
+  // caller gives this panel a `key` of the page instead, so a different
+  // page is a different panel and React throws the old state away for us.
+  // A reset-by-effect renders the previous page's state once before it
+  // corrects itself — briefly showing the last page's code listing under
+  // this page's heading.
 
   /**
    * The listing arrives when the reader asks for it.
@@ -465,7 +466,7 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       id: "ukazka",
       title: pick(CHROME.demo, lang),
       cap: true,
-      body: <DemoWithSource page={page} lang={lang} />,
+      body: <DemoWithSource key={page.name} page={page} lang={lang} />,
     },
     {
       id: "kdy",
@@ -845,6 +846,10 @@ export function DocsApp(): JSX.Element {
     const target = pathFromLegacyHash(window.location.hash, lang);
     if (target === null) return;
     window.history.replaceState(null, "", target);
+    // Not derived state: this reads the URL the reader arrived on and
+    // rewrites it once. There is nothing to derive it from on a later
+    // render, so the rule's advice does not apply here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocation(locationNow());
     // Once, on arrival. A hash that appears later is an anchor inside the
     // page, and translating that would throw the reader to another page
@@ -868,6 +873,11 @@ export function DocsApp(): JSX.Element {
     if (here === null) return;
     window.history.pushState(null, "", path);
     setLocation({ page: here.page, lang: here.lang });
+    // The drawer closes because the reader picked a page — an event, not
+    // something to notice afterwards in an effect. Staying open over the
+    // content they just chose is the one thing nobody wants after a menu
+    // click.
+    setNavOpen(false);
     window.scrollTo({ top: 0 });
   }
 
@@ -919,12 +929,6 @@ export function DocsApp(): JSX.Element {
 
   const sections = sectionsOf(page, lang);
   const options = languages.options;
-
-  // Picking a page closes the drawer. Staying open over the content the
-  // reader just chose is the one thing they do not want after a menu click.
-  useEffect(() => {
-    setNavOpen(false);
-  }, [page]);
 
   // Rotating a tablet to landscape reveals the menu in the column — a
   // drawer over it would then cover a layout that already has navigation.

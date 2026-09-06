@@ -23,7 +23,9 @@ export const IngotAccentSwatchesDoc: IngotDocPage = {
   status: "beta",
   // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.2",
+  // 1.3 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.3",
   tag: ".swatches",
   tokens: ["--accent", "--ink", "--border-strong"],
   classNameNote: {

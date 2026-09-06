@@ -95,8 +95,10 @@ function Contrast({ lang }: { lang: DocLang }): JSX.Element {
                   tmavém motivu.
                 </>,
                 <>
-                  <IngotCode>--ink-4</IngotCode> je jen pro neaktivní stav a dekoraci,
-                  nikdy pro čitelný obsah — na AA nedosáhne a dosáhnout nemá.
+                  <IngotCode>--ink-5</IngotCode> je jen pro dělicí linky a neaktivní
+                  stav, nikdy pro čitelný obsah — na AA nedosáhne (1,49 : 1 na bílé) a
+                  dosáhnout nemá. Nejsvětlejší inkoust, který se ještě smí číst, je{" "}
+                  <IngotCode>--ink-4</IngotCode> s 5,85 : 1.
                 </>,
                 <>
                   Nesouvislé prvky potřebují nejméně 3 : 1: obrys vstupu, přepínač i
@@ -113,9 +115,10 @@ function Contrast({ lang }: { lang: DocLang }): JSX.Element {
                   light and the dark theme.
                 </>,
                 <>
-                  <IngotCode>--ink-4</IngotCode> is for disabled states and decoration
-                  only, never for readable content — it does not reach AA and is not
-                  meant to.
+                  <IngotCode>--ink-5</IngotCode> is for separators and disabled states
+                  only, never for readable content — it does not reach AA (1.49 : 1 on
+                  white) and is not meant to. The lightest ink that may still be read is{" "}
+                  <IngotCode>--ink-4</IngotCode>, at 5.85 : 1.
                 </>,
                 <>
                   Non-text elements need at least 3 : 1: the outline of an input, a

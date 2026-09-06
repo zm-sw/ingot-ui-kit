@@ -65,7 +65,18 @@ export function SearchDialog({
   // A new query means the old highlight points at a different page — or at
   // nothing. Landing on the first result is the only choice that is right
   // whatever the reader typed.
-  useEffect(() => setActive(0), [query]);
+  //
+  // Adjusted while rendering rather than in an effect: an effect renders
+  // the OLD highlight once against the NEW list first, which is a frame
+  // with the wrong row lit — and, if the list got shorter, a frame with
+  // `aria-activedescendant` pointing at an id that is no longer there.
+  // React re-runs this component immediately and paints nothing in
+  // between.
+  const [queryShown, setQueryShown] = useState(query);
+  if (query !== queryShown) {
+    setQueryShown(query);
+    setActive(0);
+  }
 
   function onKeyDown(event: React.KeyboardEvent): void {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {

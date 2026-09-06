@@ -15,7 +15,9 @@ export const IngotSelectDoc: IngotDocPage = {
   // 1.2 (KAN-842) — forwardRef to the <select>; callers touch nothing.
   // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.3",
+  // 1.4 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.4",
   tag: ".select",
   tokens: [
     "--surface",

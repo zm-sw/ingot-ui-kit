@@ -1,0 +1,60 @@
+{
+  "$comment": [
+    "Lighthouse for the doc web. Two tickets carried a Lighthouse number in",
+    "their acceptance and nobody measured one, because it needs a served",
+    "site — so the figures that existed came from curl, and a transfer size",
+    "is not a score. Without a score there is no way to say whether the",
+    "site is getting slower.",
+    "",
+    "Measured against the built site served locally rather than against the",
+    "Vercel preview. A job that waits for a bot's comment to appear is a job",
+    "that fails for reasons no reader can act on; this one measures the same",
+    "artefact and needs no secret. What it does NOT see is the CDN's",
+    "compression and caching, so Performance here reads LOWER than the live",
+    "site — which is the safe direction for a budget to be wrong in.",
+    "",
+    "Three addresses, because they are three different shapes: the entry",
+    "point, a component page with a live demo, and a guide that is mostly",
+    "prose and one long table."
+  ],
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:4173/",
+        "http://localhost:4173/komponenty/table",
+        "http://localhost:4173/pruvodce/tokeny"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop",
+        "formFactor": "mobile",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 375,
+          "height": 812,
+          "deviceScaleFactor": 2,
+          "disabled": false
+        },
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "cpuSlowdownMultiplier": 4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.56,
+          "uploadThroughputKbps": 675
+        }
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.9 }],
+        "categories:seo": ["warn", { "minScore": 0.95 }],
+        "categories:accessibility": ["warn", { "minScore": 0.95 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

@@ -21,7 +21,9 @@ export const IngotToastDoc: IngotDocPage = {
   // tokens now, instead of being left to the browser.
   // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: a tone was renamed: `default` is now `neutral`.
-  version: "2.0",
+  // 2.1 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "2.1",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {

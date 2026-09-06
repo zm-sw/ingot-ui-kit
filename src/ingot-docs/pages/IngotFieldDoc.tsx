@@ -23,7 +23,9 @@ export const IngotFieldDoc: IngotDocPage = {
   // tokens now, instead of being left to the browser.
   // 1.5 (KAN-956) - optional `labelPlacement="side"`: the label sits
   // in a column to the left, which is the shape a settings page wants.
-  version: "1.5",
+  // 1.6 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.6",
   tag: ".field",
   tokens: [
     "--surface",

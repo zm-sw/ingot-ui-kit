@@ -1,6 +1,7 @@
 import {
   cloneElement,
   useEffect,
+  useLayoutEffect,
   useId,
   useRef,
   useState,
@@ -38,6 +39,18 @@ import { placePanel, type IngotPlacement } from "./placement";
 
 /** How long the pointer must rest before the tooltip appears, in ms. */
 export const INGOT_TOOLTIP_DELAY_MS = 400;
+
+/**
+ * `useLayoutEffect` in the browser, `useEffect` on the server.
+ *
+ * The doc web prerenders its pages, and a tooltip sits inside the row
+ * actions of one of them. React warns about a layout effect it cannot run
+ * during server rendering — correctly, and the warning is noise here,
+ * because there is no layout to measure on the server and nothing to
+ * measure it for. What matters is the browser, where it has to run before
+ * paint or the bubble appears at the previous opening's coordinates.
+ */
+const useBeforePaint = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function IngotTooltip({
   text,
@@ -80,11 +93,13 @@ export function IngotTooltip({
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  useEffect(() => {
-    if (!shown) {
-      setPosition(null);
-      return;
-    }
+  // Before paint, like the popover's. Measured after it, the bubble is
+  // painted once at the PREVIOUS opening's coordinates and then jumps —
+  // and that is also why nothing has to be reset when it hides: a stale
+  // position never reaches the screen, so clearing it would only be a
+  // second render for nobody.
+  useBeforePaint(() => {
+    if (!shown) return;
     const anchor = anchorRef.current;
     const bubble = bubbleRef.current;
     if (!anchor || !bubble) return;
@@ -110,6 +125,11 @@ export function IngotTooltip({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [shown]);
 
+  // The rule cannot tell "pass the ref object on" from "read the ref while
+  // rendering". This is the first: `anchorRef` is handed to the child so
+  // React can fill it in, which is what a ref is for. Nothing reads
+  // `.current` here — the effect above does, after mount.
+  // eslint-disable-next-line react-hooks/refs
   const trigger = cloneElement(children, {
     ref: anchorRef,
     "aria-describedby": shown ? id : undefined,

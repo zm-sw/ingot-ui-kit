@@ -12,7 +12,9 @@ export const IngotChipDoc: IngotDocPage = {
   status: "beta",
   // 1.1 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.1",
+  // 1.2 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.2",
   tag: ".chip",
   tokens: [
     "--surface",
