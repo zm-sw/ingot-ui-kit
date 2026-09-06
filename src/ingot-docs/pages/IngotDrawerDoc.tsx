@@ -18,7 +18,9 @@ export const IngotDrawerDoc: IngotDocPage = {
   // 1.3 (KAN-849) — the panel slides in from its own edge, from the kit's motion tokens; motion-reduce turns the movement off.
   // 1.5 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.5",
+  // 1.6 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.6",
   tag: ".drawer",
   tokens: [
     "--surface",

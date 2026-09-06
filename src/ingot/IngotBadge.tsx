@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from "react";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 
 /**
  * Status badge — the state of an entity in one word.
@@ -28,13 +29,8 @@ import { cx } from "./cx";
  *
  * The kit has no i18n namespace of its own: the text arrives translated.
  */
-export type IngotBadgeTone =
-  | "neutral"
-  | "ok"
-  | "warn"
-  | "danger"
-  | "accent"
-  | "ink";
+/** The whole vocabulary — a badge is what the vocabulary was named for. */
+export type IngotBadgeTone = IngotTone;
 
 /**
  * Tone → a background/text pair from tokens. Both must carry 4.5:1 in the

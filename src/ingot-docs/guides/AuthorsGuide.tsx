@@ -206,6 +206,98 @@ function Lifecycle({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+function Vocabulary({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Dvě slova se v kitu opakují na skoro každé komponentě. Aby se dala naučit jednou, jsou definovaná jednou."
+          : "Two words repeat on nearly every component in the kit. So that they can be learned once, they are defined once."}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>IngotSize</IngotCode> je{" "}
+                  <IngotCode>sm | md | lg</IngotCode>.
+                </>,
+                <>
+                  <IngotCode>IngotTone</IngotCode> je{" "}
+                  <IngotCode>neutral | accent | ok | warn | danger | ink</IngotCode>.{" "}
+                  <IngotCode>neutral</IngotCode> je nepřítomnost důrazu,{" "}
+                  <IngotCode>accent</IngotCode> je barva produktu, kterou si vybírá
+                  uživatel, a <IngotCode>ink</IngotCode> je nejsilnější důraz a jediný
+                  plný — na tónu by se nedal odlišit od neutral.
+                </>,
+                <>
+                  Komponenta, která kreslí jen část z nich, <strong>zužuje</strong>:{" "}
+                  <IngotCode>
+                    Extract&lt;IngotTone, &quot;neutral&quot; | &quot;danger&quot;&gt;
+                  </IngotCode>
+                  . Nový výčet stejných dvou řetězců vypadá stejně a neřekne nic — a
+                  rozejde se v den, kdy se sdílená sada změní.
+                </>,
+                <>
+                  Slovo mimo slovník se píše <strong>vedle</strong> něj, ne dovnitř:{" "}
+                  <IngotCode>Card</IngotCode> má <IngotCode>dark</IngotCode>, což není
+                  důraz, ale obrácená plocha; <IngotCode>IngotEyebrow</IngotCode> má{" "}
+                  <IngotCode>muted</IngotCode> a <IngotCode>inherit</IngotCode>. Přidat
+                  je do sdílené sady by znamenalo nabídnout je na odznaku, kde
+                  neznamenají nic.
+                </>,
+                <>
+                  Ikona má <strong>číslo</strong>, ne velikostní slovo. Velikost ikony
+                  je pixelová hodnota přiladěná k písmu vedle ní — 13 vedle 12px
+                  eyebrow, 15 v hledacím poli — a tři jména by to neunesla bez vymyšlené
+                  škály, kterou handoff nemá.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>IngotSize</IngotCode> is{" "}
+                  <IngotCode>sm | md | lg</IngotCode>.
+                </>,
+                <>
+                  <IngotCode>IngotTone</IngotCode> is{" "}
+                  <IngotCode>neutral | accent | ok | warn | danger | ink</IngotCode>.{" "}
+                  <IngotCode>neutral</IngotCode> is the absence of emphasis,{" "}
+                  <IngotCode>accent</IngotCode> is the product&apos;s own colour — the
+                  one the user picks — and <IngotCode>ink</IngotCode> is the strongest
+                  emphasis and the only solid one; on a tint it could not be told from
+                  neutral.
+                </>,
+                <>
+                  A component that draws only some of them <strong>narrows</strong>:{" "}
+                  <IngotCode>
+                    Extract&lt;IngotTone, &quot;neutral&quot; | &quot;danger&quot;&gt;
+                  </IngotCode>
+                  . A fresh union of the same two strings looks identical and says
+                  nothing — and drifts the day the shared set changes.
+                </>,
+                <>
+                  A word outside the vocabulary is written <strong>beside</strong> it,
+                  not folded in: <IngotCode>Card</IngotCode> has{" "}
+                  <IngotCode>dark</IngotCode>, which is an inverted surface rather than
+                  an emphasis; <IngotCode>IngotEyebrow</IngotCode> has{" "}
+                  <IngotCode>muted</IngotCode> and <IngotCode>inherit</IngotCode>.
+                  Adding them to the shared set would offer them on a badge, where they
+                  mean nothing.
+                </>,
+                <>
+                  An icon takes a <strong>number</strong>, not a size word. An
+                  icon&apos;s size is a pixel value matched to the type beside it — 13
+                  next to a 12px eyebrow, 15 in a search field — and three names cannot
+                  carry that without inventing a scale the handoff does not have.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 function ApiRules({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
@@ -301,6 +393,14 @@ export const AuthorsGuide: IngotGuidePage = {
         en: "The API rules of a component",
       },
       body: { cs: <ApiRules lang="cs" />, en: <ApiRules lang="en" /> },
+    },
+    {
+      id: "slovnik-props",
+      title: {
+        cs: "Slovník props: size a tone",
+        en: "The props vocabulary: size and tone",
+      },
+      body: { cs: <Vocabulary lang="cs" />, en: <Vocabulary lang="en" /> },
     },
     {
       id: "zivotni-cyklus",

@@ -19,7 +19,9 @@ export const IngotToastDoc: IngotDocPage = {
   // 1.5 (KAN-849) — the toast rises into place, from the kit's motion tokens; motion-reduce turns the movement off.
   // 1.6 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.6",
+  // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: a tone was renamed: `default` is now `neutral`.
+  version: "2.0",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {
@@ -138,7 +140,7 @@ export const IngotToastDoc: IngotDocPage = {
         },
         {
           name: "tone",
-          type: '"default" | "danger"',
+          type: 'Extract<IngotTone, "neutral" | "danger">',
           required: false,
           note: {
             cs: "danger = chyba operace, hlásí se asertivně. NE validace formuláře.",

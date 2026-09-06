@@ -14,7 +14,9 @@ export const IngotMetricsDoc: IngotDocPage = {
   // of 2026-09-02, item 07. 1.2: testId on the cell. 1.3: a window with no
   // movement is drawn dashed — a solid line would claim a stable value.
   // 1.4 — caption set by IngotEyebrow, the kit's shared mono label.
-  version: "1.4",
+  // 1.5 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.5",
   tag: ".metricstrip",
   tokens: [
     "--surface",

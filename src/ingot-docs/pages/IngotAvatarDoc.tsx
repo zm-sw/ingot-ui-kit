@@ -10,7 +10,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotAvatarDemo?raw");
 export const IngotAvatarDoc: IngotDocPage = {
   name: "IngotAvatar",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.1",
   tag: ".avatar",
   tokens: ["--ink", "--bg", "--font-mono"],
   classNameNote: {
