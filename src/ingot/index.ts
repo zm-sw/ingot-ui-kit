@@ -203,6 +203,10 @@ export {
 // The bar under a long form. Sticky rather than fixed, so it reserves its
 // own height instead of covering the last field.
 export { IngotActionBar } from "./IngotActionBar";
+// Loading states. Until now a screen loading data was a blank area and
+// then a jump, and every screen invented its own way of saying so.
+export { IngotSkeleton, type IngotSkeletonShape } from "./IngotSkeleton";
+export { IngotSpinner, type IngotSpinnerSize } from "./IngotSpinner";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------

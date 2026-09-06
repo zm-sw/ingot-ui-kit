@@ -70,6 +70,8 @@ import { IngotRadioGroupDoc } from "@/ingot-docs/pages/IngotRadioGroupDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
+import { IngotSkeletonDoc } from "@/ingot-docs/pages/IngotSkeletonDoc";
+import { IngotSpinnerDoc } from "@/ingot-docs/pages/IngotSpinnerDoc";
 import { IngotSegmentedDoc } from "@/ingot-docs/pages/IngotSegmentedDoc";
 import { IngotSelectDoc } from "@/ingot-docs/pages/IngotSelectDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
@@ -202,6 +204,8 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotSegmentedDoc,
   IngotSelectDoc,
   IngotSideNavDoc,
+  IngotSkeletonDoc,
+  IngotSpinnerDoc,
   IngotStepCardDoc,
   IngotSwitchDoc,
   IngotTableDoc,
