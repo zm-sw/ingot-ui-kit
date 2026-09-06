@@ -26,6 +26,14 @@ import { inputChrome } from "./inputChrome";
  * Renaming an element inside the kit would silently break such a reach and
  * no kit test would catch it — hence the way out is part of the API, not an
  * accident.
+ *
+ * ``combobox`` is for the other shape the field takes: a search that
+ * drives its own result list, where the arrows walk the results while the
+ * caret stays in the field. Without the wiring a screen reader hears
+ * nothing — the results are somewhere else in the document and no
+ * keystroke ever moves focus into them, so the reader is typing into a box
+ * that never answers. The caller owns the list and the highlight; this
+ * prop is only how the field names them.
  */
 export const IngotSearchInput = forwardRef<
   HTMLInputElement,
@@ -43,12 +51,34 @@ export const IngotSearchInput = forwardRef<
      * goes away in the next major.
      */
     inputRef?: Ref<HTMLInputElement>;
+    /**
+     * Names the result list this field drives. Omit for a plain filter —
+     * a filter narrows the list it stands on and needs none of this.
+     */
+    combobox?: {
+      /** ``id`` of the element carrying ``role="listbox"``. */
+      controls: string;
+      /** Whether that list is showing anything right now. */
+      expanded: boolean;
+      /** ``id`` of the highlighted option, or null while none is. */
+      activeOption?: string | null;
+    };
     /** Layout only — the screen sets the width, the primitive the look. */
     className?: string;
     testId?: string;
   }
 >(function IngotSearchInput(
-  { value, onChange, label, placeholder, disabled = false, inputRef, className, testId },
+  {
+    value,
+    onChange,
+    label,
+    placeholder,
+    disabled = false,
+    inputRef,
+    combobox,
+    className,
+    testId,
+  },
   ref,
 ): JSX.Element {
   // Both are attached: a caller mid-migration may pass ``inputRef`` while a
@@ -76,6 +106,14 @@ export const IngotSearchInput = forwardRef<
         aria-label={label}
         placeholder={placeholder}
         disabled={disabled}
+        // `list` rather than `both`: the field never writes the reader's
+        // choice back into itself, so promising inline completion would
+        // announce an edit that never happens.
+        role={combobox ? "combobox" : undefined}
+        aria-autocomplete={combobox ? "list" : undefined}
+        aria-expanded={combobox ? combobox.expanded : undefined}
+        aria-controls={combobox?.controls}
+        aria-activedescendant={combobox?.activeOption ?? undefined}
         // `pl-8` after the chrome overrides its `px-3` on the left so the
         // magnifier has room; Tailwind resolves the later utility.
         className={cx("w-full", inputChrome(), "pl-8")}

@@ -41,6 +41,13 @@ export interface ChromeStrings {
   searchEmpty: Localized<string>;
   searchHint: Localized<string>;
   searchClose: Localized<string>;
+  /** How many matched — `{n}` is the number. Spoken by the live region. */
+  searchCount: Localized<string>;
+  /** Said instead when the list was cut: `{n}` shown of `{total}`. */
+  searchCut: Localized<string>;
+  /** Eyebrow on a result, so a guide is not mistaken for a component. */
+  searchKindGuide: Localized<string>;
+  searchKindComponent: Localized<string>;
   sinceVersion: Localized<string>;
   demoLoading: Localized<string>;
   propName: Localized<string>;
@@ -174,6 +181,18 @@ export const CHROME: ChromeStrings = {
     en: "Arrows move, Enter opens, Esc closes",
   },
   searchClose: { cs: "Zavřít hledání", en: "Close the search" },
+  // The noun comes before the number on purpose. Czech needs three plural
+  // forms — one, two-to-four, five-and-up — and a count that reads wrong
+  // for the commonest numbers is worse than no count. Naming the thing and
+  // then the figure is right for every number and needs no plural rules in
+  // the shell.
+  searchCount: { cs: "Výsledků: {n}", en: "Results: {n}" },
+  searchCut: {
+    cs: "Zobrazeno {n} z {total} — upřesněte dotaz",
+    en: "Showing {n} of {total} — narrow the query",
+  },
+  searchKindGuide: { cs: "Průvodce", en: "Guide" },
+  searchKindComponent: { cs: "Komponenta", en: "Component" },
   sinceVersion: { cs: "od", en: "since" },
   demoLoading: { cs: "Načítá se ukázka…", en: "Loading the demo…" },
 };

@@ -14,7 +14,9 @@ export const IngotSearchInputDoc: IngotDocPage = {
   // 1.3 (KAN-842) — the field is a forwardRef, so `ref` reaches the input;
   // `inputRef` stays as a deprecated alias until the next major.
   // 1.2 — shared input chrome: accent focus ring, Button-md height.
-  version: "1.3",
+  // 1.4 (KAN-952) — optional `combobox`, for a search that drives its own
+  // result list. A field without it renders exactly as before.
+  version: "1.4",
   tag: ".search",
   tokens: [
     "--surface",
@@ -137,6 +139,15 @@ export const IngotSearchInputDoc: IngotDocPage = {
       },
     },
     {
+      name: "combobox",
+      type: "{ controls: string; expanded: boolean; activeOption?: string | null }",
+      required: false,
+      note: {
+        cs: 'Pole, které řídí vlastní seznam výsledků: `controls` je id seznamu s `role="listbox"`, `expanded` říká, jestli je vidět, a `activeOption` je id zvýrazněné položky. Bez toho odečítač o výsledcích neví — šipky hýbou zvýrazněním, ne fokusem. Pro filtr nad seznamem se nedává.',
+        en: 'A field that drives its own result list: `controls` is the id of the element with `role="listbox"`, `expanded` says whether it is showing, and `activeOption` is the id of the highlighted item. Without it a screen reader knows nothing about the results — the arrows move a highlight, not the focus. Not for a filter above a list.',
+      },
+    },
+    {
       name: "className",
       type: "string",
       required: false,
@@ -171,6 +182,15 @@ export const IngotSearchInputDoc: IngotDocPage = {
         <IngotCode>ref</IngotCode> — ne hledáním <IngotCode>&lt;input&gt;</IngotCode>{" "}
         uvnitř obalu. Vnitřek primitiva se smí přejmenovat, vlastnost ne.
       </>,
+      <>
+        Pole, které řídí vlastní seznam výsledků, dostane{" "}
+        <IngotCode>combobox</IngotCode>. Šipky v takovém hledání hýbou zvýrazněním, ne
+        fokusem — kurzor musí zůstat v poli, aby další písmeno šlo tam, kam čtenář čeká.
+        Odečítač o tom ale neví, dokud se to neřekne nahlas:{" "}
+        <IngotCode>aria-activedescendant</IngotCode> jde za zvýrazněním a položky nesou{" "}
+        <IngotCode>role="option"</IngotCode> uvnitř{" "}
+        <IngotCode>role="listbox"</IngotCode>.
+      </>,
     ],
     en: [
       <>
@@ -187,6 +207,15 @@ export const IngotSearchInputDoc: IngotDocPage = {
         <IngotCode>ref</IngotCode> — not by looking for the{" "}
         <IngotCode>&lt;input&gt;</IngotCode> inside the wrapper. The inside of a
         primitive may be renamed; a prop may not.
+      </>,
+      <>
+        A field that drives its own result list takes <IngotCode>combobox</IngotCode>.
+        The arrows in such a search move a highlight, not the focus — the caret has to
+        stay in the field so the next letter goes where the reader expects. A screen
+        reader cannot see that unless it is said out loud:{" "}
+        <IngotCode>aria-activedescendant</IngotCode> follows the highlight and the items
+        carry <IngotCode>role="option"</IngotCode> inside a{" "}
+        <IngotCode>role="listbox"</IngotCode>.
       </>,
     ],
   },
