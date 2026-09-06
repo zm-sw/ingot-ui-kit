@@ -11,7 +11,7 @@ const demoSource = () => import("@/ingot-docs/demos/IngotSegmentedDemo?raw");
 export const IngotSegmentedDoc: IngotDocPage = {
   name: "IngotSegmented",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".seg",
   tokens: ["--border", "--surface", "--surface-2", "--ink", "--ink-3"],
   classNameNote: {
@@ -153,7 +153,12 @@ export const IngotSegmentedDoc: IngotDocPage = {
     cs: [
       <>
         Volby jsou přepínače v pojmenované skupině, ne tlačítka: odečítač hlásí
-        „vybráno“ a šipky mezi nimi chodí bez naší pomoci.
+        „vybráno“ i to, kolikátá volba z kolika to je.
+      </>,
+      <>
+        Skupina je jedna zastávka tabulátoru — vstoupí se do ní na vybranou volbu a
+        šipky, <IngotCode>Home</IngotCode> a <IngotCode>End</IngotCode> mezi volbami
+        přepínají. Tabulátor tak lištu přeskočí jedním stiskem, ne třemi.
       </>,
       <>
         Vybraná volba se nepozná jen barvou textu — vystoupí na plochu se stínem, takže
@@ -163,7 +168,12 @@ export const IngotSegmentedDoc: IngotDocPage = {
     en: [
       <>
         The choices are radios in a named group, not buttons: a screen reader announces
-        “selected” and arrow keys move between them without our help.
+        “selected”, and which choice of how many this is.
+      </>,
+      <>
+        The group is a single tab stop — it is entered at the selected choice, and
+        arrows, <IngotCode>Home</IngotCode> and <IngotCode>End</IngotCode> switch
+        between the choices. One key press walks past the bar, not three.
       </>,
       <>
         The selected choice is not marked by text colour alone — it lifts onto the
