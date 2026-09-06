@@ -1,24 +1,26 @@
 /**
- * Rozdělení TS/TSX na barevné třídy — jediný zdroj zvýraznění pro
- * ``IngotCode block lang="tsx"``.
+ * Splitting TS/TSX into colour classes — the single source of highlighting
+ * for ``IngotCode block lang="tsx"``.
  *
- * 🚨 **Vlastní tokenizér, ne knihovna.** Kit se distribuuje jako zdroják
- * a nemá ANI JEDNU běhovou závislost — ``package.json`` má jen ``react``
- * a ``react-dom`` jako peer. Přidat sem shiki/prism/highlight.js znamená
- * přidat závislost každému konzumentovi kitu kvůli obarvení výpisu na
- * dokumentačním webu. To je špatný obchod: highlighter řeší desítky
- * jazyků, dialekty a témata, kdežto kit vypisuje jedinou věc — TSX
- * ukázky vlastních komponent.
+ * **A tokenizer of our own, not a library.** The kit is distributed as
+ * source and has NOT ONE runtime dependency — ``package.json`` lists only
+ * ``react`` and ``react-dom`` as peers. Adding shiki/prism/highlight.js
+ * here would add a dependency to every consumer of the kit for the sake
+ * of colouring a listing on the documentation web. A bad trade: a
+ * highlighter handles dozens of languages, dialects and themes, while the
+ * kit prints one thing — TSX demos of its own components.
  *
- * 🪤 **Není to parser a nemá jím být.** Skener jede zleva doprava a drží
- * jediný stav: jsme uvnitř JSX značky? Rozliší tím atribut od běžného
- * identifikátoru, což je jediná nejednoznačnost, na které by obarvení
- * ukázek viditelně padalo. Vše ostatní jsou lokální vzory.
+ * **It is not a parser and must not become one.** The scanner runs left
+ * to right and keeps a single state: are we inside a JSX tag? That
+ * distinguishes an attribute from an ordinary identifier, the one
+ * ambiguity on which the colouring of demos would visibly fail. Everything
+ * else is local patterns.
  *
- * Cena té jednoduchosti je známá: ostrá závorka je v TS i „menší než",
- * i generikum. Za značku se proto bere jen tam, kde JSX opravdu smí
- * začít — po ``(``, ``{``, ``,``, ``=``, ``return`` a spol. Díky tomu
- * ``useState<string>(…)`` zůstane typem a ``<IngotTabs`` značkou.
+ * The price of that simplicity is known: in TS an angle bracket is both
+ * "less than" and a generic. It is taken as a tag only where JSX may
+ * really start — after ``(``, ``{``, ``,``, ``=``, ``return`` and the
+ * like. That is how ``useState<string>(…)`` stays a type and
+ * ``<IngotTabs`` a tag.
  */
 
 export type IngotCodeTokenKind =
@@ -46,8 +48,8 @@ const KEYWORDS = new Set([
   "undefined", "var", "void", "while", "yield",
 ]);
 
-// Kde smí JSX začít. Po identifikátoru, ``)`` nebo ``]`` je ostrá
-// závorka porovnání nebo generikum, ne značka.
+// Where JSX may start. After an identifier, ``)`` or ``]`` an angle bracket
+// is a comparison or a generic, not a tag.
 const JSX_MAY_START_AFTER = new Set([
   "", "(", "{", "}", "[", ",", ";", ":", "=", ">", "&", "|", "?", "!", "+",
 ]);
@@ -61,15 +63,15 @@ const TAG_OPEN = /^<\/?(?=[A-Za-z])/;
 const TAG_NAME = /^[A-Za-z][\w.]*/;
 const PUNCT = /^[^\s\w$]/;
 
-/** Rozdělí zdroják na tokeny; spojený ``text`` je vždy vstup beze změny. */
+/** Splits the source into tokens; the joined ``text`` is always the input unchanged. */
 export function highlightTsx(source: string): IngotCodeToken[] {
   const tokens: IngotCodeToken[] = [];
-  // Poslední ne-bílý znak a poslední slovo — jen kvůli rozhodnutí
-  // „značka, nebo menšítko".
+  // The last non-white character and the last word — only for the
+  // "tag or less-than" decision.
   let lastChar = "";
   let lastWord = "";
-  // Uvnitř značky jsou identifikátory atributy — ale jen mimo ``{…}``,
-  // uvnitř výrazu je to zase běžný kód.
+  // Inside a tag identifiers are attributes — but only outside ``{…}``;
+  // inside an expression it is ordinary code again.
   let inTag = false;
   let braceDepth = 0;
   let rest = source;
@@ -85,8 +87,8 @@ export function highlightTsx(source: string): IngotCodeToken[] {
   while (rest) {
     let match = WS.exec(rest);
     if (match) {
-      // Bílé znaky se ``lastChar`` netýkají — jinak by odřádkování
-      // před ``<IngotTabs`` zahodilo, že jsme právě po ``(``.
+      // Whitespace does not touch ``lastChar`` — otherwise a line break
+      // before ``<IngotTabs`` would forget that we are right after ``(``.
       const [text] = match;
       const last = tokens[tokens.length - 1];
       if (last && last.kind === "plain") last.text += text;

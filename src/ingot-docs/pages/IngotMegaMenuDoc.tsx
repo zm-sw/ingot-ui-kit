@@ -1,24 +1,34 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotMegaMenuDemo";
-import demoSource from "@/ingot-docs/demos/IngotMegaMenuDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// 2.0 (rozhodnutí vlastníka 2026-09-02, body 01–03): tvar přebírá
-// nasazenou administraci. Pevné tři sloupce nahradily skupiny tekoucí
-// do 1–2 sloupců, náhled sleduje položku pod kurzorem i fokusem a
-// odečítač čte popis z odkazu (aria-describedby) — kapitola Přístupnost
-// dřív tvrdila, že sledující náhled „pro klávesnici nefunguje vůbec",
-// což o implementaci s onFocus nebyla pravda.
-// 2.1: zamčené položky (locked + onLockedItemClick) — modul, který si
-// tenant nezapnul, je v menu vidět se zámkem a klik otevírá vysvětlení
-// místo navigace. Parita s nasazenou administrací. 2.2: testId na
-// položce (e2e kliká na konkrétní odkaz) a kotvení left-0 pod sekcí.
+// 2.0 (owner decision of 2026-09-02, items 01–03): the shape follows the
+// deployed admin. Fixed three columns replaced groups flowing into 1–2
+// columns, the preview follows the item under the cursor and under focus,
+// and a screen reader reads the description from the link
+// (aria-describedby) — the Accessibility chapter used to claim the
+// following preview "does not work for the keyboard at all", which was not
+// true of the onFocus implementation.
+// 2.1: locked items (locked + onLockedItemClick) — a module the tenant has
+// not enabled shows in the menu with a lock and a click opens an
+// explanation instead of navigating. Parity with the deployed admin. 2.2:
+// testId on the item (e2e clicks a concrete link) and left-0 anchoring
+// under the section.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotMegaMenuDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotMegaMenuDemo?raw");
+
 export const IngotMegaMenuDoc: IngotDocPage = {
   name: "IngotMegaMenu",
   status: "beta",
-  // 2.3: muted + marker na položce — ztlumený odkaz s jiskrou, který
-  // NAVIGUJE (bránu kreslí cílová stránka); menu nezamyká.
-  version: "2.3",
+  // 2.3: muted + marker on the item — a dimmed link with a spark that
+  // NAVIGATES (the target page draws the gate); the menu does not lock.
+  // 2.4 — caption set by IngotEyebrow, the kit's shared mono label.
+  // 2.5 — row states come from the kit's shared menu row: current lifts to surface-2, hover goes to ink.
+  // 2.6 — panel sits on MENU_LAYER instead of a fixed z-index, so it stays above every open dialog.
+  // 2.7 (KAN-849) — the panel fades in, from the kit's motion tokens; motion-reduce turns the movement off.
+  version: "2.7",
   tag: ".megamenu",
   tokens: [
     "--surface",
@@ -35,91 +45,93 @@ export const IngotMegaMenuDoc: IngotDocPage = {
     "--r-lg",
     "--shadow-lg",
   ],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Rozbalené menu sekce z horní lišty — skupiny odkazů v jednom nebo dvou sloupcích a náhledový sloupec, který popisuje položku pod kurzorem i pod fokusem.",
     en: "The opened section menu from the top bar — groups of links in one or two columns, plus a preview column describing the item under the cursor and under focus alike.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
       <>
-        Sekce horní lišty, která má víc obrazovek. Tlačítko sekce rozbaluje
-        tohle menu a teprve v něm jsou odkazy.
+        Sekce horní lišty, která má víc obrazovek. Tlačítko sekce rozbaluje tohle menu a
+        teprve v něm jsou odkazy.
       </>,
       <>
-        Odkazy, které se dají poskládat do pojmenovaných skupin. Nadpis
-        skupiny je pracovní rozdělení, ne dekorace — čtenář podle něj hledá.
+        Odkazy, které se dají poskládat do pojmenovaných skupin. Nadpis skupiny je
+        pracovní rozdělení, ne dekorace — čtenář podle něj hledá.
       </>,
       <>
-        Obrazovky, ke kterým se hodí jedna věta kontextu. Náhledový sloupec
-        ji ukazuje pro položku, na které čtenář stojí, a odečítač ji slyší
-        přímo z odkazu.
+        Obrazovky, ke kterým se hodí jedna věta kontextu. Náhledový sloupec ji ukazuje
+        pro položku, na které čtenář stojí, a odečítač ji slyší přímo z odkazu.
       </>,
       <>
-        Platforma i zákaznická část. Obě sdílejí tutéž lištu i totéž menu,
-        liší se jen obsahem skupin.
+        Platforma i zákaznická část. Obě sdílejí tutéž lištu i totéž menu, liší se jen
+        obsahem skupin.
       </>,
     ],
     en: [
       <>
-        A top-bar section with more than one screen. The section button opens
-        this menu, and only inside it are the links.
+        A top-bar section with more than one screen. The section button opens this menu,
+        and only inside it are the links.
       </>,
       <>
-        Links that can be arranged into named groups. A group heading is a
-        working division, not decoration — readers navigate by it.
+        Links that can be arranged into named groups. A group heading is a working
+        division, not decoration — readers navigate by it.
       </>,
       <>
-        Screens that benefit from one sentence of context. The preview column
-        shows it for the item the reader is on, and a screen reader hears it
-        from the link itself.
+        Screens that benefit from one sentence of context. The preview column shows it
+        for the item the reader is on, and a screen reader hears it from the link
+        itself.
       </>,
       <>
-        Both the platform side and the customer side. They share the same bar
-        and the same menu, and differ only in the contents of the groups.
+        Both the platform side and the customer side. They share the same bar and the
+        same menu, and differ only in the contents of the groups.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Sekce, která má jedinou obrazovku. Menu s jednou položkou je krok
-        navíc — z takové sekce udělej rovnou odkaz v liště.
+        Sekce, která má jedinou obrazovku. Menu s jednou položkou je krok navíc — z
+        takové sekce udělej rovnou odkaz v liště.
       </>,
       <>
-        Sekce s víc než dvěma tucty odkazů. Menu si sloupce rozdělí samo,
-        ale seznam všeho, co kdy vzniklo, nezachrání — taková sekce je ve
-        skutečnosti dvě a patří do lišty zvlášť.
+        Sekce s víc než dvěma tucty odkazů. Menu si sloupce rozdělí samo, ale seznam
+        všeho, co kdy vzniklo, nezachrání — taková sekce je ve skutečnosti dvě a patří
+        do lišty zvlášť.
       </>,
       <>
-        Nabídka akcí nad vybraným záznamem — smazat, duplikovat, exportovat.
-        Tohle menu obsahuje odkazy na obrazovky, ne příkazy.
+        Nabídka akcí nad vybraným záznamem — smazat, duplikovat, exportovat. Tohle menu
+        obsahuje odkazy na obrazovky, ne příkazy.
       </>,
       <>
         Rejstřík stránek uvnitř obsahu, třeba v dlouhém nastavení. Na to je{" "}
-        <IngotCode>IngotSideNav</IngotCode> — je to obsah stránky, ne rám
-        aplikace.
+        <IngotCode>IngotSideNav</IngotCode> — je to obsah stránky, ne rám aplikace.
       </>,
     ],
     en: [
       <>
-        A section with a single screen. A menu holding one item is a step too
-        many — make that section a plain link in the bar.
+        A section with a single screen. A menu holding one item is a step too many —
+        make that section a plain link in the bar.
       </>,
       <>
-        A section with more than two dozen links. The menu splits its columns
-        by itself, but it cannot save a list of everything that ever existed —
-        such a section is really two, and they belong in the bar separately.
+        A section with more than two dozen links. The menu splits its columns by itself,
+        but it cannot save a list of everything that ever existed — such a section is
+        really two, and they belong in the bar separately.
       </>,
       <>
-        A list of actions on a selected record — delete, duplicate, export.
-        This menu holds links to screens, not commands.
+        A list of actions on a selected record — delete, duplicate, export. This menu
+        holds links to screens, not commands.
       </>,
       <>
-        An index of pages inside the content, for example in a long settings
-        flow. That is <IngotCode>IngotSideNav</IngotCode> — it is page content,
-        not the application frame.
+        An index of pages inside the content, for example in a long settings flow. That
+        is <IngotCode>IngotSideNav</IngotCode> — it is page content, not the application
+        frame.
       </>,
     ],
   },
@@ -310,103 +322,96 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Náhled sleduje položku pod kurzorem <strong>i pod fokusem</strong> —
-        procházení Tabem přepíná popis stejně jako myš, klávesnice není druhá
-        kategorie. Dokud čtenář na žádné položce nestojí, náhled popisuje
-        první.
+        Náhled sleduje položku pod kurzorem <strong>i pod fokusem</strong> — procházení
+        Tabem přepíná popis stejně jako myš, klávesnice není druhá kategorie. Dokud
+        čtenář na žádné položce nestojí, náhled popisuje první.
       </>,
       <>
-        Popis položky čte odečítač <strong>z odkazu samotného</strong>{" "}
-        (<IngotCode>aria-describedby</IngotCode>); náhledový sloupec je jeho
-        vizuální kopie a je <IngotCode>aria-hidden</IngotCode>, aby nic
-        neznělo dvakrát.
+        Popis položky čte odečítač <strong>z odkazu samotného</strong> (
+        <IngotCode>aria-describedby</IngotCode>); náhledový sloupec je jeho vizuální
+        kopie a je <IngotCode>aria-hidden</IngotCode>, aby nic neznělo dvakrát.
       </>,
       <>
-        Otevřená sekce se v liště značí plochou{" "}
-        <IngotCode>--surface-3</IngotCode>, ne akcentem. Akcent v téhle
-        aplikaci znamená akci, a rozbalené menu žádná akce není.
+        Otevřená sekce se v liště značí plochou <IngotCode>--surface-3</IngotCode>, ne
+        akcentem. Akcent v téhle aplikaci znamená akci, a rozbalené menu žádná akce
+        není.
       </>,
       <>
         Menu je <IngotCode>nav</IngotCode> s vlastním jménem z{" "}
-        <IngotCode>label</IngotCode>. Odečítač tak umí seznam navigací
-        rozlišit od horní lišty.
+        <IngotCode>label</IngotCode>. Odečítač tak umí seznam navigací rozlišit od horní
+        lišty.
       </>,
       <>
-        Otevřenou položku značí <IngotCode>aria-current</IngotCode>, ne pouhá
-        barva. Kdo barvu nevidí, se jinak nedozví, kde v aplikaci právě je.
+        Otevřenou položku značí <IngotCode>aria-current</IngotCode>, ne pouhá barva. Kdo
+        barvu nevidí, se jinak nedozví, kde v aplikaci právě je.
       </>,
     ],
     en: [
       <>
-        The preview follows the item under the cursor <strong>and under
-        focus</strong> — tabbing switches the description just like the mouse
-        does; the keyboard is not a second-class citizen. Until the reader is
-        on an item, the preview describes the first one.
+        The preview follows the item under the cursor <strong>and under focus</strong> —
+        tabbing switches the description just like the mouse does; the keyboard is not a
+        second-class citizen. Until the reader is on an item, the preview describes the
+        first one.
       </>,
       <>
-        A screen reader hears an item's description <strong>from the link
-        itself</strong> (<IngotCode>aria-describedby</IngotCode>); the preview
-        column is its visual copy and is <IngotCode>aria-hidden</IngotCode>,
+        A screen reader hears an item's description{" "}
+        <strong>from the link itself</strong> (<IngotCode>aria-describedby</IngotCode>);
+        the preview column is its visual copy and is <IngotCode>aria-hidden</IngotCode>,
         so nothing sounds twice.
       </>,
       <>
-        An open section is marked in the bar with the{" "}
-        <IngotCode>--surface-3</IngotCode> surface, not with the accent. The
-        accent means an action in this application, and an open menu is not an
-        action.
+        An open section is marked in the bar with the <IngotCode>--surface-3</IngotCode>{" "}
+        surface, not with the accent. The accent means an action in this application,
+        and an open menu is not an action.
       </>,
       <>
         The menu is a <IngotCode>nav</IngotCode> with its own name from{" "}
-        <IngotCode>label</IngotCode>. That lets a screen reader tell it apart
-        from the top bar in the list of navigations.
+        <IngotCode>label</IngotCode>. That lets a screen reader tell it apart from the
+        top bar in the list of navigations.
       </>,
       <>
-        The open item is marked with <IngotCode>aria-current</IngotCode>, not
-        by colour alone. Someone who does not see the colour would otherwise
-        never learn where in the application they are.
+        The open item is marked with <IngotCode>aria-current</IngotCode>, not by colour
+        alone. Someone who does not see the colour would otherwise never learn where in
+        the application they are.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Nadpisy skupin, popisky položek i jejich popisy dodává volající už
-        přeložené — kit vlastní jmenný prostor překladů nemá.
+        Nadpisy skupin, popisky položek i jejich popisy dodává volající už přeložené —
+        kit vlastní jmenný prostor překladů nemá.
       </>,
       <>
-        <IngotCode>label</IngotCode> je text pro odečítač, a překládá se
-        stejně jako všechno viditelné.
+        <IngotCode>label</IngotCode> je text pro odečítač, a překládá se stejně jako
+        všechno viditelné.
       </>,
       <>
-        Sloupec má pevnou minimální šířku, ale roste podle nejdelšího popisku.
-        Dlouhé překlady tedy menu rozšíří — drž popisky na jednom až dvou
-        slovech.
+        Sloupec má pevnou minimální šířku, ale roste podle nejdelšího popisku. Dlouhé
+        překlady tedy menu rozšíří — drž popisky na jednom až dvou slovech.
       </>,
       <>
-        <IngotCode>description</IngotCode> je jedna věta. Delší překlad
-        náhledový sloupec nerozšíří, jen zvýší — přesto ho drž krátký, čte se
-        koutkem oka.
+        <IngotCode>description</IngotCode> je jedna věta. Delší překlad náhledový
+        sloupec nerozšíří, jen zvýší — přesto ho drž krátký, čte se koutkem oka.
       </>,
     ],
     en: [
       <>
-        Group headings, item labels and their descriptions arrive already
-        translated from the caller — the kit has no translation namespace of
-        its own.
+        Group headings, item labels and their descriptions arrive already translated
+        from the caller — the kit has no translation namespace of its own.
       </>,
       <>
-        <IngotCode>label</IngotCode> is text for a screen reader, and it is
-        translated just like everything visible.
+        <IngotCode>label</IngotCode> is text for a screen reader, and it is translated
+        just like everything visible.
       </>,
       <>
-        A column has a fixed minimum width but grows with its longest label.
-        Long translations therefore widen the menu — keep labels to one or two
-        words.
+        A column has a fixed minimum width but grows with its longest label. Long
+        translations therefore widen the menu — keep labels to one or two words.
       </>,
       <>
-        <IngotCode>description</IngotCode> is one sentence. A longer
-        translation does not widen the preview column, only makes it taller —
-        keep it short anyway; it is read from the corner of the eye.
+        <IngotCode>description</IngotCode> is one sentence. A longer translation does
+        not widen the preview column, only makes it taller — keep it short anyway; it is
+        read from the corner of the eye.
       </>,
     ],
   },

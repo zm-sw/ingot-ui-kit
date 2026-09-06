@@ -1,24 +1,25 @@
 /**
- * Texty skořápky doc webu (KAN-627).
+ * Texts of the doc web shell.
  *
- * Obsah stránek je ``Localized`` přímo u sebe (viz ``types.ts``), protože
- * je to próza s vlastním JSX. Skořápka jsou naopak krátké popisky, které
- * se opakují na každé stránce — ty patří na jedno místo, aby se
- * nepřekládaly šestkrát a pokaždé o kousek jinak.
+ * Page content is ``Localized`` right where it lives (see ``types.ts``),
+ * because it is prose with its own JSX. The shell, by contrast, is short
+ * labels repeated on every page — those belong in one place so they are
+ * not translated six times, each time slightly differently.
  *
- * ``Localized<string>`` je ``Record<DocLang, string>``, takže přidání
- * jazyka do ``DOC_LANGS`` shodí typecheck na každém popisku, který
- * v tom jazyce chybí. Slíbit jazyk bez textů tedy nejde.
+ * ``Localized<string>`` is ``Record<DocLang, string>``, so adding a
+ * language to ``DOC_LANGS`` fails the typecheck on every label missing in
+ * that language. A language cannot be promised without its texts.
  */
 import type { Localized } from "@/ingot-docs/lang";
 
 export interface ChromeStrings {
   guides: Localized<string>;
   components: Localized<string>;
-  /** Nadpisy skupin v levém menu — viz ``IngotGuideGroup``. */
+  /** Group headings in the left menu — see ``IngotGuideGroup``. */
   groupSystem: Localized<string>;
   groupApp: Localized<string>;
   groupRules: Localized<string>;
+  groupAuthors: Localized<string>;
   onThisPage: Localized<string>;
   demo: Localized<string>;
   useWhen: Localized<string>;
@@ -27,24 +28,41 @@ export interface ChromeStrings {
   a11y: Localized<string>;
   i18n: Localized<string>;
   limits: Localized<string>;
-  /** Sekce se seznamem tokenů, na kterých komponenta stojí. */
+  /** Section listing the tokens the component stands on. */
   tokens: Localized<string>;
-  /** Věta nad tím seznamem — proč tam je. */
+  /** Sentence above that list — why it is there. */
   tokensNote: Localized<string>;
+  /** Shown instead of the list when a primitive renders nothing of its own. */
+  tokensNone: Localized<string>;
+  searchOpen: Localized<string>;
+  searchTitle: Localized<string>;
+  searchLabel: Localized<string>;
+  searchPlaceholder: Localized<string>;
+  searchEmpty: Localized<string>;
+  searchHint: Localized<string>;
+  searchClose: Localized<string>;
+  sinceVersion: Localized<string>;
+  demoLoading: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
   propNote: Localized<string>;
   yes: Localized<string>;
-  /** Badge stavu vedle nadpisu stránky komponenty. */
+  /** Status badge next to a component page heading. */
   statusStable: Localized<string>;
   statusBeta: Localized<string>;
-  /** Taby nad ukázkou + tlačítko kopírování jejího zdroje. */
+  statusDeprecated: Localized<string>;
+  /** Heading of the notice on a deprecated primitive's page. */
+  deprecatedTitle: Localized<string>;
+  deprecatedSince: Localized<string>;
+  deprecatedReplacedBy: Localized<string>;
+  deprecatedRemoveIn: Localized<string>;
+  /** Tabs above the demo + the button copying its source. */
   previewTab: Localized<string>;
   codeTab: Localized<string>;
   copyCode: Localized<string>;
   copiedCode: Localized<string>;
-  /** Patička prev/next mezi stránkami. */
+  /** Prev/next footer between pages. */
   prevPage: Localized<string>;
   nextPage: Localized<string>;
   language: Localized<string>;
@@ -53,20 +71,20 @@ export interface ChromeStrings {
   themeDark: Localized<string>;
   themeSystem: Localized<string>;
   accent: Localized<string>;
-  /** Tlačítko a nadpis draweru, do kterého se pod ``md`` stěhuje menu
-   *  i přepínače — na úzkém výřezu na ně v liště není místo. */
+  /** Button and heading of the drawer the menu and switches move into
+   *  below ``md`` — on a narrow viewport there is no room for them in the bar. */
   openMenu: Localized<string>;
   closeMenu: Localized<string>;
   menuTitle: Localized<string>;
-  /** Přepínač slovníku Jednoduše/Expert — viz ``dictionary.ts``. Ploché
-   *  klíče místo mapy ze stejného důvodu jako ``themeLight``. */
+  /** Simple/Expert dictionary switch — see ``dictionary.ts``. Flat keys
+   *  instead of a map for the same reason as ``themeLight``. */
   dictionary: Localized<string>;
   dictionarySimple: Localized<string>;
   dictionaryExpert: Localized<string>;
   dictionaryBoth: Localized<string>;
-  /** Jména rodin. Plochá pole (ne mapa) ze stejného důvodu jako
-   *  ``themeLight``/``themeDark``: chybějící překlad tak shodí typecheck
-   *  na konkrétním jménu, ne až na tvaru mapy. */
+  /** Family names. Flat fields (not a map) for the same reason as
+   *  ``themeLight``/``themeDark``: a missing translation then fails the
+   *  typecheck on the concrete name, not on the shape of the map. */
   accentBlue: Localized<string>;
   accentEmerald: Localized<string>;
   accentOrange: Localized<string>;
@@ -80,6 +98,7 @@ export const CHROME: ChromeStrings = {
   groupSystem: { cs: "Systém", en: "System" },
   groupApp: { cs: "Aplikace", en: "Application" },
   groupRules: { cs: "Pravidla", en: "Rules" },
+  groupAuthors: { cs: "Pro autory kitu", en: "For kit authors" },
   onThisPage: { cs: "Co je na stránce", en: "On this page" },
   demo: { cs: "Ukázka", en: "Demo" },
   useWhen: { cs: "Kdy použít", en: "When to use it" },
@@ -96,6 +115,10 @@ export const CHROME: ChromeStrings = {
     cs: "Změna kteréhokoli z těchto tokenů se na téhle komponentě projeví všude v produktu.",
     en: "Changing any of these tokens shows up on this component everywhere in the product.",
   },
+  tokensNone: {
+    cs: "Primitivum nic nevykresluje — žádná změna tokenu se na něm neprojeví.",
+    en: "The primitive renders nothing of its own — no token change reaches it.",
+  },
   propName: { cs: "Vlastnost", en: "Property" },
   propType: { cs: "Typ", en: "Type" },
   propRequired: { cs: "Povinné", en: "Required" },
@@ -103,6 +126,14 @@ export const CHROME: ChromeStrings = {
   yes: { cs: "ano", en: "yes" },
   statusStable: { cs: "stabilní", en: "stable" },
   statusBeta: { cs: "beta", en: "beta" },
+  statusDeprecated: { cs: "zastaralé", en: "deprecated" },
+  deprecatedTitle: {
+    cs: "Tohle primitivum odchází",
+    en: "This primitive is going away",
+  },
+  deprecatedSince: { cs: "Oznámeno ve verzi", en: "Announced in version" },
+  deprecatedReplacedBy: { cs: "Místo něj použij", en: "Use instead" },
+  deprecatedRemoveIn: { cs: "Zmizí ve verzi", en: "Disappears in version" },
   previewTab: { cs: "Náhled", en: "Preview" },
   codeTab: { cs: "Kód", en: "Code" },
   copyCode: { cs: "Kopírovat", en: "Copy" },
@@ -127,4 +158,22 @@ export const CHROME: ChromeStrings = {
   accentOrange: { cs: "oranžový", en: "orange" },
   accentViolet: { cs: "fialový", en: "violet" },
   accentSlate: { cs: "břidlicový", en: "slate" },
+  searchOpen: { cs: "Hledat", en: "Search" },
+  searchTitle: { cs: "Hledat na webu", en: "Search the site" },
+  searchLabel: { cs: "Hledat stránku", en: "Search for a page" },
+  searchPlaceholder: {
+    cs: "Název, značka, token nebo situace…",
+    en: "A name, a tag, a token or a situation…",
+  },
+  searchEmpty: {
+    cs: "Nic takového tu není. Zkuste kratší dotaz.",
+    en: "Nothing like that here. Try a shorter query.",
+  },
+  searchHint: {
+    cs: "Šipky procházejí, Enter otevře, Esc zavře",
+    en: "Arrows move, Enter opens, Esc closes",
+  },
+  searchClose: { cs: "Zavřít hledání", en: "Close the search" },
+  sinceVersion: { cs: "od", en: "since" },
+  demoLoading: { cs: "Načítá se ukázka…", en: "Loading the demo…" },
 };

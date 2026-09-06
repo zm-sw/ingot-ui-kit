@@ -2,7 +2,7 @@ import { useCallback, useId, useRef, type JSX, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { ModalDepthProvider } from "./ModalDepthContext";
-import { IngotIcon } from "./IngotIcon";
+import { OverlayHeader } from "./OverlayHeader";
 import { useModalLayer } from "./modalLayer";
 import {
   trapOverlayTab,
@@ -12,42 +12,39 @@ import {
 } from "./overlayChrome";
 
 /**
- * Sdílená skořápka dialogu — druhé primitivum Ingotu (KAN-580).
+ * The shared dialog shell.
  *
- * Vzniklo proto, že v repu byl **padesát** ručních `fixed inset-0` overlayů,
- * 33 souborů `*Modal*`/`*Dialog*`/`*Drawer*` a **ani jeden sdílený shell** —
- * a ta chybějící skořápka už jednou zablokovala centrální opravu:
- * `ModalDepthContext` (KAN-109) musel zůstat fail-open kontextem, který si
- * každý modal obaluje ručně, protože nebylo kde ho zapojit. Tenhle shell to
- * místo je: `ModalDepthProvider` je uvnitř, takže hloubka platí pro každý
- * dialog nad ním, aniž by si na ni volající musel vzpomenout.
+ * It exists because the product once had fifty hand-rolled
+ * `fixed inset-0` overlays and not one shared shell — and the missing
+ * shell blocked a central fix: `ModalDepthContext` had to stay a fail-open
+ * context that every modal wrapped by hand, because there was nowhere to
+ * plug it in. This shell is that place: `ModalDepthProvider` is inside, so
+ * depth applies to every dialog above it without the caller remembering.
  *
- * ## Návrh podle nejtěžších případů, ne podle prvního zákazníka
+ * ## Designed from the hardest cases, not the first customer
  *
- * Slovník vyzkoušený na nejsložitější stránce repa
- * (`pages/admin/platformProcessesUi.tsx` → `Modal`) sem přinesl dvě věci,
- * na které se nedá přijít od jednoduché obrazovky:
+ * Two things the most complex screen taught, which a simple one never
+ * would:
  *
- * - **Portál do `document.body`.** Renderovaný inline platí z-index overlaye
- *   jen uvnitř nejbližšího stacking kontextu — modal otevřený ze sticky buňky
- *   matice se schoval pod sticky buňky řádků pod sebou.
- * - **`max-h-[90vh]` + vlastní scroll panelu** se sticky hlavičkou, aby dlouhý
- *   obsah nescroloval stránkou pod overlayem.
+ * - **Portal into `document.body`.** Rendered inline, the overlay's
+ *   z-index only counts inside the nearest stacking context — a modal
+ *   opened from a sticky matrix cell hid under the sticky cells of the
+ *   rows below it.
+ * - **`max-h-[90vh]` + the panel's own scroll** with a sticky header, so
+ *   long content does not scroll the page under the overlay.
  *
- * ## A11y laťka (rozhodnutí vlastníka 2026-08-25)
+ * ## Accessibility bar (owner's decision, 2026-08-25)
  *
- * Platí od teď pro **každé** další primitivum, ne jen pro modal:
- * focus trap · ESC zavírá · scroll lock pozadí · `role="dialog"` +
- * `aria-modal` + popisek přes `aria-labelledby` · návrat fokusu na spouštěč.
+ * Applies to EVERY overlay primitive, not only the modal: focus trap · ESC
+ * closes · background scroll lock · `role="dialog"` + `aria-modal` +
+ * `aria-labelledby` · focus returned to the opener.
  *
- * Ingot **nemá vlastní i18n namespace** (totéž pravidlo jako
- * `IngotFieldInput`), takže přeložený popisek zavíracího tlačítka podstrčí
- * volající.
+ * The kit has no i18n namespace of its own, so the translated label of the
+ * close button comes from the caller.
  */
 
-// Trap/scroll lock/návrat fokusu bydlí v ``overlayChrome.ts`` — od KAN-655
-// je sdílí s ``IngotDrawer``, aby čítač zámku scrollu platil přes oba typy
-// překryvů najednou.
+// Trap, scroll lock and focus return live in overlayChrome.ts, shared with
+// IngotDrawer so the scroll-lock counter spans both kinds of overlay.
 
 export function IngotModal({
   title,
@@ -60,45 +57,45 @@ export function IngotModal({
   bodyClassName = "p-4",
   testId,
 }: {
-  /** Vykreslí se do `<h2>`, na které ukazuje `aria-labelledby`. */
+  /** Rendered into the `<h2>` that `aria-labelledby` points at. */
   title: ReactNode;
   /**
-   * Druhý řádek hlavičky — drobečková cesta, kontext, od čeho se
-   * odchyluješ.
+   * Second header line — a breadcrumb trail, the context you are
+   * departing from.
    *
-   * 🚨 **Není součástí `aria-labelledby`.** Přístupné jméno dialogu má
-   * být krátké a stabilní; drobečková cesta („Sklad Praha / Regál 1 /
-   * Police 2“) by z něj udělala odstavec, který čtečka přečte při
-   * každém návratu fokusu do dialogu. Podtitulek si proto nese
-   * `aria-describedby`, ne `-labelledby`.
+   * **Not part of `aria-labelledby`.** The dialog's accessible name should
+   * be short and stable; a breadcrumb trail ("Warehouse Prague / Rack 1 /
+   * Shelf 2") would turn it into a paragraph the reader hears every time
+   * focus returns to the dialog. The subtitle therefore carries
+   * `aria-describedby`, not `-labelledby`.
    */
   subtitle?: ReactNode;
-  /** Volá ESC, kliknutí do pozadí i zavírací tlačítko. */
+  /** Called by ESC, a click on the backdrop and the close button. */
   onClose: () => void;
   children: ReactNode;
   /**
-   * Lišta akcí pod obsahem, oddělená linkou. Nescroluje s obsahem
-   * (`sticky bottom-0`) — u vysokého formuláře je „Uložit“ jinak pod
-   * ohybem a operátor ho hledá scrollováním.
+   * Action bar under the content, separated by a line. Does not scroll
+   * with the content (`sticky bottom-0`) — on a tall form "Save" would
+   * otherwise be below the fold and the operator scrolls to find it.
    */
   footer?: ReactNode;
-  /** Přeložený `aria-label` zavíracího tlačítka — Ingot překlady nemá. */
+  /** Translated `aria-label` of the close button — the kit has no translations. */
   closeLabel: string;
-  /** Maximální šířka panelu v px. */
+  /** Maximum panel width in px. */
   width?: number;
   /**
-   * Třídy obalu obsahu. Výchozí `p-4` sedí formulářům; dvousloupcový
-   * layout, kde si odsazení nese každý sloupec sám a dělicí linka má
-   * jít od kraje ke kraji, si předá `""`.
+   * Classes of the content wrapper. The default `p-4` suits forms; a
+   * two-column layout where each column carries its own padding and the
+   * divider must run edge to edge passes `""`.
    */
   bodyClassName?: string;
-  /** `data-testid` overlaye; panel dostane `${testId}-panel`. */
+  /** `data-testid` of the overlay; the panel gets `${testId}-panel`. */
   testId?: string;
 }): JSX.Element {
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
-  // Poslední otevřený dialog leží nahoře — pevný ``z-50`` na všech
-  // nechal rozhodovat pořadí v DOM, které pořadí otevírání nekopíruje.
+  // The last opened dialog lies on top — a fixed ``z-50`` on all of them
+  // let the DOM order decide, which does not follow the opening order.
   const layer = useModalLayer();
   const subtitleId = `${titleId}-sub`;
 
@@ -119,12 +116,16 @@ export function IngotModal({
   );
 
   return createPortal(
+    // The backdrop is a mouse convenience; the keyboard path is ESC and the
+    // close button, both measured in tests/IngotModal.test.tsx.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 flex animate-ingot-fade-in items-center justify-center bg-black/40 p-4 motion-reduce:animate-none"
       style={{ zIndex: layer }}
-      // Zachytává se na overlayi, ne na dokumentu: dva otevřené dialogy nad
-      // sebou by jinak na jeden ESC zavřely oba. Fokus je uvnitř panelu, takže
-      // událost sem bublá jen z toho vrchního — a ten ji zastaví.
+      // Caught on the overlay, not on the document: two open dialogs on top
+      // of each other would otherwise both close on one ESC. Focus is inside
+      // the panel, so the event bubbles here only from the top one — and
+      // that one stops it.
       onKeyDown={onKeyDown}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -139,34 +140,19 @@ export function IngotModal({
         aria-describedby={subtitle === undefined ? undefined : subtitleId}
         tabIndex={-1}
         style={{ maxWidth: width }}
-        className="max-h-[90vh] w-full overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none"
+        className="max-h-[90vh] w-full animate-ingot-scale-in overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none motion-reduce:animate-none"
         data-testid={testId ? `${testId}-panel` : undefined}
       >
-        <header className="sticky top-0 z-10 flex items-start gap-2.5 border-b border-border bg-surface px-4 py-3">
-          <div className="min-w-0 flex-1">
-            <h2 id={titleId} className="m-0 text-[15px] font-semibold text-ink">
-              {title}
-            </h2>
-            {subtitle !== undefined && (
-              <div
-                id={subtitleId}
-                className="mt-1 text-xs text-ink-3"
-                data-testid={testId ? `${testId}-subtitle` : undefined}
-              >
-                {subtitle}
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={closeLabel}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-ink-3 hover:text-ink"
-            data-testid={testId ? `${testId}-close` : undefined}
-          >
-            <IngotIcon name="close" size={14} />
-          </button>
-        </header>
+        <OverlayHeader
+          title={title}
+          subtitle={subtitle}
+          titleId={titleId}
+          subtitleId={subtitleId}
+          onClose={onClose}
+          closeLabel={closeLabel}
+          sticky
+          testId={testId}
+        />
         <ModalDepthProvider>
           <div className={bodyClassName}>{children}</div>
           {footer !== undefined && (

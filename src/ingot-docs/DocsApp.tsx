@@ -1,57 +1,73 @@
 /**
- * Skořápka doc webu Ingotu (KAN-581) — třísloupcový layout podle vzoru
- * Tailwind Catalyst: vlevo menu, uprostřed popis + živá ukázka
- * + vlastnosti, vpravo „Co je na stránce“.
+ * Shell of the Ingot doc web — a three-column layout after the Tailwind
+ * Catalyst pattern: menu on the left, description + live demo + props in
+ * the middle, "On this page" on the right.
  *
- * Routuje se **hashem**, ne react-routerem. Doc web je vlastní entry
- * point (rozhodnutí 3 v KAN-581) a router by do něj přitáhl závislost,
- * kterou hrstka statických stránek nepotřebuje.
+ * Routing is by **path**, without react-router. Every address is a real
+ * URL that the build writes a real HTML file for (``routes.ts`` is the one
+ * list both halves read), so a crawler, a link preview and a chat client
+ * all get the page they asked for. A router library would add a dependency
+ * for what is a lookup in an array the site already has.
  *
- * 🚨 **Kreslí se JEN komponentami kitu** (KAN-628). Doc web kit vyučuje,
- * takže stránka, která si sama skládá třídy, ho svým vlastním příkladem
- * popírá. Menu je `IngotSideNav`, nadpis `IngotPageHeader`, sekce
- * `IngotSection`, výčty `IngotList`, kód `IngotCode`, plocha ukázky
- * `Card` a tabulka vlastností `IngotTable`. Zbývá jen rozvržení tří
- * sloupců, protože rozvržení komponenta není.
+ * **Drawn ONLY with kit components.** The doc web teaches the kit, so a
+ * page that composes its own classes contradicts it by its own example.
+ * The menu is `IngotSideNav`, the heading `IngotPageHeader`, sections
+ * `IngotSection`, lists `IngotList`, code `IngotCode`, the demo surface
+ * `Card` and the props table `IngotTable`. Only the three-column layout
+ * remains, because a layout is not a component.
  *
- * 🪤 **Pravý sloupec se odvozuje z TÉHOŽ pole, které vykresluje obsah**
- * (KAN-624). Do KAN-624 byl ten výčet napsaný ručně a měl dvě položky —
- * s přibývajícími sekcemi by to byl přesně ten druh seznamu, který se
- * rozejde s obsahem a nikdo si toho nevšimne, protože obě strany vypadají
- * pravdivě. ``sectionsFor`` je proto jediný zdroj: sekce, která se
- * nevykreslí, se do kotev nedostane, a naopak.
+ * **The right column is derived from the SAME array that renders the
+ * content.** That list used to be hand-written with two items — with
+ * sections being added it would be exactly the kind of list that drifts
+ * from the content and nobody notices, because both sides look true.
+ * ``sectionsFor`` is therefore the single source: a section that does not
+ * render does not reach the anchors, and vice versa.
  *
- * 🌍 **Jazyk, motiv i akcent drží skořápka** (KAN-627, KAN-648). Který
- * jazyk se nabídne, není v bundlu: čte se z platformy
- * (``platformLanguages.ts``) a protne se s tím, pro co doc web opravdu
- * má text. Motiv nasazuje ``.dark`` na ``<html>``, akcent
- * ``data-accent`` tamtéž — výchozí stav obojího už při načtení řeší
- * skript v ``ingot.html``, tady je jen přepínač a jeho uložená volba.
+ * 🌍 **Language, theme and accent are held by the shell** (KAN-627,
+ * KAN-648). Which languages are offered is not in the bundle: it is read
+ * from the platform (``platformLanguages.ts``) and intersected with what
+ * the doc web really has text for. The theme sets ``.dark`` on ``<html>``,
+ * the accent ``data-accent`` on the same element — the initial state of
+ * both is applied before first paint by the kit's ``theme-init.js``; here
+ * is only the switch and its stored choice.
  *
- * ⚠️ Doc web nemá přihlášení, takže obě volby žijí jen v prohlížeči.
- * V aplikaci je zdrojem pravdy účet (``AuthMe.ui_theme`` /
- * ``AuthMe.ui_accent``) a localStorage je tam jen zrcadlo proti bliknutí.
+ * The doc web has no login, so both choices live only in the browser. In
+ * the product the account is the source of truth and localStorage is a
+ * mirror against a flash on load.
  */
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useState,
+  type ComponentType,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 
 import {
   Button,
   IngotBadge,
+  IngotCallout,
   IngotCode,
   IngotDrawer,
+  IngotEyebrow,
   IngotIcon,
   IngotList,
   IngotPageHeader,
+  IngotProvider,
   IngotSection,
+  IngotAccentSwatches,
+  IngotSegmented,
   IngotSideNav,
   IngotTable,
   IngotTabs,
   type IngotColumn,
   type IngotNavItem,
 } from "@/ingot";
-import { AccentSwatches } from "@/components/AccentSwatches";
-import { DocSegmented } from "@/components/DocSegmented";
 import { CHROME } from "@/ingot-docs/chrome";
+import releases from "@/ingot-docs/releases.json";
+import { SearchDialog } from "@/ingot-docs/SearchDialog";
 import {
   initialLang,
   writeStoredLang,
@@ -59,35 +75,40 @@ import {
   type Localized,
 } from "@/ingot-docs/lang";
 import {
-  fallbackLanguages,
+  bundleLanguages,
   fetchDocLanguages,
   type DocLanguages,
 } from "@/ingot-docs/platformLanguages";
 import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
+import {
+  ALL_PAGES,
+  DEFAULT_PAGE,
+  locationFromPath,
+  pageSlug,
+  pathFromLegacyHash,
+  pathOf,
+  type DocsPage,
+} from "@/ingot-docs/routes";
 import pkg from "../../package.json";
 import type {
   IngotDocPage,
   IngotExtraPropGroup,
   IngotGuideGroup,
-  IngotGuidePage,
   IngotPropRow,
 } from "@/ingot-docs/types";
 import {
   applyAccent,
+  applyTheme,
   readStoredAccent,
-  writeStoredAccent,
-  type AccentChoice,
-} from "@/lib/accent";
-import {
   readStoredTheme,
-  resolveTheme,
-  systemPrefersDark,
+  writeStoredAccent,
   writeStoredTheme,
+  type AccentChoice,
   type ThemeChoice,
-} from "@/lib/theme";
+} from "@/ingot/theme";
 
-/** Zkratka pro „vyber jazyk“ — čte se líp než ``value[lang]`` všude. */
+/** Shorthand for "pick the language" — reads better than ``value[lang]`` everywhere. */
 function pick<T>(value: Localized<T>, lang: DocLang): T {
   return value[lang];
 }
@@ -101,8 +122,8 @@ function propColumns(lang: DocLang): readonly IngotColumn<IngotPropRow>[] {
       cellClassName: "whitespace-nowrap",
     },
     {
-      // Typ jako badge, ne holý text — sloupec je orientační štítek,
-      // ne náhrada za zdrojový soubor.
+      // The type as a badge, not bare text — the column is an orientation
+      // label, not a substitute for the source file.
       key: "type",
       header: pick(CHROME.propType, lang),
       cell: (row) => <IngotBadge>{row.type}</IngotBadge>,
@@ -152,9 +173,12 @@ function PropsTable({
   );
 }
 
-/** ``IngotColumn<Row>`` -> ``ingotcolumn-row``; jen aby byl testId čitelný. */
+/** ``IngotColumn<Row>`` -> ``ingotcolumn-row``; only so the testId is readable. */
 function slugify(name: string): string {
-  return name.replace(/\W+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  return name
+    .replace(/\W+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
 }
 
 function ExtraProps({
@@ -186,22 +210,37 @@ function ExtraProps({
 }
 
 /**
- * Živá ukázka v rámečku s barem: taby Náhled/Kód + tlačítko Kopírovat
- * (KAN-626, vizuál KAN-663).
+ * Live demo in a frame with a bar: Preview/Code tabs + a Copy button.
  *
- * Tabulka vlastností říká, CO která vlastnost dělá; kód říká, JAK se to
- * poskládá — a u `IngotTable` (sloupce jako data) nebo `IngotConfirm`
- * (veto ze slotu `impact`) je to půlka hodnoty. Bez něj musí čtenář do
- * repozitáře, což je přesně ta bariéra, kvůli které si příští člověk
- * komponentu radši napíše po svém.
+ * The props table says WHAT each prop does; the code says HOW it is put
+ * together — and for `IngotTable` (columns as data) or `IngotConfirm` (a
+ * veto from the `impact` slot) that is half of the value. Without it the
+ * reader has to go to the repository, which is exactly the barrier that
+ * makes the next person write the component their own way.
  *
- * `page.demoSource` je ``?raw`` import TÉHOŽ modulu, ze kterého pochází
- * `page.Demo` — viz `IngotDocPage.demoSource`. Výpis proto není kopie,
- * kterou by šlo zapomenout přepsat.
+ * `page.demoSource` is a ``?raw`` import of the SAME module that
+ * `page.Demo` comes from — see `IngotDocPage.demoSource`. The listing is
+ * therefore not a copy that could be forgotten.
  *
- * Stage náhledu sedí na ``--surface-2`` a centruje obsah — samotný
- * rámeček by na bílé ploše stránky splynul.
+ * The preview stage sits on ``--surface-2`` and centres the content — the
+ * frame alone would blend into the page's white surface.
  */
+/**
+ * One lazy component per page, built once when this module loads.
+ *
+ * ``React.lazy`` returns a NEW component type on every call, and a new type
+ * means React throws the old tree away and mounts a fresh one — so building
+ * it during a render would remount the demo on every keystroke elsewhere on
+ * the page and lose whatever state the reader had set in it.
+ *
+ * Building all of them up front costs nothing: ``lazy`` imports nothing
+ * until something renders it. What is eager here is a wrapper; what is lazy
+ * is the demo.
+ */
+const DEMOS: ReadonlyMap<string, ComponentType<{ lang: DocLang }>> = new Map(
+  INGOT_DOC_PAGES.map((page) => [page.name, lazy(page.demo)] as const),
+);
+
 function DemoWithSource({
   page,
   lang,
@@ -211,20 +250,43 @@ function DemoWithSource({
 }): JSX.Element {
   const [view, setView] = useState<"preview" | "code">("preview");
   const [copied, setCopied] = useState(false);
+  const [source, setSource] = useState<string | null>(null);
 
   useEffect(() => {
     setView("preview");
     setCopied(false);
+    setSource(null);
   }, [page.name]);
+
+  /**
+   * The listing arrives when the reader asks for it.
+   *
+   * It is behind a toggle most readers never open, so its text has no
+   * business in the first payload. ``cancelled`` is the usual guard for a
+   * reader who turns two pages quickly: without it the slower request
+   * lands last and the page shows another component's code.
+   */
+  useEffect(() => {
+    if (view !== "code" || source !== null) return;
+    let cancelled = false;
+    void page.demoSource().then((module) => {
+      if (!cancelled) setSource(module.default);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [view, source, page]);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(page.demoSource);
+      const text = source ?? (await page.demoSource()).default;
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Schránka nemusí být (http, zakázaná oprávnění) — tlačítko pak
-      // prostě nepotvrdí a čtenář si kód vybere z tabu Kód ručně.
+      // The clipboard may be missing (http, denied permission) — the button
+      // then simply does not confirm and the reader selects the code from
+      // the Code tab by hand.
     }
   };
 
@@ -253,26 +315,38 @@ function DemoWithSource({
         </Button>
       </div>
       {view === "preview" ? (
-        /* 🪤 Plocha ROLUJE, neořezává. Ukázka s vlastní pevnou šířkou
-           (``IngotMegaMenu`` má 26rem) se na úzký výřez nevejde a pod
-           ``overflow-hidden`` se prostě usekla — čtenář nevidí, že mu
-           kus chybí. To je horší než posuvník: mlčky lže o tom, jak
-           komponenta vypadá.
+        /* The surface SCROLLS, it does not clip. A demo with its own fixed
+           width (``IngotMegaMenu`` has 26rem) does not fit a narrow
+           viewport and under ``overflow-hidden`` it was simply cut off —
+           the reader does not see that a piece is missing. That is worse
+           than a scrollbar: it silently lies about how the component looks.
 
-           ``mx-auto w-fit`` zvládne obojí naráz: ukázka, která se
-           smrsknout umí, zůstane vystředěná; ta, která ne, roztáhne
-           obal a rozjede posuvník od levého kraje. */
-        <div
-          className="overflow-x-auto bg-surface-2"
-          data-testid="docs-demo-stage"
-        >
+           ``mx-auto w-fit`` handles both at once: a demo that can shrink
+           stays centred; one that cannot stretches the wrapper and starts
+           a scrollbar from the left edge. */
+        <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
-            <page.Demo />
+            <IngotProvider lang={lang}>
+              {/* The fallback is the word, not a spinner: the demo is a
+                  local module and arrives in a frame or two. A spinner for
+                  something that fast is a flicker the reader reads as a
+                  fault. */}
+              <Suspense
+                fallback={
+                  <p className="text-sm text-ink-3">{pick(CHROME.demoLoading, lang)}</p>
+                }
+              >
+                {(() => {
+                  const Demo = DEMOS.get(page.name);
+                  return Demo ? <Demo lang={lang} /> : null;
+                })()}
+              </Suspense>
+            </IngotProvider>
           </div>
         </div>
       ) : (
         <IngotCode block lang="tsx" testId="docs-source">
-          {page.demoSource}
+          {source ?? pick(CHROME.demoLoading, lang)}
         </IngotCode>
       )}
     </div>
@@ -284,49 +358,97 @@ interface DocSection {
   title: string;
   body: ReactNode;
   /**
-   * Nadpis jako „cap“ z handoffu: mono verzálky s tečkovanou linkou za
-   * textem. Sekce stránky komponenty ho mají, průvodci ne — u nich je
-   * nadpis věta, ne štítek bloku.
+   * Heading as the handoff's "cap": mono uppercase with a dotted line after
+   * the text. Component page sections have it, guides do not — there the
+   * heading is a sentence, not a block label.
    */
   cap?: boolean;
 }
 
-/** Nadpis sekce ve stylu cap — obsah pro ``IngotSection.title``. */
+/** Section heading in the cap style — content for ``IngotSection.title``. */
 function CapTitle({ children }: { children: ReactNode }): JSX.Element {
   return (
-    <span className="flex items-center gap-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.07em] text-ink-4">
+    <IngotEyebrow as="span" tone="muted" className="flex items-center gap-2">
       {children}
       <span
         aria-hidden="true"
         className="flex-1 border-t border-dashed border-border"
       />
-    </span>
+    </IngotEyebrow>
   );
 }
 
 /**
- * Co je právě zobrazené. Doc web má od KAN-625 dva druhy stránek a
- * rozlišuje je typem, ne příznakem: průvodce nemá ``props`` ani ukázku
- * a komponenta nemá volné sekce, takže jeden společný tvar by byl z
- * poloviny vždycky prázdný.
+ * The status badge, by status.
+ *
+ * ``deprecated`` is the danger tone rather than a warning: a reader who
+ * lands on the page has to see, before anything else, that building on
+ * this is building on something with a removal date.
  */
-type ActivePage =
-  | { kind: "guide"; guide: IngotGuidePage }
-  | { kind: "component"; doc: IngotDocPage };
+/**
+ * The release a primitive first appeared in.
+ *
+ * Written at build time from the tags themselves — for each tag, which doc
+ * pages it carried. A list maintained by hand would be a list that is one
+ * release behind, and it would be behind in the direction that matters:
+ * the newest primitive is the one a reader is least sure about.
+ */
+function sinceOf(name: string): string | null {
+  return (releases.since as Record<string, string>)[name] ?? null;
+}
 
-const DEFAULT_PAGE: ActivePage = {
-  kind: "guide",
-  guide: INGOT_GUIDE_PAGES[0],
-};
+const STATUS_TONE = {
+  stable: "neutral",
+  beta: "warn",
+  deprecated: "danger",
+} as const;
+
+const STATUS_LABEL = {
+  stable: CHROME.statusStable,
+  beta: CHROME.statusBeta,
+  deprecated: CHROME.statusDeprecated,
+} as const;
 
 /**
- * Sekce právě zobrazené stránky — jediný zdroj pro obsah i pro kotvy.
+ * Sections of the page currently shown — the single source for the content
+ * and for the anchors.
  *
- * Nepovinné sekce (``limits``) se do pole vůbec nedostanou, takže „Co je
- * na stránce“ na ně nemůže odkázat do prázdna.
+ * Optional sections (``limits``) never enter the array, so "On this page"
+ * cannot link to them into a void.
  */
 function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
   const sections: DocSection[] = [
+    // The deprecation notice comes FIRST, before the demo. A reader who
+    // scrolls to the props and starts typing has already decided; the
+    // removal date has to reach them before that.
+    ...(page.deprecated === undefined
+      ? []
+      : [
+          {
+            id: "zastarale",
+            title: pick(CHROME.deprecatedTitle, lang),
+            cap: true,
+            body: (
+              <IngotCallout
+                tone="danger"
+                title={pick(CHROME.deprecatedTitle, lang)}
+                testId="docs-deprecated"
+              >
+                <IngotList
+                  items={[
+                    `${pick(CHROME.deprecatedSince, lang)}: v${page.deprecated.since}`,
+                    ...(page.deprecated.replacedBy === undefined
+                      ? []
+                      : [
+                          `${pick(CHROME.deprecatedReplacedBy, lang)}: ${page.deprecated.replacedBy}`,
+                        ]),
+                    `${pick(CHROME.deprecatedRemoveIn, lang)}: v${page.deprecated.removeIn}`,
+                  ]}
+                />
+              </IngotCallout>
+            ),
+          } satisfies DocSection,
+        ]),
     {
       id: "ukazka",
       title: pick(CHROME.demo, lang),
@@ -351,6 +473,12 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       cap: true,
       body: (
         <div className="space-y-6">
+          {/* The className policy stands ABOVE the table: a primitive that
+              does not take it has no row to say so, and "may I pass
+              className?" is the first question a consumer asks. */}
+          <p className="text-sm text-ink-2" data-testid="docs-classname-note">
+            {pick(page.classNameNote, lang)}
+          </p>
           <PropsTable
             rows={page.props}
             caption={`${pick(CHROME.props, lang)} — ${page.name}`}
@@ -367,8 +495,8 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       id: "pristupnost",
       title: pick(CHROME.a11y, lang),
       cap: true,
-      // Callout-warn: přístupnost je ta část, kterou opsané komponenty
-      // ztrácejí nejdřív — proto varovná plocha, ne běžný výčet.
+      // Callout-warn: accessibility is the part that copied components lose
+      // first — hence a warning surface, not a plain list.
       body: (
         <div
           className="rounded-md border border-warn-border bg-warn-bg p-4"
@@ -379,19 +507,29 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       ),
     },
     {
-      // Tokeny stojí za přístupností a před překlady, jak je řadí návrh:
-      // obojí je to, co se při review komponenty kontroluje naposled.
+      // Tokens come after accessibility and before translations, as the
+      // design orders them: both are what a component review checks last.
       id: "tokeny",
       title: pick(CHROME.tokens, lang),
       cap: true,
       body: (
         <div className="space-y-3">
-          <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
-          <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
-            {page.tokens.map((token) => (
-              <IngotCode key={token}>{token}</IngotCode>
-            ))}
-          </div>
+          {page.tokens.length === 0 ? (
+            // An empty list is a statement, not an omission: the primitive
+            // renders nothing, so review knows no token change reaches it.
+            <p className="text-sm text-ink-2" data-testid="docs-tokens">
+              {pick(CHROME.tokensNone, lang)}
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-ink-2">{pick(CHROME.tokensNote, lang)}</p>
+              <div className="flex flex-wrap gap-1.5" data-testid="docs-tokens">
+                {page.tokens.map((token) => (
+                  <IngotCode key={token}>{token}</IngotCode>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       ),
     },
@@ -418,44 +556,21 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
   return sections;
 }
 
-/**
- * Stránka z hashe; neznámá padá na výchozí (úvod).
- *
- * 🪤 ``null`` znamená „tohle není routa“, ne „nenašel jsem stránku“.
- * Pravý sloupec kotví na ``#ukazka`` / ``#vlastnosti`` uvnitř TÉŽE
- * stránky — kdyby se i takový hash bral jako routa, proklik na kotvu by
- * shodil obsah zpátky na výchozí stránku.
- *
- * Průvodci se hledají PRVNÍ. Slug průvodce a jméno primitiva sdílejí
- * jeden prostor hashů, takže kolize by jedno z nich tiše zastínila —
- * proto ji guard ``ingot-doc-pages`` odmítne, a tenhle pořádek jen
- * určuje, kdo vyhraje, kdyby se přes něj přece jen protáhla.
- */
-function pageFromHash(hash: string): ActivePage | null {
-  if (!hash.startsWith("#/")) return null;
-  const wanted = hash.slice(2);
-  const guide = INGOT_GUIDE_PAGES.find((entry) => entry.slug === wanted);
-  if (guide) return { kind: "guide", guide };
-  const doc = INGOT_DOC_PAGES.find((entry) => entry.name === wanted);
-  if (doc) return { kind: "component", doc };
-  return DEFAULT_PAGE;
-}
-
-function titleOf(active: ActivePage, lang: DocLang): string {
+function titleOf(active: DocsPage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.title, lang)
-    : // Na stránce bez prefixu; v adrese i ve výpisech kódu zůstává
-      // plné jméno exportu — viz ``naming.ts``.
+    : // Without the prefix on the page; the address and the code listings
+      // keep the full export name — see ``naming.ts``.
       displayName(active.doc.name);
 }
 
-function summaryOf(active: ActivePage, lang: DocLang): string {
+function summaryOf(active: DocsPage, lang: DocLang): string {
   return active.kind === "guide"
     ? pick(active.guide.summary, lang)
     : pick(active.doc.summary, lang);
 }
 
-function sectionsOf(active: ActivePage, lang: DocLang): readonly DocSection[] {
+function sectionsOf(active: DocsPage, lang: DocLang): readonly DocSection[] {
   if (active.kind === "component") return sectionsFor(active.doc, lang);
   return active.guide.sections.map((section) => ({
     id: section.id,
@@ -464,85 +579,93 @@ function sectionsOf(active: ActivePage, lang: DocLang): readonly DocSection[] {
   }));
 }
 
-/** Hash, pod kterým stránka bydlí — jediné místo, kde se ta cesta skládá. */
-function hrefOf(active: ActivePage): string {
-  return `#/${active.kind === "guide" ? active.guide.slug : active.doc.name}`;
+/**
+ * The address a page lives at. Built in ``routes.ts`` and nowhere else, so
+ * the menu, the pager, the sitemap and the prerendered files cannot
+ * disagree about where a page is.
+ */
+function hrefOf(active: DocsPage, lang: DocLang): string {
+  return pathOf(active, lang);
 }
 
 function navItem(
-  entry: ActivePage,
+  entry: DocsPage,
   activeHref: string,
   lang: DocLang,
-  /** Odlišuje sloupec (``docs-``) od draweru (``docs-drawer-``). */
+  /** Tells the column (``docs-``) apart from the drawer (``docs-drawer-``). */
   idPrefix: string,
   extra?: Partial<IngotNavItem>,
 ): IngotNavItem {
-  const href = hrefOf(entry);
+  const href = hrefOf(entry, lang);
   return {
     href,
     label: titleOf(entry, lang),
     current: href === activeHref,
-    testId: `${idPrefix}nav-${href.slice(2)}`,
+    // The slug, not the address: the testids were written before the pages
+    // had a language prefix, and a query for `docs-nav-table` should not
+    // start failing because the reader is reading in English.
+    testId: `${idPrefix}nav-${pageSlug(entry)}`,
     ...extra,
   };
 }
 
-const GUIDE_ENTRIES: readonly ActivePage[] = INGOT_GUIDE_PAGES.map((guide) => ({
+const GUIDE_ENTRIES: readonly DocsPage[] = INGOT_GUIDE_PAGES.map((guide) => ({
   kind: "guide" as const,
   guide,
 }));
 
-const COMPONENT_ENTRIES: readonly ActivePage[] = INGOT_DOC_PAGES.map((doc) => ({
+const COMPONENT_ENTRIES: readonly DocsPage[] = INGOT_DOC_PAGES.map((doc) => ({
   kind: "component" as const,
   doc,
 }));
 
-/** Slug rozcestníku, pod který se v menu vnořují komponenty. */
+/** Slug of the overview page the components nest under in the menu. */
 const CATALOGUE_SLUG = "komponenty";
 
 const GROUP_LABELS: Record<IngotGuideGroup, keyof typeof CHROME> = {
   system: "groupSystem",
   app: "groupApp",
   rules: "groupRules",
+  authors: "groupAuthors",
 };
 
 /**
- * Levé menu jako v handoffu: JEDEN číslovaný seznam rozdělený nadpisy
- * skupin, s komponentami vnořenými pod rozcestníkem.
+ * Left menu as in the handoff: ONE numbered list split by group headings,
+ * with the components nested under the overview page.
  *
- * 🪤 **Číslo je pozice v ``INGOT_GUIDE_PAGES``, ne zapsaná hodnota.**
- * Ručně psaná čísla by se při vložení stránky doprostřed musela
- * přečíslovat celá — a to je práce, na kterou se zapomene přesně
- * jednou, načež menu čísluje 00, 01, 01, 03.
+ * **The number is the position in ``INGOT_GUIDE_PAGES``, not a written
+ * value.** Hand-written numbers would all have to be renumbered when a
+ * page is inserted in the middle — and that is work forgotten exactly
+ * once, after which the menu counts 00, 01, 01, 03.
  *
- * Skupiny se odvozují průchodem v pořadí registru: nadpis se vloží
- * pokaždé, když se skupina změní. Stránky jedné skupiny proto musí
- * v registru stát vedle sebe — viz komentář u ``INGOT_GUIDE_PAGES``.
+ * Groups are derived by walking the registry in order: a heading is
+ * inserted every time the group changes. Pages of one group must therefore
+ * stand next to each other in the registry — see the comment at
+ * ``INGOT_GUIDE_PAGES``.
  */
 function guideGroups(
-  active: ActivePage,
+  active: DocsPage,
   lang: DocLang,
   /**
-   * Menu se kreslí dvakrát — ve sloupci (od ``md``) a v draweru (pod
-   * ``md``). Skrytý sloupec je ``display:none``, takže z přístupnostního
-   * stromu vypadne a odečítač slyší navigaci jen jednou; v DOM ale
-   * zůstane, a stejný testid dvakrát je past na dotaz, který čeká jeden
-   * prvek. Prefix je proto povinný, ne volitelný.
+   * The menu is drawn twice — in the column (from ``md``) and in the drawer
+   * (below ``md``). The hidden column is ``display:none``, so it drops out
+   * of the accessibility tree and a screen reader hears the navigation only
+   * once; it stays in the DOM though, and the same testid twice is a trap
+   * for a query that expects one element. The prefix is therefore required,
+   * not optional.
    */
   idPrefix: string,
 ): readonly { group: IngotGuideGroup; items: readonly IngotNavItem[] }[] {
-  const activeHref = hrefOf(active);
-  // Seznam komponent se vnořuje JEN když čtenář v sekci komponent stojí
-  // (rozcestník nebo stránka komponenty) — pokyn vlastníka 2026-09-02.
-  // Jednatřicet položek rozbalených na každé stránce dělalo z menu
-  // rejstřík, ve kterém se ostatní skupiny musely hledat rolováním.
+  const activeHref = hrefOf(active, lang);
+  // The component list nests ONLY while the reader is in the components
+  // section (the overview or a component page) — owner's instruction of
+  // 2026-09-02. Thirty-one items unfolded on every page turned the menu
+  // into an index in which the other groups had to be found by scrolling.
   const inComponents =
     active.kind === "component" ||
     (active.kind === "guide" && active.guide.slug === CATALOGUE_SLUG);
   const componentItems = inComponents
-    ? COMPONENT_ENTRIES.map((entry) =>
-        navItem(entry, activeHref, lang, idPrefix),
-      )
+    ? COMPONENT_ENTRIES.map((entry) => navItem(entry, activeHref, lang, idPrefix))
     : undefined;
 
   const groups: { group: IngotGuideGroup; items: IngotNavItem[] }[] = [];
@@ -553,8 +676,7 @@ function guideGroups(
     groups.at(-1)!.items.push(
       navItem(entry, activeHref, lang, idPrefix, {
         ordinal: String(index).padStart(2, "0"),
-        children:
-          entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
+        children: entry.guide.slug === CATALOGUE_SLUG ? componentItems : undefined,
       }),
     );
   });
@@ -562,67 +684,61 @@ function guideGroups(
 }
 
 /**
- * Pořadí pro prev/next patičku: průvodci → komponenty, přesně jak jdou
- * v levém menu. Jedna posloupnost schválně — čtenář, který projde
- * posledního průvodce, má „Další“ pokračovat na první komponentu, ne
- * skončit ve slepé uličce.
+ * Order for the prev/next footer: guides → components, exactly as they go
+ * in the left menu. One sequence on purpose — a reader who finishes the
+ * last guide should have "Next" continue to the first component, not end
+ * in a dead end.
  */
-const ALL_ENTRIES: readonly ActivePage[] = [
-  ...GUIDE_ENTRIES,
-  ...COMPONENT_ENTRIES,
-];
+const ALL_ENTRIES: readonly DocsPage[] = ALL_PAGES;
 
-/** Patička prev/next — mezi průvodci, komponentami i přes hranici obou. */
+/** Prev/next footer — between guides, components, and across the boundary of both. */
 function PagerFooter({
   page,
   lang,
 }: {
-  page: ActivePage;
+  page: DocsPage;
   lang: DocLang;
 }): JSX.Element | null {
-  const href = hrefOf(page);
-  const index = ALL_ENTRIES.findIndex((entry) => hrefOf(entry) === href);
+  const href = hrefOf(page, lang);
+  const index = ALL_ENTRIES.findIndex((entry) => hrefOf(entry, lang) === href);
   if (index < 0) return null;
   const prev = index > 0 ? ALL_ENTRIES[index - 1] : null;
   const next = index < ALL_ENTRIES.length - 1 ? ALL_ENTRIES[index + 1] : null;
 
-  // Karty z handoffu: rámeček, mono štítek směru, hover se stínem.
+  // Cards from the handoff: a frame, a mono direction label, hover with a
+  // shadow.
   //
-  // 🪤 ``min-w-0``, ne ``min-w-[200px]``. Dvě karty po 200 px s mezerou
-  // si vynutí 416 px, což byl na mobilu jediný zbylý zdroj vodorovného
-  // rolování CELÉHO dokumentu — širší než výřez znamená, že stránka
-  // ujíždí do stran i tam, kde je jinak všechno v pořádku.
+  // ``min-w-0``, not ``min-w-[200px]``. Two 200 px cards with a gap force
+  // 416 px, which on mobile was the last remaining source of horizontal
+  // scrolling of the WHOLE document — wider than the viewport means the
+  // page slides sideways even where everything else is fine.
   const cardClass =
     "flex min-w-0 flex-1 flex-col gap-1 rounded-md border border-border bg-surface px-[18px] py-[14px] text-ink hover:border-border-strong hover:shadow-sm sm:max-w-[48%] sm:flex-none";
 
   return (
     <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between sm:gap-4">
       {prev ? (
-        <a className={cardClass} href={hrefOf(prev)} data-testid="docs-prev">
-          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
+        <a className={cardClass} href={hrefOf(prev, lang)} data-testid="docs-prev">
+          <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.prevPage, lang)}
-          </span>
-          <span className="truncate text-sm font-medium">
-            {titleOf(prev, lang)}
-          </span>
+          </IngotEyebrow>
+          <span className="truncate text-sm font-medium">{titleOf(prev, lang)}</span>
         </a>
       ) : (
-        /* Vyrovnávací prvek drží „Další" u pravého kraje, když předchozí
-           stránka není. Pod sebou (mobil) by ale jen přidal mezeru. */
+        /* A spacer keeps "Next" at the right edge when there is no previous
+           page. Stacked (mobile) it would only add a gap, though. */
         <span className="hidden sm:block" />
       )}
       {next ? (
         <a
           className={`${cardClass} sm:ml-auto sm:items-end sm:text-right`}
-          href={hrefOf(next)}
+          href={hrefOf(next, lang)}
           data-testid="docs-next"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.09em] text-ink-4">
+          <IngotEyebrow as="span" tone="muted">
             {pick(CHROME.nextPage, lang)}
-          </span>
-          <span className="truncate text-sm font-medium">
-            {titleOf(next, lang)}
-          </span>
+          </IngotEyebrow>
+          <span className="truncate text-sm font-medium">{titleOf(next, lang)}</span>
         </a>
       ) : (
         <span className="hidden sm:block" />
@@ -634,11 +750,11 @@ function PagerFooter({
 const THEME_CHOICES: readonly ThemeChoice[] = ["system", "light", "dark"];
 
 /**
- * Jména akcentových rodin pro odečítač obrazovky.
+ * Names of the accent families for a screen reader.
  *
- * ``Record<AccentChoice, …>`` schválně: přibude-li rodina do
- * ``ACCENT_CHOICES``, shodí to typecheck tady, ne až vizuální kontrola
- * puntíku bez popisku.
+ * ``Record<AccentChoice, …>`` on purpose: when a family is added to
+ * ``ACCENT_CHOICES``, the typecheck fails here, not a visual check of a dot
+ * without a label.
  */
 const ACCENT_LABELS: Record<AccentChoice, keyof typeof CHROME> = {
   blue: "accentBlue",
@@ -649,40 +765,118 @@ const ACCENT_LABELS: Record<AccentChoice, keyof typeof CHROME> = {
 };
 
 /**
- * Nasadí (nebo sundá) ``.dark`` na ``<html>``.
+ * What the address bar says right now.
  *
- * Doc web je vlastní entry, takže ``ThemeProvider`` z admin shellu tu
- * neběží. Výchozí stav při načtení řeší synchronní skript v
- * ``ingot.html`` — bez něj by studený load blikl světlá → tmavá. Tahle
- * funkce je jen ta druhá půlka: co se stane, když čtenář přepne.
+ * The path decides the language too: ``/en/...`` is English, everything
+ * else is Czech. That order matters — a reader who was sent an English
+ * link must read English even if their own stored choice is Czech, because
+ * the sender chose the language of the thing they shared. Only when the
+ * address says nothing (the site root) does the stored choice, and then
+ * the browser, get to decide.
  */
-function applyTheme(choice: ThemeChoice): void {
-  const dark = resolveTheme(choice, systemPrefersDark()) === "dark";
-  document.documentElement.classList.toggle("dark", dark);
+function locationNow(): { page: DocsPage; lang: DocLang } {
+  const here = locationFromPath(window.location.pathname);
+  if (here === null) return { page: DEFAULT_PAGE, lang: initialLang() };
+  const atRoot = window.location.pathname.replace(/\/+$/, "") === "";
+  return { page: here.page, lang: atRoot ? initialLang() : here.lang };
 }
 
 export function DocsApp(): JSX.Element {
-  const [page, setPage] = useState<ActivePage>(
-    () => pageFromHash(window.location.hash) ?? DEFAULT_PAGE,
-  );
-  const [lang, setLang] = useState<DocLang>(initialLang);
+  const [{ page, lang }, setLocation] = useState(locationNow);
+  const setLang = (next: DocLang) => setLocation((prev) => ({ ...prev, lang: next }));
   const [theme, setTheme] = useState<ThemeChoice>(readStoredTheme);
   const [accent, setAccent] = useState<AccentChoice>(readStoredAccent);
-  const [languages, setLanguages] = useState<DocLanguages>(fallbackLanguages);
-  /** Drawer s menu a přepínači — jen pod ``md``, viz hlavička. */
+  const [languages, setLanguages] = useState<DocLanguages>(bundleLanguages);
+  /** Drawer with the menu and switches — only below ``md``, see the header. */
   const [navOpen, setNavOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
+  /**
+   * Ctrl/Cmd+K opens the search.
+   *
+   * On the window rather than on a field, because the point is that the
+   * reader does not have to reach for anything first. The default is
+   * prevented so the browser's own "search the page" does not open on top
+   * of it, and the shortcut is ignored while the reader is typing in a
+   * field — a search box that swallows a keystroke meant for a form is
+   * worse than no shortcut.
+   */
   useEffect(() => {
-    const onHashChange = () => {
-      const next = pageFromHash(window.location.hash);
-      if (next) setPage(next);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "k" || !(event.metaKey || event.ctrlKey)) return;
+      const active = document.activeElement;
+      const tag = active?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      event.preventDefault();
+      setSearchOpen(true);
     };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Které jazyky se nabídnou, rozhoduje platforma — ne bundle. Než
-  // odpoví (nebo když neodpoví), drží se to, pro co má doc web text.
+  // Back and forward. The browser changes the address without asking; this
+  // is the only place that reads it back.
+  useEffect(() => {
+    const onPopState = () => setLocation(locationNow());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  /**
+   * Every link shared before the addresses existed is a hash. They are
+   * also the only links to this site that exist, so they are translated
+   * once, on arrival, and the address bar is corrected in place —
+   * ``replaceState``, not ``pushState``: the hash was never a page the
+   * reader chose, and Back should leave the site rather than return to it.
+   */
+  useEffect(() => {
+    const target = pathFromLegacyHash(window.location.hash, lang);
+    if (target === null) return;
+    window.history.replaceState(null, "", target);
+    setLocation(locationNow());
+    // Once, on arrival. A hash that appears later is an anchor inside the
+    // page, and translating that would throw the reader to another page
+    // mid-scroll.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * One click handler for the whole document instead of a callback on
+   * every link.
+   *
+   * The links stay real ``<a href>`` with real addresses — that is the
+   * point of having them, and it is what a crawler, a middle-click and
+   * "copy link address" all need. This only spares the reader a full
+   * reload when the destination is a page we already have.
+   */
+  /** Go to one of our own paths without a reload. */
+  function goTo(path: string): void {
+    if (path === window.location.pathname) return;
+    const here = locationFromPath(path);
+    if (here === null) return;
+    window.history.pushState(null, "", path);
+    setLocation({ page: here.page, lang: here.lang });
+    window.scrollTo({ top: 0 });
+  }
+
+  function onNavigate(event: MouseEvent<HTMLDivElement>): void {
+    if (event.defaultPrevented || event.button !== 0) return;
+    // A modified click means the reader asked for a new tab or a download.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const anchor = (event.target as HTMLElement | null)?.closest?.("a");
+    if (!anchor || anchor.target === "_blank") return;
+    const href = anchor.getAttribute("href");
+    if (!href || !href.startsWith("/")) return;
+    const here = locationFromPath(href);
+    if (here === null) return;
+    event.preventDefault();
+    goTo(href);
+  }
+
+  // The bundle decides which languages exist; the platform may relabel
+  // them or hide one it switched off. The switch is therefore already
+  // drawn and already correct before this runs, and nothing about the page
+  // waits for the answer.
   useEffect(() => {
     const controller = new AbortController();
     void fetchDocLanguages(controller.signal).then(setLanguages);
@@ -693,17 +887,16 @@ export function DocsApp(): JSX.Element {
     applyTheme(theme);
   }, [theme]);
 
-  // Akcent se po přepnutí motivu NEPŘEPOČÍTÁVÁ a nemá s ním žádnou
-  // vazbu: každá rodina má vlastní světlý i tmavý blok a vybírá mezi
-  // nimi kaskáda. Proto je tenhle efekt závislý jen na ``accent``.
+  // The accent is NOT recomputed after a theme switch and has no coupling
+  // to it: every family has its own light and dark block and the cascade
+  // picks between them. Hence this effect depends only on ``accent``.
   useEffect(() => {
     applyAccent(accent);
   }, [accent]);
 
-  // `ingot.html` má v kódu `lang="cs"`, protože v tu chvíli ještě žádná
-  // volba není. Po přepnutí by to ale byla lež, kterou nikdo neuvidí a
-  // odečítač obrazovky na ni doplatí: anglický text čtený českou
-  // výslovností je nesrozumitelný.
+  // `index.html` ships `lang="cs"` because no choice exists at that point.
+  // After a switch it would be a lie nobody sees and a screen reader pays
+  // for: English text read with Czech pronunciation is unintelligible.
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
@@ -711,19 +904,19 @@ export function DocsApp(): JSX.Element {
   const sections = sectionsOf(page, lang);
   const options = languages.options;
 
-  // Výběr stránky drawer zavírá. Zůstat otevřený nad obsahem, který si
-  // čtenář právě vybral, je to jediné, co po kliknutí v menu nechce.
+  // Picking a page closes the drawer. Staying open over the content the
+  // reader just chose is the one thing they do not want after a menu click.
   useEffect(() => {
     setNavOpen(false);
   }, [page]);
 
-  // Otočení tabletu do šířky odkryje menu ve sloupci — drawer nad ním by
-  // pak zakrýval rozvržení, které navigaci už má.
+  // Rotating a tablet to landscape reveals the menu in the column — a
+  // drawer over it would then cover a layout that already has navigation.
   //
-  // ``matchMedia`` nemusí existovat (jsdom, hodně starý prohlížeč) a
-  // Safari před 14 zná jen ``addListener``. Obojí se tu ošetřuje, protože
-  // kit je vzor: rozbít se nesmí ani tam, kde se na moderní API nedá
-  // spolehnout — bez nich se drawer prostě zavře ESC nebo křížkem.
+  // ``matchMedia`` may not exist (jsdom, a very old browser) and Safari
+  // before 14 knows only ``addListener``. Both are handled here because the
+  // kit is a model: it must not break even where the modern API cannot be
+  // relied on — without them the drawer simply closes with ESC or the X.
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return;
     const query = window.matchMedia("(min-width: 768px)");
@@ -743,13 +936,13 @@ export function DocsApp(): JSX.Element {
   );
 
   /**
-   * Motiv, jazyk a akcent. Stojí v liště (od ``md``) i v draweru (pod
-   * ``md``), kde se skládají pod sebe — v jedné řadě by se na 375 px
-   * zalomily do druhého řádku a přilepená lišta by ukusovala šestinu
-   * obrazovky.
+   * Theme, language and accent. They stand in the bar (from ``md``) and in
+   * the drawer (below ``md``), where they stack — in one row they would
+   * wrap to a second line at 375 px and the sticky bar would eat a sixth of
+   * the screen.
    *
-   * ``idPrefix`` odděluje testid obou vykreslení: stejný testid dvakrát
-   * v DOM je past na dotaz, který čeká jeden prvek.
+   * ``idPrefix`` separates the testids of both renderings: the same testid
+   * twice in the DOM is a trap for a query that expects one element.
    */
   const chromeControls = (stacked: boolean, idPrefix: string) => (
     <div
@@ -760,10 +953,10 @@ export function DocsApp(): JSX.Element {
       }
     >
       <div className="flex items-center gap-2">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+        <IngotEyebrow as="span" tone="muted">
           {pick(CHROME.accent, lang)}
-        </span>
-        <AccentSwatches
+        </IngotEyebrow>
+        <IngotAccentSwatches
           value={accent}
           onChange={(next) => {
             setAccent(next);
@@ -771,15 +964,12 @@ export function DocsApp(): JSX.Element {
           }}
           groupLabel={pick(CHROME.accent, lang)}
           optionLabel={(choice) =>
-            `${pick(CHROME.accent, lang)} ${pick(
-              CHROME[ACCENT_LABELS[choice]],
-              lang,
-            )}`
+            `${pick(CHROME.accent, lang)} ${pick(CHROME[ACCENT_LABELS[choice]], lang)}`
           }
         />
       </div>
       {stacked ? null : separator}
-      <DocSegmented
+      <IngotSegmented
         options={THEME_CHOICES.map((choice) => ({
           value: choice,
           label:
@@ -797,34 +987,40 @@ export function DocsApp(): JSX.Element {
         label={pick(CHROME.theme, lang)}
         testId={`${idPrefix}theme`}
       />
-      {/* Jediný jazyk = přepínat není co. Ovládací prvek s jednou
-          volbou jen zabírá místo a slibuje volbu, která neexistuje. */}
+      {/* A single language = nothing to switch. A control with one option
+          only takes up room and promises a choice that does not exist. */}
       {options.length > 1 && (
         <>
           {stacked ? null : separator}
-          <DocSegmented
+          <IngotSegmented
             options={options.map((option) => ({
               value: option.code,
               label: option.code.toUpperCase(),
             }))}
             value={lang}
             onChange={(next) => {
-              setLang(next as DocLang);
-              writeStoredLang(next as DocLang);
+              const chosen = next as DocLang;
+              writeStoredLang(chosen);
+              // The same page, in the other language — so switching the
+              // language keeps the reader where they were AND leaves an
+              // address they can share in that language.
+              window.history.pushState(null, "", pathOf(page, chosen));
+              setLang(chosen);
             }}
             label={pick(CHROME.language, lang)}
             testId={`${idPrefix}lang`}
           />
         </>
       )}
-      {/* 🪤 Slovník Jednoduše/Expert tu SCHVÁLNĚ není. Ovládá jedinou
-          tabulku na stránce Překlady, takže vedle motivu, jazyka a
-          akcentu — voleb platných pro celý web — sliboval dopad, který
-          nemá. Přepínač proto stojí u té tabulky. */}
+      {/* The Simple/Expert dictionary is DELIBERATELY not here. It controls
+          a single table on the Translations page, so next to theme,
+          language and accent — choices valid for the whole web — it
+          promised an effect it does not have. The switch therefore stands
+          by that table. */}
     </div>
   );
 
-  /** Skupiny levého menu. Kreslí se do sloupce i do draweru. */
+  /** Groups of the left menu. Drawn into the column and into the drawer. */
   const navGroups = (idPrefix: string) =>
     guideGroups(page, lang, idPrefix).map(({ group, items }) => (
       <IngotSideNav
@@ -836,23 +1032,37 @@ export function DocsApp(): JSX.Element {
     ));
 
   return (
-    <div className="min-h-screen">
-      {/* Horní lišta z handoffu: značka a verze vlevo, akcent / motiv /
-          jazyk vpravo. Sticky, aby přepínače neutekly se scrollem dlouhé
-          stránky.
+    /* The handler adds nothing a keyboard user needs: the links underneath
+       it are real links and work on Enter exactly as they always did. It
+       only spares a mouse click a full page reload. */
+    /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
+    <div className="min-h-screen" onClick={onNavigate}>
+      {searchOpen ? (
+        <SearchDialog
+          lang={lang}
+          onClose={() => setSearchOpen(false)}
+          onNavigate={(path) => {
+            setSearchOpen(false);
+            goTo(path);
+          }}
+        />
+      ) : null}
+      {/* Top bar from the handoff: brand and version on the left, accent /
+          theme / language on the right. Sticky so the switches do not run
+          away with the scroll of a long page.
 
-          ``docs-topbar`` (globals.css) drží sklo — průsvitná plocha
-          s blurem, bílá ve světlém motivu a tmavá v tmavém. */}
+          ``docs-topbar`` (globals.css) holds the glass — a translucent
+          surface with blur, white in the light theme and dark in the dark. */}
       <header className="docs-topbar sticky top-0 z-40 flex items-center gap-x-4 gap-y-2 border-b border-border px-4 py-3 md:px-6">
-        {/* Logo nese celý název („INGOT UI KIT"), takže textový brand
-            vedle něj by ho jen zopakoval — zbyla verze jako popisek.
+        {/* The logo carries the full name ("INGOT UI KIT"), so a text brand
+            next to it would only repeat it — the version remained as the label.
 
-            Dvě varianty, ne filtr: wordmark je skoro černý a na tmavém
-            skle by zmizel, ale ``invert`` by s ním obrátil i modrou.
-            Tmavá varianta překlápí jen inkoust a ztlumený obrys, modrý
-            akcent zůstává modrý. Popisek mají obě: nevidomý ho uslyší
-            jednou, protože tu skrytou vyřadí ``display:none`` z
-            přístupnostního stromu. */}
+            Two variants, not a filter: the wordmark is almost black and
+            would vanish on the dark glass, but ``invert`` would flip the
+            blue with it. The dark variant flips only the ink and the muted
+            outline; the blue accent stays blue. Both have a label: a blind
+            reader hears it once, because ``display:none`` drops the hidden
+            one from the accessibility tree. */}
         <img
           src="/ingot-logo.png"
           alt="Ingot UI Kit"
@@ -867,21 +1077,36 @@ export function DocsApp(): JSX.Element {
           width={311}
           height={128}
         />
-        {/* Verze a značka se přestěhovaly do mini patičky dole
-            (pokyn vlastníka 2026-09-02) — hlavička nese jen ovládání. */}
+        {/* The version and brand moved to the mini footer at the bottom
+            (owner instruction of 2026-09-02) — the header carries only controls. */}
         <span className="flex-1" aria-hidden="true" />
 
-        {/* Od ``md`` v liště, pod ``md`` v draweru. Pět akcentů, tři
-            motivy a dva jazyky vedle sebe potřebují přes 400 px; na
-            375px displeji se zalomily do druhé řady a přilepená lišta
-            pak ukusovala 98–125 px, tedy šestinu obrazovky. */}
-        <div className="hidden md:block">
-          {chromeControls(false, "docs-")}
-        </div>
+        {/* The shortcut is the point, and a shortcut nobody is told about
+            is a shortcut nobody uses — so the button carries it as its
+            label. Below ``sm`` only the icon is left: the bar there has
+            room for controls, not for their names. */}
+        <Button
+          variant="secondary"
+          size="md"
+          leadingIcon={<IngotIcon name="search" />}
+          onClick={() => setSearchOpen(true)}
+          data-testid="docs-search-open"
+        >
+          <span className="hidden sm:inline">{pick(CHROME.searchOpen, lang)}</span>
+          <IngotEyebrow as="span" tone="muted" className="hidden md:inline">
+            ⌘K
+          </IngotEyebrow>
+        </Button>
 
-        {/* 🪤 Tlačítko je pod ``md`` JEDINÁ cesta mezi stránkami — levé
-            menu je tam skryté. Skrýt menu bez něj neznamená horší
-            navigaci, ale žádnou. */}
+        {/* From ``md`` in the bar, below ``md`` in the drawer. Five accents,
+            three themes and two languages side by side need over 400 px; on
+            a 375px display they wrapped to a second row and the sticky bar
+            then ate 98–125 px, a sixth of the screen. */}
+        <div className="hidden md:block">{chromeControls(false, "docs-")}</div>
+
+        {/* Below ``md`` the button is the ONLY way between pages — the left
+            menu is hidden there. Hiding the menu without it does not mean
+            worse navigation, but none. */}
         <Button
           variant="secondary"
           size="md"
@@ -896,10 +1121,10 @@ export function DocsApp(): JSX.Element {
         </Button>
       </header>
 
-      {/* Menu i přepínače pod ``md``. Drawer je primitivum kitu, takže
-          past focusu, ESC, zámek rolování i portál nad stacking kontexty
-          přicházejí s ním — doc web tím sám sebe učí, místo aby si
-          postranní panel ručně skládal. */}
+      {/* Menu and switches below ``md``. The drawer is a kit primitive, so
+          the focus trap, ESC, scroll lock and the portal above stacking
+          contexts come with it — the doc web thereby teaches by its own
+          example instead of hand-composing a side panel. */}
       {navOpen && (
         <IngotDrawer
           side="left"
@@ -914,75 +1139,78 @@ export function DocsApp(): JSX.Element {
         </IngotDrawer>
       )}
 
-      {/* 🪤 Sloupce se PŘIDÁVAJÍ, nezmenšují. Do KAN-XXX tu stály tři
-          natvrdo bez jediného breakpointu: menu 224 + rejstřík 176 +
-          dvě mezery 64 + odsazení 32 = 496 px pevné šířky, které padly
-          dřív než první znak. Prostřední sloupec je ``flex-1
-          min-w-0``, takže se místo přetečení poslušně smrskl na NULU
-          a vysázel text mimo sebe — na 390px displeji jedno slovo na
-          řádek přes obsah rejstříku.
+      {/* Columns are ADDED, not shrunk. Three used to stand here hard-coded
+          without a single breakpoint: menu 224 + index 176 + two gaps 64 +
+          padding 32 = 496 px of fixed width that fell before the first
+          character. The middle column is ``flex-1 min-w-0``, so instead of
+          overflowing it obediently shrank to ZERO and set its text outside
+          itself — on a 390px display one word per line over the index
+          content.
 
-          Prahy nejsou od oka. Čtecí sloupec drží aspoň 360 px, aby řádek
-          nesl 45–75 znaků:
-          * ``md`` (768) — menu 224 + 64 chrome nechá obsahu 480 px.
-          * ``lg`` (1024) — a rejstřík 176 + 32 nechá pořád 528 px.
-          Pod ``md`` je menu v draweru a rejstřík se vypouští: na
-          jednosloupcové stránce je obsah stejně hned pod ním. */}
+          The thresholds are not by eye. The reading column keeps at least
+          360 px so a line carries 45–75 characters:
+          * ``md`` (768) — menu 224 + 64 chrome leaves the content 480 px.
+          * ``lg`` (1024) — and index 176 + 32 still leaves 528 px.
+          Below ``md`` the menu is in the drawer and the index is dropped: on
+          a single-column page the content is right below it anyway. */}
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
-        {/* Menu stojí na ploše stránky, ne na kartě: kartou je až
-            aktivní položka, a dvě vrstvy nad sebou by ji zploštily.
+        {/* The menu stands on the page surface, not on a card: the card is
+            the active item, and two layers on top of each other would
+            flatten it.
 
-            ``sticky`` s vlastním rolováním: seznam komponent je delší
-            než výřez, takže bez něj se menu odroluje pryč a čtenář se
-            k jiné stránce dostane až zpátky nahoru. ``IngotPageLayout``
-            to tak dělá taky — doc web nemá popírat primitivum, které
-            o kus dál vyučuje. */}
-        {/* 🪤 ``self-start`` je pro ``sticky`` podmínka, ne kosmetika:
-            roztažená položka flexu je vysoká jako celý řádek, takže
-            nemá kam přilnout a ``sticky`` tiše nedělá nic. */}
+            ``sticky`` with its own scrolling: the component list is longer
+            than the viewport, so without it the menu scrolls away and the
+            reader reaches another page only back at the top.
+            ``IngotPageLayout`` does it the same way — the doc web should
+            not contradict a primitive it teaches a bit further on. */}
+        {/* ``self-start`` is a precondition for ``sticky``, not cosmetics: a
+            stretched flex item is as tall as the whole row, so it has
+            nowhere to stick and ``sticky`` silently does nothing. */}
         <div className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-56 shrink-0 space-y-5 self-start overflow-y-auto md:block">
           {navGroups("docs-")}
         </div>
 
         <main className="min-w-0 flex-1 space-y-8">
-        <IngotPageHeader
-          title={titleOf(page, lang)}
-          description={summaryOf(page, lang)}
-          titleAdornment={
-            page.kind === "component" ? (
-              <span className="flex items-center gap-2">
-                {/* Tóny podle handoffu: stav neutrální (beta varovný),
-                    verze akcentová. */}
-                <IngotBadge
-                  tone={page.doc.status === "stable" ? "neutral" : "warn"}
-                  testId="docs-status"
-                >
-                  {page.doc.status === "stable"
-                    ? pick(CHROME.statusStable, lang)
-                    : pick(CHROME.statusBeta, lang)}
-                </IngotBadge>
-                <IngotBadge tone="accent" testId="docs-version">
-                  {`v${page.doc.version}`}
-                </IngotBadge>
-                {/* Selektor je jediné jméno, kterým se o prvku dá bavit
-                    s designérem — jméno exportu zná jen kód. */}
-                <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
-              </span>
-            ) : undefined
-          }
-        />
+          <IngotPageHeader
+            title={titleOf(page, lang)}
+            description={summaryOf(page, lang)}
+            titleAdornment={
+              page.kind === "component" ? (
+                <span className="flex items-center gap-2">
+                  {/* Tones per the handoff: status neutral (beta warning),
+                    version accent. */}
+                  <IngotBadge tone={STATUS_TONE[page.doc.status]} testId="docs-status">
+                    {pick(STATUS_LABEL[page.doc.status], lang)}
+                  </IngotBadge>
+                  <IngotBadge tone="accent" testId="docs-version">
+                    {`v${page.doc.version}`}
+                  </IngotBadge>
+                  {/* Which KIT release first carried this page — not the
+                    component's own version, which says how many times it
+                    has changed. The reader's question is whether the thing
+                    exists in the version they pinned, and only this
+                    answers it. Absent for a primitive that has not been in
+                    a release yet: a badge saying nothing is worse than no
+                    badge, because it looks like an answer. */}
+                  {sinceOf(page.doc.name) ? (
+                    <IngotBadge tone="neutral" testId="docs-since">
+                      {`${pick(CHROME.sinceVersion, lang)} ${sinceOf(page.doc.name)}`}
+                    </IngotBadge>
+                  ) : null}
+                  {/* The selector is the only name the element can be
+                    discussed under with a designer — only code knows the
+                    export name. */}
+                  <IngotCode testId="docs-tag">{page.doc.tag}</IngotCode>
+                </span>
+              ) : undefined
+            }
+          />
 
           {sections.map((section) => (
             <IngotSection
               key={section.id}
               id={section.id}
-              title={
-                section.cap ? (
-                  <CapTitle>{section.title}</CapTitle>
-                ) : (
-                  section.title
-                )
-              }
+              title={section.cap ? <CapTitle>{section.title}</CapTitle> : section.title}
             >
               {section.body}
             </IngotSection>
@@ -991,16 +1219,16 @@ export function DocsApp(): JSX.Element {
           <PagerFooter page={page} lang={lang} />
         </main>
 
-        {/* Rejstřík je až třetí sloupec (od ``lg``). Pod ním by ukusoval
-            208 px z šířky, kterou potřebuje text — a na jednosloupcové
-            stránce stejně jen opakuje nadpisy, které jsou hned pod ním. */}
+        {/* The index is only the third column (from ``lg``). Below that it
+            would eat 208 px of the width the text needs — and on a
+            single-column page it only repeats the headings right below it. */}
         <aside
           aria-label={pick(CHROME.onThisPage, lang)}
           className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-44 shrink-0 self-start overflow-y-auto border-l border-border pl-4 lg:block"
         >
-          <p className="mb-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.11em] text-ink-4">
+          <IngotEyebrow tone="muted" className="mb-3">
             {pick(CHROME.onThisPage, lang)}
-          </p>
+          </IngotEyebrow>
           <IngotList
             variant="plain"
             items={sections.map((section) => (
@@ -1016,22 +1244,26 @@ export function DocsApp(): JSX.Element {
         </aside>
       </div>
 
-      {/* Mini patička (pokyn vlastníka 2026-09-02): čára přes CELOU
-          šířku, nízká, kraje od sebe — verze vlevo u okraje, pill
-          s logem Forgmaticu vpravo u okraje. Verzi píše release
-          workflow do package.json; ručně psané číslo tu lhalo. */}
+      {/* Mini footer (owner instruction of 2026-09-02): a line across the
+          FULL width, low, edges apart — version at the left edge, a pill
+          with the Forgmatic logo at the right edge. The release workflow
+          writes the version into package.json; a hand-written number lied
+          here. */}
       <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-border px-4 py-2.5 md:px-6">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">
+        <IngotEyebrow as="span" tone="muted">
           Ingot UI Kit · v{pkg.version}
-        </span>
+        </IngotEyebrow>
         <a
           href="https://forgmatic.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-3 hover:border-border-strong hover:text-ink"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-ink-3 hover:border-border-strong hover:text-ink"
           data-testid="docs-footer-forgmatic"
         >
-          developed for
+          {/* `inherit`: the link owns the colour so hover can change it. */}
+          <IngotEyebrow as="span" tone="inherit">
+            developed for
+          </IngotEyebrow>
           <img
             src="/forgmatic-logo.png"
             alt=""

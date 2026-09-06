@@ -1,19 +1,26 @@
-import { IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingot";
+import {
+  IngotCode,
+  IngotEyebrow,
+  IngotList,
+  IngotTable,
+  type IngotColumn,
+} from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Pravidla používání“ — skladba obrazovky, tabulka ano/ne,
- * pravidla textů a údržba systému (KAN-663).
+ * "Usage rules" page — screen composition, the do/don't table, text rules
+ * and system maintenance.
  *
- * 🚨 Obsah je převzatý z design handoffu (stránka Pravidla používání).
- * Tabulka ano/ne má tři sloupce schválně: bez sloupce „Situace“ je dvojice
- * ano/ne jen názor, se situací je to rozhodnutí. Sloupec „Ano“ je
- * zvýrazněný akcentem, aby se správná odpověď dala přečíst na první
- * pohled — v handoffu to dělá třída `hl`.
+ * The content is taken from the design handoff (the Usage rules page). The
+ * do/don't table has three columns on purpose: without the "Situation"
+ * column a do/don't pair is just an opinion, with the situation it is a
+ * decision. The "Do" column is highlighted with the accent so the right
+ * answer can be read at a glance — in the handoff the `hl` class does
+ * that.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka: klíče úkolů, cesty do repa ani jména
- * kontrol nesmí být v renderovaném textu. V komentářích ano.
+ * The doc web is a PUBLIC page: issue keys, repository paths and guard
+ * names must not be in rendered text. In comments they may.
  */
 
 interface YesNoRow {
@@ -23,9 +30,9 @@ interface YesNoRow {
 }
 
 const YES_NO: readonly YesNoRow[] = [
-  // Otočeno 2026-09-02 rozhodnutím vlastníka: delší editace potřebuje
-  // místo na vysvětlení a plné soustředění na jednu věc — modal.
-  // Boční panel zůstává rychlé úpravě, kde se pracuje se seznamem za ní.
+  // Flipped 2026-09-02 by the owner's decision: a longer edit needs room
+  // for explanation and full focus on one thing — a modal. The side panel
+  // stays for a quick edit that works with the list behind it.
   {
     situation: {
       cs: "Delší editace záznamu",
@@ -102,7 +109,7 @@ function yesNoColumns(lang: DocLang): readonly IngotColumn<YesNoRow>[] {
       key: "yes",
       header: lang === "cs" ? "Ano" : "Yes",
       cell: (row) => row.yes[lang],
-      // Správná odpověď se má dát přečíst bez čtení celého řádku.
+      // The right answer should be readable without reading the whole row.
       cellClassName: "bg-accent-bg text-accent-ink",
     },
   ];
@@ -112,9 +119,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
   return (
     <div className="grid gap-4 text-sm text-ink-2 sm:grid-cols-3">
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Rám" : "Frame"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Horní lišta → drobečky → hlavička stránky → obsah. Drobečky se vynechávají jen na kořenových stránkách sekce, kde by ukazovaly samy na sebe."
@@ -122,9 +129,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
         </p>
       </div>
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Obsah" : "Content"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Právě jeden hlavní pattern: tabulka, krokový setup, skupinové karty, detail s taby, nebo metriky. Dva se nemíchají — ani jeden by neměl dost místa."
@@ -132,9 +139,9 @@ function Layout({ lang }: { lang: DocLang }): JSX.Element {
         </p>
       </div>
       <div>
-        <div className="text-eyebrow uppercase text-ink-3">
+        <IngotEyebrow as="div" size="md">
           {lang === "cs" ? "Akce" : "Actions"}
-        </div>
+        </IngotEyebrow>
         <p className="mt-2">
           {lang === "cs"
             ? "Primární akce je vpravo v hlavičce, nikdy plovoucí. Akce řádku jsou ikonové a vždy na konci řádku, aby se v seznamu hledaly na jednom místě."
@@ -175,110 +182,52 @@ function TextRules({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Tlačítko pojmenovává výsledek: <strong>Přidat zemi</strong>,
-                  ne <strong>OK</strong>. Čtenář se rozhoduje podle toho, co
-                  se stane, ne podle toho, že něco potvrzuje. Zrušení je vždy{" "}
-                  <strong>Zrušit</strong>.
+                  Tlačítko pojmenovává výsledek: <strong>Přidat zemi</strong>, ne{" "}
+                  <strong>OK</strong>. Čtenář se rozhoduje podle toho, co se stane, ne
+                  podle toho, že něco potvrzuje. Zrušení je vždy <strong>Zrušit</strong>
+                  .
                 </>,
                 <>
-                  Popisek pole je podstatné jméno bez dvojtečky; nápověda pod
-                  polem je celá věta s tečkou. Dvě různé role textu se tak
-                  poznají i bez čtení.
+                  Popisek pole je podstatné jméno bez dvojtečky; nápověda pod polem je
+                  celá věta s tečkou. Dvě různé role textu se tak poznají i bez čtení.
                 </>,
                 <>
-                  Chyba říká, co udělat: „IČO musí mít 8 číslic“, ne
-                  „Neplatná hodnota“. Hláška, ze které nejde poznat další
-                  krok, uživatele zastaví stejně jako žádná.
+                  Chyba říká, co udělat: „IČO musí mít 8 číslic“, ne „Neplatná hodnota“.
+                  Hláška, ze které nejde poznat další krok, uživatele zastaví stejně
+                  jako žádná.
                 </>,
                 <>
-                  Odborný termín se používá jen tam, kde ho výroba sama
-                  používá. Přepínač slovníku v menu účtu (Jednoduše / Expert)
-                  přepíná mezi lidovou a odbornou variantou — každý termín
-                  proto potřebuje obě.
+                  Odborný termín se používá jen tam, kde ho výroba sama používá.
+                  Přepínač slovníku v menu účtu (Jednoduše / Expert) přepíná mezi
+                  lidovou a odbornou variantou — každý termín proto potřebuje obě.
                 </>,
-                <>
-                  Bez vykřičníků, bez emoji a bez „Ups!“. Chyba je fakt, ne
-                  omluva.
-                </>,
+                <>Bez vykřičníků, bez emoji a bez „Ups!“. Chyba je fakt, ne omluva.</>,
               ]
             : [
                 <>
-                  A button names the outcome: <strong>Add country</strong>,
-                  not <strong>OK</strong>. A reader decides by what will
-                  happen, not by the fact that something is being confirmed.
-                  Cancelling is always <strong>Cancel</strong>.
+                  A button names the outcome: <strong>Add country</strong>, not{" "}
+                  <strong>OK</strong>. A reader decides by what will happen, not by the
+                  fact that something is being confirmed. Cancelling is always{" "}
+                  <strong>Cancel</strong>.
                 </>,
                 <>
-                  A field label is a noun without a colon; the hint below the
-                  field is a full sentence with a full stop. The two roles of
-                  the text are then distinguishable without reading them.
+                  A field label is a noun without a colon; the hint below the field is a
+                  full sentence with a full stop. The two roles of the text are then
+                  distinguishable without reading them.
                 </>,
                 <>
-                  An error says what to do: “The company number must have 8
-                  digits”, not “Invalid value”. A message that does not reveal
-                  the next step stops the user just as surely as no message.
+                  An error says what to do: “The company number must have 8 digits”, not
+                  “Invalid value”. A message that does not reveal the next step stops
+                  the user just as surely as no message.
                 </>,
                 <>
-                  A technical term is used only where production itself uses
-                  it. The vocabulary switch in the account menu (Plain /
-                  Expert) toggles between the everyday and the technical
-                  variant — so every term needs both.
+                  A technical term is used only where production itself uses it. The
+                  vocabulary switch in the account menu (Plain / Expert) toggles between
+                  the everyday and the technical variant — so every term needs both.
                 </>,
                 <>
-                  No exclamation marks, no emoji and no “Oops”. An error is a
-                  fact, not an apology.
-                </>,
-              ]
-        }
-      />
-    </div>
-  );
-}
-
-function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
-  return (
-    <div className="space-y-3 text-sm text-ink-2">
-      <IngotList
-        items={
-          lang === "cs"
-            ? [
-                <>
-                  Nová komponenta vzniká v systému, ne v obrazovce — dostane
-                  název, pravidlo použití a stránku v téhle dokumentaci, a
-                  teprve pak se použije. Komponenta poskládaná uvnitř jedné
-                  obrazovky je ostrůvek: příště ji nikdo nenajde a napíše si
-                  vlastní.
-                </>,
-                <>
-                  Vlastní barva, mezera nebo rádius v obrazovce znamená
-                  chybějící token. Řeší se v systému, ne v obrazovce — jinak
-                  ta hodnota zůstane jediná svého druhu a nikdo ji při další
-                  změně palety nenajde.
-                </>,
-                <>
-                  Změna tokenu je změna produktu: prochází stejným review jako
-                  změna kódu. Projeví se všude naráz, takže se nedá vrátit
-                  jednou obrazovkou.
-                </>,
-              ]
-            : [
-                <>
-                  A new component is born in the system, not in a screen — it
-                  gets a name, a rule of use and a page in this documentation,
-                  and only then is used. A component assembled inside one
-                  screen is an island: nobody finds it next time, and writes
-                  their own.
-                </>,
-                <>
-                  A custom colour, spacing or radius in a screen means a
-                  missing token. It is settled in the system, not in the
-                  screen — otherwise that value stays one of a kind and nobody
-                  finds it at the next change of the palette.
-                </>,
-                <>
-                  Changing a token is changing the product: it goes through
-                  the same review as a change of code. It lands everywhere at
-                  once, so it cannot be undone by one screen.
+                  No exclamation marks, no emoji and no “Oops”. An error is a fact, not
+                  an apology.
                 </>,
               ]
         }
@@ -288,22 +237,92 @@ function Maintenance({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Pinovací kontrakt (KAN-813, po planém poplachu KAN-790).
+ * The pinning contract (written after a false alarm).
  *
- * 🪤 **Číslo verze neidentifikuje obsah.** `package.json` píše release
- * automatika až při pushi do `main`, takže každý commit mezi dvěma
- * releasy nese verzi toho předchozího — jedno číslo, víc různých stromů.
- * npm si git závislost cachuje pod jménem a verzí, takže pod jednou
- * verzí mu může ležet kterýkoli z nich.
+ * **A version number does not identify content.** The release automation
+ * writes `package.json` only on a push to `main`, so every commit between
+ * two releases carries the previous release's version — one number, many
+ * different trees. npm caches a git dependency under name and version, so
+ * any of them may lie under one version.
  *
- * Tohle stálo den hledání „rozbité" větve, která rozbitá nebyla: shodu
- * hlásil `package.json`, `package-lock.json` i grep do `node_modules` —
- * jen to `node_modules` bylo jiné 1.0.1.
+ * This cost a day of hunting a "broken" branch that was not broken:
+ * `package.json`, `package-lock.json` and a grep into `node_modules` all
+ * reported a match — only that `node_modules` was a different 1.0.1.
  *
- * Tag je proti tomu jednoznačný, protože release automatika taguje každý
- * release anotovaným tagem. Proto sem ta věta patří: konzument čte tuhle
- * stránku, ne release skript.
+ * A tag, by contrast, is unambiguous, because the release automation tags
+ * every release with an annotated tag. That is why the sentence belongs
+ * here: a consumer reads this page, not the release script.
  */
+function EntryPoints({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  const rows = [
+    {
+      entry: "@forgmatic/ingot",
+      cs: "Primitiva. Tlačítko, tabulka, formulář, dialog — všechno, co má stránku v Komponentách.",
+      en: "The primitives. Button, table, form, dialog — everything with a page under Components.",
+    },
+    {
+      entry: "@forgmatic/ingot/marketing",
+      cs: "Bloky veřejných stránek. Hero, kroky, ceník, FAQ. Marketingový web si tak nenatáhne runtime formulářů.",
+      en: "The public-page blocks. Hero, steps, pricing, FAQ. A marketing site gets them without the form runtime.",
+    },
+    {
+      entry: "@forgmatic/ingot/theme",
+      cs: "Motiv a akcent: přečti volbu, ulož ji, přelož ji proti systému, pověs ji na dokument. Bez Reactu.",
+      en: "Theme and accent: read the choice, store it, resolve it against the system, put it on the document. No React.",
+    },
+    {
+      entry: "@forgmatic/ingot/theme-init.js",
+      cs: "Skript proti probliknutí. Patří do <head> jako obyčejný, neodložený <script> — modul by se odložil a problikne to.",
+      en: "The anti-flash script. Belongs in <head> as a plain, non-deferred <script> — a module is deferred, which is the flash.",
+    },
+    {
+      entry: "@forgmatic/ingot/tailwind-preset",
+      cs: "Preset pro Tailwind. Utility se jmenují po tokenech, takže bez něj polovina tříd nic neznamená.",
+      en: "The Tailwind preset. The utilities are named after the tokens, so without it half the classes mean nothing.",
+    },
+    {
+      entry: "@forgmatic/ingot/tokens.css",
+      cs: "Hodnoty tokenů. Jeden import, světlá i tmavá a všech pět akcentových rodin.",
+      en: "The token values. One import, light and dark and all five accent families.",
+    },
+    {
+      entry: "@forgmatic/ingot/tokens.json",
+      cs: "Tytéž tokeny jako data, pro nástroje mimo web.",
+      en: "The same tokens as data, for tools outside the web.",
+    },
+  ];
+
+  const columns: readonly IngotColumn<(typeof rows)[number]>[] = [
+    {
+      key: "entry",
+      header: cs ? "Vstup" : "Entry",
+      cell: (row) => <IngotCode>{row.entry}</IngotCode>,
+    },
+    {
+      key: "what",
+      header: cs ? "Co z něj chodí" : "What comes out of it",
+      cell: (row) => (cs ? row.cs : row.en),
+    },
+  ];
+
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Balíček má víc vstupů než jeden. Není to úklid: kdyby existoval jen hlavní, marketingová stránka by kvůli ceníku natáhla runtime formulářů, a motiv by si každý konzument napsal znovu — první, kdo klíč v úložišti napíše jinak, přijde o volbu čtenáře na půlce stránek."
+          : "The package has more than one entry. This is not tidiness: with only the main one, a marketing page would pull in the form runtime to get a pricing table, and every consumer would rewrite the theme plumbing — the first to spell a storage key differently loses the reader's choice on half their pages."}
+      </p>
+      <IngotTable columns={columns} rows={rows} rowKey={(row) => row.entry} />
+      <p>
+        {cs
+          ? "Motiv záměrně nezná React ani zdroj pravdy. V produktu volbu drží účet, aby operátora následovala mezi zařízeními; úložiště v prohlížeči je jen rychlá kopie, kterou čte skript proti probliknutí a první vykreslení."
+          : "The theme entry deliberately knows neither React nor where the choice really lives. In the product the account owns it, so it follows the operator across devices; browser storage is only the fast mirror the anti-flash script and the first render read."}
+      </p>
+    </div>
+  );
+}
+
 function Pinning({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
@@ -321,59 +340,55 @@ function Pinning({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  <strong>Commit vypadá přesněji, ale je méně
-                  bezpečný.</strong> Číslo verze se hne až s vydáním, takže
-                  každý commit mezi dvěma vydáními nese číslo toho
-                  předchozího — jedno číslo verze označuje víc různých
+                  <strong>Commit vypadá přesněji, ale je méně bezpečný.</strong> Číslo
+                  verze se hne až s vydáním, takže každý commit mezi dvěma vydáními nese
+                  číslo toho předchozího — jedno číslo verze označuje víc různých
                   stromů.
                 </>,
                 <>
-                  Správce balíčků si závislost z gitu ukládá do mezipaměti
-                  pod jménem a verzí. Pod jedním číslem tam proto může ležet
-                  jiný strom, než na který pin ukazuje — a nic to
-                  neohlásí: <IngotCode>package.json</IngotCode>,{" "}
+                  Správce balíčků si závislost z gitu ukládá do mezipaměti pod jménem a
+                  verzí. Pod jedním číslem tam proto může ležet jiný strom, než na který
+                  pin ukazuje — a nic to neohlásí: <IngotCode>package.json</IngotCode>,{" "}
                   <IngotCode>package-lock.json</IngotCode> i{" "}
                   <IngotCode>node_modules</IngotCode> spolu souhlasí.
                 </>,
                 <>
-                  Vydání se tagují, takže <strong>tag je právě jedna verze a
-                  právě jeden strom</strong>. To je jediný pin, který drží.
+                  Vydání se tagují, takže{" "}
+                  <strong>tag je právě jedna verze a právě jeden strom</strong>. To je
+                  jediný pin, který drží.
                 </>,
                 <>
-                  Když typová kontrola nenajde symbol, který ve zdrojích kitu
-                  vidíš, podezřívej instalaci dřív než kit: porovnej
-                  nainstalovaný soubor proti <strong>tagu</strong>, ne proti
-                  číslu verze, a napřed vyčisti mezipaměť. Shoda čísel
-                  nedokazuje nic.
+                  Když typová kontrola nenajde symbol, který ve zdrojích kitu vidíš,
+                  podezřívej instalaci dřív než kit: porovnej nainstalovaný soubor proti{" "}
+                  <strong>tagu</strong>, ne proti číslu verze, a napřed vyčisti
+                  mezipaměť. Shoda čísel nedokazuje nic.
                 </>,
               ]
             : [
                 <>
-                  <strong>A commit looks more precise and is in fact less
-                  safe.</strong> The version number moves only at a release,
-                  so every commit between two releases carries the previous
-                  one's number — a single version string names many
-                  different trees.
+                  <strong>A commit looks more precise and is in fact less safe.</strong>{" "}
+                  The version number moves only at a release, so every commit between
+                  two releases carries the previous one's number — a single version
+                  string names many different trees.
                 </>,
                 <>
-                  A package manager caches a git dependency under its name
-                  and version. Under one number it may therefore hold a
-                  different tree than the pin points at — and nothing warns
-                  you: <IngotCode>package.json</IngotCode>,{" "}
-                  <IngotCode>package-lock.json</IngotCode> and{" "}
+                  A package manager caches a git dependency under its name and version.
+                  Under one number it may therefore hold a different tree than the pin
+                  points at — and nothing warns you: <IngotCode>package.json</IngotCode>
+                  , <IngotCode>package-lock.json</IngotCode> and{" "}
                   <IngotCode>node_modules</IngotCode> all agree.
                 </>,
                 <>
-                  Releases are tagged, so <strong>a tag is exactly one
-                  version and exactly one tree</strong>. It is the only pin
-                  that holds.
+                  Releases are tagged, so{" "}
+                  <strong>a tag is exactly one version and exactly one tree</strong>. It
+                  is the only pin that holds.
                 </>,
                 <>
-                  When a type check cannot find a symbol you can see in the
-                  kit's own source, suspect the install before the kit:
-                  compare the installed file against the <strong>tag</strong>,
-                  not against a version number, and clear the cache before
-                  measuring again. Matching numbers prove nothing.
+                  When a type check cannot find a symbol you can see in the kit's own
+                  source, suspect the install before the kit: compare the installed file
+                  against the <strong>tag</strong>, not against a version number, and
+                  clear the cache before measuring again. Matching numbers prove
+                  nothing.
                 </>,
               ]
         }
@@ -391,6 +406,11 @@ export const UsageGuide: IngotGuidePage = {
     en: "The decisions that are not visible in the catalogue but hold the product together. When two designs disagree, this section decides.",
   },
   sections: [
+    // The four rules used to live nowhere, so every new primitive invented
+    // them again: className took layout on some components and looks on
+    // others, and only two components forwarded a ref. Written down here
+    // and in the repo's contributor notes; each component page states its
+    // own className policy above the properties table.
     {
       id: "skladba-obrazovky",
       title: { cs: "Skladba obrazovky", en: "The layout of a screen" },
@@ -421,12 +441,9 @@ export const UsageGuide: IngotGuidePage = {
       body: { cs: <Pinning lang="cs" />, en: <Pinning lang="en" /> },
     },
     {
-      id: "udrzba",
-      title: { cs: "Údržba", en: "Maintenance" },
-      body: {
-        cs: <Maintenance lang="cs" />,
-        en: <Maintenance lang="en" />,
-      },
+      id: "vstupy-balicku",
+      title: { cs: "Co balíček nabízí", en: "What the package offers" },
+      body: { cs: <EntryPoints lang="cs" />, en: <EntryPoints lang="en" /> },
     },
   ],
 };

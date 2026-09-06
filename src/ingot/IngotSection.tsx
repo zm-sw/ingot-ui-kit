@@ -1,17 +1,18 @@
 import { type JSX, type ReactNode } from "react";
 
 /**
- * Sekce obrazovky (KAN-628) — nadpis a to, co pod něj patří.
+ * A screen section — a heading and what belongs under it.
  *
- * Drží dvě věci, které se ručně rozejdou vždycky:
+ * It holds two things that always drift when done by hand:
  *
- * 1. **Úroveň nadpisu odpovídá zanoření.** `<h2>` uvnitř sekce, `<h3>`
- *    v podsekci. Odečítač obrazovky se podle úrovní orientuje; přeskočená
- *    úroveň (`h1` → `h3`) mu rozbije osnovu stránky.
- * 2. **`id` je na sekci, ne na nadpisu.** Kotva pak skočí nad nadpis, ne
- *    doprostřed textu — a obsah stránky na ni může odkázat.
+ * 1. **The heading level matches the nesting.** `<h2>` inside a section,
+ *    `<h3>` in a subsection. A screen reader navigates by levels; a
+ *    skipped level (`h1` → `h3`) breaks the page outline for it.
+ * 2. **The `id` is on the section, not on the heading.** An anchor then
+ *    lands above the heading, not in the middle of the text — and the
+ *    page's table of contents can point at it.
  *
- * Ingot **nemá vlastní i18n namespace** — `title` dodává volající.
+ * The kit has no i18n namespace of its own — `title` comes from the caller.
  */
 export function IngotSection({
   id,
@@ -20,10 +21,10 @@ export function IngotSection({
   children,
   testId,
 }: {
-  /** Kotva sekce. Bez ní na sekci nejde odkázat z obsahu stránky. */
+  /** Anchor of the section. Without it the page's contents cannot link to it. */
   id?: string;
   title: ReactNode;
-  /** Úroveň nadpisu. MUSÍ odpovídat zanoření, ne velikosti písma. */
+  /** Heading level. MUST match the nesting, not the font size. */
   level?: 2 | 3;
   children: ReactNode;
   testId?: string;

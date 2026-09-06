@@ -3,26 +3,28 @@ import { type JSX, type ReactNode } from "react";
 import { cx } from "./cx";
 
 /**
- * Rytmus obsahu jedné stránky — mezera mezi bloky, šířka čtení a
- * volitelný postranní rejstřík.
+ * The rhythm of one page's content — the gap between blocks, the reading
+ * width and an optional side index.
  *
- * Vnější rám (1440 px, odsazení od okrajů) drží shell pod horní lištou;
- * tohle primitivum drží to, co si do dneška každá obrazovka skládala
- * sama: **svislý rytmus bloků** (hlavička → metriky → toolbar → tabulka)
- * a **tvar obsahu**. (Rozhodnutí vlastníka 2026-09-02, bod 05.)
+ * The outer frame (1440 px, page margins) is held by the shell under the
+ * top bar; this primitive holds what every screen used to compose itself:
+ * the **vertical rhythm of blocks** (header → metrics → toolbar → table)
+ * and the **shape of the content**. (Owner's decision, 2026-09-02,
+ * point 05.)
  *
- * Tři tvary, podle toho, co obrazovka je:
+ * Three shapes, by what the screen is:
  *
- * * ``full`` — plná šířka rámu. Seznamy a tabulky; sloupec ukousnutý
- *   z tabulky je sloupec, který v ní chybí.
- * * ``reading`` — omezená šířka pro obrazovky, které se čtou: dlouhá
- *   nastavení, právní texty, detail bez tabulek. Řádek přes celý
- *   monitor se nečte, ale přelétá.
- * * ``aside`` se sloupcem vlevo — obrazovka s vlastním rejstříkem
- *   (``IngotSideNav``): rejstřík stojí, obsah roluje.
+ * * ``full`` — the frame's full width. Lists and tables; a column bitten
+ *   off a table is a column missing from it.
+ * * ``reading`` — a limited width for screens that are read: long
+ *   settings, legal texts, a detail without tables. A line across the
+ *   whole monitor is not read but skimmed.
+ * * ``aside`` with a column on the left — a screen with its own index
+ *   (``IngotSideNav``): the index stands, the content scrolls.
  *
- * Mřížka karet ani dvousloupcový detail tvar nemají schválně: to je
- * vnitřek bloku (grid utility na místě), ne rám stránky.
+ * A card grid and a two-column detail deliberately have no shape here:
+ * that is the inside of a block (grid utilities in place), not the page
+ * frame.
  */
 export function IngotPageLayout({
   width = "full",
@@ -30,11 +32,11 @@ export function IngotPageLayout({
   children,
   testId,
 }: {
-  /** ``full`` tabulky a seznamy · ``reading`` obrazovky, které se čtou. */
+  /** ``full`` for tables and lists · ``reading`` for screens that are read. */
   width?: "full" | "reading";
   /**
-   * Postranní rejstřík vlevo — typicky ``IngotSideNav``. Sloupec je
-   * ``sticky``, takže při rolování obsahu zůstává po ruce.
+   * Side index on the left — typically ``IngotSideNav``. The column is
+   * ``sticky``, so it stays at hand while the content scrolls.
    */
   aside?: ReactNode;
   children: ReactNode;

@@ -3,29 +3,30 @@ import type { JSX, ReactNode } from "react";
 import { cx } from "./cx";
 
 /**
- * Stavový štítek (KAN-652) — stav entity jedním slovem.
+ * Status badge — the state of an entity in one word.
  *
- * Mono a verzálky schválně: štítek pojmenovává STAV („ve výrobě“, „hotovo“),
- * ne akci. Akce je tlačítko, a jakmile štítek vypadá jako věta, začne se do
- * něj psát věta.
+ * Mono and uppercase on purpose: a badge names a STATE ("in production",
+ * "done"), not an action. An action is a button, and the moment a badge
+ * looks like a sentence, someone writes a sentence into it.
  *
- * 🎨 **Tón jde JEN přes `tone`, `className` komponenta nebere.** Dnešní
- * `components/ui/Pill` ho bere, a jeho `className="bg-…"` s tónem prohrává —
- * volající si tedy může myslet, že barvu přepsal, a ona zůstane. Dvojznačnost
- * se tady nedá vyrobit, protože druhý zápis neexistuje.
+ * **Tone goes only through `tone`; the component takes no `className`.**
+ * A `className="bg-…"` racing the tone would lose silently — the caller
+ * would believe the colour was overridden while it stayed. The ambiguity
+ * cannot arise because the second spelling does not exist.
  *
- * Co to NENÍ:
+ * What it is NOT:
  *
- * * **Počet.** Odznak s číslem je `CountBadge` (`components/ui/CountBadge`) —
- *   jiná specifikace: kulatý, práh `99+`, povinný popisek pro odečítač,
- *   nula se nekreslí. Číslo není stav.
- * * **Klikací filtr.** Štítek není interaktivní: nemá fokus, roli ani
- *   klávesovou obsluhu. Filtr, který jde zapnout, je chip a musí být tlačítko.
+ * * **A count.** A badge with a number is a different primitive (round,
+ *   `99+` threshold, mandatory screen-reader label, zero not drawn) and
+ *   the kit does not have one yet. A number is not a state.
+ * * **A clickable filter.** A badge is not interactive: no focus, no role,
+ *   no keyboard handling. A filter you can switch on is a chip and must be
+ *   a button.
  *
- * A11y: barva význam nenese — nese ho text, a ten je povinný. `dot` je čistě
- * dekorace živého stavu a je proto `aria-hidden`.
+ * A11y: colour carries no meaning — the text does, and it is required.
+ * `dot` is pure decoration of a live state and therefore `aria-hidden`.
  *
- * Ingot **nemá vlastní i18n namespace**: text dodává volající už přeložený.
+ * The kit has no i18n namespace of its own: the text arrives translated.
  */
 export type IngotBadgeTone =
   | "neutral"
@@ -36,12 +37,12 @@ export type IngotBadgeTone =
   | "ink";
 
 /**
- * Tón → dvojice pozadí/text z tokenů. Obojí musí unést 4,5:1 ve světlém
- * i tmavém motivu; měří to `tests/ingot/IngotBadge.test.tsx` nad skutečnými
- * hodnotami z `globals.css`, ne nad jménem třídy.
+ * Tone → a background/text pair from tokens. Both must carry 4.5:1 in the
+ * light and the dark theme; `tests/IngotBadge.test.tsx` measures it over
+ * the real values from `tokens.css`, not over the class name.
  *
- * `ink` je jediný plný — je to nejsilnější důraz a na tintu by nešel odlišit
- * od `neutral`.
+ * `ink` is the only solid one — it is the strongest emphasis and on a tint
+ * it could not be told from `neutral`.
  */
 const TONE: Record<IngotBadgeTone, string> = {
   neutral: "border-border bg-surface-2 text-ink-2",
@@ -58,10 +59,10 @@ export function IngotBadge({
   dot = false,
   testId,
 }: {
-  /** Stav jedním slovem, už přeložený. */
+  /** The state in one word, already translated. */
   children: ReactNode;
   tone?: IngotBadgeTone;
-  /** Tečka pro živý stav („právě běží“). Dekorace, ne význam. */
+  /** A dot for a live state ("running now"). Decoration, not meaning. */
   dot?: boolean;
   testId?: string;
 }): JSX.Element {

@@ -1,7 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit, ported from the Forgmatic monorepo's
- * `scripts/repo_checks.py` when the kit moved into its own repository.
- * Three guards, same semantics as the originals:
+ * Repo checks for the Ingot UI Kit. Seven guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -13,10 +11,30 @@
  *    slugs that don't shadow a primitive.
  *
  *  - ingot-docs-kit-only: markup that has a kit counterpart must not be
- *    hand-rolled in the doc web — the doc web TEACHES the kit.
+ *    hand-rolled in anything this repository ships around the kit — the
+ *    doc web TEACHES the kit, and a page that composes its own classes
+ *    contradicts it by example.
  *
  *  - ingot-docs-no-internal-prose: the doc web is a PUBLIC page; rendered
  *    text must not name issue keys, monorepo paths or guard names.
+ *
+ *  - ingot-comments-english: every comment (JSDoc, `//`, JSX, HTML, CSS,
+ *    workflow YAML) and every describe/it name is English. User-facing
+ *    text is content, not a comment, so string literals are never read.
+ *
+ *  - ingot-no-hardcoded-text: the kit has no translation namespace, so no
+ *    file under `src/ingot/` carries Czech text outside comments. The two
+ *    exemptions are the IngotProvider dictionary and the bilingual
+ *    operation icon library.
+ *
+ *  - ingot-demos-localised: a demo takes the reader's language and keeps
+ *    every text it says in one `TEXT` dictionary at the top of the module,
+ *    where the code listing shows it. A page that translates everything
+ *    except the thing the reader is looking at looks finished and is not.
+ *
+ *  - ingot-tokens-fresh: the generated token files match tokens.json, and
+ *    the Tailwind preset offers a utility for every colour in it. Three
+ *    copies of one palette is how a design system starts lying.
  *
  * Exit code 0 = all green; 1 = at least one guard failed.
  */
@@ -27,7 +45,20 @@ const ROOT = new URL("..", import.meta.url).pathname.replace(
   /^\/([A-Za-z]):\//,
   "$1:/",
 );
-const INGOT_INDEX = join(ROOT, "src/ingot/index.ts");
+/**
+ * The barrels a primitive may be exported from.
+ *
+ * There are two on purpose. The core is what any product installs; the
+ * Forgmatic entry carries what only this platform needs (the operation
+ * icons and their keys). A primitive is documented wherever it is exported
+ * from, and the guard must see both — otherwise the day the core stops
+ * re-exporting the domain layer, its doc pages become "orphaned" and the
+ * guard demands their deletion.
+ */
+const INGOT_BARRELS = [
+  join(ROOT, "src/ingot/index.ts"),
+  join(ROOT, "src/ingot/forgmatic/index.ts"),
+];
 const DOCS_DIR = join(ROOT, "src/ingot-docs");
 const REGISTRY = join(DOCS_DIR, "registry.ts");
 
@@ -86,7 +117,7 @@ const SUBCOMPONENTS = new Map([
 ]);
 
 function exportedComponents() {
-  const src = stripComments(read(INGOT_INDEX));
+  const src = INGOT_BARRELS.map((file) => stripComments(read(file))).join("\n");
   const names = new Set();
   for (const match of src.matchAll(/export\s*\{([^}]*)\}\s*from/gs)) {
     for (const raw of match[1].split(",")) {
@@ -104,9 +135,7 @@ function exportedComponents() {
 function documentedComponents(registrySrc) {
   const match = registrySrc.match(/INGOT_DOC_PAGES[^=]*=\s*\[([^\]]*)\]/s);
   if (!match) return new Set();
-  return new Set(
-    [...match[1].matchAll(/\b(\w+)Doc\b/g)].map((entry) => entry[1]),
-  );
+  return new Set([...match[1].matchAll(/\b(\w+)Doc\b/g)].map((entry) => entry[1]));
 }
 
 function registeredGuides(registrySrc) {
@@ -166,9 +195,9 @@ function guardIngotDocPages() {
     }
     // status/version feed the badges next to the page title; a page
     // without them would silently promise stability it never declared.
-    if (!/status:\s*"(?:stable|beta)"/.test(src)) {
+    if (!/status:\s*"(?:stable|beta|deprecated)"/.test(src)) {
       fail(guard, [
-        `${pageRel} does not declare status: "stable" | "beta".`,
+        `${pageRel} does not declare status: "stable" | "beta" | "deprecated".`,
         "Every component page carries a status badge next to its title.",
       ]);
     }
@@ -185,11 +214,42 @@ function guardIngotDocPages() {
     if (!/tag:\s*"[^"]+"/.test(src)) {
       fail(guard, [`${pageRel} does not declare a non-empty tag (selector).`]);
     }
-    const tokens = src.match(/tokens:\s*\[([^\]]*)\]/);
-    if (!tokens || !tokens[1].trim()) {
+    // A deprecation without a removal date is a warning nobody can plan
+    // around, and a removal date on a primitive nobody deprecated is a
+    // promise attached to the wrong page.
+    const deprecated = /status:\s*"deprecated"/.test(src);
+    const notice = /deprecated:\s*\{/.test(src);
+    if (deprecated && !notice) {
+      fail(guard, [
+        `${pageRel} is deprecated but says nothing about the removal.`,
+        "Add deprecated: { since, replacedBy?, removeIn } — a consumer outside",
+        "this repository plans around those dates, not around a badge.",
+      ]);
+    }
+    if (!deprecated && notice) {
+      fail(guard, [
+        `${pageRel} carries a deprecation notice without status: "deprecated".`,
+      ]);
+    }
+    if (deprecated && notice && !/removeIn:\s*"[^"]+"/.test(src)) {
+      fail(guard, [`${pageRel} declares a deprecation without removeIn.`]);
+    }
+
+    // Every page answers "may I pass className here?" — a primitive that
+    // does not take it has no props row to say so.
+    if (!/classNameNote:\s*\{/.test(src)) {
+      fail(guard, [
+        `${pageRel} does not declare its className policy (classNameNote).`,
+        "Layout only, or a sentence on why the primitive does not take it.",
+      ]);
+    }
+    // An empty list is a statement too — "renders nothing, no token change
+    // reaches it" — and the doc web prints it as that sentence.
+    if (!/tokens:\s*\[[^\]]*\]/.test(src)) {
       fail(guard, [
         `${pageRel} does not declare the tokens it stands on.`,
-        "The token list is what tells review what a token change breaks.",
+        "The token list is what tells review what a token change breaks;",
+        "a primitive that renders nothing declares an empty list.",
       ]);
     }
     const demoPath = join(DOCS_DIR, "demos", `${name}Demo.tsx`);
@@ -217,15 +277,20 @@ function guardIngotDocPages() {
         "Demos MUST render the real component; copied JSX drifts silently.",
       ]);
     }
+    // Both imports are dynamic: a demo arrives when the reader opens its
+    // page, not in the first payload with sixty-five others. The pairing is
+    // what matters and is unchanged — the same module, twice.
     const spec = `@/ingot-docs/demos/${name}Demo`;
     for (const [suffix, why] of [
       ["", "renders the live demo"],
       ["?raw", "is listed under the 'show code' toggle"],
     ]) {
-      if (!src.includes(`from "${spec}${suffix}"`)) {
+      if (!src.includes(`import("${spec}${suffix}")`)) {
         fail(guard, [
           `${pageRel} does not import '${spec}${suffix}', the module that ${why}.`,
-          "The page must import the SAME module twice: as code and as ?raw text.",
+          "The page must import the SAME module twice, both times lazily:",
+          `  const demo = () => import("${spec}").then((m) => ({ default: m.Demo }));`,
+          `  const demoSource = () => import("${spec}?raw");`,
         ]);
       }
     }
@@ -246,9 +311,7 @@ function guardIngotDocPages() {
       fail(guard, [`registry lists ${guide} but ${guideRel} does not exist.`]);
       continue;
     }
-    const found = stripComments(read(guidePath)).match(
-      /slug:\s*["']([^"']+)["']/,
-    );
+    const found = stripComments(read(guidePath)).match(/slug:\s*["']([^"']+)["']/);
     if (!found) {
       fail(guard, [`${guideRel} declares no slug.`]);
       continue;
@@ -295,15 +358,20 @@ const BANNED_TAGS = {
   button: "Button",
   section: "IngotSection",
 };
-const TAG_RE = new RegExp(
-  `<(${Object.keys(BANNED_TAGS).sort().join("|")})\\b`,
-  "g",
-);
+const TAG_RE = new RegExp(`<(${Object.keys(BANNED_TAGS).sort().join("|")})\\b`, "g");
+
+// The doc web today; whatever else this repository grows around the kit
+// (marketing pages, app screens) is held to the same rule the day it
+// appears, without anyone having to remember this guard.
+const KIT_ONLY_DIRS = ["src/ingot-docs", "src/marketing", "src/components"];
 
 function guardIngotDocsKitOnly() {
   const guard = "ingot-docs-kit-only";
   const hits = [];
-  for (const path of walk(DOCS_DIR, /\.tsx$/)) {
+  const dirs = KIT_ONLY_DIRS.map((dir) => join(ROOT, dir)).filter((dir) =>
+    existsSync(dir),
+  );
+  for (const path of dirs.flatMap((dir) => [...walk(dir, /\.tsx$/)])) {
     const code = stripComments(read(path));
     code.split("\n").forEach((line, index) => {
       for (const match of line.matchAll(TAG_RE)) {
@@ -312,8 +380,7 @@ function guardIngotDocsKitOnly() {
     });
   }
   if (hits.length) {
-    const tags = [...new Set(hits.map((h) => h.split("<")[1].replace(">", "")))]
-      .sort();
+    const tags = [...new Set(hits.map((h) => h.split("<")[1].replace(">", "")))].sort();
     fail(guard, [
       `${hits.length} hand-rolled tag(s) in the Ingot doc web:`,
       ...hits.slice(0, 20),
@@ -337,7 +404,7 @@ const INTERNAL_RE = new RegExp(
   [
     String.raw`KAN-\d+`,
     String.raw`\b(?:apps/(?:web|api)|scripts)/[\w/.-]+`,
-    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose)\b`,
+    String.raw`\bingot-(?:doc-pages|inventory|overlays|thead|docs-kit-only|public-api|docs-no-internal-prose|comments-english|no-hardcoded-text)\b`,
   ].join("|"),
   "g",
 );
@@ -368,11 +435,287 @@ function guardIngotDocsNoInternalProse() {
   }
 }
 
+// --- ingot-comments-english -------------------------------------------------
+
+// Czech diacritics, both cases. A comment that carries one is not English.
+const CZECH_RE = /[ěščřžýáíéúůťďňĚŠČŘŽÝÁÍÉÚŮŤĎŇ]/;
+
+const COMMENT_SCOPES = [
+  ["src", /\.(?:tsx?|css)$/],
+  ["scripts", /\.mjs$/],
+  ["tests", /\.tsx?$/],
+  ["public", /\.js$/],
+  [".github/workflows", /\.ya?ml$/],
+];
+const COMMENT_FILES = [
+  "index.html",
+  "vite.config.ts",
+  "vitest.config.ts",
+  "tailwind.config.ts",
+  "tailwind.config.js",
+  "postcss.config.js",
+  "postcss.config.cjs",
+];
+
+// First string argument of describe / it / test, including .each / .only / .skip.
+const TEST_NAME_RE =
+  /\b(?:describe|it|test)(?:\.(?:each|only|skip|todo|concurrent)(?:\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))?)?\(\s*(["'`])((?:\\.|(?!\1)[^\\])*)\1/g;
+
+function lineAt(src, index) {
+  let line = 1;
+  for (let i = 0; i < index; i += 1) if (src.charCodeAt(i) === 10) line += 1;
+  return line;
+}
+
+// [offset, text] of every comment in the file. Block comments cover JSX
+// comments too; `://` (URLs) and `\/\/` (regex literals) are not comments.
+function commentSpans(src, path) {
+  const spans = [];
+  if (path.endsWith(".html")) {
+    for (const m of src.matchAll(/<!--([\s\S]*?)-->/g)) spans.push([m.index, m[1]]);
+    return spans;
+  }
+  if (/\.ya?ml$/.test(path)) {
+    for (const m of src.matchAll(/(?:^|\s)#([^\n]*)/g)) spans.push([m.index, m[1]]);
+    return spans;
+  }
+  for (const m of src.matchAll(/\/\*([\s\S]*?)\*\//g)) spans.push([m.index, m[1]]);
+  if (path.endsWith(".css")) return spans;
+  for (const m of src.matchAll(/(?<![:"'`\\])\/\/([^\n]*)/g))
+    spans.push([m.index, m[1]]);
+  return spans;
+}
+
+function guardIngotCommentsEnglish() {
+  const guard = "ingot-comments-english";
+  const files = [];
+  for (const [dir, pattern] of COMMENT_SCOPES) {
+    const full = join(ROOT, dir);
+    if (existsSync(full)) files.push(...walk(full, pattern));
+  }
+  for (const name of COMMENT_FILES) {
+    const full = join(ROOT, name);
+    if (existsSync(full)) files.push(full);
+  }
+  const hits = [];
+  let comments = 0;
+  for (const path of files) {
+    const src = read(path);
+    for (const [index, text] of commentSpans(src, path)) {
+      comments += 1;
+      if (CZECH_RE.test(text)) {
+        const first = text
+          .trim()
+          .split("\n")[0]
+          .replace(/^\*\s*/, "")
+          .slice(0, 70);
+        hits.push(`${rel(path)}:${lineAt(src, index)}: ${first}`);
+      }
+    }
+    if (/\.test\.tsx?$/.test(path)) {
+      for (const m of src.matchAll(TEST_NAME_RE)) {
+        if (CZECH_RE.test(m[2])) {
+          hits.push(`${rel(path)}:${lineAt(src, m.index)}: ${m[2].slice(0, 70)}`);
+        }
+      }
+    }
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} comment(s) or test name(s) not in English:`,
+      ...hits.slice(0, 30),
+      "Every comment, JSDoc, JSX/HTML/CSS comment and describe/it name is",
+      "English (CLAUDE.md). User-facing text is content and stays localized —",
+      "this guard reads comments and test names only, never string literals.",
+    ]);
+  } else {
+    ok(
+      guard,
+      `${comments} comment(s) across ${files.length} file(s) and every test name read as English`,
+    );
+  }
+}
+
+// --- ingot-no-hardcoded-text ------------------------------------------------
+
+const KIT_DIR = join(ROOT, "src/ingot");
+
+// The provider IS the dictionary, and the operation library carries a
+// Czech label next to the English one by design (data, not UI text).
+const HARDCODED_TEXT_EXEMPT = new Set(["IngotProvider.tsx", "processIconLibrary.tsx"]);
+
+function guardIngotNoHardcodedText() {
+  const guard = "ingot-no-hardcoded-text";
+  const hits = [];
+  let files = 0;
+  for (const path of walk(KIT_DIR, /\.tsx?$/)) {
+    const name = rel(path).split("/").pop();
+    if (name.includes(".test.") || HARDCODED_TEXT_EXEMPT.has(name)) continue;
+    files += 1;
+    stripComments(read(path))
+      .split("\n")
+      .forEach((line, index) => {
+        if (CZECH_RE.test(line)) {
+          hits.push(`${rel(path)}:${index + 1}: ${line.trim().slice(0, 70)}`);
+        }
+      });
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} line(s) of Czech text in the kit outside comments:`,
+      ...hits.slice(0, 30),
+      "The kit has no translation namespace. A label a primitive has to say",
+      "itself belongs in the IngotProvider dictionary (English by default);",
+      "everything else arrives from the caller already translated.",
+    ]);
+  } else {
+    ok(guard, `${files} kit file(s) carry no Czech text outside comments`);
+  }
+}
+
+// --- ingot-demos-localised --------------------------------------------------
+
+const DEMOS_DIR = join(ROOT, "src/ingot-docs/demos");
+
+/**
+ * The source with the demo's ``TEXT`` dictionary cut out.
+ *
+ * Everything a demo says has to live in that one constant, at the top of
+ * the module where the code listing shows it. Anything else is text the
+ * reader will see in the wrong language, and the point of a demo is that
+ * it is the page's most-read part.
+ *
+ * The dictionary is found by brace matching rather than by a regular
+ * expression: its type is ``Localized<Record<string, string>>`` and a
+ * pattern that stops at the first ``>`` silently matches nothing, which
+ * would make this guard pass over every file it is meant to read.
+ */
+function withoutDemoText(src) {
+  const at = src.indexOf("const TEXT");
+  if (at < 0) return src;
+  const open = src.indexOf("{", at);
+  if (open < 0) return src;
+  let depth = 0;
+  for (let i = open; i < src.length; i += 1) {
+    if (src[i] === "{") depth += 1;
+    else if (src[i] === "}") {
+      depth -= 1;
+      if (depth === 0) return src.slice(0, at) + src.slice(i + 1);
+    }
+  }
+  return src.slice(0, at);
+}
+
+function guardIngotDemosLocalised() {
+  const guard = "ingot-demos-localised";
+  const hits = [];
+  let files = 0;
+  let localised = 0;
+  for (const path of walk(DEMOS_DIR, /\.tsx$/)) {
+    files += 1;
+    const src = stripComments(read(path));
+    if (src.includes("const TEXT")) localised += 1;
+    withoutDemoText(src)
+      .split("\n")
+      .forEach((line, index) => {
+        if (CZECH_RE.test(line)) {
+          hits.push(`${rel(path)}:${index + 1}: ${line.trim().slice(0, 70)}`);
+        }
+      });
+  }
+  if (hits.length) {
+    fail(guard, [
+      `${hits.length} line(s) of Czech in a demo outside its TEXT dictionary:`,
+      ...hits.slice(0, 30),
+      "A demo takes the reader's language and reads its texts from one",
+      "`const TEXT: Localized<Record<string, string>>` at the top of the",
+      "module, where the code listing shows them. A page that translates",
+      "everything except the thing the reader is looking at is worse than",
+      "one that translates nothing: it looks finished.",
+    ]);
+  } else {
+    ok(
+      guard,
+      `${localised} of ${files} demo(s) carry a TEXT dictionary and none says Czech outside it`,
+    );
+  }
+}
+
+// --- ingot-tokens-fresh -----------------------------------------------------
+
+/** Line endings are the checkout's business, not the generator's. */
+const normalise = (text) => text.split("\r\n").join("\n");
+
+async function guardIngotTokensFresh() {
+  const guard = "ingot-tokens-fresh";
+  const { readTokens, buildCss, buildModule } = await import("./build-tokens.mjs");
+  const tokens = readTokens(join(ROOT, "src/ingot/tokens.json"));
+
+  const stale = [];
+  for (const [file, built] of [
+    ["src/ingot/tokens.generated.css", buildCss(tokens)],
+    ["src/ingot/tokens.generated.ts", buildModule(tokens)],
+  ]) {
+    const onDisk = existsSync(join(ROOT, file)) ? read(join(ROOT, file)) : "";
+    if (normalise(onDisk) !== built) stale.push(file);
+  }
+
+  // A colour in the source that no utility offers is a token nobody can
+  // reach; a utility pointing at a token the source no longer has resolves
+  // to nothing at all. Both are silent.
+  const preset = read(join(ROOT, "src/ingot/tailwind-preset.ts"));
+  const offered = new Set(
+    [...preset.matchAll(/token\("--([\w-]+)"\)/g)].map((match) => match[1]),
+  );
+  const declared = new Set(
+    Object.keys(tokens.light).filter((name) => name !== "$description"),
+  );
+  const unreachable = [...declared].filter(
+    (name) =>
+      !offered.has(name) &&
+      // The blue-* values exist so the default family can reference them;
+      // what a caller reaches for is --accent.
+      !name.startsWith("blue-") &&
+      !name.startsWith("code-"),
+  );
+  const dangling = [...offered].filter((name) => !declared.has(name));
+
+  if (stale.length || dangling.length) {
+    fail(guard, [
+      ...(stale.length
+        ? [
+            `${stale.length} generated file(s) no longer match tokens.json:`,
+            ...stale.map((file) => `  ${file}`),
+            "Run `npm run tokens`.",
+          ]
+        : []),
+      ...(dangling.length
+        ? [
+            `${dangling.length} Tailwind utility(ies) point at a token the source does not declare:`,
+            ...dangling.map((name) => `  --${name}`),
+          ]
+        : []),
+    ]);
+  } else {
+    ok(
+      guard,
+      `tokens.json drives ${declared.size} colour(s) and the generated files match` +
+        (unreachable.length
+          ? `; ${unreachable.length} declared but not offered as a utility`
+          : ""),
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 guardIngotDocPages();
 guardIngotDocsKitOnly();
 guardIngotDocsNoInternalProse();
+guardIngotCommentsEnglish();
+guardIngotNoHardcodedText();
+guardIngotDemosLocalised();
+await guardIngotTokensFresh();
 
 if (failures.length) {
   for (const failure of failures) console.error(`\n${failure}`);

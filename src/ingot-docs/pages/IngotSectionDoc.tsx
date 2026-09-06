@@ -1,7 +1,11 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotSectionDemo";
-import demoSource from "@/ingot-docs/demos/IngotSectionDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotSectionDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotSectionDemo?raw");
 
 export const IngotSectionDoc: IngotDocPage = {
   name: "IngotSection",
@@ -9,28 +13,31 @@ export const IngotSectionDoc: IngotDocPage = {
   version: "1.0",
   tag: ".section",
   tokens: ["--ink"],
+  classNameNote: {
+    cs: "`className` nebere. Sekce drží osnovu stránky; odsazení mezi sekcemi patří rámu stránky.",
+    en: "Does not take `className`. The section holds the page outline; spacing between sections belongs to the page frame.",
+  },
   summary: {
     cs: "Sekce obrazovky: nadpis správné úrovně a kotva, která sedí na sekci, ne na nadpisu.",
     en: "A screen section: a heading at the right level and an anchor that sits on the section, not on the heading.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
       <>
-        Obrazovka má víc částí a čtenář mezi nimi má umět skákat. Nadpis
-        sekce je to, podle čeho se odečítač orientuje.
+        Obrazovka má víc částí a čtenář mezi nimi má umět skákat. Nadpis sekce je to,
+        podle čeho se odečítač orientuje.
       </>,
       <>
-        Na sekci se dá odkázat z obsahu stránky. <IngotCode>id</IngotCode> je na
-        sekci, takže kotva skočí nad nadpis a ne doprostřed textu.
+        Na sekci se dá odkázat z obsahu stránky. <IngotCode>id</IngotCode> je na sekci,
+        takže kotva skočí nad nadpis a ne doprostřed textu.
       </>,
     ],
     en: [
       <>
-        The screen has several parts and the reader should be able to jump
-        between them. The section heading is what a screen reader navigates
-        by.
+        The screen has several parts and the reader should be able to jump between them.
+        The section heading is what a screen reader navigates by.
       </>,
       <>
         Something links to the section from a table of contents.{" "}
@@ -42,24 +49,24 @@ export const IngotSectionDoc: IngotDocPage = {
   avoidWhen: {
     cs: [
       <>
-        Chceš jen tučný řádek nad odstavcem. Nadpis, který nic nestrukturuje,
-        odečítači lže o osnově stránky — a osnova je jedna z mála věcí, které
-        se čtou naslepo.
+        Chceš jen tučný řádek nad odstavcem. Nadpis, který nic nestrukturuje, odečítači
+        lže o osnově stránky — a osnova je jedna z mála věcí, které se čtou naslepo.
       </>,
       <>
-        Je to nadpis celé obrazovky. Na to je <IngotCode>IngotPageHeader</IngotCode>{" "}
-        s <IngotCode>&lt;h1&gt;</IngotCode>.
+        Je to nadpis celé obrazovky. Na to je <IngotCode>IngotPageHeader</IngotCode> s{" "}
+        <IngotCode>&lt;h1&gt;</IngotCode>.
       </>,
     ],
     en: [
       <>
-        You only want a bold line above a paragraph. A heading that structures
-        nothing lies to a screen reader about the page outline — and the
-        outline is one of the few things read blind.
+        You only want a bold line above a paragraph. A heading that structures nothing
+        lies to a screen reader about the page outline — and the outline is one of the
+        few things read blind.
       </>,
       <>
         It is the title of the whole screen. That is{" "}
-        <IngotCode>IngotPageHeader</IngotCode>, with an <IngotCode>&lt;h1&gt;</IngotCode>.
+        <IngotCode>IngotPageHeader</IngotCode>, with an{" "}
+        <IngotCode>&lt;h1&gt;</IngotCode>.
       </>,
     ],
   },
@@ -107,9 +114,9 @@ export const IngotSectionDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        <IngotCode>level</IngotCode> je o osnově, ne o vzhledu. Přeskočená úroveň
-        (z <IngotCode>h1</IngotCode> rovnou na <IngotCode>h3</IngotCode>) rozbije seznam nadpisů,
-        podle kterého se po stránce pohybuje kdokoli, kdo ji nevidí.
+        <IngotCode>level</IngotCode> je o osnově, ne o vzhledu. Přeskočená úroveň (z{" "}
+        <IngotCode>h1</IngotCode> rovnou na <IngotCode>h3</IngotCode>) rozbije seznam
+        nadpisů, podle kterého se po stránce pohybuje kdokoli, kdo ji nevidí.
       </>,
       <>
         Vykresluje se <IngotCode>&lt;section&gt;</IngotCode>, takže je to skutečná část
@@ -123,8 +130,8 @@ export const IngotSectionDoc: IngotDocPage = {
     en: [
       <>
         <IngotCode>level</IngotCode> is about the outline, not the look. A skipped level
-        (<IngotCode>h1</IngotCode> straight to <IngotCode>h3</IngotCode>) breaks the heading list
-        anyone who cannot see the page moves through it by.
+        (<IngotCode>h1</IngotCode> straight to <IngotCode>h3</IngotCode>) breaks the
+        heading list anyone who cannot see the page moves through it by.
       </>,
       <>
         It renders a <IngotCode>&lt;section&gt;</IngotCode>, so it really is a part of
@@ -133,8 +140,8 @@ export const IngotSectionDoc: IngotDocPage = {
       </>,
       <>
         <IngotCode>id</IngotCode> belongs on the section. An anchor on the heading
-        scrolls so that the heading disappears past the top of the window and
-        the reader starts mid-paragraph.
+        scrolls so that the heading disappears past the top of the window and the reader
+        starts mid-paragraph.
       </>,
     ],
   },

@@ -1,25 +1,27 @@
 /**
- * Jak se primitivum jmenuje na stránce a jak v kódu.
+ * How a primitive is named on the page and how in code.
  *
- * V kódu je jméno exportu (``IngotBadge``) a to se nemění — importuje se
- * pod ním, píše se v ukázkách a stojí v adrese stránky. Ale prefix,
- * který v kódu odlišuje kit od zbytku aplikace, je v seznamu dvaceti
- * položek pod sebou jen šum: čtenář ho přečte dvacetkrát a rozlišuje ho
- * až to, co za ním následuje.
+ * In code it is the export name (``IngotBadge``) and that does not change
+ * — it is imported under it, written in demos, and stands in the page
+ * address. But the prefix that tells the kit from the rest of the
+ * application in code is only noise in a list of twenty items stacked up:
+ * the reader reads it twenty times and only what follows it tells them
+ * apart.
  *
- * Na stránce se proto ukazuje jméno bez něj — ``Badge``, ``Table``,
- * ``TopNav``. Je to čistě zobrazení: routa i každý výpis kódu zůstávají
- * na plném jméně, takže se podle stránky dá pořád rovnou importovat.
+ * On the page the name is therefore shown without it — ``Badge``,
+ * ``Table``, ``TopNav``. It is purely display: the route and every code
+ * listing stay on the full name, so one can still import straight from the
+ * page.
  *
- * 🪤 Prefix se ODŘEZÁVÁ, nedopočítává. ``Button`` a ``Card`` ho nikdy
- * neměly, takže projdou beze změny — a kdyby někdy vzniklo primitivum
- * jménem ``Ingots…``, hranice slova ho ochrání před uříznutím na půl.
+ * The prefix is CUT OFF, not computed. ``Button`` and ``Card`` never had
+ * it, so they pass unchanged — and should a primitive named ``Ingots…``
+ * ever appear, the word boundary protects it from being cut in half.
  */
 
 /** ``IngotBadge`` → ``Badge``; ``Button`` → ``Button``. */
 export function displayName(name: string): string {
   const stripped = name.replace(/^Ingot(?=[A-Z])/, "");
-  // Pojistka pro hypotetický export jménem přesně "Ingot": prázdný
-  // popisek v menu je horší než prefix.
+  // Safety net for a hypothetical export named exactly "Ingot": an empty
+  // menu label is worse than the prefix.
   return stripped || name;
 }

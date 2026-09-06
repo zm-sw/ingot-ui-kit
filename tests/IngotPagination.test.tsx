@@ -1,7 +1,8 @@
 /**
- * `IngotPagination` (KAN-654) — pager je řízený a krajní tlačítka se
- * vypínají, takže `onPageChange` nikdy nedostane stránku mimo rozsah.
- * Popisky dodává volající přeložené; primitivum žádný text nevlastní.
+ * `IngotPagination` (KAN-654) — the pager is controlled and the edge
+ * buttons are disabled, so `onPageChange` never receives a page out of
+ * range. The caller supplies the labels translated; the primitive owns no
+ * text.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -25,16 +26,14 @@ function renderPager(page: number, onPageChange = vi.fn()) {
 }
 
 describe("IngotPagination", () => {
-  it("je <nav> s popiskem a ukazuje složený stav", () => {
+  it("is a <nav> with a label and shows the composed state", () => {
     renderPager(2);
 
-    expect(
-      screen.getByRole("navigation", { name: "Stránkování" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Stránkování" })).toBeInTheDocument();
     expect(screen.getByText("Strana 2 z 3")).toBeInTheDocument();
   });
 
-  it("hlásí sousední stránky", () => {
+  it("reports the neighbouring pages", () => {
     const onPageChange = renderPager(2);
 
     fireEvent.click(screen.getByRole("button", { name: "Předchozí" }));
@@ -44,7 +43,7 @@ describe("IngotPagination", () => {
     expect(onPageChange).toHaveBeenNthCalledWith(2, 3);
   });
 
-  it("na první straně nejde zpět, na poslední dál", () => {
+  it("cannot go back on the first page or forward on the last", () => {
     const first = renderPager(1);
     const prev = screen.getByRole("button", { name: "Předchozí" });
     expect(prev).toBeDisabled();
@@ -52,7 +51,7 @@ describe("IngotPagination", () => {
     expect(first).not.toHaveBeenCalled();
   });
 
-  it("na poslední straně je „další“ vypnuté", () => {
+  it("next is disabled on the last page", () => {
     renderPager(3);
     expect(screen.getByRole("button", { name: "Další" })).toBeDisabled();
   });

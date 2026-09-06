@@ -1,4 +1,4 @@
-import { IngotBadge, IngotCode, IngotList } from "@/ingot";
+import { IngotBadge, IngotCode, IngotEyebrow, IngotList } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang } from "@/ingot-docs/lang";
 import { displayName } from "@/ingot-docs/naming";
@@ -6,18 +6,18 @@ import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Rozcestník komponent — stránka, pod kterou se v levém menu vnořují
- * jednotlivá primitiva.
+ * Components overview — the page the individual primitives nest under in
+ * the left menu.
  *
- * 🪤 **Dlaždice se generují z registru, ne z ručního výčtu.** Katalog
- * opsaný sem by byl druhá pravda o tom, co kit obsahuje, a rozešel by se
- * s první při prvním přidaném primitivu — přesně ta třída chyby, kvůli
- * které stránky renderují živé komponenty místo obrázků.
+ * **The tiles are generated from the registry, not from a hand-written
+ * list.** A catalogue copied here would be a second truth about what the
+ * kit contains and would drift from the first at the first added primitive
+ * — exactly the class of error that makes the pages render live
+ * components instead of images.
  *
- * ⚠️ ``INGOT_DOC_PAGES`` se čte AŽ PŘI VYKRESLENÍ, ne při načtení
- * modulu. Registr tenhle soubor importuje (je v jeho seznamu), takže
- * čtení na úrovni modulu by sáhlo na vazbu, kterou registr v tu chvíli
- * ještě nemá naplněnou.
+ * ``INGOT_DOC_PAGES`` is read AT RENDER TIME, not at module load. The
+ * registry imports this file (it is in its list), so a module-level read
+ * would touch a binding the registry has not filled yet at that moment.
  */
 
 function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
@@ -39,8 +39,8 @@ function ComponentCatalogue({ lang }: { lang: DocLang }): JSX.Element {
                 ? CHROME.statusStable[lang]
                 : CHROME.statusBeta[lang]}
             </IngotBadge>
-            {/* Verze vpravo, jak ji řadí návrh — dlaždice nese čtyři
-                údaje, ne dva. */}
+            {/* Version on the right, as the design orders it — the tile
+                carries four facts, not two. */}
             <span className="ml-auto font-mono text-[11px] text-ink-4">
               {`v${page.version}`}
             </span>
@@ -68,56 +68,52 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  <IngotBadge>stabilní</IngotBadge> — rozhraní se nemění bez
-                  ohlášení. Změna, která by rozbila volající kód, je tu
-                  vzácná a záměrná: přijde s vyšší verzí a s upravenými
-                  místy použití.
+                  <IngotBadge>stabilní</IngotBadge> — rozhraní se nemění bez ohlášení.
+                  Změna, která by rozbila volající kód, je tu vzácná a záměrná: přijde s
+                  vyšší verzí a s upravenými místy použití.
                 </>,
                 <>
-                  <IngotBadge tone="warn">beta</IngotBadge> — tvar se ještě
-                  hledá. Změny, které rozbijí volající kód, se tady čekají —
-                  a přesně proto ten štítek je: říká, jestli už se na
-                  komponentu dá stavět.
+                  <IngotBadge tone="warn">beta</IngotBadge> — tvar se ještě hledá.
+                  Změny, které rozbijí volající kód, se tady čekají — a přesně proto ten
+                  štítek je: říká, jestli už se na komponentu dá stavět.
                 </>,
                 <>
-                  Verze se zvedá pokaždé, když se komponenta změní. Změněné
-                  chování pod nezměněnou verzí je tichá lež vůči každému,
-                  kdo si komponentu už zabudoval.
+                  Verze se zvedá pokaždé, když se komponenta změní. Změněné chování pod
+                  nezměněnou verzí je tichá lež vůči každému, kdo si komponentu už
+                  zabudoval.
                 </>,
                 <>
-                  Pořadí v menu jde od nejmenšího stavebního kamene ke
-                  složeným celkům, ne abecedně.
+                  Pořadí v menu jde od nejmenšího stavebního kamene ke složeným celkům,
+                  ne abecedně.
                 </>,
                 <>
-                  Chybí-li ti primitivum, přidá se do kitu — nevzniká uvnitř
-                  obrazovky.
+                  Chybí-li ti primitivum, přidá se do kitu — nevzniká uvnitř obrazovky.
                 </>,
               ]
             : [
                 <>
-                  <IngotBadge>stable</IngotBadge> — the interface does not
-                  change without notice. A change that would break callers is
-                  rare and deliberate: it arrives with a higher version and
-                  with the call sites already updated.
+                  <IngotBadge>stable</IngotBadge> — the interface does not change
+                  without notice. A change that would break callers is rare and
+                  deliberate: it arrives with a higher version and with the call sites
+                  already updated.
                 </>,
                 <>
-                  <IngotBadge tone="warn">beta</IngotBadge> — the shape is
-                  still being found. Breaking changes are expected here, and
-                  that is exactly what the badge is for: it says whether you
-                  can build on it yet.
+                  <IngotBadge tone="warn">beta</IngotBadge> — the shape is still being
+                  found. Breaking changes are expected here, and that is exactly what
+                  the badge is for: it says whether you can build on it yet.
                 </>,
                 <>
-                  The version moves every time the component changes. Changed
-                  behaviour under an unchanged version is a silent lie to
-                  everyone who already built on it.
+                  The version moves every time the component changes. Changed behaviour
+                  under an unchanged version is a silent lie to everyone who already
+                  built on it.
                 </>,
                 <>
-                  The order in the menu runs from the smallest building block
-                  to composed wholes, not alphabetically.
+                  The order in the menu runs from the smallest building block to
+                  composed wholes, not alphabetically.
                 </>,
                 <>
-                  If a primitive is missing, it is added to the kit — it is
-                  not born inside a screen.
+                  If a primitive is missing, it is added to the kit — it is not born
+                  inside a screen.
                 </>,
               ]
         }
@@ -127,11 +123,13 @@ function CatalogueIntro({ lang }: { lang: DocLang }): JSX.Element {
 }
 
 /**
- * Skladba stránky komponenty — pevné pořadí bloků a tři pohledy, které
- * z něj čtou (handoff „Komponenty“, sekce „Skladba stránky komponenty“).
+ * Anatomy of a component page — the fixed order of blocks and the three
+ * views that read from it (the "Components" handoff, section "Anatomy of a
+ * component page").
  *
- * Pořadí není estetika: drží se, aby se stránka dala číst napřeskáčku —
- * každý ví, kde jeho blok začíná, a nemusí ji projít celou.
+ * The order is not aesthetics: it is kept so the page can be read out of
+ * sequence — everyone knows where their block starts and does not have to
+ * go through the whole page.
  */
 function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
@@ -207,12 +205,10 @@ function PageLayout({ lang }: { lang: DocLang }): JSX.Element {
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
         {views.map((view) => (
           <div key={view.key} className="bg-surface p-5">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-3">
+            <IngotEyebrow as="span" size="md">
               {view.eyebrow}
-            </span>
-            <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
-              {view.text}
-            </p>
+            </IngotEyebrow>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-2">{view.text}</p>
           </div>
         ))}
       </div>

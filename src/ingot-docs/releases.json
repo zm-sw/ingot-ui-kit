@@ -1,0 +1,78 @@
+{
+  "releases": [
+    {
+      "tag": "v1.1.1",
+      "date": "2026-09-04",
+      "notes": "Automatický release z registru doc stránek (v1.1.0 -> v1.1.1).\nZměněné komponenty: IngotStepCard, IngotTopNav."
+    },
+    {
+      "tag": "v1.1.0",
+      "date": "2026-09-03",
+      "notes": "Automatický release z registru doc stránek (v1.0.4 -> v1.1.0).\nNová primitiva: IngotDisclosure.\nZměněné komponenty: IngotIcon, IngotSearchInput."
+    },
+    {
+      "tag": "v1.0.4",
+      "date": "2026-09-03",
+      "notes": "Automatický release z registru doc stránek (v1.0.3 -> v1.0.4)."
+    },
+    {
+      "tag": "v1.0.3",
+      "date": "2026-09-03",
+      "notes": "Automatický release z registru doc stránek (v1.0.2 -> v1.0.3)."
+    },
+    {
+      "tag": "v1.0.2",
+      "date": "2026-09-03",
+      "notes": "Automatický release z registru doc stránek (v1.0.1 -> v1.0.2).\nZměněné komponenty: IngotIcon."
+    },
+    {
+      "tag": "v1.0.1",
+      "date": "2026-09-03",
+      "notes": "Automatický release z registru doc stránek (v1.0.0 -> v1.0.1).\nZměněné komponenty: IngotIcon, IngotMegaMenu, IngotTopNav."
+    },
+    {
+      "tag": "v1.0.0",
+      "date": "2026-09-02",
+      "notes": null
+    }
+  ],
+  "since": {
+    "Button": "v1.0.0",
+    "Card": "v1.0.0",
+    "IngotAttentionPanel": "v1.0.0",
+    "IngotBadge": "v1.0.0",
+    "IngotBreadcrumbs": "v1.0.0",
+    "IngotCheckbox": "v1.0.0",
+    "IngotCode": "v1.0.0",
+    "IngotConfirm": "v1.0.0",
+    "IngotDrawer": "v1.0.0",
+    "IngotEmptyState": "v1.0.0",
+    "IngotField": "v1.0.0",
+    "IngotFieldInput": "v1.0.0",
+    "IngotForm": "v1.0.0",
+    "IngotIcon": "v1.0.0",
+    "IngotList": "v1.0.0",
+    "IngotMegaMenu": "v1.0.0",
+    "IngotMetrics": "v1.0.0",
+    "IngotModal": "v1.0.0",
+    "IngotOpIcon": "v1.0.0",
+    "IngotOptionCard": "v1.0.0",
+    "IngotPageHeader": "v1.0.0",
+    "IngotPageHint": "v1.0.0",
+    "IngotPageLayout": "v1.0.0",
+    "IngotPagination": "v1.0.0",
+    "IngotRowActions": "v1.0.0",
+    "IngotSearchInput": "v1.0.0",
+    "IngotSection": "v1.0.0",
+    "IngotSelect": "v1.0.0",
+    "IngotSideNav": "v1.0.0",
+    "IngotStepCard": "v1.0.0",
+    "IngotTable": "v1.0.0",
+    "IngotTabs": "v1.0.0",
+    "IngotToast": "v1.0.0",
+    "IngotToolbar": "v1.0.0",
+    "IngotTopNav": "v1.0.0",
+    "IngotUserMenu": "v1.0.0",
+    "IngotDisclosure": "v1.1.0"
+  }
+}

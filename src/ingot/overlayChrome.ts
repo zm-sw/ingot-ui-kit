@@ -1,21 +1,21 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 /**
- * Společná overlay logika dialogových primitiv (KAN-655).
+ * Shared overlay behaviour of the dialog primitives.
  *
- * Vzniklo vytažením z ``IngotModal.tsx``, když přibyl ``IngotDrawer`` a
- * a11y laťka (rozhodnutí vlastníka 2026-08-25) začala platit pro dva
- * překryvy najednou. Zámek scrollu je tu proto MODUL, ne stav komponenty:
- * drawer otevřený nad modalem (nebo obráceně) nesmí při svém zavření
- * odemknout scroll, pod kterým pořád stojí ten druhý překryv.
+ * Extracted from `IngotModal.tsx` when `IngotDrawer` arrived and the
+ * accessibility bar (owner's decision, 2026-08-25) started to apply to
+ * two overlays at once. The scroll lock is therefore a MODULE, not
+ * component state: a drawer opened above a modal (or the other way round)
+ * must not unlock the scroll the other overlay still stands on when it
+ * closes.
  *
- * 🚨 **Interní modul, ne veřejné API.** Nic odsud nevede přes
- * ``src/ingot/index.ts`` ven — konzument kitu skládá dialogy z
- * ``IngotModal``/``IngotDrawer``, ne z jejich vnitřností. Hranici hlídá
- * guard ``ingot-public-api`` (v monorepu); tady platí stejné pravidlo.
+ * **Internal module, not public API.** Nothing here is re-exported from
+ * `index.ts` — a consumer composes dialogs from `IngotModal` /
+ * `IngotDrawer`, not from their insides.
  */
 
-/** Co smí dostat fokus. `tabindex="-1"` je programový cíl, ne zastávka Tabu. */
+/** What may receive focus. `tabindex="-1"` is a programmatic target, not a Tab stop. */
 export const FOCUSABLE = [
   "a[href]",
   "area[href]",
@@ -27,14 +27,15 @@ export const FOCUSABLE = [
 ].join(",");
 
 /**
- * Kolik překryvů je právě otevřených a jaký byl `overflow` před prvním z
- * nich. Původní hodnota se schovává při přechodu 0 → 1, aby ji druhý
- * překryv nepřepsal už uzamčeným `"hidden"`.
+ * How many overlays are open right now and what `overflow` was before the
+ * first of them. The original value is stashed on the 0 → 1 transition so
+ * a second overlay does not overwrite it with the already locked
+ * `"hidden"`.
  */
 let openDialogs = 0;
 let bodyOverflowBeforeLock = "";
 
-/** Zamkne scroll pozadí po dobu života překryvu; čítač sdílí všechny. */
+/** Locks background scroll for the overlay's lifetime; the counter is shared by all. */
 export function useOverlayScrollLock(): void {
   useEffect(() => {
     if (openDialogs === 0) {
@@ -52,8 +53,9 @@ export function useOverlayScrollLock(): void {
 }
 
 /**
- * Přečte spouštěč při mountu a po unmountu na něj vrátí fokus. Bez toho
- * spadne fokus na <body> a čtečka i klávesnice začínají od začátku stránky.
+ * Reads the opener on mount and returns focus to it on unmount. Without it
+ * focus drops to <body> and both screen reader and keyboard start over
+ * from the top of the page.
  */
 export function useOverlayFocusReturn(): void {
   const openerRef = useRef<Element | null>(null);
@@ -70,8 +72,8 @@ export function useOverlayFocusReturn(): void {
 }
 
 /**
- * Fokus do překryvu hned po otevření. Když uvnitř nic fokusovatelného
- * není, vezme ho panel sám — má mít ``tabIndex={-1}``.
+ * Focus into the overlay right after opening. When nothing inside is
+ * focusable, the panel itself takes it — it should have ``tabIndex={-1}``.
  */
 export function useOverlayInitialFocus(
   panelRef: RefObject<HTMLElement | null>,
@@ -81,15 +83,16 @@ export function useOverlayInitialFocus(
     if (!panel) return;
     const first = panel.querySelector<HTMLElement>(FOCUSABLE);
     (first ?? panel).focus();
-    // panelRef je ref, ne hodnota — efekt má běžet jen při mountu.
+    // panelRef is a ref, not a value — the effect runs on mount only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
 /**
- * Focus trap na Tab i Shift+Tab uvnitř panelu. Volá se z ``onKeyDown``
- * overlaye; klávesy jiné než Tab nechává být (ESC si řeší volající, aby
- * dva otevřené překryvy nad sebou nezavřel jeden stisk).
+ * Focus trap for Tab and Shift+Tab inside the panel. Called from the
+ * overlay's ``onKeyDown``; keys other than Tab are left alone (ESC is the
+ * caller's, so one press does not close two overlays stacked on each
+ * other).
  */
 export function trapOverlayTab(
   event: React.KeyboardEvent<HTMLElement>,
@@ -98,7 +101,7 @@ export function trapOverlayTab(
   if (event.key !== "Tab" || !panel) return;
   const stops = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
   if (stops.length === 0) {
-    // Není kam cyklit — Tab by fokus vynesl z překryvu ven.
+    // Nowhere to cycle — Tab would carry focus out of the overlay.
     event.preventDefault();
     return;
   }

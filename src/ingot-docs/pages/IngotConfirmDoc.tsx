@@ -1,29 +1,39 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotConfirmDemo";
-import demoSource from "@/ingot-docs/demos/IngotConfirmDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+// 1.1 (KAN-853): the component is untouched — the quick-create rule left the module this dialog carries the depth for.
+// Nothing a caller passes or sees changed; the version moves because
+// the module underneath it did.
+const demo = () =>
+  import("@/ingot-docs/demos/IngotConfirmDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotConfirmDemo?raw");
 
 export const IngotConfirmDoc: IngotDocPage = {
   name: "IngotConfirm",
   status: "stable",
-  version: "1.0",
+  version: "1.1",
   tag: ".confirm",
   tokens: ["--bg", "--border", "--ink-2", "--warn", "--r-md"],
+  classNameNote: {
+    cs: "`className` nebere — dialog jede přes `IngotModal` a přebírá jeho geometrii i laťku.",
+    en: "Does not take `className` — the dialog runs through `IngotModal` and inherits its geometry and its bar.",
+  },
   summary: {
     cs: "Potvrzovací dialog nad IngotModal. Spočítaný dopad smí přes useConfirmVeto potvrzení odvolat.",
     en: "Confirmation dialog built on IngotModal. The computed impact may withdraw the confirmation through useConfirmVeto.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
       <>
-        Krok je destruktivní nebo nevratný a operátor si ho má přečíst, ne
-        odklepnout.
+        Krok je destruktivní nebo nevratný a operátor si ho má přečíst, ne odklepnout.
       </>,
       <>
-        K rozhodnutí patří spočítaný dopad („smaže se 12 objednávek“). Jde do
-        slotu <IngotCode>impact</IngotCode>, takže se počítá až ve chvíli, kdy je dialog
+        K rozhodnutí patří spočítaný dopad („smaže se 12 objednávek“). Jde do slotu{" "}
+        <IngotCode>impact</IngotCode>, takže se počítá až ve chvíli, kdy je dialog
         otevřený.
       </>,
       <>
@@ -33,13 +43,13 @@ export const IngotConfirmDoc: IngotDocPage = {
     ],
     en: [
       <>
-        The step is destructive or irreversible and the operator is meant to
-        read it, not click through it.
+        The step is destructive or irreversible and the operator is meant to read it,
+        not click through it.
       </>,
       <>
-        The decision needs a computed impact ("12 orders will be deleted").
-        That goes into the <IngotCode>impact</IngotCode> slot, so it is computed only
-        once the dialog is open.
+        The decision needs a computed impact ("12 orders will be deleted"). That goes
+        into the <IngotCode>impact</IngotCode> slot, so it is computed only once the
+        dialog is open.
       </>,
       <>
         The impact may forbid the step: <IngotCode>useConfirmVeto</IngotCode> inside{" "}
@@ -54,9 +64,8 @@ export const IngotConfirmDoc: IngotDocPage = {
         <IngotCode>IngotModal</IngotCode> přímo.
       </>,
       <>
-        Krok je vratný a levný. Potvrzení, které se odklepává mechanicky,
-        chrání jen zdánlivě — a učí operátora klikat naslepo i tam, kde by
-        neměl.
+        Krok je vratný a levný. Potvrzení, které se odklepává mechanicky, chrání jen
+        zdánlivě — a učí operátora klikat naslepo i tam, kde by neměl.
       </>,
     ],
     en: [
@@ -65,9 +74,9 @@ export const IngotConfirmDoc: IngotDocPage = {
         <IngotCode>IngotModal</IngotCode> directly.
       </>,
       <>
-        The step is reversible and cheap. A confirmation that gets clicked
-        through mechanically only looks like protection — and it teaches the
-        operator to click blindly where it does matter.
+        The step is reversible and cheap. A confirmation that gets clicked through
+        mechanically only looks like protection — and it teaches the operator to click
+        blindly where it does matter.
       </>,
     ],
   },
@@ -167,8 +176,8 @@ export const IngotConfirmDoc: IngotDocPage = {
         <IngotCode>aria-modal</IngotCode> i návrat fokusu na spouštěč.
       </>,
       <>
-        Vetovaný krok tlačítko <strong>nenabídne vůbec</strong>. Zašedlé
-        „Smazat trvale“ vedle důvodu čte operátor jako „ještě chvíli“.
+        Vetovaný krok tlačítko <strong>nenabídne vůbec</strong>. Zašedlé „Smazat trvale“
+        vedle důvodu čte operátor jako „ještě chvíli“.
       </>,
       <>
         Důvod veta je <IngotCode>role=&quot;alert&quot;</IngotCode>, takže ho odečítač
@@ -176,10 +185,10 @@ export const IngotConfirmDoc: IngotDocPage = {
       </>,
       <>
         Obě tlačítka jedou přes sdílený <IngotCode>Button</IngotCode> (
-        <IngotCode>danger</IngotCode> a <IngotCode>secondary</IngotCode>), ne přes opsané třídy.
-        Varianta <IngotCode>danger</IngotCode> nese v tmavém režimu výjimku, bez které
-        by bílý text na zesvětleném podkladu klesl pod kontrastní minimum
-        WCAG AA.
+        <IngotCode>danger</IngotCode> a <IngotCode>secondary</IngotCode>), ne přes
+        opsané třídy. Varianta <IngotCode>danger</IngotCode> nese v tmavém režimu
+        výjimku, bez které by bílý text na zesvětleném podkladu klesl pod kontrastní
+        minimum WCAG AA.
       </>,
     ],
     en: [
@@ -188,9 +197,8 @@ export const IngotConfirmDoc: IngotDocPage = {
         ESC, <IngotCode>aria-modal</IngotCode> and focus returned to the trigger.
       </>,
       <>
-        A vetoed step does <strong>not offer the button at all</strong>. A
-        greyed-out "Delete permanently" next to the reason reads to the
-        operator as "not just yet".
+        A vetoed step does <strong>not offer the button at all</strong>. A greyed-out
+        "Delete permanently" next to the reason reads to the operator as "not just yet".
       </>,
       <>
         The veto reason is <IngotCode>role=&quot;alert&quot;</IngotCode>, so a screen
@@ -198,10 +206,10 @@ export const IngotConfirmDoc: IngotDocPage = {
       </>,
       <>
         Both buttons go through the shared <IngotCode>Button</IngotCode> (
-        <IngotCode>danger</IngotCode> and <IngotCode>secondary</IngotCode>), not through copied
-        classes. The <IngotCode>danger</IngotCode> variant carries a dark-mode
-        exception without which white text on the lightened surface would
-        fall below the WCAG AA contrast minimum.
+        <IngotCode>danger</IngotCode> and <IngotCode>secondary</IngotCode>), not through
+        copied classes. The <IngotCode>danger</IngotCode> variant carries a dark-mode
+        exception without which white text on the lightened surface would fall below the
+        WCAG AA contrast minimum.
       </>,
     ],
   },
@@ -223,8 +231,8 @@ export const IngotConfirmDoc: IngotDocPage = {
         translated.
       </>,
       <>
-        <IngotCode>title</IngotCode>, <IngotCode>description</IngotCode> and the contents of the{" "}
-        <IngotCode>impact</IngotCode> slot come from the caller.
+        <IngotCode>title</IngotCode>, <IngotCode>description</IngotCode> and the
+        contents of the <IngotCode>impact</IngotCode> slot come from the caller.
       </>,
     ],
   },

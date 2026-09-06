@@ -3,23 +3,23 @@ import { useId, type JSX, type ReactNode } from "react";
 import { cx } from "./cx";
 
 /**
- * Výběr jedné varianty, kde volba potřebuje vysvětlení.
+ * Picking one variant where the choice needs an explanation.
  *
- * Rozdíl proti obyčejnému přepínači je v tom, co se vybírá: varianty
- * v nastavení nejsou „ano/ne", ale rozhodnutí s důsledkem („ceník podle
- * hmotnosti" vs. „podle času stroje"). Vysvětlující věta proto není
- * nápověda navíc — je to půlka volby, a v rozbalovacím seznamu by se
- * nevešla.
+ * The difference from a plain radio is what is chosen: variants in
+ * settings are not "yes/no" but decisions with consequences ("pricing by
+ * weight" vs. "by machine time"). The explanatory sentence is therefore
+ * not an extra hint — it is half of the choice, and it would not fit in a
+ * dropdown.
  *
- * 🪤 **Klikatelná je celá karta, ne jen kolečko.** Karta s textem, kde
- * reaguje jen puntík o průměru 16 px, je past — obzvlášť na dotyku.
- * Proto je popiskem ``<label>`` kolem celého obsahu.
+ * **The whole card is clickable, not only the circle.** A card with text
+ * where only a 16 px dot reacts is a trap — especially on touch. Hence the
+ * label is a ``<label>`` around the whole content.
  *
- * ⚠️ **Vybraná varianta je poznat obrysem, ne výplní.** Vyplněná karta
- * by soupeřila s obsahem, který popisuje; obrys v akcentu stačí a drží
- * kontrast i v tmavém motivu.
+ * **The selected variant is recognised by outline, not fill.** A filled
+ * card would compete with the content it describes; an accent outline is
+ * enough and holds contrast in the dark theme too.
  *
- * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ * The kit has no i18n namespace of its own — texts arrive translated.
  */
 
 export function IngotOptionCard({
@@ -32,13 +32,13 @@ export function IngotOptionCard({
   disabled = false,
   testId,
 }: {
-  /** Jméno skupiny — všechny varianty jedné volby ho sdílejí. */
+  /** Group name — all variants of one choice share it. */
   name: string;
   value: string;
   checked: boolean;
   onChange: (value: string) => void;
   title: ReactNode;
-  /** Jedna věta: co ta volba znamená. Ne co dělá tlačítko. */
+  /** One sentence: what the choice means. Not what the button does. */
   description?: ReactNode;
   disabled?: boolean;
   testId?: string;

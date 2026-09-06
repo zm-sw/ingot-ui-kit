@@ -1,74 +1,83 @@
 /**
- * Ingot UI Kit v1 (KAN-382, program KAN-376).
+ * Ingot UI Kit — the public API of `@forgmatic/ingot`.
  *
- * Sdílená primitiva admin obrazovek: deklarativní formulář (KAN-382),
- * skořápka dialogu (KAN-580), potvrzovací dialog (KAN-583) a tabulka
- * s prázdným stavem (KAN-585). Další přibude, až si o něj řekne konkrétní
- * obrazovka — primitivum bez konzumenta je nezapojený slib.
+ * Shared primitives for the Forgmatic admin screens, the public web and,
+ * in time, third-party apps built for Forgmatic: one source of truth for
+ * how a form, a dialog, a table or a page frame looks and behaves. A
+ * primitive is added when a concrete screen asks for it — a primitive
+ * without a consumer is an unwired promise.
  *
- * Každé primitivum drží a11y laťku z rozhodnutí vlastníka 2026-08-25: focus
- * trap, ESC, scroll lock, ``role``/``aria-*`` a návrat fokusu na spouštěč.
+ * Every primitive holds the accessibility bar decided by the owner on
+ * 2026-08-25: focus trap, ESC, scroll lock, `role` / `aria-*`, and focus
+ * returned to the opener.
  *
- * **Tenhle soubor JE veřejné API Ingotu** (KAN-590). Co odsud nevede ven, je
- * vnitřek modulu a smí se přejmenovat nebo rozdělit bez ohlášení; konzument
- * proto importuje ``@/ingot``, nikdy ``@/ingot/IngotTable``. Uvnitř modulu
- * hluboká cesta zůstává — pravidlo je o konzumentech.
+ * **This file IS the public API.** Whatever is not re-exported here is a
+ * module internal and may be renamed or split without notice; a consumer
+ * imports `@forgmatic/ingot`, never `@forgmatic/ingot/IngotTable`. Inside
+ * the kit, deep relative paths are fine — the rule is about consumers.
  *
- * Breaking change primitiva je povolený jedině v témž PR, který převede
- * všechny konzumenty: všichni žijí v tomhle repu a gate je staví, takže
- * deprecation okno by jen prodloužilo dobu, kdy platí dvě pravdy. Podrobně
- * i s odpovědí na Aplikace třetích stran: ``docs/INGOT_INVENTORY.md`` § 5e.
- *
- * Guardy (``scripts/repo_checks.py``): ``ingot-inventory`` ratchetuje počet
- * nepřevedených admin obrazovek, ``apps-on-ingot`` drží tvrdou podmínku pro
- * Aplikace (bez baseline) a ``ingot-public-api`` hlídá hranici výše.
+ * Breaking changes: a primitive's version on its doc page moves (major)
+ * and the change ships with a deprecation path, because consumers no
+ * longer live in this repository. The `version-guard` CI check refuses a
+ * change to `src/ingot/` that does not move a doc-page version.
  */
-// --- atomy, které se do kitu přestěhovaly v KAN-628 ------------------
+// --- kit-wide defaults --------------------------------------------------
 //
-// 🚨 Do KAN-628 bydlely v ``@/components/ui`` a pravidlo „doc web se smí
-// kreslit jen komponentami kitu" mělo proto DVĚ čtení: patří tlačítko do
-// kitu, nebo ne? Teď bydlí tady, takže čtení je jedno.
+// The kit has no translation namespace. The handful of labels a primitive
+// has to say itself (undo, hint bulb, secret placeholder) come from this
+// provider — English without one, so a consumer in another language is
+// never handed Czech by default.
+export {
+  IngotProvider,
+  useIngotLabels,
+  INGOT_LABELS,
+  type IngotLang,
+  type IngotLabels,
+} from "./IngotProvider";
+
+// --- atoms without the Ingot prefix ---------------------------------
 //
-// Jména zůstala BEZ prefixu ``Ingot`` schválně. Přejmenovat je by
-// znamenalo sáhnout do JSX ve ~150 souborech, což je diff, který se
-// nedá přečíst a v repu s 5–10 souběžnými sessions se nedá ani
-// zmergovat. Guard ``ingot-doc-pages`` je proto zná jménem
-// (``_INGOT_UNPREFIXED_COMPONENTS``) a doc stránku po nich chce stejně
-// jako po ostatních.
+// Button and Card predate the prefix convention. Renaming them would touch
+// JSX in every consumer for no gain in behaviour, so the doc-page guard
+// knows them by name (DOCUMENTED_UNPREFIXED in scripts/checks.mjs) and
+// demands a doc page for them like for everything else.
 export { Button } from "./Button";
 export { Card, CardHeader, CardTitle } from "./Card";
 
-// --- ikony (KAN-649) -------------------------------------------------
+// --- icons ------------------------------------------------------------
 //
-// Dvě sady, ne jedna: rozhraní (``IngotIcon``) se barví a škáluje volně,
-// kdežto ikona výrobní operace nese klíč, který ukládá backend, a má
-// vlastní pravidla sazby. Jeden společný komponent by ta pravidla musel
-// rozvolnit na průnik obojího.
+// Two sets, not one: the interface set (``IngotIcon``) colours and scales
+// freely, while a production-operation icon carries a key the backend
+// stores and has its own typesetting rules. One shared component would
+// have to loosen those rules to the intersection of both.
 export {
   IngotIcon,
   INGOT_ICON_NAMES,
   type IngotIconName,
 } from "./IngotIcon";
-export {
-  IngotOpIcon,
-  INGOT_OP_ICON_KEYS,
-  type IngotOpIconVariant,
-} from "./IngotOpIcon";
 
-// --- skořápka obrazovky (KAN-628) ------------------------------------
+// --- page shell -------------------------------------------------------
 //
-// Doc web kit vyučuje, takže stránka, která si sama skládá třídy, ho
-// svým vlastním příkladem popírá. Tahle pětice je to, co si skládal:
-// nadpis, sekce, výčet, boční menu a kód v textu.
+// The doc web teaches the kit, so a page that composes its own classes
+// contradicts it by example. These five are what it used to compose:
+// heading, section, list, side menu and inline code.
 export {
   IngotPageHeader,
   INGOT_PAGE_TITLE_CLASS,
   INGOT_PAGE_DESC_CLASS,
 } from "./IngotPageHeader";
 export { IngotSection } from "./IngotSection";
-// 🪤 Sbalitelná sekce je VLASTNÍ primitivum, ne prop na ``IngotSection``.
-// Ta sází nadpis a drží osnovu stránky; tahle je popisek bloku v panelu.
-// Jeden prop nad dvěma sazbami by byly dvě komponenty za přepínačem.
+// The small mono caption every component used to draw by hand; one
+// primitive so the idiom has one size and one weight.
+export {
+  IngotEyebrow,
+  type IngotEyebrowSize,
+  type IngotEyebrowTone,
+} from "./IngotEyebrow";
+// A collapsible section is its OWN primitive, not a prop on
+// ``IngotSection``. That one sets a heading and holds the page outline;
+// this one is a block caption in a panel. One prop over two typesettings
+// would be two components behind a switch.
 export {
   IngotDisclosure,
   IngotDisclosureGroup,
@@ -91,6 +100,18 @@ export {
   type IngotPageHintLevel,
 } from "./IngotPageHint";
 export { IngotTabs, type IngotTabItem } from "./IngotTabs";
+// --- floating panels ---------------------------------------------------
+//
+// One answer to the four questions every panel used to answer for itself:
+// where it lands, what closes it, where focus goes, and which layer it sits
+// on. IngotMenu stands on the popover; IngotTooltip replaces the `title`
+// attribute, which a touch screen never shows and a screen reader may skip.
+export {
+  IngotPopover,
+} from "./IngotPopover";
+export { IngotMenu, type IngotMenuItem } from "./IngotMenu";
+export { IngotTooltip, INGOT_TOOLTIP_DELAY_MS } from "./IngotTooltip";
+export { type IngotPlacement } from "./placement";
 export {
   useModalLayer,
   MENU_LAYER,
@@ -100,55 +121,41 @@ export {
 export { IngotConfirm, useConfirmVeto } from "./IngotConfirm";
 export { IngotTable, type IngotColumn, type IngotSort } from "./IngotTable";
 export { IngotEmptyState } from "./IngotEmptyState";
-// --- list obrazovka kolem tabulky (KAN-654) --------------------------
+// --- the list screen around the table ---------------------------------
 //
-// Závazné pořadí bloků: toolbar → (bulk bar) → tabulka → pager. Bulk bar
-// kreslí IngotTable (visí na jejím výběru), toolbar a pager jsou
-// samostatné — tabulka není jejich jediný konzument a stav drží volající.
+// Binding block order: toolbar → (bulk bar) → table → pager. The bulk bar
+// is drawn by IngotTable (it hangs on its selection); toolbar and pager
+// are separate — the table is not their only consumer and the caller owns
+// the state.
 export { IngotToolbar } from "./IngotToolbar";
 export { IngotPagination } from "./IngotPagination";
-export { IngotField } from "./IngotField";
+export { IngotField, type IngotFieldType } from "./IngotField";
+// --- form controls beyond a text field ---------------------------------
+//
+// A switch is not a checkbox: it takes effect NOW, which is a promise, not
+// a shape. A radio group is the plain "read them and pick one" that sat
+// between the select and the option cards. A callout is the ordinary note
+// that every screen used to draw by hand, in three shades of amber.
+export { IngotSwitch } from "./IngotSwitch";
+export { IngotRadioGroup, type IngotRadioOption } from "./IngotRadioGroup";
+export { IngotCallout, type IngotCalloutTone } from "./IngotCallout";
+export { IngotFieldInput } from "./IngotFieldInput";
 export {
-  IngotFieldInput,
-  SECRET_PLACEHOLDER_SET,
-  SECRET_PLACEHOLDER_UNSET,
-} from "./IngotFieldInput";
-export {
-  fieldsFromConfigSchema,
-  fieldsFromIntegrationManifest,
   isNumericKind,
   type IngotFieldSpec,
   type IngotFieldKind,
-  type IngotSchemaProperty,
 } from "./fields";
 export {
   ingotFormPayload,
   useIngotForm,
   type IngotFormState,
 } from "./useIngotForm";
-export {
-  MAX_QUICK_CREATE_DEPTH,
-  ModalDepthProvider,
-  useCanQuickCreate,
-  useModalDepth,
-} from "./ModalDepthContext";
-export {
-  PROCESS_ICON_CATEGORIES,
-  PROCESS_ICON_VARIANT_INKS,
-  ProcessIconGlyph,
-  parseProcessIconKey,
-  processIconInk,
-  processIconToken,
-  resolveProcessIcon,
-  type ProcessIconCategory,
-  type ProcessIconItem,
-  type ProcessIconVariant,
-  type ResolvedProcessIcon,
-} from "./processIconLibrary";
+export { ModalDepthProvider, useModalDepth } from "./ModalDepthContext";
 
-// --- shell a patterny nastavení (dorovnání na handoff) ---------------
-// Rám aplikace: horní lišta místo bočního menu, mega menu sekce, menu
-// účtu a drobečky. Boční menu (``IngotSideNav``) zůstává pro rejstříky.
+// --- shell and settings patterns (aligned to the handoff) -------------
+// The application frame: a top bar instead of a side menu, a section mega
+// menu, the account menu and breadcrumbs. The side menu (``IngotSideNav``)
+// stays for indexes.
 export {
   IngotTopNav,
   IngotTopNavAccount,
@@ -169,10 +176,112 @@ export { IngotMetrics, type IngotMetric } from "./IngotMetrics";
 export { IngotStepCard } from "./IngotStepCard";
 export { IngotOptionCard } from "./IngotOptionCard";
 export { IngotRowActions, type IngotRowAction } from "./IngotRowActions";
-// Rozhodnutí vlastníka 2026-09-02: filtrační atomy (bod 06), rám obsahu
-// stránky (05) a pojmenovaná výjimka z principu 02 (08).
+// Owner's decision, 2026-09-02: filter atoms (point 06), the page content
+// frame (05) and the named exception to principle 02 (08).
 export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
 export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
+
+// --- accent choice and chrome switch ---------------------------------
+// The accent families are tokens of the kit (``tokens.css``,
+// ``[data-accent]`` blocks), so their list and the dots that pick them
+// belong here. Persisting the choice (localStorage, account) stays with
+// the application.
+export {
+  ACCENT_CHOICES,
+  DEFAULT_ACCENT,
+  type AccentChoice,
+} from "./accent";
+export { IngotAccentSwatches } from "./IngotAccentSwatches";
+export { IngotSegmented, type IngotSegmentedOption } from "./IngotSegmented";
+
+// --- marketing blocks of the public pages -----------------------------
+//
+// Handoff "Public pages", ingot.css section 13. They used to live outside
+// the kit on the grounds that "the admin has no consumer for them" — which
+// also put them outside the distribution: ``files`` ships only
+// ``src/ingot``, so the public web they were made for could not install
+// them and would have had to copy them. A copied block is exactly the
+// second truth the kit guards against elsewhere.
+//
+// Drawn exclusively with kit tokens — no colour of their own, no gradient
+// — only with larger spacing and a three-column grid. Composition rules
+// (accent on at most one element per section, a dark block at most twice
+// per page, one column below 1100 px) are held by the page, not the
+// component; the "Public pages" guide describes them.
+//
+// Texts and prices are CONTENT (branding / CMS / plans) — they arrive
+// through props, never as constants in JSX.
+export { IngotMarketingSectionHead } from "./IngotMarketingSectionHead";
+export {
+  IngotMarketingTri,
+  type IngotMarketingTriItem,
+} from "./IngotMarketingTri";
+export {
+  IngotMarketingSteps,
+  type IngotMarketingStepItem,
+} from "./IngotMarketingSteps";
+export {
+  IngotMarketingSegments,
+  type IngotMarketingSegmentItem,
+} from "./IngotMarketingSegments";
+export {
+  IngotMarketingComparison,
+  type IngotMarketingComparisonCell,
+  type IngotMarketingComparisonHeaders,
+  type IngotMarketingComparisonRow,
+} from "./IngotMarketingComparison";
+export {
+  IngotMarketingPricing,
+  type IngotMarketingPlan,
+} from "./IngotMarketingPricing";
+export {
+  IngotMarketingFaq,
+  type IngotMarketingFaqItem,
+} from "./IngotMarketingFaq";
+export {
+  IngotMarketingCta,
+  type IngotMarketingCtaAction,
+} from "./IngotMarketingCta";
+
+// --- Forgmatic's own layer, kept here for one more major ---------------
+//
+// These moved to `@forgmatic/ingot/forgmatic` (KAN-853): they know things
+// only this platform knows — the icon keys the backend stores, the shape of
+// an operation configuration schema, how deep a quick-create may go. A
+// third-party product installs a translation for an API it never calls and
+// forty-three glyphs it will never draw.
+//
+// The re-exports stay so that nothing breaks the day the split lands. They
+// go away in the next major; changing the import path is the whole
+// migration.
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  IngotOpIcon,
+  INGOT_OP_ICON_KEYS,
+  type IngotOpIconVariant,
+} from "./forgmatic/IngotOpIcon";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  PROCESS_ICON_CATEGORIES,
+  PROCESS_ICON_VARIANT_INKS,
+  ProcessIconGlyph,
+  parseProcessIconKey,
+  processIconInk,
+  processIconToken,
+  resolveProcessIcon,
+  type ProcessIconCategory,
+  type ProcessIconItem,
+  type ProcessIconVariant,
+  type ResolvedProcessIcon,
+} from "./forgmatic/processIconLibrary";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export {
+  fieldsFromConfigSchema,
+  fieldsFromIntegrationManifest,
+  type IngotSchemaProperty,
+} from "./forgmatic/schemaFields";
+/** @deprecated Import from `@forgmatic/ingot/forgmatic`. Removed in the next major. */
+export { MAX_QUICK_CREATE_DEPTH, useCanQuickCreate } from "./forgmatic/quickCreate";

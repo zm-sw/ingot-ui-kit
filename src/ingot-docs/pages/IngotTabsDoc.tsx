@@ -1,11 +1,9 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotTabsDemo";
-import demoSource from "@/ingot-docs/demos/IngotTabsDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
 
-// Vzorové napojení hodnoty na URL. Kit je schválně bez routeru, takže
-// tohle je věc volajícího — snippet je tu proto, aby si ho každý
-// konzument nevymýšlel po svém.
+// Reference wiring of the value to the URL. The kit deliberately has no
+// router, so this is the caller's business — the snippet is here so every
+// consumer does not invent their own.
 const URL_SNIPPET = `const [params, setParams] = useSearchParams();
 const view = params.get("view") ?? "overview";
 
@@ -15,79 +13,82 @@ const view = params.get("view") ?? "overview";
   onChange={(key) => setParams({ view: key }, { replace: true })}
 >`;
 
+const demo = () =>
+  import("@/ingot-docs/demos/IngotTabsDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotTabsDemo?raw");
+
 export const IngotTabsDoc: IngotDocPage = {
   name: "IngotTabs",
   status: "beta",
   version: "1.0",
   tag: ".tabs",
   tokens: ["--border", "--ink", "--ink-3", "--font-mono"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Přepínání pohledů na tentýž záznam: řízené value/onChange, role tablist a šipky mezi taby.",
     en: "Switching views of the same record: controlled value/onChange, the tablist role and arrow keys between tabs.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
       <>
-        Víc pohledů na TENTÝŽ záznam — detail objednávky s Přehledem,
-        Položkami a Historií.
+        Víc pohledů na TENTÝŽ záznam — detail objednávky s Přehledem, Položkami a
+        Historií.
       </>,
       <>
         Aktivní pohled má přežít obnovení stránky: <IngotCode>value</IngotCode> je
         řízené zvenčí, takže ho volající drží v URL. Vzor:
-        <IngotCode block lang="tsx">{URL_SNIPPET}</IngotCode>
+        <IngotCode block lang="tsx">
+          {URL_SNIPPET}
+        </IngotCode>
       </>,
       <>
-        Nejvýš 6 pohledů s popisky na 1–2 slova. Víc pohledů nebo delší
-        popisky znamenají, že to nejsou taby, ale navigace.
+        Nejvýš 6 pohledů s popisky na 1–2 slova. Víc pohledů nebo delší popisky
+        znamenají, že to nejsou taby, ale navigace.
       </>,
     ],
     en: [
       <>
-        Several views of the SAME record — an order detail with Overview,
-        Items and History.
+        Several views of the SAME record — an order detail with Overview, Items and
+        History.
       </>,
       <>
-        The active view should survive a page reload: <IngotCode>value</IngotCode>{" "}
-        is controlled from outside, so the caller keeps it in the URL. The
-        pattern:
-        <IngotCode block lang="tsx">{URL_SNIPPET}</IngotCode>
+        The active view should survive a page reload: <IngotCode>value</IngotCode> is
+        controlled from outside, so the caller keeps it in the URL. The pattern:
+        <IngotCode block lang="tsx">
+          {URL_SNIPPET}
+        </IngotCode>
       </>,
       <>
-        At most 6 views with 1–2 word labels. More views or longer labels
-        mean it is navigation, not tabs.
+        At most 6 views with 1–2 word labels. More views or longer labels mean it is
+        navigation, not tabs.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
+      <>Kroky procesu, které mají pořadí a dokončení — to je steps pattern, ne taby.</>,
       <>
-        Kroky procesu, které mají pořadí a dokončení — to je steps pattern,
-        ne taby.
+        Filtrování téhož seznamu („Vše / Aktivní / Archiv“) — to jsou chipy; tab slibuje
+        jiný pohled, ne jiný výřez.
       </>,
-      <>
-        Filtrování téhož seznamu („Vše / Aktivní / Archiv“) — to jsou chipy;
-        tab slibuje jiný pohled, ne jiný výřez.
-      </>,
-      <>
-        Navigace mezi různými záznamy nebo stránkami — na to je menu, ne
-        taby.
-      </>,
+      <>Navigace mezi různými záznamy nebo stránkami — na to je menu, ne taby.</>,
     ],
     en: [
       <>
-        Process steps with an order and completion — that is a steps
-        pattern, not tabs.
+        Process steps with an order and completion — that is a steps pattern, not tabs.
       </>,
       <>
-        Filtering the same list ("All / Active / Archived") — those are
-        chips; a tab promises a different view, not a different slice.
+        Filtering the same list ("All / Active / Archived") — those are chips; a tab
+        promises a different view, not a different slice.
       </>,
-      <>
-        Navigation between different records or pages — that is a menu, not
-        tabs.
-      </>,
+      <>Navigation between different records or pages — that is a menu, not tabs.</>,
     ],
   },
   props: [
@@ -197,32 +198,28 @@ export const IngotTabsDoc: IngotDocPage = {
       <>
         Role drží komponenta sama: <IngotCode>role=&quot;tablist&quot;</IngotCode>,{" "}
         <IngotCode>role=&quot;tab&quot;</IngotCode> s{" "}
-        <IngotCode>aria-selected</IngotCode> a <IngotCode>role=&quot;tabpanel&quot;</IngotCode>{" "}
-        svázaný s aktivním tabem.
+        <IngotCode>aria-selected</IngotCode> a{" "}
+        <IngotCode>role=&quot;tabpanel&quot;</IngotCode> svázaný s aktivním tabem.
       </>,
       <>
-        Roving tabindex: Tab zastaví jen na aktivním tabu, šipky (a
-        Home/End) přepínají mezi pohledy — fokus se přesouvá bez posunu
-        stránky.
+        Roving tabindex: Tab zastaví jen na aktivním tabu, šipky (a Home/End) přepínají
+        mezi pohledy — fokus se přesouvá bez posunu stránky.
       </>,
-      <>
-        Aktivní tab je poznat i bez barvy: podtržení a tučnost.
-      </>,
+      <>Aktivní tab je poznat i bez barvy: podtržení a tučnost.</>,
     ],
     en: [
       <>
         The component holds the roles itself:{" "}
-        <IngotCode>role=&quot;tablist&quot;</IngotCode>, <IngotCode>role=&quot;tab&quot;</IngotCode>{" "}
-        with <IngotCode>aria-selected</IngotCode> and{" "}
+        <IngotCode>role=&quot;tablist&quot;</IngotCode>,{" "}
+        <IngotCode>role=&quot;tab&quot;</IngotCode> with{" "}
+        <IngotCode>aria-selected</IngotCode> and{" "}
         <IngotCode>role=&quot;tabpanel&quot;</IngotCode> tied to the active tab.
       </>,
       <>
-        A roving tabindex: Tab stops only on the active tab, arrow keys (and
-        Home/End) switch views — focus moves without scrolling the page.
+        A roving tabindex: Tab stops only on the active tab, arrow keys (and Home/End)
+        switch views — focus moves without scrolling the page.
       </>,
-      <>
-        The active tab is recognizable without color: underline and bold.
-      </>,
+      <>The active tab is recognizable without color: underline and bold.</>,
     ],
   },
   i18n: {
@@ -235,8 +232,8 @@ export const IngotTabsDoc: IngotDocPage = {
     en: [
       <>
         The labels in <IngotCode>items</IngotCode> and <IngotCode>label</IngotCode>{" "}
-        arrive from the caller already translated — the Ingot has no
-        translations of its own.
+        arrive from the caller already translated — the Ingot has no translations of its
+        own.
       </>,
     ],
   },

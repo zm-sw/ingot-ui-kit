@@ -4,28 +4,29 @@ import { Card, IngotCode, IngotList, IngotTable, type IngotColumn } from "@/ingo
 import { CHROME } from "@/ingot-docs/chrome";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
-import { ACCENT_CHOICES, type AccentChoice } from "@/lib/accent";
+import { ACCENT_CHOICES, type AccentChoice } from "@/ingot/theme";
 
 /**
- * Stránka „Základy“ — tokeny, na kterých stojí všechno ostatní: barevná
- * škála, typografický systém a mřížka prostoru.
+ * "Basics" page — the tokens everything else stands on: the colour scale,
+ * the type system and the spacing grid.
  *
- * 🪤 **Ukázka rodin si barvy nedrží.** Každý řádek je obalený prvkem
- * s ``data-accent``, uvnitř kterého ``var(--accent)`` a spol. odpovídají
- * té rodině — kreslí to tedy TÁŽ tabulka v ``styles/globals.css``, kterou
- * stránka popisuje. Seznam hexů napsaný tady by byl druhá pravda o tom,
- * jak rodina vypadá, a rozešel by se s první při prvním doladění odstínu.
+ * **The family demo holds no colours of its own.** Every row is wrapped in
+ * an element with ``data-accent``, inside which ``var(--accent)`` and
+ * friends resolve to that family — so it is drawn by the SAME table in the
+ * token stylesheet that the page describes. A list of hexes written here
+ * would be a second truth about what a family looks like and would drift
+ * from the first at the first shade tweak.
  *
- * Ze stejného důvodu se řádky generují z ``ACCENT_CHOICES``: rodina
- * přidaná do kitu se na stránce objeví sama, místo aby na ni někdo musel
- * vzpomenout.
+ * For the same reason the rows are generated from ``ACCENT_CHOICES``: a
+ * family added to the kit appears on the page by itself, instead of
+ * someone having to remember it.
  *
- * 🪤 Ukázka mezer kreslí ČTVERCE n×n, ne pruhy. Pruh o šířce násobku
- * hodnoty vypadá líp, ale u popisku „4px“ pak stojí obrázek široký 12px —
- * ukázka, která lže o čísle, které popisuje.
+ * The spacing demo draws SQUARES n×n, not bars. A bar a multiple of the
+ * value wide looks better, but next to the label "4px" then stands an
+ * image 12px wide — a demo that lies about the number it describes.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka. Nepatří sem interní próza: čísla
- * technického dluhu, jména kontrol, klíče úkolů ani rozhodnutí s daty.
+ * The doc web is a PUBLIC page. Internal prose does not belong here: no
+ * tech-debt figures, guard names, issue keys or dated decisions.
  */
 
 const ACCENT_LABELS: Record<AccentChoice, Localized<string>> = {
@@ -44,8 +45,9 @@ const TOKEN_NAMES = [
 ] as const;
 
 /**
- * Jeden puntík barvy. ``token`` se dosadí jako ``var(--…)``, takže hodnotu
- * bere z právě platné rodiny — tu určuje ``data-accent`` na obalu řádku.
+ * One colour dot. ``token`` is substituted as ``var(--…)``, so it takes the
+ * value from the family currently in effect — set by ``data-accent`` on
+ * the row wrapper.
  */
 function TokenDot({ token }: { token: string }): JSX.Element {
   return (
@@ -58,17 +60,21 @@ function TokenDot({ token }: { token: string }): JSX.Element {
 }
 
 /**
- * Hodnota tokenu odečtená za běhu přes ``getComputedStyle`` — swatche
- * tedy ukazují TO, co paleta právě drží, ne opsaný seznam hexů, který
- * by se rozešel s první úpravou odstínu.
+ * Token value read at runtime via ``getComputedStyle`` — the swatches thus
+ * show WHAT the palette currently holds, not a copied list of hexes that
+ * would drift with the first shade edit.
  *
- * Efekt schválně bez pole závislostí: přepnutí motivu hodnotu tokenu
- * změní, ale žádnou závislost komponenty ne — po každém překreslení se
- * proto odečte znovu (``setState`` se stejným řetězcem nic nepřekreslí).
+ * The effect has no dependency array on purpose: a theme switch changes
+ * the token value but no dependency of the component — so it is read
+ * again after every render (``setState`` with the same string re-renders
+ * nothing).
  */
 function TokenValue({ token }: { token: string }): JSX.Element {
   const ref = useRef<HTMLSpanElement>(null);
   const [value, setValue] = useState("");
+  // No dependency array on purpose, see the docstring above: a theme switch
+  // changes the token value but no dependency of this component.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!ref.current) return;
     setValue(getComputedStyle(ref.current).getPropertyValue(token).trim());
@@ -393,13 +399,15 @@ function TypeScale({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
-// Mezery i rádiusy odpovídají škále kitu — obrázek vlevo kreslí právě tu
-// hodnotu, takže číslo vedle něj nemůže lhát, aniž by to bylo vidět.
+// Spacing and radii match the kit's scale — the picture on the left draws
+// exactly that value, so the number next to it cannot lie without it
+// showing.
 const SPACE_STEPS = [4, 8, 12, 16, 24, 32, 48] as const;
 
-// Popisky jmenují TOKENY (r-xs…r-lg z tokens.css), ne utility třídy —
-// slovník systému je token; utilita je jen implementace (CLAUDE.md).
-// Plný kruh token nemá schválně: je vyhrazený avatarům a puntíkům.
+// Labels name TOKENS (r-xs…r-lg from tokens.css), not utility classes —
+// the system's vocabulary is the token; the utility is just the
+// implementation (CLAUDE.md). The full circle has no token on purpose: it
+// is reserved for avatars and dots.
 const RADIUS_STEPS = [
   { className: "rounded-sm", label: "r-xs · 4px" },
   { className: "rounded", label: "r-sm · 6px" },
@@ -471,10 +479,7 @@ function SpacesAndRadii({ lang }: { lang: DocLang }): JSX.Element {
           ? "Mezery jdou po čtyřech pixelech. Menší krok se nezavádí — dvě sousední hodnoty, které od oka nerozeznáš, nejsou dvě hodnoty. Čtverec vlevo má přesně tu velikost, kterou popisek jmenuje."
           : "Spacing runs in four-pixel steps. No smaller step exists — two adjacent values you cannot tell apart by eye are not two values. The square below is exactly the size its label names."}
       </p>
-      <div
-        className="flex flex-wrap items-end gap-4"
-        data-testid="docs-spaces"
-      >
+      <div className="flex flex-wrap items-end gap-4" data-testid="docs-spaces">
         {SPACE_STEPS.map((px, index) => (
           <div key={px} className="space-y-1 text-center">
             <span
@@ -557,8 +562,8 @@ function familyColumns(lang: DocLang): readonly IngotColumn<FamilyRow>[] {
     ...TOKEN_NAMES.map((token) => ({
       key: token,
       header: <IngotCode>{token}</IngotCode>,
-      // Puntík i jeho řádek nesou ``data-accent`` — barva tedy pochází
-      // z rodiny, ne odsud.
+      // The dot and its row carry ``data-accent`` — the colour thus comes
+      // from the family, not from here.
       cell: (row: FamilyRow) => (
         <span data-accent={row.accent}>
           <TokenDot token={token} />
@@ -597,6 +602,69 @@ function AccentFamilies({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * Motion — one duration and one curve for the whole kit.
+ *
+ * The two tokens existed from the start and nothing read them, so every
+ * transition took Tailwind's defaults and the timings drifted apart. The
+ * preset now maps the default duration and easing onto them, which is why
+ * this section names the tokens rather than the utility classes.
+ */
+function Motion({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Pohyb má v systému jedno trvání a jednu křivku. Dialog, boční panel, toast i menu se tak otevírají stejně rychle — a když se má rychlost změnit, mění se na jednom místě."
+          : "Motion has one duration and one curve across the system. A dialog, a drawer, a toast and a menu therefore open at the same speed — and when that speed should change, it changes in one place."}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>--dur</IngotCode> — 0,22 s. Dost dlouho, aby bylo vidět,
+                  odkud panel přišel; dost krátko, aby se na něj nečekalo.
+                </>,
+                <>
+                  <IngotCode>--ease</IngotCode> — křivka, která rychle vyjede a měkce
+                  dosedne. Lineární pohyb působí mechanicky.
+                </>,
+                <>
+                  Překryv <strong>vjíždí</strong>, nemizí animovaně: zavření má být
+                  okamžité, protože uživatel už ví, co chtěl.
+                </>,
+                <>
+                  Při systémovém nastavení „omezit pohyb“ se vypíná pohyb, ne panel.
+                  Zmizet by znamenalo vzít obsah, ne zklidnit ho.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>--dur</IngotCode> — 0.22 s. Long enough to show where a
+                  panel came from; short enough not to be waited on.
+                </>,
+                <>
+                  <IngotCode>--ease</IngotCode> — a curve that leaves quickly and lands
+                  softly. Linear motion reads as mechanical.
+                </>,
+                <>
+                  An overlay <strong>enters</strong>; it does not animate away. Closing
+                  should be immediate, because the user already knows what they wanted.
+                </>,
+                <>
+                  Under the system's “reduce motion” setting the movement is dropped,
+                  not the panel. Dropping the panel would take the content away rather
+                  than calm it down.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 export const BasicsGuide: IngotGuidePage = {
   slug: "zaklady",
   group: "system",
@@ -613,68 +681,66 @@ export const BasicsGuide: IngotGuidePage = {
         cs: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              Barva se v Ingotu nepíše hodnotou, ale rolí. Akcent má role
-              čtyři a každá odpovídá na jinou otázku:
+              Barva se v Ingotu nepíše hodnotou, ale rolí. Akcent má role čtyři a každá
+              odpovídá na jinou otázku:
             </p>
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — samotná barva. Akce,
-                  vyplněné tlačítko, ikona, focusový obrys; je to i barva
-                  textu, takže musí být čitelná na plochách.
+                  <IngotCode>--accent</IngotCode> — samotná barva. Akce, vyplněné
+                  tlačítko, ikona, focusový obrys; je to i barva textu, takže musí být
+                  čitelná na plochách.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — tmavší stupeň
-                  akcentu. Hover akcí a barva odkazů.
+                  <IngotCode>--accent-ink</IngotCode> — tmavší stupeň akcentu. Hover
+                  akcí a barva odkazů.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — tint pod vybraným
-                  řádkem, odznakem a calloutem. Nikdy ne text.
+                  <IngotCode>--accent-bg</IngotCode> — tint pod vybraným řádkem,
+                  odznakem a calloutem. Nikdy ne text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — linka akcentu,
-                  obrys toho tintu. Dekorativní, nenese informaci sama o sobě.
+                  <IngotCode>--accent-border</IngotCode> — linka akcentu, obrys toho
+                  tintu. Dekorativní, nenese informaci sama o sobě.
                 </>,
               ]}
             />
             <p>
-              Obrazovka sáhne po proměnné, ne po hodnotě. Tím se rodina i
-              motiv dají vyměnit bez toho, aby se do obrazovek sahalo.
+              Obrazovka sáhne po proměnné, ne po hodnotě. Tím se rodina i motiv dají
+              vyměnit bez toho, aby se do obrazovek sahalo.
             </p>
           </div>
         ),
         en: (
           <div className="space-y-3 text-sm text-ink-2">
             <p>
-              In Ingot a colour is not written as a value but as a role. The
-              accent has four, and each answers a different question:
+              In Ingot a colour is not written as a value but as a role. The accent has
+              four, and each answers a different question:
             </p>
             <IngotList
               items={[
                 <>
-                  <IngotCode>--accent</IngotCode> — the colour itself.
-                  Actions, filled buttons, icons, the focus ring; it is also a
-                  text colour, so it has to stay readable on surfaces.
+                  <IngotCode>--accent</IngotCode> — the colour itself. Actions, filled
+                  buttons, icons, the focus ring; it is also a text colour, so it has to
+                  stay readable on surfaces.
                 </>,
                 <>
-                  <IngotCode>--accent-ink</IngotCode> — the darker step of
-                  the accent. Hover on actions, and the colour of links.
+                  <IngotCode>--accent-ink</IngotCode> — the darker step of the accent.
+                  Hover on actions, and the colour of links.
                 </>,
                 <>
-                  <IngotCode>--accent-bg</IngotCode> — the tint under a
-                  selected row, a badge and a callout. Never text.
+                  <IngotCode>--accent-bg</IngotCode> — the tint under a selected row, a
+                  badge and a callout. Never text.
                 </>,
                 <>
-                  <IngotCode>--accent-border</IngotCode> — the accent line,
-                  the outline of that tint. Decorative; it carries no
-                  information on its own.
+                  <IngotCode>--accent-border</IngotCode> — the accent line, the outline
+                  of that tint. Decorative; it carries no information on its own.
                 </>,
               ]}
             />
             <p>
-              A screen reaches for the variable, never the value. That is what
-              makes both the family and the theme swappable without touching
-              screens.
+              A screen reaches for the variable, never the value. That is what makes
+              both the family and the theme swappable without touching screens.
             </p>
           </div>
         ),
@@ -714,6 +780,11 @@ export const BasicsGuide: IngotGuidePage = {
         cs: <SpacesAndRadii lang="cs" />,
         en: <SpacesAndRadii lang="en" />,
       },
+    },
+    {
+      id: "motion",
+      title: { cs: "Pohyb", en: "Motion" },
+      body: { cs: <Motion lang="cs" />, en: <Motion lang="en" /> },
     },
   ],
 };

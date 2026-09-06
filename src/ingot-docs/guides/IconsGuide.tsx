@@ -2,40 +2,40 @@ import type { JSX } from "react";
 
 import {
   INGOT_ICON_NAMES,
-  INGOT_OP_ICON_KEYS,
   IngotBadge,
   IngotCode,
   IngotIcon,
   IngotList,
-  IngotOpIcon,
   IngotTable,
   type IngotColumn,
 } from "@/ingot";
+import { INGOT_OP_ICON_KEYS, IngotOpIcon } from "@/ingot/forgmatic";
 import type { DocLang } from "@/ingot-docs/lang";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
- * Stránka „Ikony“ — obě sady (rozhraní + výrobní operace), stupnice
- * velikostí a pravidla jejich používání (KAN-663, sady samotné KAN-649).
+ * "Icons" page — both sets (interface + manufacturing operations), the
+ * size scale and the rules for using them.
  *
- * 🪤 Obě mřížky se generují ze seznamů kitu — ``INGOT_ICON_NAMES``
- * a ``INGOT_OP_ICON_KEYS``. Glyf přidaný do sady se tu objeví sám.
- * Ručně psaný výčet by byl druhá pravda o tom, co sada umí, a rozešel
- * by se s první při prvním přidaném glyfu — návrh vykresluje CELOU
- * sadu operací, takže stránka, která jich ukáže šest, o sadě lže.
+ * Both grids are generated from the kit's lists — ``INGOT_ICON_NAMES`` and
+ * ``INGOT_OP_ICON_KEYS``. A glyph added to a set appears here by itself. A
+ * hand-written list would be a second truth about what a set can do and
+ * would drift from the first at the first added glyph — the design renders
+ * the WHOLE operations set, so a page showing six of them lies about the
+ * set.
  *
- * 🪤 Velikosti jsou stupnice z návrhu: 13 · 14 · 15 · 20. Mřížka sady se
- * proto sází ve 20 px, ne v 18 — 18 px na stupnici není a nemá odkud
- * vzít smysl.
+ * Sizes are the scale from the design: 13 · 14 · 15 · 20. The set grid is
+ * therefore set at 20 px, not 18 — 18 px is not on the scale and has
+ * nowhere to take meaning from.
  *
- * ⚠️ Doc web je VEŘEJNÁ stránka: v renderovaném textu žádné klíče úkolů
- * ani interní cesty. Vysvětlení patří sem, do komentáře.
+ * The doc web is a PUBLIC page: no issue keys or internal paths in
+ * rendered text. Explanations belong here, in the comment.
  */
 
-/** Glyf, na kterém se ukazuje stupnice velikostí. */
+/** The glyph the size scale is shown on. */
 const SCALE_GLYPH = "search" as const;
 
-/** Stupnice z návrhu: velikost + kde se používá. */
+/** The scale from the design: size + where it is used. */
 const SIZES: readonly { size: number; cs: string; en: string }[] = [
   { size: 13, cs: "tlačítko sm", en: "small button" },
   { size: 14, cs: "tlačítko", en: "button" },
@@ -112,9 +112,10 @@ interface OpRow {
 }
 
 /**
- * Ukázkové řádky přesně podle návrhu (Laser, Ohyb, Svařování, Prášková
- * barva). Klíče jsou skutečné tokeny z knihovny, ne vymyšlené řetězce —
- * kdyby se z knihovny ztratily, ikona se přestane kreslit a je to vidět.
+ * Sample rows exactly per the design (laser, bending, welding, powder
+ * coating). The keys are real tokens from the library, not made-up
+ * strings — if they vanished from the library the icon would stop drawing
+ * and it would show.
  */
 const OP_ROWS: readonly OpRow[] = [
   {
@@ -209,9 +210,7 @@ function OpIcons({ lang }: { lang: DocLang }): JSX.Element {
           : "A second set on the same skeleton: manufacturing technologies — cutting, forming, machining, joining, finishing, inspection and logistics. It appears on machine operations, in the production chain setup and in the capacity overview. The grid below is the whole set as the kit knows it; the key is stored by the server and is never translated."}
       </p>
       <OpIconGrid />
-      <p className="font-medium text-ink">
-        {cs ? "Použití v řádku" : "In a row"}
-      </p>
+      <p className="font-medium text-ink">{cs ? "Použití v řádku" : "In a row"}</p>
       <p>
         {cs
           ? "V tabulce stojí ikona vždy vedle názvu operace a drží barvu řádku, ne barvu kategorie."
@@ -235,68 +234,63 @@ function IconRules({ lang }: { lang: DocLang }): JSX.Element {
           lang === "cs"
             ? [
                 <>
-                  Výchozí stav je dekorativní: ikona vedle popisku se
-                  odečítači obrazovky nehlásí, aby neřekl totéž dvakrát.
+                  Výchozí stav je dekorativní: ikona vedle popisku se odečítači
+                  obrazovky nehlásí, aby neřekl totéž dvakrát.
                 </>,
                 <>
                   Ikona, která stojí sama a nese význam, dostane{" "}
                   <IngotCode>title</IngotCode> — odečítač ji pak přečte.
                 </>,
                 <>
-                  Nový glyf se přidává do sady, ne do obrazovky. Ikona
-                  nakreslená v jednom souboru je ostrůvek, který příště
-                  nikdo nenajde.
+                  Nový glyf se přidává do sady, ne do obrazovky. Ikona nakreslená v
+                  jednom souboru je ostrůvek, který příště nikdo nenajde.
                 </>,
                 <>
-                  Operační ikona se kreslí v 18–22 px: pod 18 px se detail
-                  slévá, nad 24 px působí jako ilustrace.
+                  Operační ikona se kreslí v 18–22 px: pod 18 px se detail slévá, nad 24
+                  px působí jako ilustrace.
                 </>,
                 <>
-                  Barevná tečka operace a ikona se nekombinují v jednom
-                  řádku — buď barva, nebo tvar. Obojí říká totéž a vedle
-                  sebe si protiřečí.
+                  Barevná tečka operace a ikona se nekombinují v jednom řádku — buď
+                  barva, nebo tvar. Obojí říká totéž a vedle sebe si protiřečí.
                 </>,
                 <>
-                  Ikona operace nikdy nestojí bez názvu operace; výjimkou je
-                  šířkově kritický řádek, kde musí nést popisek pro odečítač.
+                  Ikona operace nikdy nestojí bez názvu operace; výjimkou je šířkově
+                  kritický řádek, kde musí nést popisek pro odečítač.
                 </>,
                 <>
-                  Nová technologie znamená novou ikonu v sadě, nikdy emoji
-                  ani obrázek.
+                  Nová technologie znamená novou ikonu v sadě, nikdy emoji ani obrázek.
                 </>,
               ]
             : [
                 <>
-                  The default is decorative: an icon next to its label is
-                  hidden from screen readers, so they do not say the same
-                  thing twice.
+                  The default is decorative: an icon next to its label is hidden from
+                  screen readers, so they do not say the same thing twice.
                 </>,
                 <>
                   An icon standing alone and carrying meaning takes a{" "}
-                  <IngotCode>title</IngotCode> — screen readers then announce
-                  it.
+                  <IngotCode>title</IngotCode> — screen readers then announce it.
                 </>,
                 <>
-                  A new glyph goes into the set, not into a screen. An icon
-                  drawn in one file is an island nobody finds next time.
+                  A new glyph goes into the set, not into a screen. An icon drawn in one
+                  file is an island nobody finds next time.
                 </>,
                 <>
-                  An operation icon is set at 18–22 px: below 18 px the
-                  detail merges, above 24 px it reads as an illustration.
+                  An operation icon is set at 18–22 px: below 18 px the detail merges,
+                  above 24 px it reads as an illustration.
                 </>,
                 <>
-                  An operation's colour dot and its icon never share a row —
-                  either the colour, or the shape. Both say the same thing
-                  and contradict each other side by side.
+                  An operation's colour dot and its icon never share a row — either the
+                  colour, or the shape. Both say the same thing and contradict each
+                  other side by side.
                 </>,
                 <>
-                  An operation icon never stands without the operation name;
-                  the exception is a width-critical row, where it must carry
-                  a label for screen readers.
+                  An operation icon never stands without the operation name; the
+                  exception is a width-critical row, where it must carry a label for
+                  screen readers.
                 </>,
                 <>
-                  A new technology means a new icon in the set, never an
-                  emoji and never a picture.
+                  A new technology means a new icon in the set, never an emoji and never
+                  a picture.
                 </>,
               ]
         }

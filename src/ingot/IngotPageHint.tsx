@@ -1,47 +1,46 @@
 import { useEffect, useRef, type JSX, type ReactNode } from "react";
 
+import { IconButton } from "./IconButton";
 import { IngotIcon } from "./IngotIcon";
+import { useIngotLabels } from "./IngotProvider";
 
 /**
- * Nápověda stránky se žárovkou (KAN-659) — spec PageHint v1.1,
- * ingot.css sekce 12 (v tomhle repu žije ta sekce v ``tokens.css``,
- * jediném stylesheetu, který balíček exportuje).
+ * Page hint with a bulb — spec PageHint v1.1 (its CSS section lives in
+ * ``tokens.css``, the only stylesheet the package exports).
  *
- * Informační pruh nad obsahem. Klik na žárovku na ~2,4 s zvýrazní
- * prvky, kterých se nápověda týká, outlinem v barvě akcentu, pak
- * plynule zmizí. NENÍ to toggle — jednorázová akce: cílům se přidá
- * třída ``.is-hinted`` a po 2400 ms se zase odebere. Keyframes i
- * ``prefers-reduced-motion`` větev (probliknutí vypnuté, rámeček
- * zůstane) drží CSS, ne tenhle soubor.
+ * An information strip above the content. A click on the bulb highlights
+ * the elements the hint is about with an accent outline for ~2.4 s, then
+ * fades. NOT a toggle — a one-shot action: targets get the ``.is-hinted``
+ * class and lose it after 2400 ms. The keyframes and the
+ * ``prefers-reduced-motion`` branch (flash off, outline stays) are held by
+ * the CSS, not by this file.
  *
- * **Komponenta se o své viditelnosti nerozhoduje sama.** ``visible``
- * řídí přepínač „Nápověda na stránkách" v menu účtu volajícího
- * (preference ``hintsVisible`` na účtu) a ``onDismiss`` ukládá
- * skrytí per uživatel a stránka TAKÉ na účet — ne do localStorage;
- * preference žijí na účtu (pravidlo z handoffu). Kit backend nemá,
- * takže obojí je kontrakt s volajícím, ne vnitřní stav.
+ * **The component does not decide its own visibility.** ``visible`` is
+ * driven by the caller's "Hints on pages" switch in the account menu (a
+ * per-account preference) and ``onDismiss`` stores the per-user, per-page
+ * dismissal ALSO on the account — not in localStorage; preferences live
+ * on the account (handoff rule). The kit has no backend, so both are a
+ * contract with the caller, not internal state.
  *
- * ``level`` se řídí slovníkem uživatele (Jednoduše/Expert). Dokud
- * slovník neexistuje, prop funguje (propíše se do
- * ``data-hint-level``), ale všechny uživatele ber jako ``both`` —
- * filtrovat podle úrovně je věc volajícího, až bude mít podle čeho.
+ * ``level`` follows the user's dictionary (Simple / Expert). Until the
+ * dictionary exists the prop works (it is written to ``data-hint-level``),
+ * but treat every user as ``both`` — filtering by level is the caller's
+ * job once it has something to filter by.
  *
- * Vztah k ``GuideDock``/``HelpProvider`` z monorepa: v tomhle repu
- * žádný není — po extrakci kitu tu z nich zbyla jen třída
- * ``.help-highlight`` v ``globals.css`` doc webu (týž vizuální idiom).
- * IngotPageHint je NAHRAZUJE jako jediná nápověda stránky v kitu;
- * verdikt patří i do PR a na doc stránku.
+ * This is the kit's only page-level help. Earlier help mechanisms of the
+ * product (a help dock, deep-link highlights) are not part of the kit; the
+ * `.is-hinted` idiom in `tokens.css` is the one highlight the kit ships.
  *
- * A11y: žárovka je obyčejné tlačítko s popisným ``aria-label``
- * (jednorázová akce, ne přepínač). Pruh patří v pořadí čtení PŘED
- * obsah — to je věc umístění u volajícího. Vypnutá nápověda
- * (``visible={false}``) vrací ``null``, takže nemění rozvržení ani
- * pořadí fokusu.
+ * A11y: the bulb is a plain button with a descriptive ``aria-label`` (a
+ * one-shot action, not a toggle). The strip belongs BEFORE the content in
+ * reading order — that is placement, the caller's job. A hidden hint
+ * (``visible={false}``) returns ``null``, so it changes neither layout nor
+ * focus order.
  */
 
 export type IngotPageHintLevel = "simple" | "expert" | "both";
 
-/** Délka zvýraznění cílů v ms — musí sedět s keyframes v CSS. */
+/** How long targets stay highlighted, in ms — must match the CSS keyframes. */
 export const INGOT_HINT_DURATION_MS = 2400;
 
 const HINT_CLASS = "is-hinted";
@@ -54,41 +53,45 @@ export function IngotPageHint({
   dismissible = false,
   onDismiss,
   visible = true,
-  bulbLabel = "Zvýraznit, čeho se nápověda týká",
-  dismissLabel = "Skrýt nápovědu na této stránce",
+  bulbLabel,
+  dismissLabel,
   testId,
 }: {
-  /** Název obrazovky nebo úkolu, o kterém pruh mluví — ne „Nápověda". */
+  /** Name of the screen or task the strip talks about — not "Help". */
   title: string;
-  /** 2–3 věty v druhé osobě: co tady uživatel udělá a čím. */
+  /** 2–3 sentences in the second person: what the user does here and with what. */
   children: ReactNode;
   /**
-   * Selektory prvků, kterých se nápověda týká — typicky
-   * ``[data-hint-target="…"]``. Bez cílů se žárovka kreslí jen jako
-   * dekorace: tlačítko, které nemá co zvýraznit, by lhalo.
+   * Selectors of the elements the hint is about — typically
+   * ``[data-hint-target="…"]``. Without targets the bulb is drawn as
+   * decoration only: a button with nothing to highlight would lie.
    */
   targets?: readonly string[];
   /**
-   * Komu je nápověda určená podle slovníku uživatele. Propíše se do
-   * ``data-hint-level``; filtrování je věc volajícího.
+   * Who the hint is for, by the user's dictionary. Written to
+   * ``data-hint-level``; filtering is the caller's job.
    */
   level?: IngotPageHintLevel;
-  /** Ukáže křížek. Skrytí per uživatel a stránka ukládá volající na účet. */
+  /** Shows the cross. The per-user, per-page dismissal is stored by the caller on the account. */
   dismissible?: boolean;
-  /** Klik na křížek. Perzistence patří na účet, ne do localStorage. */
+  /** Click on the cross. Persistence belongs on the account, not in localStorage. */
   onDismiss?: () => void;
   /**
-   * Řízená viditelnost — přepínač „Nápověda na stránkách" v menu účtu
-   * volajícího. ``false`` nekreslí nic, layout se nezmění.
+   * Controlled visibility — the caller's "Hints on pages" switch in the
+   * account menu. ``false`` draws nothing and the layout does not change.
    */
   visible?: boolean;
-  /** Přeložený popisek žárovky — Ingot překlady nemá. */
+  /**
+   * Label of the bulb. Defaults to the ``pageHintBulb`` entry of
+   * ``IngotProvider`` — English when no provider is mounted.
+   */
   bulbLabel?: string;
-  /** Přeložený popisek křížku. */
+  /** Label of the cross. Defaults to the provider's ``pageHintDismiss``. */
   dismissLabel?: string;
-  /** `data-testid` pruhu; žárovka dostane `${testId}-bulb`, křížek `${testId}-dismiss`. */
+  /** `data-testid` of the strip; the bulb gets `${testId}-bulb`, the cross `${testId}-dismiss`. */
   testId?: string;
 }): JSX.Element | null {
+  const labels = useIngotLabels();
   const timerRef = useRef<number>();
   const litRef = useRef<Element[]>([]);
 
@@ -98,8 +101,8 @@ export function IngotPageHint({
     litRef.current = [];
   };
 
-  // Odchod ze stránky uprostřed cyklu nesmí nechat cíle svítit —
-  // třída žije na CIZÍCH prvcích, React ji za nás neuklidí.
+  // Leaving the page mid-cycle must not leave the targets lit — the class
+  // lives on FOREIGN elements and React will not clean it up for us.
   useEffect(() => unlight, []);
 
   if (!visible) return null;
@@ -111,14 +114,14 @@ export function IngotPageHint({
       try {
         found.push(...document.querySelectorAll(selector));
       } catch {
-        // Rozbitý selektor nesmí shodit celou dávku — cíle umí
-        // přitéct i z dat a jeden překlep by zhasl všechny ostatní.
+        // A broken selector must not take the whole batch down — targets
+        // can arrive from data, and one typo would put out all the others.
       }
     }
     for (const el of found) {
-      // Opakovaný klik uprostřed cyklu: bez reflow mezi remove a add
-      // by prohlížeč třídu považoval za nezměněnou a animace by se
-      // nerestartovala.
+      // A repeated click mid-cycle: without a reflow between remove and add
+      // the browser would consider the class unchanged and the animation
+      // would not restart.
       void (el as HTMLElement).offsetWidth;
       el.classList.add(HINT_CLASS);
     }
@@ -136,15 +139,15 @@ export function IngotPageHint({
       data-testid={testId}
     >
       {targets.length > 0 ? (
-        <button
-          type="button"
+        <IconButton
+          label={bulbLabel ?? labels.pageHintBulb}
+          tone="accent"
           onClick={flash}
-          aria-label={bulbLabel}
-          className="mt-0.5 shrink-0 rounded text-accent hover:text-accent-ink"
+          className="-my-1 -ml-1.5"
           data-testid={testId ? `${testId}-bulb` : undefined}
         >
           {bulb}
-        </button>
+        </IconButton>
       ) : (
         <span className="mt-0.5 shrink-0 text-accent">{bulb}</span>
       )}
@@ -153,15 +156,14 @@ export function IngotPageHint({
         <span className="text-ink-2">{children}</span>
       </div>
       {dismissible && (
-        <button
-          type="button"
+        <IconButton
+          label={dismissLabel ?? labels.pageHintDismiss}
           onClick={onDismiss}
-          aria-label={dismissLabel}
-          className="ml-auto mt-0.5 shrink-0 rounded text-ink-3 hover:text-ink"
+          className="-my-1 -mr-1.5 ml-auto"
           data-testid={testId ? `${testId}-dismiss` : undefined}
         >
           <IngotIcon name="close" size={14} />
-        </button>
+        </IconButton>
       )}
     </div>
   );

@@ -3,9 +3,9 @@ import { type JSX, type ReactNode } from "react";
 import { highlightTsx, type IngotCodeTokenKind } from "./highlightTsx";
 
 /**
- * Barva pro každou roli tokenu. ``plain`` schválně nemá třídu — dědí
- * barvu textu výpisu, takže běžný kód je „normální" a zvýrazněné je
- * jen to, co nese význam.
+ * A colour for every token role. ``plain`` deliberately has no class — it
+ * inherits the listing's text colour, so ordinary code is "normal" and
+ * only what carries meaning is highlighted.
  */
 const TOKEN_CLASS: Record<IngotCodeTokenKind, string> = {
   comment: "italic text-code-comment",
@@ -19,14 +19,15 @@ const TOKEN_CLASS: Record<IngotCodeTokenKind, string> = {
 };
 
 /**
- * Kód v textu (KAN-628) — `<code>` v odstavci, nebo výpis přes celou šířku.
+ * Code in text — a `<code>` in a paragraph, or a full-width listing.
  *
- * Vypadá to jako komponenta, která nemá co držet, jenže drží tu jednu věc,
- * na které ruční výpisy padají: **`block` se musí umět posunout do strany.**
- * Kód se nezalamuje, takže bez `overflow-x-auto` buď přeteče mimo stránku,
- * nebo ho někdo „opraví" zalomením a rozbije odsazení.
+ * It looks like a component with nothing to hold, yet it holds the one
+ * thing hand-written listings fail at: **`block` must be able to scroll
+ * sideways.** Code does not wrap, so without `overflow-x-auto` it either
+ * overflows the page or someone "fixes" it by wrapping and breaks the
+ * indentation.
  *
- * Obsah se **nepřekládá** — je to kód.
+ * The content is **not translated** — it is code.
  */
 export function IngotCode({
   children,
@@ -36,16 +37,17 @@ export function IngotCode({
   testId,
 }: {
   children: ReactNode;
-  /** Výpis přes celou šířku místo `<code>` uvnitř věty. */
+  /** A full-width listing instead of a `<code>` inside a sentence. */
   block?: boolean;
   /**
-   * Obarvit syntaxi. Jediná hodnota je záměr, ne rozdělaná práce: kit
-   * vypisuje vlastní TSX ukázky a obarvovač je psaný na ně (viz
-   * ``highlightTsx``). Další jazyk přijde, až tu bude výpis, který ho
-   * potřebuje — obarvovač bez konzumenta je jen víc kódu k údržbě.
+   * Highlight the syntax. The single value is intent, not unfinished
+   * work: the kit prints its own TSX demos and the highlighter is written
+   * for them (see ``highlightTsx``). Another language arrives once there
+   * is a listing that needs it — a highlighter without a consumer is just
+   * more code to maintain.
    */
   lang?: "tsx";
-  /** Kotva výpisu — cíl pro `aria-controls` u přepínače, který ho odkrývá. */
+  /** Anchor of the listing — the target of `aria-controls` on the switch that reveals it. */
   id?: string;
   testId?: string;
 }): JSX.Element {
@@ -56,9 +58,10 @@ export function IngotCode({
       </code>
     );
   }
-  // 🪤 Obarvit jde jen text. ``children`` je ``ReactNode``, takže když
-  // volající pošle prvky, není co tokenizovat — výpis se vykreslí tak,
-  // jak přišel. Tiše, ne výjimkou: barva je ozdoba, kód je obsah.
+  // Only text can be highlighted. ``children`` is a ``ReactNode``, so when
+  // the caller passes elements there is nothing to tokenize — the listing
+  // renders as it came. Silently, not with an exception: colour is
+  // decoration, code is content.
   const source = lang && typeof children === "string" ? children : null;
   return (
     <pre

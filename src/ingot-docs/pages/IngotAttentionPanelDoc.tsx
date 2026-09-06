@@ -1,75 +1,81 @@
 import { IngotCode } from "@/ingot";
-import { Demo } from "@/ingot-docs/demos/IngotAttentionPanelDemo";
-import demoSource from "@/ingot-docs/demos/IngotAttentionPanelDemo?raw";
 import type { IngotDocPage } from "@/ingot-docs/types";
+
+const demo = () =>
+  import("@/ingot-docs/demos/IngotAttentionPanelDemo").then((module) => ({
+    default: module.Demo,
+  }));
+const demoSource = () => import("@/ingot-docs/demos/IngotAttentionPanelDemo?raw");
 
 export const IngotAttentionPanelDoc: IngotDocPage = {
   name: "IngotAttentionPanel",
   status: "beta",
-  // 1.1: aside sloupec roste (flex-1, basis-80) — signální mřížka
-  // přehledu potřebuje zbytek šířky panelu.
+  // 1.1: the aside column grows (flex-1, basis-80) — the signal grid of
+  // the overview needs the rest of the panel width.
   version: "1.1",
   tag: ".attention",
   tokens: ["--ink", "--bg", "--warn", "--r-lg", "--shadow-md"],
+  classNameNote: {
+    cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
+    en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",
+  },
   summary: {
     cs: "Tmavý panel „co po tobě obrazovka chce teď“ v hlavě přehledu. Jediné místo, kde je karta tmavší než pozadí — signál, který drží, jen dokud je vzácný.",
     en: "The dark “what this screen wants from you now” panel at the head of an overview. The one place where a card is darker than the page — a signal that holds only while it stays rare.",
   },
-  Demo,
+  demo,
   demoSource,
   useWhen: {
     cs: [
       <>
-        Hlava přehledové obrazovky: co dnes čeká na zásah, s cestou rovnou
-        k tomu — signální počty, jedna akce.
+        Hlava přehledové obrazovky: co dnes čeká na zásah, s cestou rovnou k tomu —
+        signální počty, jedna akce.
       </>,
       <>
-        Nejvýš <strong>jeden na stránce</strong>. Panel je výjimka
-        z pravidla, že pozadí je vždy tmavší než karta, a výjimka
-        signalizuje, jen dokud je jedna.
+        Nejvýš <strong>jeden na stránce</strong>. Panel je výjimka z pravidla, že pozadí
+        je vždy tmavší než karta, a výjimka signalizuje, jen dokud je jedna.
       </>,
     ],
     en: [
       <>
-        The head of an overview screen: what waits for action today, with a
-        path straight to it — signal counts, one action.
+        The head of an overview screen: what waits for action today, with a path
+        straight to it — signal counts, one action.
       </>,
       <>
-        At most <strong>one per page</strong>. The panel is the exception to
-        “the page is always darker than the card”, and an exception signals
-        only while there is one.
+        At most <strong>one per page</strong>. The panel is the exception to “the page
+        is always darker than the card”, and an exception signals only while there is
+        one.
       </>,
     ],
   },
   avoidWhen: {
     cs: [
       <>
-        Druhý tmavý blok na téže stránce — dva panely nejsou dva signály,
-        ale druhé pozadí. Další sdělení patří do{" "}
-        <IngotCode>Card</IngotCode> nebo metrik.
+        Druhý tmavý blok na téže stránce — dva panely nejsou dva signály, ale druhé
+        pozadí. Další sdělení patří do <IngotCode>Card</IngotCode> nebo metrik.
       </>,
       <>
-        Chybová nebo výstražná hláška k akci, která právě proběhla — na to
-        je toast a inline text, ne plocha přes půl obrazovky.
+        Chybová nebo výstražná hláška k akci, která právě proběhla — na to je toast a
+        inline text, ne plocha přes půl obrazovky.
       </>,
       <>
-        Marketingové zvýraznění („novinka!“). Panel znamená práci, která
-        čeká; cokoli jiného ho ředí.
+        Marketingové zvýraznění („novinka!“). Panel znamená práci, která čeká; cokoli
+        jiného ho ředí.
       </>,
     ],
     en: [
       <>
-        A second dark block on the same page — two panels are not two
-        signals but a second background. Further messages belong in{" "}
-        <IngotCode>Card</IngotCode> or the metrics.
+        A second dark block on the same page — two panels are not two signals but a
+        second background. Further messages belong in <IngotCode>Card</IngotCode> or the
+        metrics.
       </>,
       <>
-        An error or warning for an action that just ran — that is a toast
-        and inline text, not half a screen of surface.
+        An error or warning for an action that just ran — that is a toast and inline
+        text, not half a screen of surface.
       </>,
       <>
-        Marketing emphasis (“new!”). The panel means work that waits;
-        anything else dilutes it.
+        Marketing emphasis (“new!”). The panel means work that waits; anything else
+        dilutes it.
       </>,
     ],
   },
@@ -114,55 +120,53 @@ export const IngotAttentionPanelDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
-        Panel je <IngotCode>section</IngotCode> pojmenovaná nadpisem — pro
-        odečítač orientační bod, ne jen tmavý div.
+        Panel je <IngotCode>section</IngotCode> pojmenovaná nadpisem — pro odečítač
+        orientační bod, ne jen tmavý div.
       </>,
       <>
-        Kreslí se tokeny <IngotCode>--ink</IngotCode>/<IngotCode>--bg</IngotCode>,
-        takže v tmavém režimu se obrátí a kontrast textu drží v obou
-        motivech sám od sebe.
+        Kreslí se tokeny <IngotCode>--ink</IngotCode>/<IngotCode>--bg</IngotCode>, takže
+        v tmavém režimu se obrátí a kontrast textu drží v obou motivech sám od sebe.
       </>,
       <>
-        Naléhavost nese text a počty, ne barva sama — panel je signál
-        polohou a plochou i pro toho, kdo barvy nevidí.
+        Naléhavost nese text a počty, ne barva sama — panel je signál polohou a plochou
+        i pro toho, kdo barvy nevidí.
       </>,
     ],
     en: [
       <>
-        The panel is a <IngotCode>section</IngotCode> named by its heading —
-        a landmark for a screen reader, not just a dark div.
+        The panel is a <IngotCode>section</IngotCode> named by its heading — a landmark
+        for a screen reader, not just a dark div.
       </>,
       <>
         It is drawn with the <IngotCode>--ink</IngotCode>/<IngotCode>--bg</IngotCode>{" "}
-        tokens, so it inverts in dark mode and text contrast holds in both
-        themes by itself.
+        tokens, so it inverts in dark mode and text contrast holds in both themes by
+        itself.
       </>,
       <>
-        Urgency is carried by text and counts, not by colour alone — the
-        panel signals by position and surface even to someone who does not
-        see colour.
+        Urgency is carried by text and counts, not by colour alone — the panel signals
+        by position and surface even to someone who does not see colour.
       </>,
     ],
   },
   i18n: {
     cs: [
       <>
-        Nadpis i obsah dodává volající už přeložené — kit vlastní jmenný
-        prostor překladů nemá.
+        Nadpis i obsah dodává volající už přeložené — kit vlastní jmenný prostor
+        překladů nemá.
       </>,
       <>
-        Věta souhrnu skloňuje počty („5 položek vyžaduje pozornost“) —
-        plurály řeší překladový systém volajícího, ne panel.
+        Věta souhrnu skloňuje počty („5 položek vyžaduje pozornost“) — plurály řeší
+        překladový systém volajícího, ne panel.
       </>,
     ],
     en: [
       <>
-        The heading and the content arrive already translated from the
-        caller — the kit has no translation namespace of its own.
+        The heading and the content arrive already translated from the caller — the kit
+        has no translation namespace of its own.
       </>,
       <>
-        The summary sentence inflects counts (“5 items need attention”) —
-        plurals are the caller's translation system's job, not the panel's.
+        The summary sentence inflects counts (“5 items need attention”) — plurals are
+        the caller's translation system's job, not the panel's.
       </>,
     ],
   },

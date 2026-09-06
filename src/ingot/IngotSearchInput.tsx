@@ -1,53 +1,65 @@
-import { type JSX, type Ref } from "react";
+import { forwardRef, type JSX, type Ref } from "react";
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
+import { inputChrome } from "./inputChrome";
 
 /**
- * Hledací pole nad seznamem — první prvek filtr baru (``IngotToolbar``).
+ * Search field above a list — the first element of the filter bar
+ * (``IngotToolbar``).
  *
- * Filtruje, nevyhledává: zužuje seznam, na kterém stojí, a proto nemá
- * tlačítko „Hledat“ ani vlastní obrazovku výsledků. Změna se hlásí
- * každým úhozem; kdo potřebuje debounce, drží si ho u dat, ne v poli —
- * pole nemá jak vědět, jestli za dotazem stojí síťový požadavek.
+ * It filters, it does not search: it narrows the list it stands on, and
+ * therefore has no "Search" button and no results screen of its own. The
+ * change is reported on every keystroke; whoever needs a debounce keeps
+ * it at the data, not in the field — the field cannot know whether a
+ * network request stands behind the query.
  *
- * Lupa je dekorace (``aria-hidden``): jméno pole nese ``label``.
- * ``type="search"`` dává prohlížečové vymazání křížkem zadarmo.
+ * The magnifier is decoration (``aria-hidden``): the field's name is
+ * carried by ``label``. ``type="search"`` gives the browser's clear cross
+ * for free.
  *
- * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ * The kit has no i18n namespace of its own — texts arrive translated.
  *
- * 🪤 ``inputRef`` míří na ten ``<input>`` schválně, a ne na obal: obrazovka
- * s klávesovou zkratkou „skoč do hledání“ na pole jinak nedosáhne a sáhne
- * si do vnitřku primitiva (``wrap.querySelector("input")``). Takové
- * sáhnutí přejmenování elementu uvnitř kitu tiše rozbije a žádný test kitu
- * to nechytí — proto je cesta ven součástí API, ne náhoda.
+ * ``ref`` points at the ``<input>``, not at the wrapper: a screen with a
+ * "jump to search" shortcut could not reach the field otherwise and would
+ * reach into the primitive's insides (``wrap.querySelector("input")``).
+ * Renaming an element inside the kit would silently break such a reach and
+ * no kit test would catch it — hence the way out is part of the API, not an
+ * accident.
  */
-export function IngotSearchInput({
-  value,
-  onChange,
-  label,
-  placeholder,
-  disabled = false,
-  inputRef,
-  className,
-  testId,
-}: {
-  value: string;
-  onChange: (next: string) => void;
-  /** Přeložený ``aria-label`` — placeholder jméno nenahradí, po vyplnění zmizí. */
-  label: string;
-  /** Přeložený placeholder. Nápověda formátu, ne jméno pole. */
-  placeholder?: string;
-  disabled?: boolean;
-  /**
-   * Ref na samotné pole — pro klávesovou zkratku, která do hledání skáče.
-   * Ne na „fokus po mountu“; ten patří prohlížeči přes ``autoFocus``.
-   */
-  inputRef?: Ref<HTMLInputElement>;
-  /** Průchozí třída — šířku určuje obrazovka, vzhled primitivum. */
-  className?: string;
-  testId?: string;
-}): JSX.Element {
+export const IngotSearchInput = forwardRef<
+  HTMLInputElement,
+  {
+    value: string;
+    onChange: (next: string) => void;
+    /** Translated ``aria-label`` — a placeholder is no substitute for a name; it vanishes once filled. */
+    label: string;
+    /** Translated placeholder. A format hint, not the field's name. */
+    placeholder?: string;
+    disabled?: boolean;
+    /**
+     * @deprecated Use ``ref``. Kept as an alias so the shortcut that jumps
+     * into search does not have to be rewritten in the same release; it
+     * goes away in the next major.
+     */
+    inputRef?: Ref<HTMLInputElement>;
+    /** Layout only — the screen sets the width, the primitive the look. */
+    className?: string;
+    testId?: string;
+  }
+>(function IngotSearchInput(
+  { value, onChange, label, placeholder, disabled = false, inputRef, className, testId },
+  ref,
+): JSX.Element {
+  // Both are attached: a caller mid-migration may pass ``inputRef`` while a
+  // wrapper above it already passes ``ref``, and dropping either would
+  // break a shortcut nobody tests from here.
+  const attach = (node: HTMLInputElement | null) => {
+    for (const target of [ref, inputRef]) {
+      if (typeof target === "function") target(node);
+      else if (target) (target as { current: HTMLInputElement | null }).current = node;
+    }
+  };
   return (
     <span className={cx("relative inline-flex items-center", className)}>
       <IngotIcon
@@ -57,20 +69,18 @@ export function IngotSearchInput({
         aria-hidden
       />
       <input
-        ref={inputRef}
+        ref={attach}
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         aria-label={label}
         placeholder={placeholder}
         disabled={disabled}
-        className={cx(
-          "w-full rounded-md border border-border-strong bg-surface py-2 pl-8 pr-3 text-sm text-ink shadow-sm",
-          "placeholder:text-ink-4 focus:border-ink focus:outline-none",
-          "disabled:cursor-not-allowed disabled:text-ink-4",
-        )}
+        // `pl-8` after the chrome overrides its `px-3` on the left so the
+        // magnifier has room; Tailwind resolves the later utility.
+        className={cx("w-full", inputChrome(), "pl-8")}
         data-testid={testId}
       />
     </span>
   );
-}
+});

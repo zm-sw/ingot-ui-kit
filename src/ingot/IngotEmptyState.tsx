@@ -1,16 +1,16 @@
 import { type JSX, type ReactNode } from "react";
 
 /**
- * Prázdný stav (KAN-585) — dodává se spolu s `IngotTable`, ne zvlášť.
+ * Empty state — shipped together with `IngotTable`, not separately.
  *
- * Prázdný stav má prakticky každá list-shaped obrazovka a bez něj je tabulka
- * nekompletní; oddělit je znamená dvakrát navrhovat totéž rozhraní. Proto
- * jeden tiket a jeden pár.
+ * Practically every list-shaped screen has an empty state and without it a
+ * table is incomplete; separating them means designing the same interface
+ * twice. Hence one pair.
  *
- * Použitelný i mimo tabulku (karta, panel) — proto je to samostatná
- * komponenta, ne prop `IngotTable`.
+ * Usable outside a table too (a card, a panel) — which is why it is a
+ * component of its own, not a prop of `IngotTable`.
  *
- * Ingot **nemá vlastní i18n namespace**, takže texty přicházejí už přeložené.
+ * The kit has no i18n namespace of its own, so texts arrive translated.
  */
 export function IngotEmptyState({
   title,
@@ -18,11 +18,11 @@ export function IngotEmptyState({
   action,
   testId,
 }: {
-  /** Jedna věta, co tu není („Zatím tu nic není"). */
+  /** One sentence on what is not here ("Nothing here yet"). */
   title: ReactNode;
-  /** Volitelně proč / co s tím. */
+  /** Optionally why / what to do about it. */
   description?: ReactNode;
-  /** Volitelná afordance („Přidat první položku"). */
+  /** Optional affordance ("Add the first item"). */
   action?: ReactNode;
   testId?: string;
 }): JSX.Element {

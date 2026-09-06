@@ -4,20 +4,20 @@ import { Button } from "./Button";
 import { cx } from "./cx";
 
 /**
- * Stránkování pod tabulkou (KAN-654).
+ * Pagination under a table.
  *
- * Deset stránek si pager psalo ručně (např. audit log) a primitivum
- * neexistovalo — v1 tabulky ho schválně odkládala, dokud nebude jasné, kdo
- * drží stav. Odpověď: **volající**. Pager je proto řízený (`page` +
- * `onPageChange`) a s tabulkou se o stav nepře — stejně jako `sort` a
- * `selectedKeys` na `IngotTable`.
+ * Ten pages wrote their pager by hand (the audit log among them) and the
+ * primitive did not exist — the table's v1 deliberately deferred it until
+ * it was clear who holds the state. The answer: **the caller**. The pager
+ * is therefore controlled (`page` + `onPageChange`) and does not fight the
+ * table over state — like `sort` and `selectedKeys` on `IngotTable`.
  *
- * Tvar je zámerně prev/next + stav, ne číslované stránky: ruční pagery
- * v repu jsou všechny prev/next a číslovaná lišta by byla schopnost bez
- * konzumenta. Přibude, až si o ni řekne konkrétní obrazovka.
+ * The shape is deliberately prev/next + status, not numbered pages: the
+ * hand-written pagers were all prev/next and a numbered bar would be a
+ * capability without a consumer. It arrives when a concrete screen asks.
  *
- * Ingot nemá vlastní i18n namespace — `prevLabel`, `nextLabel`, `label`
- * i složený `status` („Strana 2 z 8") dodává volající už přeložené.
+ * The kit has no i18n namespace of its own — `prevLabel`, `nextLabel`,
+ * `label` and the composed `status` ("Page 2 of 8") arrive translated.
  */
 export function IngotPagination({
   page,
@@ -30,25 +30,25 @@ export function IngotPagination({
   className,
   testId,
 }: {
-  /** Aktuální stránka, číslovaná od 1. */
+  /** Current page, 1-based. */
   page: number;
-  /** Celkový počet stránek. */
+  /** Total number of pages. */
   pageCount: number;
-  /** Volá se s novým číslem stránky; mimo rozsah se nevolá vůbec. */
+  /** Called with the new page number; never called out of range. */
   onPageChange: (page: number) => void;
-  /** Přeložené „Předchozí". */
+  /** Translated "Previous". */
   prevLabel: string;
-  /** Přeložené „Další". */
+  /** Translated "Next". */
   nextLabel: string;
-  /** Už složený stav („Strana 2 z 8") — interpolaci umí jen volající. */
+  /** Already composed status ("Page 2 of 8") — only the caller can interpolate. */
   status?: ReactNode;
-  /** Přeložený popisek `<nav>` pro odečítač („Stránkování"). */
+  /** Translated label of the `<nav>` for a screen reader ("Pagination"). */
   label?: string;
   className?: string;
   testId?: string;
 }): JSX.Element {
-  // `<nav>`, ne `<div>`: odečítač dostane orientační bod a s `label`
-  // rozliší dva pagery na jedné obrazovce.
+  // `<nav>`, not `<div>`: a screen reader gets a landmark and, with
+  // `label`, tells two pagers on one screen apart.
   return (
     <nav
       aria-label={label}
@@ -63,8 +63,9 @@ export function IngotPagination({
         {prevLabel}
       </Button>
       {status != null && (
-        // `aria-live` schválně chybí: stav se mění jen po kliknutí
-        // uživatele a fokus zůstává na tlačítku — hlášení navíc by rušilo.
+        // No `aria-live` on purpose: the status changes only after the
+        // user's click and focus stays on the button — an extra announcement
+        // would be noise.
         <span className="text-sm tabular-nums text-ink-3">{status}</span>
       )}
       <Button

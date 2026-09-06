@@ -1,25 +1,25 @@
 import { type JSX, type ReactNode } from "react";
 
 /**
- * Menu účtu — identita, organizace, předvolby, odhlášení.
+ * Account menu — identity, organisation, preferences, sign out.
  *
- * Primitivum drží **strukturu, ne obsah**: vrstvy oddělené linkou a
- * řádek „popisek vlevo, ovládací prvek vpravo". Které předvolby v něm
- * jsou, ví aplikace, ne kit — jinak by kit musel znát motiv, jazyk
- * i slovník, a každá nová volba by byla změna kitu.
+ * The primitive holds **structure, not content**: layers separated by a
+ * line and a row of "label left, control right". Which preferences it
+ * holds the application knows, not the kit — otherwise the kit would have
+ * to know theme, language and dictionary, and every new option would be a
+ * change to the kit.
  *
- * 🪤 **Předvolba se ukládá na účet, ne do prohlížeče.** Motiv, jazyk
- * i slovník sledují člověka na druhý počítač; volba uložená jen lokálně
- * vypadá, že funguje, dokud si ji někdo nezmění a nezjistí, že se
- * nepřenesla. (Dokumentace přihlášení nemá, takže tam je prohlížeč
- * jediná možnost — a je to výjimka, ne vzor.)
+ * **A preference is stored on the account, not in the browser.** Theme,
+ * language and dictionary follow the person to another computer; a choice
+ * stored only locally looks like it works until someone changes it and
+ * finds it did not carry over. (The documentation has no login, so there
+ * the browser is the only option — an exception, not a pattern.)
  *
- * 🚨 **Vypnutá nápověda nesmí změnit rozvržení stránky.** Přepínač
- * nápovědy schovává ``IngotPageHint``, a když se stránka pod ním
- * přeskládá, přijde uživatel o místo, kam se díval. Skrývá se
- * viditelnost, ne prostor.
+ * **Turning hints off must not change the page layout.** The hint switch
+ * hides ``IngotPageHint``, and if the page below it reflows, the user
+ * loses the spot they were looking at. Visibility is hidden, not space.
  *
- * Ingot **nemá vlastní i18n namespace** — texty dodává volající.
+ * The kit has no i18n namespace of its own — texts arrive translated.
  */
 
 export function IngotUserMenu({
@@ -27,9 +27,9 @@ export function IngotUserMenu({
   label,
   testId,
 }: {
-  /** Vrstvy menu — typicky ``IngotUserMenuSection``. */
+  /** Menu layers — typically ``IngotUserMenuSection``. */
   children: ReactNode;
-  /** Přeložený ``aria-label`` menu. */
+  /** Translated ``aria-label`` of the menu. */
   label: string;
   testId?: string;
 }): JSX.Element {
@@ -45,7 +45,7 @@ export function IngotUserMenu({
   );
 }
 
-/** Jedna vrstva menu. Linku mezi vrstvami kreslí poslední pravidlo. */
+/** One menu layer. The line between layers is drawn by the `last:` rule. */
 export function IngotUserMenuSection({
   children,
   testId,
@@ -64,11 +64,11 @@ export function IngotUserMenuSection({
 }
 
 /**
- * Řádek předvolby: popisek vlevo, ovládací prvek vpravo.
+ * A preference row: label left, control right.
  *
- * Popisek je ``<label>`` jen tehdy, když ovládací prvek dostane ``htmlFor``
- * — jinak by menu slibovalo vazbu, kterou nemá. Volající proto předává
- * ``controlId`` u prvků, které id mají.
+ * The label is a ``<label>`` only when the control gets ``htmlFor`` —
+ * otherwise the menu would promise a binding it does not have. The caller
+ * therefore passes ``controlId`` for controls that have an id.
  */
 export function IngotUserMenuRow({
   label,
@@ -77,7 +77,7 @@ export function IngotUserMenuRow({
   testId,
 }: {
   label: ReactNode;
-  /** ``id`` ovládacího prvku vpravo, pokud nějaké má. */
+  /** ``id`` of the control on the right, if it has one. */
   controlId?: string;
   children: ReactNode;
   testId?: string;

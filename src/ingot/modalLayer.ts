@@ -1,68 +1,69 @@
 import { useState } from "react";
 
 /**
- * Vrstva dialogu — kdo se otevřel později, je nahoře (KAN-641).
+ * Dialog layer — whoever opened later is on top.
  *
- * 🚨 **Pevný ``z-50`` na všech dialozích nestačí.** Při shodném
- * ``z-index`` rozhoduje pořadí v DOM, a to nekopíruje pořadí otevírání:
+ * **A fixed ``z-50`` on every dialog is not enough.** With equal
+ * ``z-index`` the DOM order decides, and it does not follow the opening
+ * order:
  *
- * * ``IngotModal`` se portáluje do ``document.body``, tedy až za celý
- *   strom stránky;
- * * dialogy, které si overlay pořád kreslí samy, zůstávají tam, kde je
- *   vyrenderuje stránka — tedy PŘED portály.
+ * * ``IngotModal`` portals into ``document.body``, i.e. after the whole
+ *   page tree;
+ * * dialogs that still draw their own overlay stay where the page renders
+ *   them — i.e. BEFORE the portals.
  *
- * Dialog otevřený tlačítkem UVNITŘ portálovaného modalu, ale
- * renderovaný ze stránky, proto skončil pod ním. Vlastník to popsal
- * přesně: „otevře se pod aktuálně otevřeným modálem, takže jej nevidím;
- * jediná cesta, jak se k němu dostanu, je zavřít ostatní."
+ * A dialog opened by a button INSIDE a portalled modal but rendered from
+ * the page therefore ended up under it. The owner described it exactly:
+ * "it opens under the currently open modal, so I cannot see it; the only
+ * way to reach it is to close the others."
  *
- * Vrstva se přiděluje **při mountu** a je monotónní, takže poslední
- * otevřený dialog leží nad vším, co bylo otevřené dřív — bez ohledu na
- * to, kde ve stromu bydlí a jestli se portáluje.
+ * The layer is assigned **on mount** and is monotonic, so the last opened
+ * dialog lies above everything opened before — regardless of where in the
+ * tree it lives and whether it portals.
  *
- * ## Proč se čítač nevrací na začátek
+ * ## Why the counter does not reset
  *
- * Nulovat ho, až se zavře poslední dialog, by znamenalo držet dva
- * čítače v souběhu (tenhle a zámek scrollu v ``IngotModal``) a
- * spoléhat, že se nikdy nerozejdou. ``z-index`` žádný praktický strop
- * nemá; {@link MAX_MODAL_LAYER} je pojistka proti utržení, ne rozpočet.
+ * Zeroing it when the last dialog closes would mean keeping two counters
+ * in step (this one and the scroll lock in ``overlayChrome``) and trusting
+ * they never drift. ``z-index`` has no practical ceiling;
+ * {@link MAX_MODAL_LAYER} is a safety stop against runaway, not a budget.
  */
 
-/** Nejnižší vrstva dialogu — nad lepivými hlavičkami a nabídkami. */
+/** The lowest dialog layer — above sticky headers and menus. */
 export const BASE_MODAL_LAYER = 50;
 
 /**
- * Strop, za který vrstva nevyleze.
+ * The ceiling the layer never climbs past.
  *
- * Relace, která otevře a zavře dialog dvě stě tisíckrát, je spíš
- * smyčka v kódu než práce člověka; strop je tam pro ni, aby se
- * ``z-index`` nedostal do řádů, kde už ho prohlížeče ignorují.
+ * A session that opens and closes a dialog two hundred thousand times is a
+ * loop in code rather than a person's work; the ceiling is there for it,
+ * so ``z-index`` does not reach magnitudes browsers ignore.
  */
 export const MAX_MODAL_LAYER = 200_000;
 
 /**
- * Vrstva rozbalovacích nabídek — nad VŠEMI dialogy.
+ * The layer of dropdown menus — above ALL dialogs.
  *
- * 🚨 Nabídka není dialog a nesmí se s nimi řadit. Visí na tlačítku, se
- * kterým operátor právě pracuje, takže patří nad cokoli otevřeného —
- * jinak se rozbalí POD modalem, ze kterého ji otevřel, a její položky
- * nejsou vidět. Přesně to se stalo, když dialogy dostaly vrstvy podle
- * pořadí otevření a nabídka zůstala na pevném ``z-50``.
+ * A menu is not a dialog and must not be ordered with them. It hangs on the
+ * button the operator is working with right now, so it belongs above
+ * anything open — otherwise it unfolds UNDER the modal it was opened from
+ * and its items are not visible. That is exactly what happened when
+ * dialogs got layers by opening order and the menu stayed on a fixed
+ * ``z-50``.
  *
- * Není to závod o nejvyšší číslo: nabídka je krátkodobá, zavírá se při
- * scrollu, změně velikosti i kliknutí mimo, takže nemá jak přežít
- * otevření dalšího dialogu.
+ * Not a race for the highest number: a menu is short-lived, it closes on
+ * scroll, resize and click outside, so it has no way to outlive the
+ * opening of another dialog.
  */
 export const MENU_LAYER = MAX_MODAL_LAYER + 1;
 
 let nextLayer = BASE_MODAL_LAYER;
 
 /**
- * Vrstva pro dialog, který se právě otevírá.
+ * The layer for the dialog that is opening right now.
  *
- * Drží se ve stavu, takže se při překreslení nemění — dialog, který by
- * si vrstvu bral znovu při každém renderu, by přeskakoval nad své
- * vlastní potomky.
+ * Held in state so it does not change on re-render — a dialog that took a
+ * new layer on every render would jump above its own children.
  */
 export function useModalLayer(): number {
   const [layer] = useState(() => {
