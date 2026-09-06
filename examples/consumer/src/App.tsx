@@ -2,17 +2,21 @@ import { useState } from "react";
 
 import {
   Button,
-  IngotBreadcrumbs,
-  IngotPageHeader,
-  IngotPageLayout,
+  IngotAppFrame,
+  IngotDrawer,
+  IngotIcon,
   IngotProvider,
-  IngotTable,
+  IngotSideNav,
   IngotTopNav,
-  type IngotColumn,
+  IngotTopNavAccount,
+  INGOT_FRAME_ROW,
+  type IngotTopNavSection,
 } from "@forgmatic/ingot";
-import { IngotDrawer } from "@forgmatic/ingot";
-import { IngotMarketingCta } from "@forgmatic/ingot/marketing";
 import { applyTheme, readStoredTheme, writeStoredTheme } from "@forgmatic/ingot/theme";
+
+import { OrderDetail } from "./OrderDetail";
+import { OrderList } from "./OrderList";
+import type { Order } from "./orders";
 
 /**
  * The smallest application that is still a real one.
@@ -25,40 +29,28 @@ import { applyTheme, readStoredTheme, writeStoredTheme } from "@forgmatic/ingot/
  *
  * Nothing here reaches into the kit's sources. It installs the packed
  * package, exactly as anyone outside this repository would.
+ *
+ * ## What the two screens are for
+ *
+ * They answer a question the old single screen could not: **can a real
+ * screen be built out of the kit alone?** Until the layout work landed the
+ * answer was no — there was no frame, no grid, no action bar and no
+ * loading state, so an application filled the gaps with its own utilities,
+ * and that is where two products built from one kit stop looking alike.
+ *
+ * The `ingot-docs-kit-only` guard reads `examples/consumer/src` now. A
+ * `<table>`, a `<button>` or a `<ul>` written here fails the build, which
+ * is what turns "composed only from the kit" from a claim into a check.
  */
-
-interface Order {
-  id: string;
-  customer: string;
-  pieces: number;
-  state: string;
-}
-
-const ORDERS: readonly Order[] = [
-  {
-    id: "2411-018",
-    customer: "Kovosvit Sezimovo Ústí",
-    pieces: 240,
-    state: "Ve výrobě",
-  },
-  {
-    id: "2411-019",
-    customer: "Strojírny Poldi",
-    pieces: 60,
-    state: "Čeká na materiál",
-  },
-  { id: "2411-021", customer: "TS Plzeň", pieces: 1200, state: "Hotovo" },
-];
-
-const COLUMNS: readonly IngotColumn<Order>[] = [
-  { key: "id", header: "Zakázka", cell: (row) => row.id },
-  { key: "customer", header: "Odběratel", cell: (row) => row.customer },
-  { key: "pieces", header: "Kusů", cell: (row) => row.pieces, align: "end" },
-  { key: "state", header: "Stav", cell: (row) => row.state },
+const SECTIONS: readonly IngotTopNavSection[] = [
+  { key: "orders", label: "Zakázky", href: "#", current: true },
+  { key: "production", label: "Výroba", href: "#" },
+  { key: "settings", label: "Nastavení", href: "#" },
 ];
 
 export function App(): JSX.Element {
   const [detail, setDetail] = useState<Order | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState(readStoredTheme);
 
   function toggleTheme(): void {
@@ -70,52 +62,80 @@ export function App(): JSX.Element {
 
   return (
     <IngotProvider lang="cs">
-      <IngotTopNav
-        brand={<span className="font-semibold">Forgmatic</span>}
-        actions={
-          <Button variant="ghost" onClick={toggleTheme}>
-            {theme === "dark" ? "Světlý motiv" : "Tmavý motiv"}
-          </Button>
+      <IngotAppFrame
+        className="py-6"
+        bar={
+          <IngotTopNav
+            brand={<span className="font-semibold">Forgmatic</span>}
+            contentClassName={INGOT_FRAME_ROW}
+            sectionsLabel="Sekce"
+            sections={SECTIONS}
+            // The bar does not wrap — that is in its own documentation. So
+            // below `lg` the sections come out of it and the hamburger
+            // carries them instead. Without this the bar is simply wider
+            // than a phone and the whole document scrolls sideways;
+            // measured at 375px before it was here.
+            sectionsClassName="hidden lg:flex"
+            menuButton={
+              <Button
+                variant="ghost"
+                size="sm"
+                iconOnly
+                aria-label="Otevřít menu"
+                aria-expanded={menuOpen}
+                className="lg:hidden"
+                onClick={() => setMenuOpen(true)}
+              >
+                <IngotIcon name="menu" />
+              </Button>
+            }
+            actions={
+              <Button variant="ghost" size="sm" onClick={toggleTheme}>
+                {/* One word below `sm`: the bar there has room for controls,
+                    not for their names. */}
+                <span className="hidden sm:inline">
+                  {theme === "dark" ? "Světlý motiv" : "Tmavý motiv"}
+                </span>
+                <IngotIcon name="bulb" />
+              </Button>
+            }
+            account={<IngotTopNavAccount initials="JM" label="Účet Jan Marek" />}
+          />
         }
-      />
-      <IngotPageLayout>
-        <IngotBreadcrumbs
-          label="Kde jsem"
-          items={[{ label: "Výroba", href: "#" }, { label: "Zakázky" }]}
-        />
-        <IngotPageHeader
-          title="Zakázky"
-          description="Přehled běžících zakázek z výrobního plánu."
-          actions={<Button>Nová zakázka</Button>}
-        />
-        <IngotTable
-          columns={COLUMNS}
-          rows={ORDERS}
-          rowKey={(row) => row.id}
-          caption="Zakázky ve výrobě"
-          actions={(row) => (
-            <Button variant="ghost" onClick={() => setDetail(row)}>
-              Detail
-            </Button>
-          )}
-          actionsLabel="Akce"
-        />
-        <IngotMarketingCta
-          title="Chcete stejný přehled i u sebe?"
-          text="Ingot je jeden zdroj pravdy pro vzhled Forgmaticu — administrace i veřejné stránky."
-          primary={{ label: "Vyzkoušet", href: "https://ingot.forgmatic.com" }}
-        />
-      </IngotPageLayout>
-      {detail !== null && (
+      >
+        {detail === null ? (
+          <OrderList onOpen={setDetail} />
+        ) : (
+          <OrderDetail order={detail} onBack={() => setDetail(null)} />
+        )}
+      </IngotAppFrame>
+
+      {/* Hiding the sections without this would not mean worse navigation
+          on a phone, it would mean none. The drawer is a kit primitive, so
+          the focus trap, ESC and the scroll lock come with it. */}
+      {menuOpen && (
         <IngotDrawer
-          title={`Zakázka ${detail.id}`}
-          subtitle={detail.customer}
-          closeLabel="Zavřít"
-          onClose={() => setDetail(null)}
+          side="left"
+          width={280}
+          title="Sekce"
+          closeLabel="Zavřít menu"
+          onClose={() => setMenuOpen(false)}
         >
-          <p className="text-sm text-ink-2">
-            {detail.pieces} kusů, stav: {detail.state}.
-          </p>
+          <IngotSideNav
+            label="Sekce aplikace"
+            // A section without an `href` is one with a menu behind it, and
+            // this application has none — so the filter is a type guard
+            // rather than a defensive `?? "#"`, which would put a link to
+            // nowhere in the drawer.
+            items={SECTIONS.filter(
+              (section): section is typeof section & { href: string } =>
+                section.href !== undefined,
+            ).map((section) => ({
+              href: section.href,
+              label: section.label,
+              current: section.current === true,
+            }))}
+          />
         </IngotDrawer>
       )}
     </IngotProvider>

@@ -371,10 +371,20 @@ const BANNED_TAGS = {
 };
 const TAG_RE = new RegExp(`<(${Object.keys(BANNED_TAGS).sort().join("|")})\\b`, "g");
 
-// The doc web today; whatever else this repository grows around the kit
-// (marketing pages, app screens) is held to the same rule the day it
-// appears, without anyone having to remember this guard.
-const KIT_ONLY_DIRS = ["src/ingot-docs", "src/marketing", "src/components"];
+// The doc web and the reference consumer; whatever else this repository
+// grows around the kit (marketing pages, app screens) is held to the same
+// rule the day it appears, without anyone having to remember this guard.
+//
+// `examples/consumer/src` is the one that matters most, because it is the
+// only place a WHOLE SCREEN is composed. "Built only from the kit" is a
+// claim until something checks it, and a screen is where the gaps in the
+// kit get quietly filled with a `<div className="grid grid-cols-2">`.
+const KIT_ONLY_DIRS = [
+  "src/ingot-docs",
+  "src/marketing",
+  "src/components",
+  "examples/consumer/src",
+];
 
 function guardIngotDocsKitOnly() {
   const guard = "ingot-docs-kit-only";
