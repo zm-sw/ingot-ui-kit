@@ -8,18 +8,28 @@
  * exists in the version they pinned has to leave and go dig in the
  * repository.
  *
- * So the answer is computed here, at build time, from the tags themselves.
- * ``gh`` is asked first because a GitHub release carries the notes a human
- * can read; ``git tag`` is the fallback, and it is a real fallback rather
- * than an error path — a clone with no network still builds a site, it
- * just gets dates instead of notes.
+ * So the answer is computed from the tags themselves. ``gh`` is asked
+ * first because a GitHub release carries the notes a human can read;
+ * ``git tag`` is the fallback, and it is a real fallback rather than an
+ * error path — a clone with no network still builds a site, it just gets
+ * dates instead of notes.
  *
  * "Since which version" comes from the trees, not from a list somebody
  * maintains: for each tag, which doc pages existed in it. The first tag
  * that carries a page is the version the primitive shipped in.
+ *
+ * **This module is called by ``release.mjs``, not only by hand.** The file
+ * used to be regenerated manually, which meant it was regenerated once and
+ * then never again: the site shipped a version its own Changes page had
+ * never heard of. The release now writes it in the same commit that moves
+ * `package.json`, and `writeReleases` takes the pending release because at
+ * that moment its tag does not exist yet.
  */
 import { execFileSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { readdirSync, writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+
+import { releasesData } from "./releasesCore.mjs";
 
 const OUT = "src/ingot-docs/releases.json";
 
@@ -49,30 +59,52 @@ function notesFor(tag) {
   }
 }
 
+const pageName = (file) => file.replace(/^.*\//, "").replace(/Doc\.tsx$/, "");
+
 /** Primitive names documented at a tag. */
 function pagesAt(tag) {
-  const files = git("ls-tree", "-r", "--name-only", tag, "src/ingot-docs/pages")
+  return git("ls-tree", "-r", "--name-only", tag, "src/ingot-docs/pages")
     .split("\n")
-    .filter((file) => file.endsWith("Doc.tsx"));
-  return files.map((file) => file.replace(/^.*\//, "").replace(/Doc\.tsx$/, ""));
+    .filter((file) => file.endsWith("Doc.tsx"))
+    .map(pageName);
 }
 
-const all = tags();
-const releases = all.map((tag) => ({
-  tag,
-  date: git("log", "-1", "--format=%ad", "--date=short", tag),
-  notes: notesFor(tag),
-}));
-
-// Oldest first, so the first tag that carries a page is the one that wins.
-const since = {};
-for (const { tag } of [...releases].reverse()) {
-  for (const name of pagesAt(tag)) {
-    if (!(name in since)) since[name] = tag;
-  }
+/** Primitive names documented in the working tree — what a pending release carries. */
+export function currentPages() {
+  return readdirSync("src/ingot-docs/pages")
+    .filter((file) => file.endsWith("Doc.tsx"))
+    .map(pageName);
 }
 
-writeFileSync(OUT, `${JSON.stringify({ releases, since }, null, 2)}\n`);
-console.log(
-  `releases: ${releases.length} tag(s), ${Object.keys(since).length} page(s)`,
-);
+/** Every tagged release, newest first, with the pages it carried. */
+export function collectTagged() {
+  return tags().map((tag) => ({
+    tag,
+    date: git("log", "-1", "--format=%ad", "--date=short", tag),
+    notes: notesFor(tag),
+    pages: pagesAt(tag),
+  }));
+}
+
+/**
+ * Writes ``releases.json``.
+ *
+ * ``pending`` is the release being cut right now — its tag does not exist
+ * yet, so it cannot be read out of git and has to be handed in.
+ */
+export function writeReleases({ pending = null } = {}) {
+  const data = releasesData({ tagged: collectTagged(), pending });
+  writeFileSync(OUT, `${JSON.stringify(data, null, 2)}\n`);
+  console.log(
+    `releases: ${data.releases.length} tag(s), ${Object.keys(data.since).length} page(s)` +
+      (pending ? ` (including the pending ${pending.tag})` : ""),
+  );
+  return data;
+}
+
+// Run as a script (`npm run releases`) rather than imported: regenerate
+// from the tags that exist. Importing it must have no side effect, because
+// `release.mjs` imports it to write a file it has more to say about.
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  writeReleases();
+}
