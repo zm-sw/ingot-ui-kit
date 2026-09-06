@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import type { PluginAPI } from "tailwindcss/types/config";
 
 /**
  * A token colour that also supports ``/opacity``.
@@ -240,5 +241,56 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    /**
+     * The keyboard focus ring, as one utility.
+     *
+     * It was drawn by hand in five files and missing from eleven, which
+     * meant that on most of the kit the ring a keyboard user sees was
+     * whatever their browser draws — a different shape in every browser
+     * and in none of the kit's colours. A person who navigates by keyboard
+     * cannot use a component whose focus they cannot find, so this is not
+     * a polish item.
+     *
+     * Three utilities, because a ring has three situations:
+     *
+     * - `focus-ring` sits OUTSIDE the control, with a gap painted in the
+     *   page colour so the ring reads against a dark button and a light
+     *   one alike. For anything standing on its own — buttons, switches,
+     *   inputs, chips.
+     * - `focus-ring-inset` draws INSIDE the element. For a row in a
+     *   scrolling list (a menu item, a nav item): an outside ring on a
+     *   full-width row is clipped by the container that scrolls it, so
+     *   half of it is simply not there.
+     * - `focus-ring-within` puts the outside ring on a WRAPPER whose
+     *   focusable element is a child — a field with an affix inside the
+     *   same frame. It has to be `:focus-within`, because
+     *   `:focus-visible` never matches the `<div>` that holds the input.
+     *
+     * The first two are `:focus-visible`, never `:focus` — a ring that
+     * appears on a mouse click is noise, and noise is what makes people
+     * switch rings off. A text field is the exception the browsers already
+     * make for us: they treat a focused text input as focus-visible even
+     * when it was clicked, because it IS about to receive keystrokes.
+     */
+    // `PluginAPI` is Tailwind's own type for the argument, and its
+    // `addUtilities` takes a `CSSRuleObject`. Naming it here rather than
+    // describing the one method we use keeps the object below checked
+    // against Tailwind's shape instead of against our guess at it.
+    ({ addUtilities }: PluginAPI) => {
+      const ring = {
+        outline: "none",
+        boxShadow:
+          "0 0 0 var(--focus-ring-offset, 2px) var(--bg), 0 0 0 calc(var(--focus-ring-offset, 2px) + var(--focus-ring, 2px)) var(--accent)",
+      };
+      addUtilities({
+        ".focus-ring:focus-visible": ring,
+        ".focus-ring-within:focus-within": ring,
+        ".focus-ring-inset:focus-visible": {
+          outline: "none",
+          boxShadow: "inset 0 0 0 var(--focus-ring, 2px) var(--accent)",
+        },
+      });
+    },
+  ],
 } satisfies Partial<Config>;

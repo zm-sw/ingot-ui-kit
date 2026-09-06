@@ -29,17 +29,28 @@ export const INPUT_BORDER = "border-border-strong";
 /** Border colour when the control carries an error. */
 export const INPUT_BORDER_ERROR = "border-danger";
 
-/** Focus ring on the focused element itself (`<select>`, bare `<input>`). */
-export const INPUT_FOCUS =
-  "focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent-bg";
+/**
+ * Focus on the focused element itself (`<select>`, bare `<input>`).
+ *
+ * The ring comes from the `focus-ring` utility — the kit's one ring, drawn
+ * from `--focus-ring` and the accent — so a focused field and a focused
+ * button look like the same system. What stays here is the border: a field
+ * has one, and moving it to the accent is what makes the focused control
+ * read as the one being typed into, not merely as the one with a ring.
+ *
+ * `:focus` rather than `:focus-visible` on the border is deliberate: a
+ * field the user clicked into IS receiving their keystrokes, so saying so
+ * is not noise. The ring itself stays `:focus-visible` inside the utility.
+ */
+export const INPUT_FOCUS = "focus:border-accent focus-ring";
 
 /**
- * Focus ring on a wrapper that contains the input (a field with an affix
- * inside the same frame). Same look as {@link INPUT_FOCUS}, different
- * pseudo-class.
+ * The same for a wrapper that contains the input (a field with an affix
+ * inside the frame). `focus-visible` never matches a `<div>`, so the ring
+ * utility for a wrapper watches `:focus-within` instead — the look is the
+ * same one.
  */
-export const INPUT_FOCUS_WITHIN =
-  "focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent-bg";
+export const INPUT_FOCUS_WITHIN = "focus-within:border-accent focus-ring-within";
 
 /** Disabled state of the focused element itself. */
 export const INPUT_DISABLED =

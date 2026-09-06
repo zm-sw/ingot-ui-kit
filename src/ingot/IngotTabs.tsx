@@ -120,6 +120,10 @@ export function IngotTabs({
               onClick={() => onChange(item.key)}
               className={cx(
                 "-mb-px inline-flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm",
+                // The ring is on the tab, not on the bar: the roving
+                // tabindex means only one tab is ever focusable, and it is
+                // the one the reader is standing on.
+                "focus-ring",
                 active
                   ? "border-ink font-semibold text-ink"
                   : "border-transparent text-ink-3 hover:text-ink",

@@ -147,6 +147,7 @@ export const Button = forwardRef<
   // would surface on the screen where they stand side by side.
   const classes = cx(
     "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
+    "focus-ring",
     VARIANT[variant],
     iconOnly ? SIZE_ICON_ONLY[size] : SIZE[size],
     className,

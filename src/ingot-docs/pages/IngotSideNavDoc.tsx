@@ -13,7 +13,9 @@ export const IngotSideNavDoc: IngotDocPage = {
   // 1.1 — caption set by IngotEyebrow, the kit's shared mono label.
   // 1.2 — class composition via cx(); no visible change.
   // 1.3 — row states come from the kit's shared menu row; no visible change.
-  version: "1.3",
+  // 1.4 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.4",
   tag: ".sidenav",
   tokens: [
     "--surface",

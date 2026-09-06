@@ -24,7 +24,10 @@ export const IngotCheckboxControl = forwardRef<
     <input
       ref={ref}
       type="checkbox"
-      className={cx("h-4 w-4 shrink-0 accent-accent disabled:cursor-not-allowed", className)}
+      className={cx(
+        "h-4 w-4 shrink-0 accent-accent focus-ring disabled:cursor-not-allowed",
+        className,
+      )}
       {...rest}
     />
   );

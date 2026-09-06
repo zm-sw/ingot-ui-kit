@@ -21,7 +21,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotAccentSwatchesDemo?raw"
 export const IngotAccentSwatchesDoc: IngotDocPage = {
   name: "IngotAccentSwatches",
   status: "beta",
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.2",
   tag: ".swatches",
   tokens: ["--accent", "--ink", "--border-strong"],
   classNameNote: {

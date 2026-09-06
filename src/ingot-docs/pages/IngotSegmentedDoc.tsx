@@ -11,7 +11,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotSegmentedDemo?raw");
 export const IngotSegmentedDoc: IngotDocPage = {
   name: "IngotSegmented",
   status: "beta",
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.2",
   tag: ".seg",
   tokens: ["--border", "--surface", "--surface-2", "--ink", "--ink-3"],
   classNameNote: {

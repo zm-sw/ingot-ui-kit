@@ -113,7 +113,7 @@ export function IngotDisclosure({
           // ourselves — otherwise two indicators of the same thing.
           "flex cursor-pointer list-none items-center gap-2 px-3 py-2.5",
           "[&::-webkit-details-marker]:hidden",
-          "hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink",
+          "hover:bg-surface-2 focus-ring-inset",
         )}
       >
         <IngotIcon

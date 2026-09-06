@@ -13,7 +13,9 @@ export const IngotSelectDoc: IngotDocPage = {
   // 1.1 — shared input chrome: accent focus ring instead of `focus:border-ink`,
   // Button-md height.
   // 1.2 (KAN-842) — forwardRef to the <select>; callers touch nothing.
-  version: "1.2",
+  // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.3",
   tag: ".select",
   tokens: [
     "--surface",

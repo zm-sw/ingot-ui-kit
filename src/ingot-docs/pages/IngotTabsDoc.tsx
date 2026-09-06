@@ -25,7 +25,9 @@ export const IngotTabsDoc: IngotDocPage = {
   // 1.1 (KAN-945) — the count is drawn by IngotCountPill instead of by a
   // span of this component's own, so a tab's count and a section heading's
   // count are one element with one definition.
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.2",
   tag: ".tabs",
   tokens: ["--border", "--ink", "--ink-3", "--surface-2", "--font-mono"],
   classNameNote: {

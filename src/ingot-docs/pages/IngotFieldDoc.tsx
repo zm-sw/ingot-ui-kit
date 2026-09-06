@@ -19,7 +19,9 @@ export const IngotFieldDoc: IngotDocPage = {
   // line-height) and an optional soft character count under the field.
   // Several lines stay a `type`, not a component of their own: the
   // accessible wiring is the same and two copies of it would drift.
-  version: "1.3",
+  // 1.4 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.4",
   tag: ".field",
   tokens: [
     "--surface",

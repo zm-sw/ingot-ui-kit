@@ -17,7 +17,9 @@ export const IngotFormDoc: IngotDocPage = {
   // 2.0 (KAN-845) — useIngotForm no longer resets on a new `initial`
   // object; it takes a `resetKey` instead. A caller that relied on the old
   // identity reset passes the record id it already has.
-  version: "2.1",
+  // 2.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "2.2",
   tag: ".form",
   tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
   classNameNote: {

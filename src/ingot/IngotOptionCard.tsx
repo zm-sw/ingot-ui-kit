@@ -64,7 +64,7 @@ export function IngotOptionCard({
         checked={checked}
         disabled={disabled}
         onChange={() => onChange(value)}
-        className="mt-0.5 h-4 w-4 flex-none accent-[var(--accent)]"
+        className="mt-0.5 h-4 w-4 flex-none accent-[var(--accent)] focus-ring"
       />
       <span className="min-w-0">
         <span className="block text-sm font-medium text-ink">{title}</span>

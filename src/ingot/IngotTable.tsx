@@ -278,7 +278,7 @@ export function IngotTable<Row>({
                     type="button"
                     onClick={() => headerSort(col)}
                     className={cx(
-                      "inline-flex items-center gap-1 uppercase hover:text-ink",
+                      "inline-flex items-center gap-1 rounded-sm uppercase hover:text-ink focus-ring",
                       col.align === "end" && "flex-row-reverse",
                     )}
                   >

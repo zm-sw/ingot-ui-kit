@@ -17,7 +17,9 @@ export const IngotToastDoc: IngotDocPage = {
   // 1.4 (KAN-845) — a close button, the countdown pauses under the pointer
   // or focus, and duration: null keeps the toast until it is closed.
   // 1.5 (KAN-849) — the toast rises into place, from the kit's motion tokens; motion-reduce turns the movement off.
-  version: "1.5",
+  // 1.6 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.6",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {
