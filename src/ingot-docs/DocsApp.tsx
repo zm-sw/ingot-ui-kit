@@ -61,6 +61,7 @@ import {
   IngotAccentSwatches,
   IngotSegmented,
   IngotSideNav,
+  IngotSkeleton,
   IngotTable,
   IngotTabs,
   INGOT_FRAME_ROW,
@@ -330,13 +331,21 @@ function DemoWithSource({
         <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
             <IngotProvider lang={lang}>
-              {/* The fallback is the word, not a spinner: the demo is a
-                  local module and arrives in a frame or two. A spinner for
-                  something that fast is a flicker the reader reads as a
-                  fault. */}
+              {/* Not a spinner: the demo is a local module and arrives in
+                  a frame or two, and a spinner for something that fast is a
+                  flicker the reader reads as a fault. A skeleton says the
+                  same thing without spinning, holds the room the demo is
+                  about to take, and is the kit's own answer to loading —
+                  the doc web used to write a sentence here instead, which
+                  held nothing. */}
               <Suspense
                 fallback={
-                  <p className="text-sm text-ink-3">{pick(CHROME.demoLoading, lang)}</p>
+                  <IngotSkeleton
+                    shape="card"
+                    rows={1}
+                    label={pick(CHROME.demoLoading, lang)}
+                    className="w-80 max-w-full"
+                  />
                 }
               >
                 {(() => {
