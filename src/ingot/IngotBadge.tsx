@@ -16,9 +16,9 @@ import { cx } from "./cx";
  *
  * What it is NOT:
  *
- * * **A count.** A badge with a number is a different primitive (round,
- *   `99+` threshold, mandatory screen-reader label, zero not drawn) and
- *   the kit does not have one yet. A number is not a state.
+ * * **A count.** A badge with a number is a different primitive — round,
+ *   its whole content a number — and the kit has one: `IngotCountPill`.
+ *   A number is not a state.
  * * **A clickable filter.** A badge is not interactive: no focus, no role,
  *   no keyboard handling. A filter you can switch on is a chip and must be
  *   a button.
