@@ -40,6 +40,18 @@ import { placePanel, type IngotPlacement } from "./placement";
 /** How long the pointer must rest before the tooltip appears, in ms. */
 export const INGOT_TOOLTIP_DELAY_MS = 400;
 
+/**
+ * `useLayoutEffect` in the browser, `useEffect` on the server.
+ *
+ * The doc web prerenders its pages, and a tooltip sits inside the row
+ * actions of one of them. React warns about a layout effect it cannot run
+ * during server rendering — correctly, and the warning is noise here,
+ * because there is no layout to measure on the server and nothing to
+ * measure it for. What matters is the browser, where it has to run before
+ * paint or the bubble appears at the previous opening's coordinates.
+ */
+const useBeforePaint = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 export function IngotTooltip({
   text,
   placement = "top-start",
@@ -86,7 +98,7 @@ export function IngotTooltip({
   // and that is also why nothing has to be reset when it hides: a stale
   // position never reaches the screen, so clearing it would only be a
   // second render for nobody.
-  useLayoutEffect(() => {
+  useBeforePaint(() => {
     if (!shown) return;
     const anchor = anchorRef.current;
     const bubble = bubbleRef.current;
