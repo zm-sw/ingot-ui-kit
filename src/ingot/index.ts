@@ -192,6 +192,14 @@ export { IngotPageLayout } from "./IngotPageLayout";
 // the shell", and no shell existed — so every application wrote its own
 // width and they were not the same width.
 export { IngotAppFrame, INGOT_FRAME_ROW } from "./IngotAppFrame";
+// The grid inside a block. `IngotPageLayout` says outright this is not its
+// job; until now nothing else took it, so every screen invented its own
+// gap and its own folding point.
+export {
+  IngotColumns,
+  IngotColumnsFull,
+  type IngotColumnsCount,
+} from "./IngotColumns";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------
