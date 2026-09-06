@@ -47,6 +47,7 @@ import {
 
 import {
   Button,
+  IngotAppFrame,
   IngotBadge,
   IngotCallout,
   IngotCode,
@@ -60,8 +61,10 @@ import {
   IngotAccentSwatches,
   IngotSegmented,
   IngotSideNav,
+  IngotSkeleton,
   IngotTable,
   IngotTabs,
+  INGOT_FRAME_ROW,
   type IngotColumn,
   type IngotNavItem,
 } from "@/ingot";
@@ -328,13 +331,21 @@ function DemoWithSource({
         <div className="overflow-x-auto bg-surface-2" data-testid="docs-demo-stage">
           <div className="mx-auto w-fit p-4 md:p-8">
             <IngotProvider lang={lang}>
-              {/* The fallback is the word, not a spinner: the demo is a
-                  local module and arrives in a frame or two. A spinner for
-                  something that fast is a flicker the reader reads as a
-                  fault. */}
+              {/* Not a spinner: the demo is a local module and arrives in
+                  a frame or two, and a spinner for something that fast is a
+                  flicker the reader reads as a fault. A skeleton says the
+                  same thing without spinning, holds the room the demo is
+                  about to take, and is the kit's own answer to loading —
+                  the doc web used to write a sentence here instead, which
+                  held nothing. */}
               <Suspense
                 fallback={
-                  <p className="text-sm text-ink-3">{pick(CHROME.demoLoading, lang)}</p>
+                  <IngotSkeleton
+                    shape="card"
+                    rows={1}
+                    label={pick(CHROME.demoLoading, lang)}
+                    className="w-80 max-w-full"
+                  />
                 }
               >
                 {(() => {
@@ -1058,8 +1069,13 @@ export function DocsApp(): JSX.Element {
 
           ``docs-topbar`` (globals.css) holds the glass — a translucent
           surface with blur, white in the light theme and dark in the dark. */}
-      <header className="docs-topbar sticky top-0 z-40 flex items-center gap-x-4 gap-y-2 border-b border-border px-4 py-3 md:px-6">
-        {/* The logo carries the full name ("INGOT UI KIT"), so a text brand
+      <header className="docs-topbar sticky top-0 z-40 border-b border-border">
+        {/* The bar's element spans the window — its border has to reach both
+            edges or the page looks cut out — while its ROW sits inside the
+            same frame as the content below, so the logo and the page title
+            start on one vertical line. That is what INGOT_FRAME_ROW is. */}
+        <div className={`${INGOT_FRAME_ROW} flex items-center gap-x-4 gap-y-2 py-3`}>
+          {/* The logo carries the full name ("INGOT UI KIT"), so a text brand
             next to it would only repeat it — the version remained as the label.
 
             Two variants, not a filter: the wordmark is almost black and
@@ -1068,62 +1084,63 @@ export function DocsApp(): JSX.Element {
             outline; the blue accent stays blue. Both have a label: a blind
             reader hears it once, because ``display:none`` drops the hidden
             one from the accessibility tree. */}
-        <img
-          src="/ingot-logo.png"
-          alt="Ingot UI Kit"
-          className="h-9 w-auto dark:hidden"
-          width={311}
-          height={128}
-        />
-        <img
-          src="/ingot-logo-dark.png"
-          alt="Ingot UI Kit"
-          className="hidden h-9 w-auto dark:block"
-          width={311}
-          height={128}
-        />
-        {/* The version and brand moved to the mini footer at the bottom
+          <img
+            src="/ingot-logo.png"
+            alt="Ingot UI Kit"
+            className="h-9 w-auto dark:hidden"
+            width={311}
+            height={128}
+          />
+          <img
+            src="/ingot-logo-dark.png"
+            alt="Ingot UI Kit"
+            className="hidden h-9 w-auto dark:block"
+            width={311}
+            height={128}
+          />
+          {/* The version and brand moved to the mini footer at the bottom
             (owner instruction of 2026-09-02) — the header carries only controls. */}
-        <span className="flex-1" aria-hidden="true" />
+          <span className="flex-1" aria-hidden="true" />
 
-        {/* The shortcut is the point, and a shortcut nobody is told about
+          {/* The shortcut is the point, and a shortcut nobody is told about
             is a shortcut nobody uses — so the button carries it as its
             label. Below ``sm`` only the icon is left: the bar there has
             room for controls, not for their names. */}
-        <Button
-          variant="secondary"
-          size="md"
-          leadingIcon={<IngotIcon name="search" />}
-          onClick={() => setSearchOpen(true)}
-          data-testid="docs-search-open"
-        >
-          <span className="hidden sm:inline">{pick(CHROME.searchOpen, lang)}</span>
-          <IngotEyebrow as="span" tone="muted" className="hidden md:inline">
-            ⌘K
-          </IngotEyebrow>
-        </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            leadingIcon={<IngotIcon name="search" />}
+            onClick={() => setSearchOpen(true)}
+            data-testid="docs-search-open"
+          >
+            <span className="hidden sm:inline">{pick(CHROME.searchOpen, lang)}</span>
+            <IngotEyebrow as="span" tone="muted" className="hidden md:inline">
+              ⌘K
+            </IngotEyebrow>
+          </Button>
 
-        {/* From ``md`` in the bar, below ``md`` in the drawer. Five accents,
+          {/* From ``md`` in the bar, below ``md`` in the drawer. Five accents,
             three themes and two languages side by side need over 400 px; on
             a 375px display they wrapped to a second row and the sticky bar
             then ate 98–125 px, a sixth of the screen. */}
-        <div className="hidden md:block">{chromeControls(false, "docs-")}</div>
+          <div className="hidden md:block">{chromeControls(false, "docs-")}</div>
 
-        {/* Below ``md`` the button is the ONLY way between pages — the left
+          {/* Below ``md`` the button is the ONLY way between pages — the left
             menu is hidden there. Hiding the menu without it does not mean
             worse navigation, but none. */}
-        <Button
-          variant="secondary"
-          size="md"
-          iconOnly
-          aria-label={pick(CHROME.openMenu, lang)}
-          aria-expanded={navOpen}
-          onClick={() => setNavOpen(true)}
-          className="md:hidden"
-          data-testid="docs-menu-open"
-        >
-          <IngotIcon name="menu" />
-        </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            iconOnly
+            aria-label={pick(CHROME.openMenu, lang)}
+            aria-expanded={navOpen}
+            onClick={() => setNavOpen(true)}
+            className="md:hidden"
+            data-testid="docs-menu-open"
+          >
+            <IngotIcon name="menu" />
+          </Button>
+        </div>
       </header>
 
       {/* Menu and switches below ``md``. The drawer is a kit primitive, so
@@ -1158,7 +1175,7 @@ export function DocsApp(): JSX.Element {
           * ``lg`` (1024) — and index 176 + 32 still leaves 528 px.
           Below ``md`` the menu is in the drawer and the index is dropped: on
           a single-column page the content is right below it anyway. */}
-      <div className="mx-auto flex max-w-7xl gap-8 px-4 py-8">
+      <IngotAppFrame className="flex gap-8 py-8">
         {/* The menu stands on the page surface, not on a card: the card is
             the active item, and two layers on top of each other would
             flatten it.
@@ -1247,7 +1264,7 @@ export function DocsApp(): JSX.Element {
             ))}
           />
         </aside>
-      </div>
+      </IngotAppFrame>
 
       {/* Mini footer (owner instruction of 2026-09-02): a line across the
           FULL width, low, edges apart — version at the left edge, a pill

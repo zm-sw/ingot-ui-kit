@@ -830,6 +830,101 @@ function ListPattern({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * How the layout primitives stack into one screen.
+ *
+ * The doc web is PUBLIC, so this names no repository path — what a reader
+ * needs is the ORDER, which is the part that was missing. Before the
+ * layout work there was no frame, no grid, no action bar and no loading
+ * state, so every application invented its own and two products built
+ * from one kit stopped looking alike.
+ */
+function WholeScreen({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Obrazovka se skládá odshora dolů a každá vrstva umí jednu věc. Když se drží pořadí, vypadají dvě obrazovky z různých aplikací jako jeden produkt — a to je jediný důvod, proč kit existuje."
+          : "A screen is assembled from the outside in, and each layer does one thing. Keep the order and two screens from different applications look like one product — which is the only reason the kit exists."}
+      </p>
+      <IngotList
+        variant="ordered"
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>IngotAppFrame</IngotCode> — šířka obrazovky a okraje vedle
+                  ní, lišta přilepená k oknu. Jejímu{" "}
+                  <IngotCode>contentClassName</IngotCode> patří{" "}
+                  <IngotCode>INGOT_FRAME_ROW</IngotCode>, aby řádek lišty seděl na obsah
+                  pod ní.
+                </>,
+                <>
+                  <IngotCode>IngotPageLayout</IngotCode> — svislý rytmus bloků a tvar
+                  obsahu: <IngotCode>full</IngotCode> pro seznamy,{" "}
+                  <IngotCode>reading</IngotCode> pro detail,{" "}
+                  <IngotCode>aside</IngotCode> pro obrazovku s vlastním rejstříkem.
+                </>,
+                <>
+                  Bloky v závazném pořadí: drobečky, hlavička,{" "}
+                  <IngotCode>IngotToolbar</IngotCode> nad daty,{" "}
+                  <IngotCode>IngotSection</IngotCode> kolem každého celku.
+                </>,
+                <>
+                  Uvnitř bloku <IngotCode>IngotColumns</IngotCode> pro formulář a{" "}
+                  <IngotCode>IngotDescriptionList</IngotCode> pro fakta. Vlastní{" "}
+                  <IngotCode>grid</IngotCode> se v obrazovce nepíše — právě tam se
+                  aplikace rozcházejí.
+                </>,
+                <>
+                  <IngotCode>IngotSkeleton</IngotCode> místo prázdna, dokud data nejsou,
+                  a <IngotCode>IngotActionBar</IngotCode> jako poslední blok, aby Uložit
+                  bylo v dosahu i po devátém poli.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>IngotAppFrame</IngotCode> — the screen's width and the
+                  margins beside it, with the bar stuck to the window. Its{" "}
+                  <IngotCode>contentClassName</IngotCode> takes{" "}
+                  <IngotCode>INGOT_FRAME_ROW</IngotCode>, so the bar's row lines up with
+                  the content below.
+                </>,
+                <>
+                  <IngotCode>IngotPageLayout</IngotCode> — the vertical rhythm of the
+                  blocks and the shape of the content: <IngotCode>full</IngotCode> for
+                  lists, <IngotCode>reading</IngotCode> for a detail,{" "}
+                  <IngotCode>aside</IngotCode> for a screen with its own index.
+                </>,
+                <>
+                  The blocks in the binding order: breadcrumbs, the header,{" "}
+                  <IngotCode>IngotToolbar</IngotCode> above the data,{" "}
+                  <IngotCode>IngotSection</IngotCode> around each whole.
+                </>,
+                <>
+                  Inside a block, <IngotCode>IngotColumns</IngotCode> for a form and{" "}
+                  <IngotCode>IngotDescriptionList</IngotCode> for facts. A screen writes
+                  no <IngotCode>grid</IngotCode> of its own — that is exactly where
+                  applications drift apart.
+                </>,
+                <>
+                  <IngotCode>IngotSkeleton</IngotCode> instead of a blank until the data
+                  is there, and <IngotCode>IngotActionBar</IngotCode> as the last block,
+                  so Save stays in reach past the ninth field.
+                </>,
+              ]
+        }
+      />
+      <p>
+        {cs
+          ? "Referenční konzument skládá přesně takhle dvě obrazovky — seznam zakázek a detail — a hlídá to guard: ručně psaná tabulka, tlačítko nebo seznam v nich shodí build. Bez toho je „složeno jen z kitu“ tvrzení, ne kontrola."
+          : "The reference consumer assembles exactly two screens this way — a list of orders and a detail — and a guard holds it: a hand-written table, button or list in them fails the build. Without that, “composed only from the kit” is a claim rather than a check."}
+      </p>
+    </div>
+  );
+}
+
 export const ShellGuide: IngotGuidePage = {
   slug: "shell-a-patterny",
   group: "app",
@@ -839,6 +934,11 @@ export const ShellGuide: IngotGuidePage = {
     en: "The frame screens share — the top bar, the section and account menus, the header with its numbers — and the blocks that settings screens and lists are assembled from.",
   },
   sections: [
+    {
+      id: "cela-obrazovka",
+      title: { cs: "Celá obrazovka", en: "A whole screen" },
+      body: { cs: <WholeScreen lang="cs" />, en: <WholeScreen lang="en" /> },
+    },
     {
       id: "ram",
       title: { cs: "Rám aplikace", en: "The application frame" },

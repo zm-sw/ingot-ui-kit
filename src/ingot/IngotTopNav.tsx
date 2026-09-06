@@ -8,6 +8,7 @@ import {
 
 import { cx } from "./cx";
 import { IngotIcon } from "./IngotIcon";
+import { IngotAvatar } from "./IngotAvatar";
 import { LockedRow, menuRowClass } from "./menuRow";
 
 /**
@@ -417,12 +418,15 @@ export function IngotTopNavAccount({
       aria-label={label}
       aria-expanded={expanded}
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface py-[5px] pl-[5px] pr-2.5"
+      className="focus-ring inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface py-[5px] pl-[5px] pr-2.5"
       data-testid={testId}
     >
-      <span className="grid h-7 w-7 place-items-center rounded-full bg-ink font-mono text-[11px] font-semibold text-bg">
-        {initials}
-      </span>
+      {/* The circle is `IngotAvatar` rather than a span drawn here: this
+          used to be the kit's only avatar, so the first screen that needed
+          one in a list drew a second one at a different size.
+          `decorative`, because the button above already carries the
+          person's name — the avatar's own would read it twice. */}
+      <IngotAvatar initials={initials} label={label} decorative />
       <IngotIcon name="chevron-down" size={13} className="text-ink-3" />
     </button>
   );

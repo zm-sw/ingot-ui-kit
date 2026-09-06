@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { cx } from "./cx";
+import type { IngotSize } from "./vocabulary";
 
 // Development-only warnings read a bundler's flag, and ``ImportMeta`` has
 // no ``env`` unless the consumer's tsconfig happens to include the
@@ -30,7 +31,8 @@ type ButtonVariant =
   | "ghost"
   | "danger"
   | "inverse";
-type ButtonSize = "sm" | "md" | "lg";
+/** The whole shared scale — a button is the primitive the scale was cut for. */
+type ButtonSize = IngotSize;
 
 interface ButtonBaseProps {
   variant?: ButtonVariant;
@@ -147,6 +149,7 @@ export const Button = forwardRef<
   // would surface on the screen where they stand side by side.
   const classes = cx(
     "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
+    "focus-ring",
     VARIANT[variant],
     iconOnly ? SIZE_ICON_ONLY[size] : SIZE[size],
     className,

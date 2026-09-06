@@ -10,9 +10,12 @@ const demoSource = () => import("@/ingot-docs/demos/IngotPageLayoutDemo?raw");
 export const IngotPageLayoutDoc: IngotDocPage = {
   name: "IngotPageLayout",
   status: "beta",
-  version: "1.0",
+  // 2.0 (KAN-955) — the side index is a collapsed block below `md` instead
+  // of a 224px column standing beside a squeezed content; `asideLabel` is
+  // required with `aside`, so existing call sites have to be edited.
+  version: "2.0",
   tag: ".page",
-  tokens: ["--s-5", "--s-6"],
+  tokens: ["--s-5", "--s-6", "--aside"],
   classNameNote: {
     cs: "`className` nebere. Rozvržení JE jeho obsahem — sloupce a jejich prahy drží primitivum.",
     en: "Does not take `className`. Layout IS its content — the primitive holds the columns and their thresholds.",
@@ -103,8 +106,17 @@ export const IngotPageLayoutDoc: IngotDocPage = {
       type: "ReactNode",
       required: false,
       note: {
-        cs: "Postranní rejstřík vlevo, typicky IngotSideNav. Sloupec je sticky.",
-        en: "The side index on the left, typically IngotSideNav. The column is sticky.",
+        cs: "Postranní rejstřík vlevo, typicky IngotSideNav. Od `md` sticky sloupec široký `--aside`; pod `md` sbalený blok nad obsahem. Chodí ve dvojici s `asideLabel` — typ nedovolí jedno bez druhého.",
+        en: "The side index on the left, typically IngotSideNav. From `md` a sticky column `--aside` wide; below `md` a collapsed block above the content. It travels with `asideLabel` — the type does not allow one without the other.",
+      },
+    },
+    {
+      name: "asideLabel",
+      type: "string",
+      required: false,
+      note: {
+        cs: "Jak se sbalený rejstřík jmenuje na úzké obrazovce („Obsah“), už přeložené. S `aside` povinné: pod `md` je rejstřík blok, který čtenář otevírá, a nepojmenovaný blok neotevře nikdo.",
+        en: "What the collapsed index is called on a narrow screen (“Contents”), already translated. Required with `aside`: below `md` the index is a block the reader opens, and an unnamed block is one nobody opens.",
       },
     },
     {
@@ -136,6 +148,11 @@ export const IngotPageLayoutDoc: IngotDocPage = {
         Rejstřík v <IngotCode>aside</IngotCode> stojí PŘED obsahem i v DOM, takže
         klávesnice ho potká první — stejně jako oko.
       </>,
+      <>
+        Na úzké obrazovce je rejstřík v DOM právě jednou. Vykreslit obě podoby a jednu
+        schovat breakpointem by znamenalo každý odkaz v dokumentu dvakrát: odečítač
+        přečte oba a každé <IngotCode>id</IngotCode> uvnitř se srazí samo se sebou.
+      </>,
     ],
     en: [
       <>
@@ -145,6 +162,12 @@ export const IngotPageLayoutDoc: IngotDocPage = {
       <>
         The index in <IngotCode>aside</IngotCode> comes before the content in the DOM
         too, so the keyboard meets it first — same as the eye.
+      </>,
+      <>
+        On a narrow screen the index is in the DOM exactly once. Rendering both shapes
+        and hiding one with a breakpoint would put every link in the document twice: a
+        screen reader reads both, and every <IngotCode>id</IngotCode> inside them
+        collides with itself.
       </>,
     ],
   },
@@ -163,6 +186,36 @@ export const IngotPageLayoutDoc: IngotDocPage = {
       <>
         The <IngotCode>reading</IngotCode> width is the same in every language: it is
         measured by line readability, not by the length of a particular translation.
+      </>,
+    ],
+  },
+  limits: {
+    cs: [
+      <>
+        Rejstřík se pod <IngotCode>md</IngotCode> sbaluje do bloku, ne do tabů. Rejstřík
+        je seznam odkazů neznámé délky; taby jsou pro pevnou hrstku rovnocenných věcí a
+        deset sekcí v liště tabů se posouvá do strany — což je tentýž problém v jiném
+        tvaru.
+      </>,
+      <>
+        O tom, která podoba se vykreslí, rozhoduje <IngotCode>matchMedia</IngotCode>, ne
+        breakpoint v CSS: obě podoby najednou by znamenaly každý odkaz v dokumentu
+        dvakrát. Kde <IngotCode>matchMedia</IngotCode> není (velmi starý prohlížeč),
+        zůstane úzká podoba — ta se vejde všude, široká ne.
+      </>,
+    ],
+    en: [
+      <>
+        Below <IngotCode>md</IngotCode> the index collapses into a block, not into tabs.
+        An index is a list of links of unknown length; tabs are for a fixed handful of
+        peers, and ten sections in a tab bar scroll sideways — which is the same problem
+        in a different shape.
+      </>,
+      <>
+        Which shape renders is decided by <IngotCode>matchMedia</IngotCode> rather than
+        by a CSS breakpoint: both shapes at once would put every link in the document
+        twice. Where <IngotCode>matchMedia</IngotCode> is missing (a very old browser)
+        the narrow shape stays — it fits everywhere, the wide one does not.
       </>,
     ],
   },

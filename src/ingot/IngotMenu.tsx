@@ -1,6 +1,7 @@
 import { useEffect, useRef, type JSX, type RefObject } from "react";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
 import { IngotPopover } from "./IngotPopover";
 import { menuRowClass } from "./menuRow";
@@ -40,7 +41,8 @@ export interface IngotMenuItem {
   icon?: IngotIconName;
   disabled?: boolean;
   /** Irreversible action — red, and always last in its group. */
-  tone?: "default" | "danger";
+  /** Two of the shared six: an item is ordinary, or it destroys something. */
+  tone?: Extract<IngotTone, "neutral" | "danger">;
   /** Draws a divider above this item; a group boundary, not decoration. */
   separatorBefore?: boolean;
   testId?: string;

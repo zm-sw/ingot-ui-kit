@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode } from "react";
+import { useId, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotCheckboxControl } from "./IngotCheckbox";
@@ -142,7 +142,16 @@ export function IngotTable<Row>({
   actions?: (row: Row) => ReactNode;
   /** Translated header of the actions column — rendered for screen readers only. */
   actionsLabel?: string;
-  /** Description of the table for screen readers; rendered as an off-screen `<caption>`. */
+  /**
+   * Description of the table for screen readers; rendered as an off-screen
+   * `<caption>`.
+   *
+   * It also names the scroll box the table sits in. A table wider than the
+   * screen scrolls sideways, and a scroll box a keyboard can reach has to
+   * be named — otherwise the reader lands on "region" and has no idea what
+   * they are inside. Without a caption the box is still reachable, just
+   * unnamed, which is the lesser of the two failures.
+   */
   caption?: string;
   /** Pass-through class of the table (typically `min-w-[40rem]`). */
   className?: string;
@@ -150,6 +159,12 @@ export function IngotTable<Row>({
    * The header stays visible while scrolling — only when a scroll box
    * wraps the table (`max-h-*` + `overflow-y-auto`); outside one `sticky`
    * does nothing.
+   *
+   * With `stickyHeader` the table draws NO sideways scroll box of its
+   * own: any box between the scrollport and a sticky header stops it
+   * sticking. It is not needed either — the caller's box scrolls
+   * horizontally as well, because CSS turns the `visible` axis into
+   * `auto`.
    */
   stickyHeader?: boolean;
   /**
@@ -225,13 +240,19 @@ export function IngotTable<Row>({
     });
   }
 
+  const captionId = useId();
+
   const table = (
     <table
       className={className ? `w-full text-left text-sm ${className}` : "w-full text-left text-sm"}
       aria-busy={loading || undefined}
       data-testid={testId}
     >
-      {caption != null && <caption className="sr-only">{caption}</caption>}
+      {caption != null && (
+        <caption id={captionId} className="sr-only">
+          {caption}
+        </caption>
+      )}
       <thead
         className={
           stickyHeader
@@ -278,7 +299,7 @@ export function IngotTable<Row>({
                     type="button"
                     onClick={() => headerSort(col)}
                     className={cx(
-                      "inline-flex items-center gap-1 uppercase hover:text-ink",
+                      "inline-flex items-center gap-1 rounded-sm uppercase hover:text-ink focus-ring",
                       col.align === "end" && "flex-row-reverse",
                     )}
                   >
@@ -369,10 +390,48 @@ export function IngotTable<Row>({
     </table>
   );
 
-  if (!selectable) return table;
+  /**
+   * The sideways scroll box.
+   *
+   * The table's root used to be a bare `<table>`, and a wrapper appeared
+   * only when rows could be selected — and even that one had no
+   * `overflow`. So a table wider than its column pushed the whole document
+   * sideways: on the doc web it broke out of the demo stage, in an
+   * application every page scrolled horizontally because of one screen's
+   * table. A table is, by its own documentation, the largest design
+   * surface of an admin; it is the one thing guaranteed to be wider than a
+   * phone.
+   *
+   * `tabIndex` is what makes the box reachable without a mouse: a region
+   * that can only be scrolled by dragging is content a keyboard user
+   * cannot read.
+   *
+   * **Not with `stickyHeader`, and that is not an oversight.** Any box
+   * between the scrollport and a `sticky` header stops it sticking —
+   * measured in a browser, with `overflow-y: clip` as well as with `auto`,
+   * so there is no combination of overflow values that gives both. It
+   * costs nothing, because a sticky header only works when the CALLER has
+   * already wrapped the table in `max-h-* overflow-y-auto` — and a box
+   * that scrolls vertically scrolls horizontally too (CSS turns the
+   * `visible` axis into `auto`). A sticky-header table is therefore
+   * already contained; a second box would only take its header away.
+   */
+  const scroller = stickyHeader ? (
+    table
+  ) : (
+    <div
+      className="overflow-x-auto"
+      tabIndex={0}
+      role={caption != null ? "region" : undefined}
+      aria-labelledby={caption != null ? captionId : undefined}
+      data-testid={testId ? `${testId}-scroll` : undefined}
+    >
+      {table}
+    </div>
+  );
 
-  // A wrapper only with selection: without it the root stays `<table>` as
-  // in v1, so consumers keep the DOM their styles and tests hang on.
+  if (!selectable) return scroller;
+
   return (
     <div>
       {selectedKeys.size > 0 && bulkbar != null && (
@@ -383,7 +442,7 @@ export function IngotTable<Row>({
           {bulkbar}
         </div>
       )}
-      {table}
+      {scroller}
     </div>
   );
 }

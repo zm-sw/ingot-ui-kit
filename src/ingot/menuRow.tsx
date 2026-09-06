@@ -44,16 +44,23 @@ export function menuRowClass({
   surface = "panel",
 }: MenuRowState = {}): string {
   const page = surface === "page";
-  if (locked) return cx(page && "border-transparent", "text-ink-4 hover:bg-surface-2 hover:text-ink-3");
-  if (open) return cx(page && "border-transparent", "bg-surface-3 font-medium text-ink");
+  // A row is full width inside a container that scrolls, so its ring is
+  // drawn INSIDE it — an outside ring would be cut off by that container
+  // and a keyboard user would see two edges of a rectangle.
+  const focus = "focus-ring-inset";
+  if (locked)
+    return cx(page && "border-transparent", focus, "text-ink-4 hover:bg-surface-2 hover:text-ink-3");
+  if (open) return cx(page && "border-transparent", focus, "bg-surface-3 font-medium text-ink");
   if (current) {
     return page
-      ? "border-border bg-surface font-medium text-ink shadow-sm"
-      : "bg-surface-2 font-medium text-ink";
+      ? cx(focus, "border-border bg-surface font-medium text-ink shadow-sm")
+      : cx(focus, "bg-surface-2 font-medium text-ink");
   }
-  if (muted) return cx(page && "border-transparent", "text-ink-4 hover:bg-surface-2 hover:text-ink-3");
-  if (dim) return cx(page && "border-transparent", "text-ink-3 hover:bg-surface-2 hover:text-ink");
-  return cx(page && "border-transparent", "text-ink-2 hover:bg-surface-2 hover:text-ink");
+  if (muted)
+    return cx(page && "border-transparent", focus, "text-ink-4 hover:bg-surface-2 hover:text-ink-3");
+  if (dim)
+    return cx(page && "border-transparent", focus, "text-ink-3 hover:bg-surface-2 hover:text-ink");
+  return cx(page && "border-transparent", focus, "text-ink-2 hover:bg-surface-2 hover:text-ink");
 }
 
 /**

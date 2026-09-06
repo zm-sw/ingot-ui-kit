@@ -12,7 +12,11 @@ const demoSource = () => import("@/ingot-docs/demos/IngotMenuDemo?raw");
 export const IngotMenuDoc: IngotDocPage = {
   name: "IngotMenu",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: an item's tone was renamed: `default` is now `neutral`.
+  version: "2.0",
   tag: ".menu",
   tokens: [
     "--surface",
@@ -213,7 +217,7 @@ export const IngotMenuDoc: IngotDocPage = {
         },
         {
           name: "tone",
-          type: '"default" | "danger"',
+          type: 'Extract<IngotTone, "neutral" | "danger">',
           required: false,
           note: {
             cs: "Nevratná akce. Potvrzení dělá IngotConfirm u volajícího.",

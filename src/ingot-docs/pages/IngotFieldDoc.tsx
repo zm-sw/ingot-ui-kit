@@ -19,7 +19,11 @@ export const IngotFieldDoc: IngotDocPage = {
   // line-height) and an optional soft character count under the field.
   // Several lines stay a `type`, not a component of their own: the
   // accessible wiring is the same and two copies of it would drift.
-  version: "1.3",
+  // 1.4 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 1.5 (KAN-956) - optional `labelPlacement="side"`: the label sits
+  // in a column to the left, which is the shape a settings page wants.
+  version: "1.5",
   tag: ".field",
   tokens: [
     "--surface",
@@ -268,6 +272,15 @@ export const IngotFieldDoc: IngotDocPage = {
       note: {
         cs: "Dočasně zamčené pole — ne způsob, jak ukázat hodnotu.",
         en: "A temporarily locked field — not a way to display a value.",
+      },
+    },
+    {
+      name: "labelPlacement",
+      type: '"stacked" | "side"',
+      required: false,
+      note: {
+        cs: "Kde stojí popisek. `stacked` (výchozí) nad polem — tvar formuláře, kde jsou pole tím hlavním na obrazovce. `side` ve sloupci vlevo, což chce stránka nastavení: tam je popisek otázka a pole krátká odpověď, a formulář pod sebou nutí čtenáře číst cikcak. Pod `md` se `side` vrací k `stacked` — sloupec s popisky na telefonu nechá poli asi 150 px.",
+        en: "Where the label sits. `stacked` (the default) above the field — the shape a form has when its fields are the screen. `side` in a column to the left, which is what a settings page wants: there the label is the question and the field one short answer, and a stacked form makes the reader scan a zigzag. Below `md`, `side` folds back to `stacked` — a label column on a phone leaves the field about 150 px.",
       },
     },
     {

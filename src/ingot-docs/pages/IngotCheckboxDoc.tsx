@@ -12,7 +12,9 @@ export const IngotCheckboxDoc: IngotDocPage = {
   status: "beta",
   // 1.1 — the box is the kit's single checkbox control, shared with IngotTable and IngotFieldInput.
   // 1.2 (KAN-842) — forwardRef to the <input>; callers touch nothing.
-  version: "1.2",
+  // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.3",
   tag: ".check",
   tokens: ["--accent", "--ink-2", "--ink-4"],
   classNameNote: {

@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import type { IngotSize, IngotTone } from "./vocabulary";
 
 /**
  * Eyebrow — the kit's small mono caption: uppercase, letter-spaced, set
@@ -20,8 +21,18 @@ import { cx } from "./cx";
  * `className` is for layout only (margins, flex) — colour and type come
  * from `size` and `tone`.
  */
-export type IngotEyebrowTone = "neutral" | "muted" | "accent" | "ok" | "inherit";
-export type IngotEyebrowSize = "sm" | "md";
+/**
+ * Three of the shared six, plus two words that are not tones at all:
+ * `muted` is one step quieter than neutral, and `inherit` leaves the colour
+ * to the parent (a link that changes on hover). Neither would mean anything
+ * on a badge, so they sit beside the vocabulary rather than inside it.
+ */
+export type IngotEyebrowTone =
+  | Extract<IngotTone, "neutral" | "accent" | "ok">
+  | "muted"
+  | "inherit";
+/** No `lg`: an eyebrow that big is a heading. */
+export type IngotEyebrowSize = Extract<IngotSize, "sm" | "md">;
 
 const SIZE: Record<IngotEyebrowSize, string> = {
   sm: "text-[10.5px] font-medium leading-[1.4] tracking-[0.08em]",

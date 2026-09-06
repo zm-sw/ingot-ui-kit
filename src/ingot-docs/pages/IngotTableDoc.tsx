@@ -11,7 +11,11 @@ export const IngotTableDoc: IngotDocPage = {
   name: "IngotTable",
   status: "stable",
   // 1.1 — selection boxes are the kit's shared checkbox control (accent colour, 16px hit size).
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 1.3 (KAN-958) - the table always sits in a sideways scroll box, so a
+  // wide one no longer pushes the whole document sideways.
+  version: "1.3",
   tag: ".table-wrap",
   tokens: [
     "--surface-2",
@@ -371,6 +375,15 @@ export const IngotTableDoc: IngotDocPage = {
   a11y: {
     cs: [
       <>
+        Tabulka sedí ve schránce, která se posouvá do stran, a ta schránka je{" "}
+        <IngotCode>tabIndex=0</IngotCode> — obsah, který jde odrolovat jen taháním myší,
+        je obsah, ke kterému se klávesnice nedostane. Když má tabulka{" "}
+        <IngotCode>caption</IngotCode>, je schránka pojmenovaný{" "}
+        <IngotCode>region</IngotCode>; bez něj zůstane nepojmenovaná, protože přistát na
+        „regionu“, který o sobě nic neříká, je horší než přistát v obyčejném posuvném
+        boxu.
+      </>,
+      <>
         Záhlaví staví primitivum: každá hlavička je{" "}
         <IngotCode>&lt;th scope=&quot;col&quot;&gt;</IngotCode>. Ruční{" "}
         <IngotCode>&lt;thead&gt;</IngotCode> ten <IngotCode>scope</IngotCode> většinou
@@ -407,6 +420,14 @@ export const IngotTableDoc: IngotDocPage = {
       </>,
     ],
     en: [
+      <>
+        The table sits in a box that scrolls sideways, and that box is{" "}
+        <IngotCode>tabIndex=0</IngotCode> — content that can only be scrolled by
+        dragging with a mouse is content a keyboard cannot reach. With a{" "}
+        <IngotCode>caption</IngotCode> the box is a named <IngotCode>region</IngotCode>;
+        without one it stays unnamed, because landing on a "region" that says nothing
+        about itself is worse than landing on a plain scrollable box.
+      </>,
       <>
         The primitive builds the header: every heading is a{" "}
         <IngotCode>&lt;th scope=&quot;col&quot;&gt;</IngotCode>. A hand-rolled{" "}
@@ -491,6 +512,24 @@ export const IngotTableDoc: IngotDocPage = {
   limits: {
     cs: [
       <>
+        <strong>
+          Se `stickyHeader` si tabulka vlastní posuvnou schránku nekreslí.
+        </strong>{" "}
+        Jakákoli schránka mezi rolovací plochou a přilepeným záhlavím ho odlepí —
+        změřeno v prohlížeči, s <IngotCode>clip</IngotCode> i s{" "}
+        <IngotCode>auto</IngotCode>, takže kombinace, která dá obojí, není. Nic tím
+        neztratíš: přilepené záhlaví funguje jen tehdy, když tabulku už obalil volající
+        (<IngotCode>max-h-* overflow-y-auto</IngotCode>), a schránka, která roluje
+        svisle, roluje i vodorovně.
+      </>,
+      <>
+        <strong>Na úzké obrazovce se posouvá, sloupce se neschovávají.</strong> Byla to
+        volba, ne opomenutí. Skrytý sloupec znamená, že data existují a čtenář je nevidí
+        — a nemá jak si o ně říct; navíc by to byl druhý způsob ovládání uvnitř tabulky,
+        která už má výběr řádků a akce. Posun do strany ukáže všechno a je to to, co od
+        široké tabulky na telefonu člověk čeká.
+      </>,
+      <>
         <strong>Řazení dat.</strong> Tabulka kreslí jen stav: pořadí určuje pole{" "}
         <IngotCode>rows</IngotCode> a řadí volající nebo server. Klientský fallback by
         nad stránkovanými daty tiše lhal o celku.
@@ -514,6 +553,23 @@ export const IngotTableDoc: IngotDocPage = {
       </>,
     ],
     en: [
+      <>
+        <strong>With `stickyHeader` the table draws no scroll box of its own.</strong>{" "}
+        Any box between the scrollport and a sticky header stops it sticking — measured
+        in a browser, with <IngotCode>clip</IngotCode> as well as{" "}
+        <IngotCode>auto</IngotCode>, so there is no combination that gives both. Nothing
+        is lost by it: a sticky header only works when the caller has already wrapped
+        the table (<IngotCode>max-h-* overflow-y-auto</IngotCode>), and a box that
+        scrolls vertically scrolls horizontally too.
+      </>,
+      <>
+        <strong>On a narrow screen it scrolls; columns are not hidden.</strong> That was
+        a choice, not an omission. A hidden column means the data exists and the reader
+        cannot see it — with no way to ask for it — and it would be a second way of
+        operating a table that already has row selection and row actions. Scrolling
+        sideways shows everything, and it is what a person expects from a wide table on
+        a phone.
+      </>,
       <>
         <strong>Sorting the data.</strong> The table only draws the state: the order is
         whatever <IngotCode>rows</IngotCode> holds and the caller or the server sorts. A

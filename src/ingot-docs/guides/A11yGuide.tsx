@@ -236,19 +236,30 @@ function FocusAndKeys({ lang }: { lang: DocLang }): JSX.Element {
       <p>
         {lang === "cs" ? (
           <>
-            Prstenec fokusu je 2px v barvě <IngotCode>--accent</IngotCode> s odsazením
-            2px. Vstup dostane navíc měkký prstenec 3px v{" "}
-            <IngotCode>--accent-bg</IngotCode>, aby bylo pole poznat i na zvednuté
-            ploše. <IngotCode>outline: none</IngotCode> bez náhrady se nepoužívá nikdy —
-            je to nejrychlejší způsob, jak obrazovku pro klávesnici zavřít.
+            Prstenec fokusu je token, ne rozhodnutí každé komponenty:{" "}
+            <IngotCode>--focus-ring</IngotCode> je šířka,{" "}
+            <IngotCode>--focus-ring-offset</IngotCode> odsazení a barva je{" "}
+            <IngotCode>--accent</IngotCode>, takže prstenec jde s vybranou rodinou
+            akcentu. Mezera mezi prvkem a prstencem se maluje barvou stránky — proto je
+            prstenec vidět na tmavém tlačítku stejně jako na světlém. Ovládací prvek,
+            který stojí sám, dostane prstenec vně; řádek přes celou šířku uvnitř
+            posuvného seznamu ho dostane dovnitř, jinak by ho ten seznam ustřihl.{" "}
+            <IngotCode>outline: none</IngotCode> bez náhrady se nepoužívá nikdy — je to
+            nejrychlejší způsob, jak obrazovku pro klávesnici zavřít.
           </>
         ) : (
           <>
-            The focus ring is 2px of <IngotCode>--accent</IngotCode> with a 2px offset.
-            An input adds a soft 3px ring in <IngotCode>--accent-bg</IngotCode>, so the
-            field stays legible on a raised surface.{" "}
-            <IngotCode>outline: none</IngotCode> without a replacement is never used —
-            it is the fastest way to close a screen to keyboard users.
+            The focus ring is a token rather than each component's own idea of one:{" "}
+            <IngotCode>--focus-ring</IngotCode> is the width,{" "}
+            <IngotCode>--focus-ring-offset</IngotCode> the gap, and the colour is{" "}
+            <IngotCode>--accent</IngotCode> — so the ring follows the chosen accent
+            family. The gap between the control and the ring is painted in the page
+            colour, which is what makes the ring read on a dark button and a light one
+            alike. A control standing on its own takes the ring outside it; a full-width
+            row inside a scrolling list takes it inside, because that list would
+            otherwise cut it off. <IngotCode>outline: none</IngotCode> without a
+            replacement is never used — it is the fastest way to close a screen to
+            keyboard users.
           </>
         )}
       </p>

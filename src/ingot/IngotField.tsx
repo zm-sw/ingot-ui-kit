@@ -67,6 +67,7 @@ export type IngotFieldType =
   | "textarea";
 
 export function IngotField({
+  labelPlacement = "stacked",
   label,
   value,
   onChange,
@@ -134,6 +135,19 @@ export function IngotField({
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  /**
+   * Where the label sits.
+   *
+   * `stacked` (the default) puts it above the field — the shape a form
+   * has when its fields are the screen. `side` puts it in a column to the
+   * left, which is what a settings page wants: there the label is the
+   * question and the field is one short answer, and a stacked form makes
+   * the reader scan a zigzag down the page instead of a list.
+   *
+   * `side` folds back to stacked below `md`, because a label column on a
+   * phone leaves the field about 150 px wide.
+   */
+  labelPlacement?: "stacked" | "side";
   /** `data-testid` of the input — tests reach for what is operated. */
   testId?: string;
 }): JSX.Element {
@@ -149,14 +163,40 @@ export function IngotField({
     error != null && errorId,
   );
 
+  const side = labelPlacement === "side";
+
   return (
-    <div className="space-y-1">
-      <label htmlFor={id} className="block text-xs font-medium text-ink-2">
+    // In `side` the field is a two-column grid whose SECOND column holds
+    // everything under the label — the frame, the hint, the count and the
+    // error — so all four line up with the input rather than with the
+    // label. `items-start` keeps the label on the first line of a textarea
+    // instead of centred against its whole height.
+    <div
+      className={cx(
+        side
+          ? "grid grid-cols-1 items-start gap-x-4 gap-y-1 md:grid-cols-[12rem_1fr]"
+          : "space-y-1",
+      )}
+    >
+      <label
+        htmlFor={id}
+        className={cx(
+          "block text-xs font-medium text-ink-2",
+          // Nudged down onto the field's own first line: the control is
+          // 34 px tall and the label is one line of 12 px text.
+          side && "md:pt-2",
+        )}
+      >
         {label}
         {optionalLabel != null && (
           <span className="ml-1 font-normal text-ink-3">{optionalLabel}</span>
         )}
       </label>
+      {/* Everything under the label in one wrapper — in `side` it is the
+          second grid column, in `stacked` it is what the rhythm below the
+          label applies to. It carries the spacing in both, so the two
+          shapes differ in where things sit, not in how far apart. */}
+      <div className="space-y-1">
       {/* The frame (radius, border, focus ring) comes from inputChrome, the
           same source as IngotSelect and IngotSearchInput, so a field next
           to a filter select has the same box. The frame is focus-within
@@ -243,6 +283,7 @@ export function IngotField({
           {error}
         </p>
       )}
+      </div>
     </div>
   );
 }

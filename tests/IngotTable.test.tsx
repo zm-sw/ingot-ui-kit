@@ -271,10 +271,16 @@ describe("IngotTable row selection (KAN-654)", () => {
     selectRowLabel: (row: PropRow) => `Vybrat ${row.label}`,
   });
 
-  it("without selection props nothing changes — the root stays <table>", () => {
+  it("without selection props there is no checkbox, only the scroll box", () => {
+    // The root used to be a bare `<table>` here, kept that way so
+    // conversions from v1 needed no rewrite. It is now always the scroll
+    // box: a table wider than the screen otherwise pushes the whole
+    // document sideways, and a table is the one thing guaranteed to be
+    // wider than a phone. Nothing a caller passes changed.
     const { container } = renderPropTable();
 
-    expect(container.firstElementChild!.tagName).toBe("TABLE");
+    expect(container.firstElementChild!.tagName).toBe("DIV");
+    expect(container.querySelector("table")).not.toBeNull();
     expect(screen.queryByRole("checkbox")).toBeNull();
   });
 
@@ -455,5 +461,91 @@ describe("IngotTable stickyHeader", () => {
     const { container } = renderPropTable({ stickyHeader: true });
 
     expect(container.querySelector("th")!.getAttribute("scope")).toBe("col");
+  });
+});
+
+describe("a table wider than the screen (KAN-958)", () => {
+  /**
+   * The root used to be a bare `<table>`, and the only wrapper that ever
+   * appeared — with row selection — had no `overflow` on it. So a table
+   * wider than its column pushed the whole document sideways: on the doc
+   * web it broke out of the demo stage, and in an application every page
+   * scrolled horizontally because of one screen's table.
+   *
+   * A table is, by its own documentation, the largest design surface of an
+   * admin. It is the one thing guaranteed to be wider than a phone.
+   */
+  const wideColumns: readonly IngotColumn<PropRow>[] = Array.from(
+    { length: 9 },
+    (_unused, index) => ({
+      key: `c${index}`,
+      header: `Sloupec ${index + 1}`,
+      cell: (row: PropRow) => `${row.label} ${index}`,
+    }),
+  );
+
+  const renderWide = (props: Record<string, unknown> = {}) =>
+    render(
+      <IngotTable
+        columns={wideColumns}
+        rows={[{ id: "a", label: "Řádek", blocked: false }]}
+        rowKey={(row) => row.id}
+        testId="wide"
+        {...props}
+      />,
+    );
+
+  it("keeps the sideways scroll inside itself", () => {
+    // The default. A table with no sticky header has no caller-supplied
+    // scroll box around it, so it needs its own.
+    renderWide();
+    const box = screen.getByTestId("wide-scroll");
+    expect(box.className).toContain("overflow-x-auto");
+    expect(box).toContainElement(screen.getByTestId("wide"));
+  });
+
+  it("stands aside for a sticky header, which is already inside a scroll box", () => {
+    // Any box between the scrollport and a sticky header stops it
+    // sticking — measured in a browser, with `overflow-y: clip` as well as
+    // with `auto`, so no combination of overflow values gives both.
+    //
+    // It costs nothing. A sticky header only works when the CALLER has
+    // already wrapped the table in `max-h-* overflow-y-auto`, and a box
+    // that scrolls vertically scrolls horizontally too — CSS turns the
+    // `visible` axis into `auto`. So that table is already contained, and
+    // a second box would only take its header away.
+    const { container } = renderWide({ stickyHeader: true });
+    expect(container.querySelector("[data-testid='wide-scroll']")).toBeNull();
+    expect(container.firstElementChild!.tagName).toBe("TABLE");
+  });
+
+  it("can be scrolled without a mouse", () => {
+    // A region that can only be scrolled by dragging is content a keyboard
+    // user cannot read.
+    renderWide();
+    expect(screen.getByTestId("wide-scroll")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("names the scroll box with the table's caption", () => {
+    renderWide({ caption: "Zakázky ve výrobě" });
+    const box = screen.getByRole("region", { name: "Zakázky ve výrobě" });
+    expect(box).toBe(screen.getByTestId("wide-scroll"));
+  });
+
+  it("leaves the box unnamed rather than announcing an unnamed region", () => {
+    // Landing on a "region" that says nothing about itself is worse than
+    // landing on a plain scrollable box.
+    renderWide();
+    expect(screen.getByTestId("wide-scroll")).not.toHaveAttribute("role");
+  });
+
+  it("scrolls with selection too, where the only wrapper used to be", () => {
+    renderWide({
+      selectedKeys: new Set<string>(),
+      onSelectedKeysChange: () => {},
+      selectAllLabel: "Vybrat vše",
+      selectRowLabel: () => "Vybrat řádek",
+    });
+    expect(screen.getByTestId("wide-scroll").className).toContain("overflow-x-auto");
   });
 });

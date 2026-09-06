@@ -21,6 +21,12 @@
  * longer live in this repository. The `version-guard` CI check refuses a
  * change to `src/ingot/` that does not move a doc-page version.
  */
+// --- the kit's vocabulary ---------------------------------------------
+// `size` had four different types across five primitives and `tone` five
+// enumerations across eight. The same word meant something different in
+// each, which is the failure a design system exists to prevent.
+export type { IngotSize, IngotTone } from "./vocabulary";
+
 // --- kit-wide defaults --------------------------------------------------
 //
 // The kit has no translation namespace. The handful of labels a primitive
@@ -188,6 +194,32 @@ export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
 export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
+// The frame around the page layout. It used to be documented as "held by
+// the shell", and no shell existed — so every application wrote its own
+// width and they were not the same width.
+export { IngotAppFrame, INGOT_FRAME_ROW } from "./IngotAppFrame";
+// The grid inside a block. `IngotPageLayout` says outright this is not its
+// job; until now nothing else took it, so every screen invented its own
+// gap and its own folding point.
+export {
+  IngotColumns,
+  IngotColumnsFull,
+  type IngotColumnsCount,
+} from "./IngotColumns";
+// The bar under a long form. Sticky rather than fixed, so it reserves its
+// own height instead of covering the last field.
+export { IngotActionBar } from "./IngotActionBar";
+// Loading states. Until now a screen loading data was a blank area and
+// then a jump, and every screen invented its own way of saying so.
+export { IngotSkeleton, type IngotSkeletonShape } from "./IngotSkeleton";
+export { IngotSpinner, type IngotSpinnerSize } from "./IngotSpinner";
+// The facts about a record, and the person beside them. Both were drawn by
+// hand in every screen that needed them, three different ways each.
+export {
+  IngotDescriptionList,
+  type IngotDescriptionItem,
+} from "./IngotDescriptionList";
+export { IngotAvatar, type IngotAvatarSize } from "./IngotAvatar";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------

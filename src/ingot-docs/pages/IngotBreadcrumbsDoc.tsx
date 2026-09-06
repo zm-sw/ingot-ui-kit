@@ -11,7 +11,9 @@ export const IngotBreadcrumbsDoc: IngotDocPage = {
   name: "IngotBreadcrumbs",
   status: "stable",
   // 1.1 — caption set by IngotEyebrow, the kit's shared mono label.
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.2",
   tag: ".crumbs",
   tokens: ["--ink", "--ink-3", "--ink-4", "--font-mono"],
   classNameNote: {

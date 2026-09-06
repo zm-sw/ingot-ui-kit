@@ -129,6 +129,9 @@ export function IngotSegmented({
             onClick={() => onChange(option.value)}
             className={cx(
               "grid h-6 min-w-7 place-items-center rounded-[5px] px-2 text-xs font-medium",
+              // Same as the tabs: one tab stop, so the ring belongs on
+              // the option the arrows have moved to.
+              "focus-ring",
               active
                 ? "bg-surface text-ink shadow-sm"
                 : "text-ink-3 hover:text-ink",

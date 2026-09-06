@@ -4,6 +4,7 @@ import type { DocLang, Localized } from "@/ingot-docs/lang";
 const TEXT: Localized<Record<string, string>> = {
   cs: {
     navLabel: "Obsah nastavení",
+    asideLabel: "Obsah",
     profile: "Profil firmy",
     tax: "Daňové údaje",
     numbering: "Číslování dokladů",
@@ -15,6 +16,7 @@ const TEXT: Localized<Record<string, string>> = {
   },
   en: {
     navLabel: "Settings contents",
+    asideLabel: "Contents",
     profile: "Company profile",
     tax: "Tax details",
     numbering: "Document numbering",
@@ -30,6 +32,7 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
   const t = TEXT[lang];
   return (
     <IngotPageLayout
+      asideLabel={t.asideLabel}
       aside={
         <IngotSideNav
           label={t.navLabel}

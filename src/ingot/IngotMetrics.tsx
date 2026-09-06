@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 import { IngotEyebrow } from "./IngotEyebrow";
 
 /**
@@ -36,7 +37,8 @@ export interface IngotMetric {
   /** A sentence under the value. Only in the ``strip`` variant. */
   note?: ReactNode;
   /** A critical value gets a colour. Default is neutral. */
-  tone?: "neutral" | "warn" | "danger";
+  /** Three of the shared six: a figure is ordinary, worth watching, or bad. */
+  tone?: Extract<IngotTone, "neutral" | "warn" | "danger">;
   /**
    * Trend line — raw values over time, left to right. Only in the
    * ``strip`` variant. Drawn normalised (the shape speaks, not the scale)

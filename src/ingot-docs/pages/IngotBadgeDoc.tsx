@@ -12,7 +12,9 @@ export const IngotBadgeDoc: IngotDocPage = {
   status: "stable",
   // 1.1 (KAN-945) — the aside on what a badge is NOT said the kit had no
   // primitive for a count. It has one now, and the note names it.
-  version: "1.1",
+  // 1.2 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.2",
   tag: ".badge",
   tokens: [
     "--surface-2",

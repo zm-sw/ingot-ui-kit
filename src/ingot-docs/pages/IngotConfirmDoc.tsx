@@ -13,7 +13,11 @@ const demoSource = () => import("@/ingot-docs/demos/IngotConfirmDemo?raw");
 export const IngotConfirmDoc: IngotDocPage = {
   name: "IngotConfirm",
   status: "stable",
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 1.3 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.3",
   tag: ".confirm",
   tokens: ["--bg", "--border", "--ink-2", "--warn", "--r-md"],
   classNameNote: {

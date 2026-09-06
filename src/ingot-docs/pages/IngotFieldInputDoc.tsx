@@ -19,7 +19,9 @@ export const IngotFieldInputDoc: IngotDocPage = {
   // 2.0 (KAN-841) — the SECRET_PLACEHOLDER_* exports are gone; the secret
   // placeholders come from IngotProvider (English without one). A caller
   // that imported the constants reads INGOT_LABELS instead.
-  version: "2.1",
+  // 2.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "2.2",
   tag: ".input",
   tokens: [
     "--surface",

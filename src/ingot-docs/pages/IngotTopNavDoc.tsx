@@ -35,7 +35,11 @@ export const IngotTopNavDoc: IngotDocPage = {
   // 2.9 (KAN-845) — a click on an OPEN section closes it. Hover has no
   // meaning on a touch screen, where a tap somewhere else used to be the
   // only way out.
-  version: "2.10",
+  // 2.11 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 2.12 (KAN-960) - the account's circle is `IngotAvatar` rather than a
+  // span drawn here; it renders the same and is now one shape kit-wide.
+  version: "2.12",
   tag: ".topnav",
   tokens: [
     "--surface",

@@ -25,15 +25,20 @@ import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
 import { IngotAccentSwatchesDoc } from "@/ingot-docs/pages/IngotAccentSwatchesDoc";
+import { IngotActionBarDoc } from "@/ingot-docs/pages/IngotActionBarDoc";
+import { IngotAppFrameDoc } from "@/ingot-docs/pages/IngotAppFrameDoc";
 import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
+import { IngotAvatarDoc } from "@/ingot-docs/pages/IngotAvatarDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
 import { IngotCalloutDoc } from "@/ingot-docs/pages/IngotCalloutDoc";
 import { IngotCheckboxDoc } from "@/ingot-docs/pages/IngotCheckboxDoc";
 import { IngotChipDoc } from "@/ingot-docs/pages/IngotChipDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
+import { IngotColumnsDoc } from "@/ingot-docs/pages/IngotColumnsDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotCountPillDoc } from "@/ingot-docs/pages/IngotCountPillDoc";
+import { IngotDescriptionListDoc } from "@/ingot-docs/pages/IngotDescriptionListDoc";
 import { IngotDisclosureDoc } from "@/ingot-docs/pages/IngotDisclosureDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
 import { IngotEmptyStateDoc } from "@/ingot-docs/pages/IngotEmptyStateDoc";
@@ -67,6 +72,8 @@ import { IngotRadioGroupDoc } from "@/ingot-docs/pages/IngotRadioGroupDoc";
 import { IngotRowActionsDoc } from "@/ingot-docs/pages/IngotRowActionsDoc";
 import { IngotSearchInputDoc } from "@/ingot-docs/pages/IngotSearchInputDoc";
 import { IngotSectionDoc } from "@/ingot-docs/pages/IngotSectionDoc";
+import { IngotSkeletonDoc } from "@/ingot-docs/pages/IngotSkeletonDoc";
+import { IngotSpinnerDoc } from "@/ingot-docs/pages/IngotSpinnerDoc";
 import { IngotSegmentedDoc } from "@/ingot-docs/pages/IngotSegmentedDoc";
 import { IngotSelectDoc } from "@/ingot-docs/pages/IngotSelectDoc";
 import { IngotSideNavDoc } from "@/ingot-docs/pages/IngotSideNavDoc";
@@ -149,7 +156,10 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   // and Card would end up before everything else because they have no
   // prefix. A test guards the order; it is not hit by hand.
   IngotAccentSwatchesDoc,
+  IngotActionBarDoc,
+  IngotAppFrameDoc,
   IngotAttentionPanelDoc,
+  IngotAvatarDoc,
   IngotBadgeDoc,
   IngotBreadcrumbsDoc,
   ButtonDoc,
@@ -158,8 +168,10 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotCheckboxDoc,
   IngotChipDoc,
   IngotCodeDoc,
+  IngotColumnsDoc,
   IngotConfirmDoc,
   IngotCountPillDoc,
+  IngotDescriptionListDoc,
   IngotDisclosureDoc,
   IngotDrawerDoc,
   IngotEmptyStateDoc,
@@ -196,6 +208,8 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotSegmentedDoc,
   IngotSelectDoc,
   IngotSideNavDoc,
+  IngotSkeletonDoc,
+  IngotSpinnerDoc,
   IngotStepCardDoc,
   IngotSwitchDoc,
   IngotTableDoc,

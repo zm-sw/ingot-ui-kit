@@ -16,7 +16,9 @@ export const IngotSearchInputDoc: IngotDocPage = {
   // 1.2 — shared input chrome: accent focus ring, Button-md height.
   // 1.4 (KAN-952) — optional `combobox`, for a search that drives its own
   // result list. A field without it renders exactly as before.
-  version: "1.4",
+  // 1.5 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.5",
   tag: ".search",
   tokens: [
     "--surface",

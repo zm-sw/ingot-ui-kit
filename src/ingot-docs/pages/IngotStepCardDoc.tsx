@@ -12,7 +12,11 @@ export const IngotStepCardDoc: IngotDocPage = {
   status: "beta",
   // 1.2 — caption set by IngotEyebrow, the kit's shared mono label.
   // 1.3 — collapse toggle is the kit's shared icon button.
-  version: "1.3",
+  // 1.4 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  // 1.5 (KAN-962) - one vocabulary for `size` and `tone` across the
+  // kit: the type narrows the shared one instead of repeating its members.
+  version: "1.5",
   tag: ".stepcard",
   tokens: [
     "--surface",

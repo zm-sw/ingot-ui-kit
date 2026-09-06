@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type JSX } from "react";
 import { createPortal } from "react-dom";
 
 import { cx } from "./cx";
+import type { IngotTone } from "./vocabulary";
 import { IngotIcon } from "./IngotIcon";
 import { MENU_LAYER } from "./modalLayer";
 import { useIngotLabels } from "./IngotProvider";
@@ -54,7 +55,8 @@ export interface IngotToastOptions {
    * ``danger`` = an operation error ("Saving failed."). NOT form
    * validation — that belongs to the field, not the toast.
    */
-  tone?: "default" | "danger";
+  /** Two of the shared six: a toast reports, or it reports a failure. */
+  tone?: Extract<IngotTone, "neutral" | "danger">;
   /** Undo action. Adds a button and extends the toast's life to 8 s. */
   undo?: () => void;
   /**
@@ -94,7 +96,7 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
   const {
     id,
     text,
-    tone = "default",
+    tone = "neutral",
     undo,
     undoLabel = labels.toastUndo,
   } = item;
@@ -149,7 +151,7 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
         type="button"
         aria-label={labels.toastClose}
         onClick={() => dismiss(id)}
-        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-ring-inset"
         data-testid="ingot-toast-close"
       >
         <IngotIcon name="close" size={14} />
