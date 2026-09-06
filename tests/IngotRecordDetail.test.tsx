@@ -24,9 +24,7 @@ describe("the facts about a record", () => {
   ];
 
   it("says which label names which value, not just eight texts in a row", () => {
-    const { container } = render(
-      <IngotDescriptionList items={items} testId="dl" />,
-    );
+    const { container } = render(<IngotDescriptionList items={items} testId="dl" />);
     // A grid of spans looks identical and tells a screen reader nothing.
     expect(container.querySelector("dl")).not.toBeNull();
     expect(container.querySelectorAll("dt")).toHaveLength(2);
@@ -79,9 +77,7 @@ describe("the person beside them", () => {
     // A broken or slow image leaves a letter showing rather than an empty
     // circle, and the picture itself says nothing — the wrapper has the
     // name and a second one would read the person twice.
-    render(
-      <IngotAvatar initials="JM" label="Jan Marek" src="/jm.png" testId="av" />,
-    );
+    render(<IngotAvatar initials="JM" label="Jan Marek" src="/jm.png" testId="av" />);
     const avatar = screen.getByTestId("av");
     expect(avatar).toHaveTextContent("JM");
     const image = avatar.querySelector("img");
