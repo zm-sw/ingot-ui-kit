@@ -13,6 +13,7 @@ const TEXT: Localized<Record<string, string>> = {
     note: "Poznámka pro výrobu",
     optional: "— nepovinné",
     notePlaceholder: "Např. odjehlit hrany",
+    noteHint: "Nejvýše 160 znaků; delší poznámku zkrátí tisková sestava.",
   },
   en: {
     quantity: "Piece count",
@@ -23,6 +24,7 @@ const TEXT: Localized<Record<string, string>> = {
     note: "Note for the shop floor",
     optional: "— optional",
     notePlaceholder: "e.g. deburr the edges",
+    noteHint: "At most 160 characters; the print sheet shortens a longer note.",
   },
 };
 
@@ -55,6 +57,10 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
         label={t.note}
         value={note}
         onChange={setNote}
+        type="textarea"
+        rows={3}
+        counterMax={160}
+        hint={t.noteHint}
         optionalLabel={t.optional}
         placeholder={t.notePlaceholder}
         testId="docs-field-note"

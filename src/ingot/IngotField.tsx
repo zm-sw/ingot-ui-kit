@@ -4,7 +4,23 @@ import { cx } from "./cx";
 import { INPUT_PAD, inputFrameChrome } from "./inputChrome";
 
 /**
- * Labelled text field — the hand-written building block of ordinary forms.
+ * Labelled text field — the hand-written building block of ordinary forms,
+ * on one line or on several.
+ *
+ * ## Why several lines are a TYPE and not a component of their own
+ *
+ * A separate `IngotTextArea` was the obvious shape, and it was the wrong
+ * one. Everything a multi-line field needs from the kit — the `label for`
+ * binding, `aria-describedby`, `aria-invalid`, the frame that takes focus
+ * as a whole — is the same wiring as on one line; only the element inside
+ * the frame differs. Two components would have meant two copies of that
+ * wiring, and the copies drift: the day someone fixes the described-by
+ * order on one, the other keeps the old one and nobody notices, because
+ * both look right.
+ *
+ * The cost of the decision is real and small: `rows` says nothing on a
+ * one-line field. That is one prop that is ignored, against one accessible
+ * form contract that cannot fall out of step with itself.
  *
  * **Not `IngotFieldInput`.** That one is schema-driven: it takes a field
  * description (`IngotFieldSpec`) and renders only the input, deliberately
@@ -60,6 +76,7 @@ export function IngotField({
   error,
   affix,
   mono = false,
+  counterMax,
   optionalLabel,
   placeholder,
   required = false,
@@ -90,6 +107,22 @@ export function IngotField({
   affix?: ReactNode;
   /** Mono + `tabular-nums` for codes and numbers read down a column. */
   mono?: boolean;
+  /**
+   * Draws a soft character count under the field — "128 / 160".
+   *
+   * **Soft on purpose.** It does not cut the text off, does not set
+   * `maxLength` and does not turn the field into an error: the limits are
+   * the server's and it is the one that reports breaking them, through
+   * `error`. A counter that silently swallowed the 161st character would
+   * lose a sentence the writer already typed.
+   *
+   * Two digits and a slash, so nothing here needs translating. The count
+   * is decoration for the eye and is hidden from a screen reader — a
+   * number that changes on every keystroke would talk over the typing.
+   * The limit itself belongs in `hint`, as a sentence, which is what
+   * `aria-describedby` carries.
+   */
+  counterMax?: number;
   /**
    * Translated "— optional" next to the label.
    *
@@ -146,7 +179,10 @@ export function IngotField({
             aria-invalid={error != null || undefined}
             aria-describedby={describedBy || undefined}
             className={cx(
-              "w-full resize-y bg-transparent outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
+              // min-height and line-height come from the handoff's
+              // `.textarea`: a two-row field that collapses under the
+              // reading height is a box nobody writes a paragraph in.
+              "min-h-[88px] w-full resize-y bg-transparent leading-[1.55] outline-none placeholder:text-ink-4 disabled:cursor-not-allowed disabled:text-ink-4",
               INPUT_PAD,
               mono && "font-mono tabular-nums",
             )}
@@ -177,10 +213,30 @@ export function IngotField({
           </span>
         )}
       </div>
-      {hint != null && (
-        <p id={hintId} className="text-xs text-ink-3">
-          {hint}
-        </p>
+      {/* Hint and count share one line: the count is an afterthought to
+          the hint, not a second remark under it. `justify-between` keeps
+          the count on the right even when there is no hint at all. */}
+      {(hint != null || counterMax !== undefined) && (
+        <div className="flex items-baseline justify-between gap-3">
+          {hint != null ? (
+            <p id={hintId} className="text-xs text-ink-3">
+              {hint}
+            </p>
+          ) : (
+            <span />
+          )}
+          {counterMax !== undefined && (
+            // aria-hidden: see the note on counterMax. The sentence a
+            // screen reader needs is the hint, and it does not move.
+            <span
+              aria-hidden
+              className="shrink-0 font-mono text-xs tabular-nums text-ink-3"
+              data-testid={testId ? `${testId}-counter` : undefined}
+            >
+              {value.length} / {counterMax}
+            </span>
+          )}
+        </div>
       )}
       {error != null && (
         <p id={errorId} className="text-xs text-danger">

@@ -130,3 +130,91 @@ describe("IngotField", () => {
     expect(input.labels?.[0]?.textContent).toBe("Poznámka pro výrobu— nepovinné");
   });
 });
+
+describe("IngotField on several lines", () => {
+  it("keeps the whole accessible contract of the one-line field", async () => {
+    const user = userEvent.setup();
+    render(
+      <Controlled
+        label="Poznámka pro výrobu"
+        type="textarea"
+        rows={3}
+        hint="Nejvýše 160 znaků."
+        testId="note"
+      />,
+    );
+
+    // The point of keeping several lines a type rather than a component of
+    // its own: exactly one wiring to get right, measured the same way.
+    const area = screen.getByLabelText("Poznámka pro výrobu");
+    expect(area.tagName).toBe("TEXTAREA");
+    expect(area).toBe(screen.getByTestId("note"));
+
+    const describedBy = area.getAttribute("aria-describedby") as string;
+    expect(document.getElementById(describedBy)?.textContent).toBe(
+      "Nejvýše 160 znaků.",
+    );
+
+    await user.type(area, "Odjehlit hrany");
+    expect(area).toHaveValue("Odjehlit hrany");
+  });
+
+  it("marks an error by aria-invalid, not by the red alone", () => {
+    render(
+      <Controlled label="Perex" type="textarea" error="Perex chybí." testId="perex" />,
+    );
+
+    const area = screen.getByTestId("perex");
+    expect(area).toHaveAttribute("aria-invalid", "true");
+    const describedBy = area.getAttribute("aria-describedby") as string;
+    expect(document.getElementById(describedBy)?.textContent).toBe("Perex chybí.");
+  });
+});
+
+describe("the character count", () => {
+  it("counts what is typed and never truncates it", async () => {
+    const user = userEvent.setup();
+    render(<Controlled label="Perex" type="textarea" counterMax={5} testId="perex" />);
+
+    expect(screen.getByTestId("perex-counter")).toHaveTextContent("0 / 5");
+
+    // Past the limit the field keeps every character: the limit belongs to
+    // the server, and a counter that swallowed the sixth one would lose a
+    // word the writer already typed.
+    await user.type(screen.getByTestId("perex"), "sedm zn");
+    expect(screen.getByTestId("perex")).toHaveValue("sedm zn");
+    expect(screen.getByTestId("perex-counter")).toHaveTextContent("7 / 5");
+    expect(screen.getByTestId("perex")).not.toHaveAttribute("maxlength");
+  });
+
+  it("is hidden from a screen reader — the limit is a sentence in the hint", () => {
+    render(
+      <Controlled
+        label="Perex"
+        type="textarea"
+        hint="Nejvýše 160 znaků."
+        counterMax={160}
+        testId="perex"
+      />,
+    );
+
+    // A number that changes on every keystroke would talk over the typing.
+    expect(screen.getByTestId("perex-counter")).toHaveAttribute("aria-hidden", "true");
+
+    const area = screen.getByTestId("perex");
+    const texts = (area.getAttribute("aria-describedby") as string)
+      .split(" ")
+      .map((id) => document.getElementById(id)?.textContent);
+    expect(texts).toEqual(["Nejvýše 160 znaků."]);
+  });
+
+  it("is drawn without a hint too, and left out when nobody asked for it", () => {
+    const { rerender } = render(
+      <Controlled label="Perex" counterMax={40} testId="perex" />,
+    );
+    expect(screen.getByTestId("perex-counter")).toBeInTheDocument();
+
+    rerender(<Controlled label="Perex" testId="perex" />);
+    expect(screen.queryByTestId("perex-counter")).not.toBeInTheDocument();
+  });
+});
