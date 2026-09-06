@@ -200,6 +200,9 @@ export {
   IngotColumnsFull,
   type IngotColumnsCount,
 } from "./IngotColumns";
+// The bar under a long form. Sticky rather than fixed, so it reserves its
+// own height instead of covering the last field.
+export { IngotActionBar } from "./IngotActionBar";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------
