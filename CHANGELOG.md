@@ -9,6 +9,14 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v1.2.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.1.1 → v1.2.0).
+
+- New primitives: IngotAccentSwatches, IngotCallout, IngotEyebrow, IngotMarketingComparison, IngotMarketingCta, IngotMarketingFaq, IngotMarketingPricing, IngotMarketingSectionHead, IngotMarketingSegments, IngotMarketingSteps, IngotMarketingTri, IngotMenu, IngotPopover, IngotProvider, IngotRadioGroup, IngotSegmented, IngotSwitch, IngotTooltip.
+- Major bump: IngotFieldInput, IngotForm.
+- Changed components: Button, IngotBreadcrumbs, IngotCheckbox, IngotConfirm, IngotDisclosure, IngotDrawer, IngotField, IngotFieldInput, IngotForm, IngotIcon, IngotList, IngotMegaMenu, IngotMetrics, IngotModal, IngotOpIcon, IngotPageHint, IngotRowActions, IngotSearchInput, IngotSelect, IngotSideNav, IngotStepCard, IngotTable, IngotToast, IngotTopNav.
+
 ## v1.1.1 — 2026-09-04
 
 Automatic release from the doc page registry (v1.1.0 → v1.1.1).
