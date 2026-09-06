@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v2.0.1",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v2.0.0 → v2.0.1).\nChanged components: Button, Card, IngotAccentSwatches, IngotChip, IngotConfirm, IngotDrawer, IngotField, IngotFieldInput, IngotModal, IngotOptionCard, IngotPopover, IngotSearchInput, IngotSelect, IngotStepCard, IngotSwitch, IngotToast, IngotTooltip."
+    },
+    {
       "tag": "v2.0.0",
       "date": "2026-09-06",
       "notes": "Automatic release from the doc page registry (v1.3.0 → v2.0.0).\nNew primitives: IngotActionBar, IngotAppFrame, IngotAvatar, IngotColumns, IngotDescriptionList, IngotSkeleton, IngotSpinner.\nMajor bump: Card, IngotCallout, IngotMenu, IngotPageLayout, IngotToast.\nChanged components: Button, Card, IngotAccentSwatches, IngotBadge, IngotBreadcrumbs, IngotCallout, IngotCheckbox, IngotChip, IngotConfirm, IngotDisclosure, IngotDrawer, IngotEyebrow, IngotField, IngotFieldInput, IngotForm, IngotMarketingFaq, IngotMegaMenu, IngotMenu, IngotMetrics, IngotModal, IngotOptionCard, IngotPageHint, IngotPageLayout, IngotRadioGroup, IngotRowActions, IngotSearchInput, IngotSegmented, IngotSelect, IngotSideNav, IngotStepCard, IngotSwitch, IngotTable, IngotTabs, IngotToast, IngotTopNav.\nKit epoch raised by a release!: commit."

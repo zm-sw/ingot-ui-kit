@@ -9,6 +9,12 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.0.1 — 2026-09-06
+
+Automatic release from the doc page registry (v2.0.0 → v2.0.1).
+
+- Changed components: Button, Card, IngotAccentSwatches, IngotChip, IngotConfirm, IngotDrawer, IngotField, IngotFieldInput, IngotModal, IngotOptionCard, IngotPopover, IngotSearchInput, IngotSelect, IngotStepCard, IngotSwitch, IngotToast, IngotTooltip.
+
 ## v2.0.0 — 2026-09-06
 
 Automatic release from the doc page registry (v1.3.0 → v2.0.0).
