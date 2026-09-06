@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v2.0.0",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v1.3.0 → v2.0.0).\nNew primitives: IngotActionBar, IngotAppFrame, IngotAvatar, IngotColumns, IngotDescriptionList, IngotSkeleton, IngotSpinner.\nMajor bump: Card, IngotCallout, IngotMenu, IngotPageLayout, IngotToast.\nChanged components: Button, Card, IngotAccentSwatches, IngotBadge, IngotBreadcrumbs, IngotCallout, IngotCheckbox, IngotChip, IngotConfirm, IngotDisclosure, IngotDrawer, IngotEyebrow, IngotField, IngotFieldInput, IngotForm, IngotMarketingFaq, IngotMegaMenu, IngotMenu, IngotMetrics, IngotModal, IngotOptionCard, IngotPageHint, IngotPageLayout, IngotRadioGroup, IngotRowActions, IngotSearchInput, IngotSegmented, IngotSelect, IngotSideNav, IngotStepCard, IngotSwitch, IngotTable, IngotTabs, IngotToast, IngotTopNav.\nKit epoch raised by a release!: commit."
+    },
+    {
       "tag": "v1.3.0",
       "date": "2026-09-06",
       "notes": "Automatic release from the doc page registry (v1.2.0 → v1.3.0).\nNew primitives: IngotChip, IngotCountPill.\nChanged components: IngotBadge, IngotField, IngotSearchInput, IngotSegmented, IngotTabs."
@@ -103,6 +108,13 @@
     "IngotSwitch": "v1.2.0",
     "IngotTooltip": "v1.2.0",
     "IngotChip": "v1.3.0",
-    "IngotCountPill": "v1.3.0"
+    "IngotCountPill": "v1.3.0",
+    "IngotActionBar": "v2.0.0",
+    "IngotAppFrame": "v2.0.0",
+    "IngotAvatar": "v2.0.0",
+    "IngotColumns": "v2.0.0",
+    "IngotDescriptionList": "v2.0.0",
+    "IngotSkeleton": "v2.0.0",
+    "IngotSpinner": "v2.0.0"
   }
 }
