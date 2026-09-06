@@ -9,6 +9,15 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.0.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.3.0 → v2.0.0).
+
+- New primitives: IngotActionBar, IngotAppFrame, IngotAvatar, IngotColumns, IngotDescriptionList, IngotSkeleton, IngotSpinner.
+- Major bump: Card, IngotCallout, IngotMenu, IngotPageLayout, IngotToast.
+- Changed components: Button, Card, IngotAccentSwatches, IngotBadge, IngotBreadcrumbs, IngotCallout, IngotCheckbox, IngotChip, IngotConfirm, IngotDisclosure, IngotDrawer, IngotEyebrow, IngotField, IngotFieldInput, IngotForm, IngotMarketingFaq, IngotMegaMenu, IngotMenu, IngotMetrics, IngotModal, IngotOptionCard, IngotPageHint, IngotPageLayout, IngotRadioGroup, IngotRowActions, IngotSearchInput, IngotSegmented, IngotSelect, IngotSideNav, IngotStepCard, IngotSwitch, IngotTable, IngotTabs, IngotToast, IngotTopNav.
+- Kit epoch raised by a release!: commit.
+
 ## v1.3.0 — 2026-09-06
 
 Automatic release from the doc page registry (v1.2.0 → v1.3.0).
