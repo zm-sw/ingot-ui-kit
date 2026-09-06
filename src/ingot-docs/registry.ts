@@ -30,6 +30,7 @@ import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
 import { IngotCalloutDoc } from "@/ingot-docs/pages/IngotCalloutDoc";
 import { IngotCheckboxDoc } from "@/ingot-docs/pages/IngotCheckboxDoc";
+import { IngotChipDoc } from "@/ingot-docs/pages/IngotChipDoc";
 import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotDisclosureDoc } from "@/ingot-docs/pages/IngotDisclosureDoc";
@@ -154,6 +155,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotCalloutDoc,
   CardDoc,
   IngotCheckboxDoc,
+  IngotChipDoc,
   IngotCodeDoc,
   IngotConfirmDoc,
   IngotDisclosureDoc,
