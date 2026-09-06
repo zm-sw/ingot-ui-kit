@@ -52,7 +52,7 @@ export const IconButton = forwardRef<
       aria-label={label}
       className={cx(
         "grid shrink-0 place-items-center rounded transition-colors",
-        "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent-bg",
+        "focus-ring",
         "disabled:cursor-not-allowed disabled:opacity-50",
         SIZE[size],
         TONE[tone],

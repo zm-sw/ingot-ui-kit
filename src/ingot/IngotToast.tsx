@@ -149,7 +149,7 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
         type="button"
         aria-label={labels.toastClose}
         onClick={() => dismiss(id)}
-        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-ring-inset"
         data-testid="ingot-toast-close"
       >
         <IngotIcon name="close" size={14} />

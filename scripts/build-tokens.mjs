@@ -63,6 +63,7 @@ export function buildCss(tokens) {
   const shared = [
     declarations(tokens.space, "  ").replace(/--(\d)/g, "--s-$1"),
     declarations(tokens.radius, "  ").replace(/--(\w+)/g, "--r-$1"),
+    declarations(tokens.focus, "  ").replace(/--([\w-]+)/g, "--focus-$1"),
     Object.entries(tokens.font)
       .filter(([name]) => name !== "$description")
       .map(([name, token]) => `  --font-${name}: ${token.$value};`)

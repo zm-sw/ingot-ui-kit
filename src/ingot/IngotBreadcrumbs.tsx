@@ -57,7 +57,7 @@ export function IngotBreadcrumbs({
                   {item.label}
                 </span>
               ) : (
-                <a href={item.href} className="hover:text-ink">
+                <a href={item.href} className="rounded-sm hover:text-ink focus-ring">
                   {item.label}
                 </a>
               )}

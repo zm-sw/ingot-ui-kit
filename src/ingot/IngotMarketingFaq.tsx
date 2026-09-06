@@ -59,7 +59,7 @@ export function IngotMarketingFaq({
               aria-expanded={open}
               aria-controls={panelId}
               onClick={() => setOpenId(open ? null : item.id)}
-              className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left text-sm font-medium text-ink hover:bg-surface-2"
+              className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left text-sm font-medium text-ink hover:bg-surface-2 focus-ring-inset"
               data-testid={testId ? `${testId}-question-${item.id}` : undefined}
             >
               {item.question}

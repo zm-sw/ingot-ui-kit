@@ -64,7 +64,7 @@ export const IngotSwitch = forwardRef<
         onClick={() => onChange(!checked)}
         className={cx(
           "relative h-5 w-9 shrink-0 rounded-full transition-colors",
-          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent-bg",
+          "focus-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           checked ? "bg-accent" : "bg-border-strong",
         )}

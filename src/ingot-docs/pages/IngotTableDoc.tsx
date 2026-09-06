@@ -11,7 +11,9 @@ export const IngotTableDoc: IngotDocPage = {
   name: "IngotTable",
   status: "stable",
   // 1.1 — selection boxes are the kit's shared checkbox control (accent colour, 16px hit size).
-  version: "1.1",
+  // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.2",
   tag: ".table-wrap",
   tokens: [
     "--surface-2",

@@ -16,7 +16,9 @@ export const IngotDrawerDoc: IngotDocPage = {
   // 1.1 — header markup shared with IngotModal (internal OverlayHeader); no visible change.
   // 1.2 — close button is the kit's shared icon button (28px, rounded, hover surface).
   // 1.3 (KAN-849) — the panel slides in from its own edge, from the kit's motion tokens; motion-reduce turns the movement off.
-  version: "1.4",
+  // 1.5 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.5",
   tag: ".drawer",
   tokens: [
     "--surface",

@@ -12,7 +12,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotMenuDemo?raw");
 export const IngotMenuDoc: IngotDocPage = {
   name: "IngotMenu",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.1",
   tag: ".menu",
   tokens: [
     "--surface",

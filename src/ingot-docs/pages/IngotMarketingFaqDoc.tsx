@@ -14,7 +14,9 @@ const demoSource = () => import("@/ingot-docs/demos/IngotMarketingFaqDemo?raw");
 export const IngotMarketingFaqDoc: IngotDocPage = {
   name: "IngotMarketingFaq",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.1",
   tag: ".faq-item",
   tokens: ["--border", "--surface", "--surface-2", "--ink", "--ink-2", "--ink-3"],
   classNameNote: {

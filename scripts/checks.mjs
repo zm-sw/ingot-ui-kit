@@ -1,5 +1,5 @@
 /**
- * Repo checks for the Ingot UI Kit. Seven guards:
+ * Repo checks for the Ingot UI Kit. Eight guards:
  *
  *  - ingot-doc-pages: every value export matching /^Ingot[A-Z]/ (plus the
  *    unprefixed Button and Card) from the `src/ingot/index.ts` barrel must
@@ -31,6 +31,11 @@
  *    every text it says in one `TEXT` dictionary at the top of the module,
  *    where the code listing shows it. A page that translates everything
  *    except the thing the reader is looking at looks finished and is not.
+ *
+ *  - ingot-focus-visible: every primitive that renders something a keyboard
+ *    can land on draws the kit's focus ring, which comes from two tokens
+ *    rather than from each file's own idea of one. Three of fourteen used
+ *    to; on the rest the ring was whatever the browser drew.
  *
  *  - ingot-tokens-fresh: the generated token files match tokens.json, and
  *    the Tailwind preset offers a utility for every colour in it. Three
@@ -710,6 +715,64 @@ async function guardIngotTokensFresh() {
   }
 }
 
+// --- ingot-focus-visible ----------------------------------------------------
+
+/** Anything a keyboard can land on. */
+const FOCUSABLE_RE =
+  /<button|<a\s+href|<input|<textarea|<select|role="(?:tab|option|menuitem|switch|radio|checkbox|combobox)"/;
+
+/** How a file may say "the focus ring is handled": the utility, or a chrome that carries it. */
+const FOCUS_RE =
+  /focus-ring|inputChrome|inputFrameChrome|menuRowClass|<Button|<IconButton/;
+
+/**
+ * Files that render something focusable and are allowed not to say it.
+ *
+ * Each one has to earn its line. "It looked fine" is not a reason — the
+ * whole finding was that eleven primitives looked fine and drew whatever
+ * the browser felt like.
+ */
+const FOCUS_EXEMPT = new Map([
+  [
+    "IngotProvider.tsx",
+    "renders no markup of its own — it is a context and a dictionary",
+  ],
+]);
+
+function guardIngotFocusVisible() {
+  const guard = "ingot-focus-visible";
+  const missing = [];
+  let covered = 0;
+  for (const path of walk(KIT_DIR, /\.tsx$/)) {
+    const name = rel(path).split("/").pop();
+    if (name.includes(".test.")) continue;
+    const src = read(path);
+    if (!FOCUSABLE_RE.test(stripComments(src))) continue;
+    if (FOCUS_EXEMPT.has(name)) continue;
+    if (FOCUS_RE.test(stripComments(src))) covered += 1;
+    else missing.push(rel(path));
+  }
+  if (missing.length) {
+    fail(guard, [
+      `${missing.length} primitive(s) render something focusable and draw no focus ring:`,
+      ...missing.map((file) => `  ${file}`),
+      "Add `focus-ring` (a control standing on its own), `focus-ring-inset`",
+      "(a full-width row inside something that scrolls) or `focus-ring-within`",
+      "(a wrapper whose input is a child). All three come from the same two",
+      "tokens, so the ring is one decision rather than fourteen.",
+      "Without one the browser draws it — differently in each browser, and in",
+      "none of the kit's colours. A control whose focus cannot be found is a",
+      "control a keyboard user cannot operate.",
+    ]);
+  } else {
+    ok(
+      guard,
+      `${covered} focusable primitive(s) draw the kit's ring` +
+        (FOCUS_EXEMPT.size ? `, ${FOCUS_EXEMPT.size} exempt with a reason` : ""),
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 guardIngotDocPages();
@@ -718,6 +781,7 @@ guardIngotDocsNoInternalProse();
 guardIngotCommentsEnglish();
 guardIngotNoHardcodedText();
 guardIngotDemosLocalised();
+guardIngotFocusVisible();
 await guardIngotTokensFresh();
 
 if (failures.length) {

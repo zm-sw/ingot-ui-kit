@@ -64,7 +64,7 @@ export function IngotAccentSwatches({
               // enlarging the circle would break the bar from the handoff —
               // hence the area around it grows, not the dot itself. The
               // button draws nothing; the inner ``span`` draws.
-              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 disabled:opacity-60",
+              "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full p-0 focus-ring disabled:opacity-60",
             )}
             data-testid={`accent-swatch-${choice}`}
           >

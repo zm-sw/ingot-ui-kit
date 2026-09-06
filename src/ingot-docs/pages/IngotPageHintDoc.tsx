@@ -16,7 +16,9 @@ export const IngotPageHintDoc: IngotDocPage = {
   // 1.1 — bulb and dismiss are the kit's shared icon button.
   // 1.2 (KAN-841) — bulb and dismiss labels default to the IngotProvider
   // dictionary (English without a provider) instead of Czech constants.
-  version: "1.2",
+  // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.3",
   tag: ".pagehint",
   tokens: [
     "--ink",

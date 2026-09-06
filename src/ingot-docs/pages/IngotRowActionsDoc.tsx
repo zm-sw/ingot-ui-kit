@@ -14,7 +14,9 @@ export const IngotRowActionsDoc: IngotDocPage = {
   // 1.2 (KAN-847) — the label shows in IngotTooltip instead of the
   // title attribute, which a touch screen never shows and a screen reader
   // may skip.
-  version: "1.2",
+  // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.3",
   tag: ".rowactions",
   tokens: [
     "--surface-2",

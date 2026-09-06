@@ -105,7 +105,7 @@ export function IngotRadioGroup({
                   disabled={optionDisabled}
                   aria-describedby={optionHintId}
                   onChange={() => onChange(option.value)}
-                  className="h-4 w-4 shrink-0 accent-accent disabled:cursor-not-allowed"
+                  className="h-4 w-4 shrink-0 accent-accent focus-ring disabled:cursor-not-allowed"
                   data-testid={option.testId}
                 />
                 <span>{option.label}</span>

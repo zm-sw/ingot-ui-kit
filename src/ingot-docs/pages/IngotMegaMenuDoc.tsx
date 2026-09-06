@@ -28,7 +28,9 @@ export const IngotMegaMenuDoc: IngotDocPage = {
   // 2.5 — row states come from the kit's shared menu row: current lifts to surface-2, hover goes to ink.
   // 2.6 — panel sits on MENU_LAYER instead of a fixed z-index, so it stays above every open dialog.
   // 2.7 (KAN-849) — the panel fades in, from the kit's motion tokens; motion-reduce turns the movement off.
-  version: "2.7",
+  // 2.8 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "2.8",
   tag: ".megamenu",
   tokens: [
     "--surface",

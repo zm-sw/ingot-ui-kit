@@ -12,7 +12,9 @@ const demoSource = () => import("@/ingot-docs/demos/ButtonDemo?raw");
 export const ButtonDoc: IngotDocPage = {
   name: "Button",
   status: "stable",
-  version: "1.2",
+  // 1.3 (KAN-953) - the focus ring is drawn from the kit's own
+  // tokens now, instead of being left to the browser.
+  version: "1.3",
   tag: ".btn",
   tokens: [
     "--bg",
