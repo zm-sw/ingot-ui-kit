@@ -8,14 +8,12 @@
       "destination": "https://dxf-api.onrender.com/api/:path*"
     },
     {
-      "comment": "Every real page is written as a file by the prerender step, so this only catches an address that has none. The exclusions keep it off the assets and off the two files a crawler asks for by name — a robots.txt that answers with the application shell is worse than none, because it looks like an answer.",
       "source": "/((?!assets/|.*\\.(?:xml|txt|json|png|svg|ico|js|css|woff2?)$).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "comment": "Every file under assets/ carries a content hash in its name, so its content can never change — a new build produces a new name. Caching it forever is therefore not a bet: a reader who returns fetches only the HTML and whatever chunk is genuinely new.",
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
