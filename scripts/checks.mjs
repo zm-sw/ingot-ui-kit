@@ -119,6 +119,9 @@ const SUBCOMPONENTS = new Map([
   // IngotChipGroup wraps its parent the way IngotDisclosureGroup does: it
   // is the row's name for a screen reader and nothing without chips in it.
   ["IngotChipGroup", "IngotChip"],
+  // IngotColumnsFull is one child of the grid, not a component anybody
+  // reaches for alone: outside IngotColumns it spans nothing.
+  ["IngotColumnsFull", "IngotColumns"],
   ["IngotTopNavAccount", "IngotTopNav"],
   ["IngotUserMenuSection", "IngotUserMenu"],
   ["IngotUserMenuRow", "IngotUserMenu"],

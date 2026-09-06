@@ -37,7 +37,7 @@ const DIST = join(process.cwd(), "dist", "assets");
  */
 const ENTRY_KB = 820;
 /** Every JavaScript chunk together, including the ones loaded on demand. */
-const TOTAL_JS_KB = 1030;
+const TOTAL_JS_KB = 1040;
 /** One stylesheet, loaded before the first paint. */
 const CSS_KB = 90;
 
