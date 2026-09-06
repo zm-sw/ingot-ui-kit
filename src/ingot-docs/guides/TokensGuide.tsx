@@ -1,6 +1,7 @@
 import { IngotBadge, IngotCode, IngotTable, type IngotColumn } from "@/ingot";
 import tokens from "@/ingot/tokens.json";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
+import { ROLE_THRESHOLD, tokenRole, type TokenRole } from "@/ingot-docs/tokenRoles";
 import type { IngotGuidePage } from "@/ingot-docs/types";
 
 /**
@@ -25,6 +26,8 @@ interface TokenRow {
   name: string;
   light: string;
   dark: string;
+  /** Which rule this colour has to meet — see `tokenRoles`. */
+  role: TokenRole;
   /** Contrast against the light theme's page background, when it is a colour. */
   onBg: number | null;
   onSurface: number | null;
@@ -79,6 +82,7 @@ function rows(): TokenRow[] {
         name: `--${key}`,
         light: lightValue,
         dark: darkValue,
+        role: tokenRole(key),
         onBg: contrast(lightValue, bg),
         onSurface: contrast(lightValue, surface),
       };
@@ -99,6 +103,8 @@ function rows(): TokenRow[] {
             name: `--${prefix}-${key}`,
             light: value,
             dark: value,
+            // A measurement, not a colour: nothing to contrast it with.
+            role: "surface",
             onBg: null,
             onSurface: null,
           };
@@ -121,24 +127,57 @@ function Swatch({ value }: { value: string }): JSX.Element {
 }
 
 /**
- * Contrast as a verdict, not just a number.
+ * Contrast as a verdict against the token's OWN threshold.
  *
- * 4.5 is the threshold for body text and 3 for large text and interface
- * borders. A reader who has to remember which is which reads the number
- * and moves on; the badge is what makes the column answerable at a glance.
+ * Every colour used to be judged against 4.5, which is wrong in both
+ * directions: a page background has no requirement at all and was being
+ * shown as a near-miss, while a control's outline needs 3 and a value of
+ * 3.4 was drawn as if it had fallen short. The badge is only useful if it
+ * answers the question that applies to that row.
  */
-function Contrast({ ratio }: { ratio: number | null }): JSX.Element {
+function Contrast({
+  ratio,
+  role,
+  lang,
+}: {
+  ratio: number | null;
+  role: TokenRole;
+  lang: DocLang;
+}): JSX.Element {
   if (ratio === null) return <span className="text-ink-4">—</span>;
-  const tone = ratio >= 4.5 ? "ok" : ratio >= 3 ? "warn" : "neutral";
+
+  const threshold = ROLE_THRESHOLD[role];
+  const label = ROLE_LABEL[lang][role];
+
   return (
     <span className="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums">
       {ratio.toFixed(2)}
-      <IngotBadge tone={tone}>
-        {ratio >= 4.5 ? "AA" : ratio >= 3 ? "AA+" : "—"}
-      </IngotBadge>
+      {threshold === null ? (
+        <IngotBadge tone="neutral">{label}</IngotBadge>
+      ) : (
+        <IngotBadge tone={ratio >= threshold ? "ok" : "danger"}>
+          {ratio >= threshold ? `${label} ✓` : `${label} ✕`}
+        </IngotBadge>
+      )}
     </span>
   );
 }
+
+/** What the badge says the row is being measured as. */
+const ROLE_LABEL: Localized<Record<TokenRole, string>> = {
+  cs: {
+    text: "text 4,5",
+    boundary: "obrys 3",
+    surface: "plocha",
+    decorative: "dekorace",
+  },
+  en: {
+    text: "text 4.5",
+    boundary: "outline 3",
+    surface: "surface",
+    decorative: "decorative",
+  },
+};
 
 const HEADERS: Localized<Record<string, string>> = {
   cs: {
@@ -185,11 +224,15 @@ function columns(lang: DocLang): readonly IngotColumn<TokenRow>[] {
         </span>
       ),
     },
-    { key: "onBg", header: h.onBg, cell: (row) => <Contrast ratio={row.onBg} /> },
+    {
+      key: "onBg",
+      header: h.onBg,
+      cell: (row) => <Contrast ratio={row.onBg} role={row.role} lang={lang} />,
+    },
     {
       key: "onSurface",
       header: h.onSurface,
-      cell: (row) => <Contrast ratio={row.onSurface} />,
+      cell: (row) => <Contrast ratio={row.onSurface} role={row.role} lang={lang} />,
     },
   ];
 }

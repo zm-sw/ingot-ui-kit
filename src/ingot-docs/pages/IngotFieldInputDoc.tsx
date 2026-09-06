@@ -21,7 +21,9 @@ export const IngotFieldInputDoc: IngotDocPage = {
   // that imported the constants reads INGOT_LABELS instead.
   // 2.2 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "2.2",
+  // 2.3 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "2.3",
   tag: ".input",
   tokens: [
     "--surface",

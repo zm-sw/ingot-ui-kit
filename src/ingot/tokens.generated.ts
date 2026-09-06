@@ -83,8 +83,8 @@ export const INGOT_TOKEN_VALUES: Record<string, { light: string; dark?: string }
     "dark": "#665d53"
   },
   "border-strong": {
-    "light": "#c4bfb8",
-    "dark": "#877c6f"
+    "light": "#8d8a84",
+    "dark": "#8f8376"
   },
   "ink": {
     "light": "#0c0a09",

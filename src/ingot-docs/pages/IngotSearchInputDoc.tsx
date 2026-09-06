@@ -18,7 +18,9 @@ export const IngotSearchInputDoc: IngotDocPage = {
   // result list. A field without it renders exactly as before.
   // 1.5 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.5",
+  // 1.6 (KAN-963) - --border-strong darkens to reach the 3:1 the
+  // accessibility page promises for a control's outline.
+  version: "1.6",
   tag: ".search",
   tokens: [
     "--surface",
