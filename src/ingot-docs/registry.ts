@@ -28,6 +28,7 @@ import { IngotAccentSwatchesDoc } from "@/ingot-docs/pages/IngotAccentSwatchesDo
 import { IngotActionBarDoc } from "@/ingot-docs/pages/IngotActionBarDoc";
 import { IngotAppFrameDoc } from "@/ingot-docs/pages/IngotAppFrameDoc";
 import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
+import { IngotAvatarDoc } from "@/ingot-docs/pages/IngotAvatarDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
 import { IngotBreadcrumbsDoc } from "@/ingot-docs/pages/IngotBreadcrumbsDoc";
 import { IngotCalloutDoc } from "@/ingot-docs/pages/IngotCalloutDoc";
@@ -37,6 +38,7 @@ import { IngotCodeDoc } from "@/ingot-docs/pages/IngotCodeDoc";
 import { IngotColumnsDoc } from "@/ingot-docs/pages/IngotColumnsDoc";
 import { IngotConfirmDoc } from "@/ingot-docs/pages/IngotConfirmDoc";
 import { IngotCountPillDoc } from "@/ingot-docs/pages/IngotCountPillDoc";
+import { IngotDescriptionListDoc } from "@/ingot-docs/pages/IngotDescriptionListDoc";
 import { IngotDisclosureDoc } from "@/ingot-docs/pages/IngotDisclosureDoc";
 import { IngotDrawerDoc } from "@/ingot-docs/pages/IngotDrawerDoc";
 import { IngotEmptyStateDoc } from "@/ingot-docs/pages/IngotEmptyStateDoc";
@@ -157,6 +159,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotActionBarDoc,
   IngotAppFrameDoc,
   IngotAttentionPanelDoc,
+  IngotAvatarDoc,
   IngotBadgeDoc,
   IngotBreadcrumbsDoc,
   ButtonDoc,
@@ -168,6 +171,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   IngotColumnsDoc,
   IngotConfirmDoc,
   IngotCountPillDoc,
+  IngotDescriptionListDoc,
   IngotDisclosureDoc,
   IngotDrawerDoc,
   IngotEmptyStateDoc,

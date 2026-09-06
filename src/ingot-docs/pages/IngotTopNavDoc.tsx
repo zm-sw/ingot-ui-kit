@@ -37,7 +37,9 @@ export const IngotTopNavDoc: IngotDocPage = {
   // only way out.
   // 2.11 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "2.11",
+  // 2.12 (KAN-960) - the account's circle is `IngotAvatar` rather than a
+  // span drawn here; it renders the same and is now one shape kit-wide.
+  version: "2.12",
   tag: ".topnav",
   tokens: [
     "--surface",
