@@ -188,6 +188,10 @@ export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
 export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
+// The frame around the page layout. It used to be documented as "held by
+// the shell", and no shell existed — so every application wrote its own
+// width and they were not the same width.
+export { IngotAppFrame, INGOT_FRAME_ROW } from "./IngotAppFrame";
 export { IngotAttentionPanel } from "./IngotAttentionPanel";
 
 // --- accent choice and chrome switch ---------------------------------

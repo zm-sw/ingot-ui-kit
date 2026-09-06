@@ -165,6 +165,13 @@ export default {
           { lineHeight: "1.4", letterSpacing: "0.08em", fontWeight: "500" },
         ],
       },
+      // The width of a whole screen, from `--frame`. It is a utility rather
+      // than a number each application repeats: `max-w-7xl` here and
+      // `max-w-[1440px]` there is how two products built from the same kit
+      // stop being the same width.
+      maxWidth: {
+        frame: "var(--frame, 1440px)",
+      },
       boxShadow: {
         sm: "var(--shadow-sm)",
         DEFAULT: "var(--shadow-md)",
