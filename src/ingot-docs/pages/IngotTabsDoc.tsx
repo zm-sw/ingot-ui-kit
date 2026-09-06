@@ -22,9 +22,12 @@ const demoSource = () => import("@/ingot-docs/demos/IngotTabsDemo?raw");
 export const IngotTabsDoc: IngotDocPage = {
   name: "IngotTabs",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-945) — the count is drawn by IngotCountPill instead of by a
+  // span of this component's own, so a tab's count and a section heading's
+  // count are one element with one definition.
+  version: "1.1",
   tag: ".tabs",
-  tokens: ["--border", "--ink", "--ink-3", "--font-mono"],
+  tokens: ["--border", "--ink", "--ink-3", "--surface-2", "--font-mono"],
   classNameNote: {
     cs: "`className` nebere. Vypadá stejně na každé obrazovce; rozvržení patří obalu kolem něj.",
     en: "Does not take `className`. It looks the same on every screen; layout belongs to the wrapper around it.",

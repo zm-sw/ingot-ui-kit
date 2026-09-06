@@ -1,6 +1,7 @@
 import { useId, useRef, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
+import { IngotCountPill } from "./IngotCountPill";
 
 /**
  * Switching views of the SAME record — spec Tabs v1.1.
@@ -26,7 +27,7 @@ export interface IngotTabItem {
   key: string;
   /** Label, 1–2 words, supplied translated. */
   label: string;
-  /** Record count in the view — rendered mono next to the label. */
+  /** Record count in the view — drawn next to the label as a count pill. */
   count?: number;
 }
 
@@ -126,10 +127,13 @@ export function IngotTabs({
               data-testid={testId ? `${testId}-tab-${item.key}` : undefined}
             >
               {item.label}
+              {/* The count comes from the kit's own pill rather than from a
+                  span of its own: it is the same element a section heading
+                  draws, and two definitions of it drift. No label here —
+                  the pill sits inside the tab, so a screen reader reads
+                  "Items 12" and a second name would only repeat it. */}
               {item.count !== undefined && (
-                <span className="font-mono text-xs text-ink-3">
-                  {item.count}
-                </span>
+                <IngotCountPill>{item.count}</IngotCountPill>
               )}
             </button>
           );
