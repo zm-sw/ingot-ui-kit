@@ -25,6 +25,7 @@ import { UsageGuide } from "@/ingot-docs/guides/UsageGuide";
 import { ButtonDoc } from "@/ingot-docs/pages/ButtonDoc";
 import { CardDoc } from "@/ingot-docs/pages/CardDoc";
 import { IngotAccentSwatchesDoc } from "@/ingot-docs/pages/IngotAccentSwatchesDoc";
+import { IngotActionBarDoc } from "@/ingot-docs/pages/IngotActionBarDoc";
 import { IngotAppFrameDoc } from "@/ingot-docs/pages/IngotAppFrameDoc";
 import { IngotAttentionPanelDoc } from "@/ingot-docs/pages/IngotAttentionPanelDoc";
 import { IngotBadgeDoc } from "@/ingot-docs/pages/IngotBadgeDoc";
@@ -151,6 +152,7 @@ export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
   // and Card would end up before everything else because they have no
   // prefix. A test guards the order; it is not hit by hand.
   IngotAccentSwatchesDoc,
+  IngotActionBarDoc,
   IngotAppFrameDoc,
   IngotAttentionPanelDoc,
   IngotBadgeDoc,
