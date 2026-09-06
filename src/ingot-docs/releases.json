@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v1.3.0",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v1.2.0 → v1.3.0).\nNew primitives: IngotChip, IngotCountPill.\nChanged components: IngotBadge, IngotField, IngotSearchInput, IngotSegmented, IngotTabs."
+    },
+    {
       "tag": "v1.2.0",
       "date": "2026-09-06",
       "notes": "Automatic release from the doc page registry (v1.1.1 → v1.2.0).\nNew primitives: IngotAccentSwatches, IngotCallout, IngotEyebrow, IngotMarketingComparison, IngotMarketingCta, IngotMarketingFaq, IngotMarketingPricing, IngotMarketingSectionHead, IngotMarketingSegments, IngotMarketingSteps, IngotMarketingTri, IngotMenu, IngotPopover, IngotProvider, IngotRadioGroup, IngotSegmented, IngotSwitch, IngotTooltip.\nMajor bump: IngotFieldInput, IngotForm.\nChanged components: Button, IngotBreadcrumbs, IngotCheckbox, IngotConfirm, IngotDisclosure, IngotDrawer, IngotField, IngotFieldInput, IngotForm, IngotIcon, IngotList, IngotMegaMenu, IngotMetrics, IngotModal, IngotOpIcon, IngotPageHint, IngotRowActions, IngotSearchInput, IngotSelect, IngotSideNav, IngotStepCard, IngotTable, IngotToast, IngotTopNav."
@@ -96,6 +101,8 @@
     "IngotRadioGroup": "v1.2.0",
     "IngotSegmented": "v1.2.0",
     "IngotSwitch": "v1.2.0",
-    "IngotTooltip": "v1.2.0"
+    "IngotTooltip": "v1.2.0",
+    "IngotChip": "v1.3.0",
+    "IngotCountPill": "v1.3.0"
   }
 }

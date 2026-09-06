@@ -9,6 +9,13 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v1.3.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.2.0 → v1.3.0).
+
+- New primitives: IngotChip, IngotCountPill.
+- Changed components: IngotBadge, IngotField, IngotSearchInput, IngotSegmented, IngotTabs.
+
 ## v1.2.0 — 2026-09-06
 
 Automatic release from the doc page registry (v1.1.1 → v1.2.0).
