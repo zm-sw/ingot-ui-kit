@@ -66,6 +66,7 @@ import {
   type IngotNavItem,
 } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
+import { applyHead, headFor } from "@/ingot-docs/head";
 import releases from "@/ingot-docs/releases.json";
 import { SearchDialog } from "@/ingot-docs/SearchDialog";
 import {
@@ -894,12 +895,16 @@ export function DocsApp(): JSX.Element {
     applyAccent(accent);
   }, [accent]);
 
-  // `index.html` ships `lang="cs"` because no choice exists at that point.
-  // After a switch it would be a lie nobody sees and a screen reader pays
-  // for: English text read with Czech pronunciation is unintelligible.
+  // Everything the page says about itself outside its own body. The
+  // prerendered file already carries it, correctly, for the address the
+  // reader arrived at — and then nothing moved it, so every click after
+  // that left the tab, the history entry, the bookmark and the screen
+  // reader's page announcement naming the page the reader had come FROM.
+  // `lang` is part of that set: English text read with Czech
+  // pronunciation is unintelligible.
   useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+    applyHead(headFor(page, lang));
+  }, [page, lang]);
 
   const sections = sectionsOf(page, lang);
   const options = languages.options;
