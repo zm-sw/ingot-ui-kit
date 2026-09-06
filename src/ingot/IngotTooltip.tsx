@@ -1,6 +1,7 @@
 import {
   cloneElement,
   useEffect,
+  useLayoutEffect,
   useId,
   useRef,
   useState,
@@ -80,11 +81,13 @@ export function IngotTooltip({
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  useEffect(() => {
-    if (!shown) {
-      setPosition(null);
-      return;
-    }
+  // Before paint, like the popover's. Measured after it, the bubble is
+  // painted once at the PREVIOUS opening's coordinates and then jumps —
+  // and that is also why nothing has to be reset when it hides: a stale
+  // position never reaches the screen, so clearing it would only be a
+  // second render for nobody.
+  useLayoutEffect(() => {
+    if (!shown) return;
     const anchor = anchorRef.current;
     const bubble = bubbleRef.current;
     if (!anchor || !bubble) return;
@@ -110,6 +113,11 @@ export function IngotTooltip({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [shown]);
 
+  // The rule cannot tell "pass the ref object on" from "read the ref while
+  // rendering". This is the first: `anchorRef` is handed to the child so
+  // React can fill it in, which is what a ref is for. Nothing reads
+  // `.current` here — the effect above does, after mount.
+  // eslint-disable-next-line react-hooks/refs
   const trigger = cloneElement(children, {
     ref: anchorRef,
     "aria-describedby": shown ? id : undefined,

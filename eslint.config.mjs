@@ -80,15 +80,19 @@ export default tseslint.config(
       // A React component file is TSX; a bare `any` in it is usually a
       // shortcut around a prop type, which is the type the consumer reads.
       "@typescript-eslint/no-explicit-any": "error",
-      // Warnings, not errors, and on purpose. Both rules point at four real
-      // places (the form's reset on a new record, the doc web's demo reset
-      // and language fetch, the overlay's opener capture) where the fix is a
-      // behaviour change, not a formatting one — the form reset is its own
-      // ticket. An error here would leave two options: rush those rewrites
-      // into an unrelated pull request, or switch the rule off and lose the
-      // finding. A warning keeps it in sight until the rewrite lands.
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/refs": "warn",
+      // Errors now. They were warnings while eleven real places still had
+      // to be rewritten — an error then would have meant either rushing
+      // those rewrites into an unrelated pull request or switching the rule
+      // off and losing the finding. The rewrites have landed, so the rule
+      // can hold the line instead of describing it.
+      //
+      // Three places carry an inline exemption with the reason written
+      // next to it: the tooltip passing a ref object on (which the rule
+      // cannot tell from reading one), the doc web's one-time migration of
+      // a legacy hash, and the form's derived values, whose branch clears
+      // its own condition and so cannot fire twice in a row.
+      "react-hooks/set-state-in-effect": "error",
+      "react-hooks/refs": "error",
     },
   },
   {

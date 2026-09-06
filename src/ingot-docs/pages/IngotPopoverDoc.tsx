@@ -14,7 +14,9 @@ export const IngotPopoverDoc: IngotDocPage = {
   name: "IngotPopover",
   status: "beta",
   // 1.1 (KAN-849) — the panel fades in, from the kit's motion tokens; motion-reduce turns the movement off.
-  version: "1.1",
+  // 1.2 (KAN-966) - the panel's position is no longer cleared on close - it is
+  // measured before paint on every open, so a stale one never reaches the screen.
+  version: "1.2",
   tag: ".popover",
   tokens: ["--surface", "--border", "--r-lg", "--shadow-lg"],
   classNameNote: {
