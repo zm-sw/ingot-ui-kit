@@ -36,11 +36,11 @@ const body: IngotDocBody = {
   props: [
     {
       name: "width",
-      type: '"full" | "reading"',
+      type: '"full" | "wide" | "reading" | "card"',
       required: false,
       note: {
-        cs: "full (výchozí) pro tabulky a seznamy · reading pro obrazovky, které se čtou.",
-        en: "full (default) for tables and lists · reading for screens that are read.",
+        cs: "Podle toho, co stránka JE: full (výchozí, --frame) tabulky a seznamy · wide (--page-wide) detail, který se čte · reading (--page-reading) formulář nebo text · card (--page-card) obrazovka, která je jedna krabička, a jako jediná se středí.",
+        en: "By what the page IS: full (default, --frame) for tables and lists · wide (--page-wide) for a detail that is read · reading (--page-reading) for a form or a text · card (--page-card) for a screen that is one box, and the only one that centres itself.",
       },
     },
     {
