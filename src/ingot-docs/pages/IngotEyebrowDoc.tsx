@@ -12,7 +12,12 @@ export const IngotEyebrowDoc: IngotDocPage = {
   status: "beta",
   // 1.1 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: the type narrows the shared one instead of repeating its members.
-  version: "1.1",
+  // 1.2 (KAN-969) - `size="md"` is the preset's `text-eyebrow`, and that
+  // step is read from the token source now instead of being declared in
+  // the preset. Nothing this primitive renders changed - the values are
+  // the same eleven pixels - but the scale is versioned and exported like
+  // every other token, and this is the page it is documented on.
+  version: "1.2",
   tag: ".eyebrow",
   tokens: ["--font-mono", "--ink-3", "--ink-4", "--accent-ink", "--ok"],
   classNameNote: {

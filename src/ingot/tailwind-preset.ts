@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
 import type { PluginAPI } from "tailwindcss/types/config";
 
+import { INGOT_TYPE_SCALE } from "./tokens.generated";
+
 /**
  * A token colour that also supports ``/opacity``.
  *
@@ -42,6 +44,28 @@ function token(name: string): string {
   // ``satisfies Config`` would otherwise refuse it. That it really works is
   // held by a test over the generated CSS, not by the types.
   return resolve as unknown as string;
+}
+
+/**
+ * The token source's type scale, in the shape Tailwind's ``fontSize`` takes.
+ *
+ * A step declares only what it decides: ``body`` has no letter-spacing and
+ * no weight of its own, and writing ``undefined`` for those would have
+ * Tailwind emit ``letter-spacing: undefined``. So the options object is
+ * built from the properties the token actually carries.
+ */
+function typeScale(): Record<string, [string, Record<string, string>]> {
+  return Object.fromEntries(
+    Object.entries(INGOT_TYPE_SCALE).map(([step, { fontSize, ...rest }]) => [
+      step,
+      [
+        fontSize,
+        Object.fromEntries(
+          Object.entries(rest).filter(([, value]) => value !== undefined),
+        ) as Record<string, string>,
+      ],
+    ]),
+  );
 }
 
 // The kit's shared Tailwind preset (@forgmatic/ingot/tailwind-preset).
@@ -149,22 +173,13 @@ export default {
       // handoff these are the classes ``.t-display``…``.t-eyebrow``; here
       // they are Tailwind ``fontSize`` entries because the kit builds on
       // utilities — an unused step is not generated into the CSS at all.
-      fontSize: {
-        display: [
-          "clamp(40px, 5.4vw, 64px)",
-          { lineHeight: "1.02", letterSpacing: "-0.03em", fontWeight: "600" },
-        ],
-        h1: ["40px", { lineHeight: "1.06", letterSpacing: "-0.025em", fontWeight: "600" }],
-        h2: ["26px", { lineHeight: "1.18", letterSpacing: "-0.02em", fontWeight: "600" }],
-        h3: ["18px", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }],
-        lede: ["17px", { lineHeight: "1.55", letterSpacing: "-0.005em" }],
-        body: ["14.5px", { lineHeight: "1.6" }],
-        small: ["13px", { lineHeight: "1.55" }],
-        eyebrow: [
-          "11px",
-          { lineHeight: "1.4", letterSpacing: "0.08em", fontWeight: "500" },
-        ],
-      },
+      //
+      // The numbers are READ from the token source now, not written here.
+      // They used to live only in this file, which meant the one layer a
+      // designer needs most reached no export the kit writes: the palette,
+      // the spacing and the radii could be handed over and the type scale
+      // could not.
+      fontSize: typeScale(),
       // The width of a whole screen, from `--frame`. It is a utility rather
       // than a number each application repeats: `max-w-7xl` here and
       // `max-w-[1440px]` there is how two products built from the same kit
