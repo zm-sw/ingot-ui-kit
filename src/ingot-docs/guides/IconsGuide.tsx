@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 
 import {
+  Button,
   INGOT_ICON_NAMES,
   IngotBadge,
   IngotCode,
@@ -58,6 +59,44 @@ function IconGrid(): JSX.Element {
           <IngotCode>{name}</IngotCode>
         </span>
       ))}
+    </div>
+  );
+}
+
+/**
+ * The set as files.
+ *
+ * The grid above shows every glyph and, until the build started writing
+ * them out, showing was all anyone could do with them: the geometry lives
+ * as JSX in the kit, so getting an icon into a design tool meant redrawing
+ * it — and from the first redraw the product has two sets.
+ *
+ * The counts are read from the two lists, never typed here. A number in
+ * prose is a number that is right on the day it is written.
+ */
+function IconDownload({ lang }: { lang: DocLang }): JSX.Element {
+  const total = INGOT_ICON_NAMES.length + INGOT_OP_ICON_KEYS.length;
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-sm text-ink-2">
+        {lang === "cs"
+          ? "Obě sady se dají stáhnout jako soubory — jeden glyf, jeden SVG, vykreslený tou samou komponentou, kterou kreslí aplikace. Ikona se tedy nemusí překreslovat, a nemůže se proto rozejít s tou v produktu."
+          : "Both sets can be downloaded as files — one glyph, one SVG, drawn by the same component the application draws with. So an icon never has to be redrawn, and cannot part company with the one in the product."}
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          as="a"
+          href="/icons/ingot-icons.zip"
+          leadingIcon={<IngotIcon name="download" />}
+        >
+          {lang === "cs"
+            ? `Stáhnout sadu (${total} SVG)`
+            : `Download the set (${total} SVG)`}
+        </Button>
+        <Button as="a" href="/icons/ingot-icons.svg" variant="ghost">
+          {lang === "cs" ? "Sprite pro web" : "Sprite for the web"}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -314,6 +353,14 @@ export const IconsGuide: IngotGuidePage = {
       body: {
         cs: <IconGrid />,
         en: <IconGrid />,
+      },
+    },
+    {
+      id: "ke-stazeni",
+      title: { cs: "Ke stažení", en: "Files" },
+      body: {
+        cs: <IconDownload lang="cs" />,
+        en: <IconDownload lang="en" />,
       },
     },
     {
