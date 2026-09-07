@@ -281,12 +281,14 @@ thing the release automation stands on. The kit gets formatted with the
 next kit epoch — a `release!:` commit, where one version move covers the
 whole tree.
 
-**Two hook rules are warnings, not errors.** `react-hooks/refs` and
-`react-hooks/set-state-in-effect` point at four real places where the fix
-is a behaviour change rather than a formatting one. An error there leaves
-two options: rush those rewrites into an unrelated pull request, or switch
-the rule off and lose the finding. A warning keeps it in sight until the
-rewrite lands on its own.
+**Every rule is an error, including the two hook rules.**
+`react-hooks/refs` and `react-hooks/set-state-in-effect` were warnings
+while eleven real places still needed rewriting. They were rewritten, both
+rules are `error`, and `npm run check` passes on zero warnings. What is
+left are a few line-level `eslint-disable-next-line` suppressions with the
+reason written beside them — a suppression argued for on the line is one
+somebody reads; a rule turned down to `warn` for the whole repository is
+not.
 
 ## Before pushing
 
