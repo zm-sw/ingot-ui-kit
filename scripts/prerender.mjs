@@ -69,7 +69,7 @@ function pageHtml(route) {
   );
 }
 
-const routes = renderAllRoutes();
+const routes = await renderAllRoutes();
 
 for (const route of routes) {
   const file = join(DIST, route.path.replace(/^\//, ""), "index.html");
@@ -119,7 +119,7 @@ writeFileSync(
 // stop agreeing with it. Written from the SAME module the pages render
 // from, so it cannot describe a kit the site does not have.
 const { version } = JSON.parse(readFileSync("package.json", "utf-8"));
-const manifest = buildComponentManifest({
+const manifest = await buildComponentManifest({
   kit: version,
   generated: new Date().toISOString().slice(0, 10),
 });

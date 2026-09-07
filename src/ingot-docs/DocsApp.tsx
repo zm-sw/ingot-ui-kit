@@ -96,7 +96,9 @@ import {
 } from "@/ingot-docs/routes";
 import pkg from "../../package.json";
 import type {
-  IngotDocPage,
+  IngotDocBody,
+  IngotDocMeta,
+  IngotGuideBody,
   IngotExtraPropGroup,
   IngotGuideGroup,
   IngotPropRow,
@@ -223,7 +225,7 @@ function ExtraProps({
  * makes the next person write the component their own way.
  *
  * `page.demoSource` is a ``?raw`` import of the SAME module that
- * `page.Demo` comes from — see `IngotDocPage.demoSource`. The listing is
+ * `page.Demo` comes from — see `IngotDocMeta.demoSource`. The listing is
  * therefore not a copy that could be forgotten.
  *
  * The preview stage sits on ``--surface-2`` and centres the content — the
@@ -249,7 +251,7 @@ function DemoWithSource({
   page,
   lang,
 }: {
-  page: IngotDocPage;
+  page: IngotDocMeta;
   lang: DocLang;
 }): JSX.Element {
   const [view, setView] = useState<"preview" | "code">("preview");
@@ -429,7 +431,62 @@ const STATUS_LABEL = {
  * Optional sections (``limits``) never enter the array, so "On this page"
  * cannot link to them into a void.
  */
-function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
+/**
+ * Loads a page's body, and remembers it.
+ *
+ * The body is the half that is 393 kB across the kit, so it arrives when a
+ * reader opens the page rather than when they open the site. The cache is
+ * module-level: paging back and forth between two components should not
+ * re-fetch either of them, and a module already in the browser's memory
+ * resolves in the same tick.
+ */
+type PageBody = IngotDocBody | IngotGuideBody;
+
+const BODIES = new Map<string, PageBody>();
+
+/** What a page is called in the cache — a component name or a guide slug. */
+function keyOf(page: DocsPage): string {
+  return page.kind === "component" ? page.doc.name : `guide:${page.guide.slug}`;
+}
+
+function usePageBody(page: DocsPage): PageBody | null {
+  const key = keyOf(page);
+  // The key travels WITH the body: the previous page's body is not this
+  // page's body, and rendering it would look up section ids that only the
+  // page the reader just left has.
+  const [loaded, setLoaded] = useState<{ key: string; body: PageBody } | null>(null);
+
+  useEffect(() => {
+    if (BODIES.has(key)) return;
+    let cancelled = false;
+    // `cancelled` is the usual guard for a reader who turns two pages
+    // quickly: without it the slower import lands last and the page shows
+    // another component's props table.
+    const load = page.kind === "component" ? page.doc.body : page.guide.body;
+    void load().then((module) => {
+      BODIES.set(key, module.default);
+      if (!cancelled) setLoaded({ key, body: module.default });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [page, key]);
+
+  // The cache is read during render, not copied into state: a page opened
+  // a second time has its body already and must not flash a skeleton.
+  return BODIES.get(key) ?? (loaded?.key === key ? loaded.body : null);
+}
+
+/** Stands in for a section whose text has not arrived yet. */
+function Pending({ lang }: { lang: DocLang }): JSX.Element {
+  return <IngotSkeleton shape="text" rows={3} label={pick(CHROME.pageLoading, lang)} />;
+}
+
+function sectionsFor(
+  page: IngotDocMeta,
+  body: IngotDocBody | null,
+  lang: DocLang,
+): readonly DocSection[] {
   const sections: DocSection[] = [
     // The deprecation notice comes FIRST, before the demo. A reader who
     // scrolls to the props and starts typing has already decided; the
@@ -478,7 +535,11 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       id: "kdy-ne",
       title: pick(CHROME.avoidWhen, lang),
       cap: true,
-      body: <IngotList items={pick(page.avoidWhen, lang)} />,
+      body: body ? (
+        <IngotList items={pick(body.avoidWhen, lang)} />
+      ) : (
+        <Pending lang={lang} />
+      ),
     },
     {
       id: "vlastnosti",
@@ -493,13 +554,18 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
             {pick(page.classNameNote, lang)}
           </p>
           <PropsTable
-            rows={page.props}
+            rows={body?.props ?? []}
             caption={`${pick(CHROME.props, lang)} — ${page.name}`}
             testId="docs-props"
             lang={lang}
           />
-          {page.extraProps && page.extraProps.length > 0 && (
-            <ExtraProps groups={page.extraProps} lang={lang} />
+          {body === null ? (
+            <Pending lang={lang} />
+          ) : (
+            body.extraProps &&
+            body.extraProps.length > 0 && (
+              <ExtraProps groups={body.extraProps} lang={lang} />
+            )
           )}
         </div>
       ),
@@ -515,7 +581,7 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
           className="rounded-md border border-warn-border bg-warn-bg p-4"
           data-testid="docs-a11y-callout"
         >
-          <IngotList items={pick(page.a11y, lang)} />
+          {body ? <IngotList items={pick(body.a11y, lang)} /> : <Pending lang={lang} />}
         </div>
       ),
     },
@@ -550,12 +616,16 @@ function sectionsFor(page: IngotDocPage, lang: DocLang): readonly DocSection[] {
       id: "preklady",
       title: pick(CHROME.i18n, lang),
       cap: true,
-      body: <IngotList items={pick(page.i18n, lang)} />,
+      body: body ? (
+        <IngotList items={pick(body.i18n, lang)} />
+      ) : (
+        <Pending lang={lang} />
+      ),
     },
   ];
 
-  if (page.limits) {
-    const limits = pick(page.limits, lang);
+  if (body?.limits) {
+    const limits = pick(body.limits, lang);
     if (limits.length > 0) {
       sections.push({
         id: "limity",
@@ -583,12 +653,21 @@ function summaryOf(active: DocsPage, lang: DocLang): string {
     : pick(active.doc.summary, lang);
 }
 
-function sectionsOf(active: DocsPage, lang: DocLang): readonly DocSection[] {
-  if (active.kind === "component") return sectionsFor(active.doc, lang);
+function sectionsOf(
+  active: DocsPage,
+  body: PageBody | null,
+  lang: DocLang,
+): readonly DocSection[] {
+  if (active.kind === "component") {
+    return sectionsFor(active.doc, body as IngotDocBody | null, lang);
+  }
+  // The titles are metadata and the prose is not, so the right column and
+  // the headings are complete from the first frame either way.
+  const prose = body as IngotGuideBody | null;
   return active.guide.sections.map((section) => ({
     id: section.id,
     title: pick(section.title, lang),
-    body: pick(section.body, lang),
+    body: prose ? pick(prose[section.id], lang) : <Pending lang={lang} />,
   }));
 }
 
@@ -927,7 +1006,8 @@ export function DocsApp(): JSX.Element {
     applyHead(headFor(page, lang));
   }, [page, lang]);
 
-  const sections = sectionsOf(page, lang);
+  const docBody = usePageBody(page);
+  const sections = sectionsOf(page, docBody, lang);
   const options = languages.options;
 
   // Rotating a tablet to landscape reveals the menu in the column — a
