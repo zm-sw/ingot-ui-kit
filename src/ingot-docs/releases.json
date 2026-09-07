@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v2.0.2",
+      "date": "2026-09-07",
+      "notes": "Automatic release from the doc page registry (v2.0.1 → v2.0.2).\nChanged components: IngotColumns, IngotEyebrow, IngotPageLayout."
+    },
+    {
       "tag": "v2.0.1",
       "date": "2026-09-06",
       "notes": "Automatic release from the doc page registry (v2.0.0 → v2.0.1).\nChanged components: Button, Card, IngotAccentSwatches, IngotChip, IngotConfirm, IngotDrawer, IngotField, IngotFieldInput, IngotModal, IngotOptionCard, IngotPopover, IngotSearchInput, IngotSelect, IngotStepCard, IngotSwitch, IngotToast, IngotTooltip."
