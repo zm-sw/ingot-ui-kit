@@ -20,12 +20,14 @@
  * never a copy of it — a second telling of the content is exactly the
  * drift this repository deleted its hand-written spec documents over.
  */
+import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { IngotCode, IngotList, IngotPageHeader, IngotSection } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import { headFor, type PageHead } from "@/ingot-docs/head";
 import type { DocLang } from "@/ingot-docs/lang";
+import { componentManifest, type ComponentManifest } from "@/ingot-docs/manifest";
 import { ALL_ROUTES, type DocsLocation, type DocsPage } from "@/ingot-docs/routes";
 
 export interface PrerenderedRoute {
@@ -116,4 +118,34 @@ export function renderRoute({ page, lang }: DocsLocation): PrerenderedRoute {
 
 export function renderAllRoutes(): PrerenderedRoute[] {
   return ALL_ROUTES.map(renderRoute);
+}
+
+/**
+ * A `ReactNode` as the sentence a reader sees.
+ *
+ * The registry's prose is JSX — a sentence with an `IngotCode` or a link
+ * inside it — and a file meant for another tool wants the sentence, not
+ * the markup. Rendering and then stripping is the only way that stays
+ * honest: walking the node tree by hand would need a case for every
+ * element the prose is allowed to use, and would silently drop the next
+ * one somebody reaches for.
+ */
+function toText(node: ReactNode): string {
+  return renderToStaticMarkup(<>{node}</>)
+    .replace(/<[^>]+>/g, "")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#x27;", "'")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** The doc-page registry as data — see `manifest.ts`. */
+export function buildComponentManifest(meta: {
+  kit: string;
+  generated: string;
+}): ComponentManifest {
+  return componentManifest(toText, meta);
 }

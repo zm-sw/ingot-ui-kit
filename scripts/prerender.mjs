@@ -19,7 +19,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-import { renderAllRoutes } from "../dist-ssr/prerender.js";
+import { buildComponentManifest, renderAllRoutes } from "../dist-ssr/prerender.js";
 
 const DIST = "dist";
 
@@ -113,4 +113,18 @@ writeFileSync(
   ].join("\n"),
 );
 
-console.log(`prerender: ${routes.length} page(s) + sitemap.xml`);
+// The registry as data, next to the site. A design library, a linter for a
+// design file and a Code Connect definition all need the same facts the
+// doc pages render — and typing them out beside the registry is how they
+// stop agreeing with it. Written from the SAME module the pages render
+// from, so it cannot describe a kit the site does not have.
+const { version } = JSON.parse(readFileSync("package.json", "utf-8"));
+const manifest = buildComponentManifest({
+  kit: version,
+  generated: new Date().toISOString().slice(0, 10),
+});
+writeFileSync(join(DIST, "components.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+
+console.log(
+  `prerender: ${routes.length} page(s) + sitemap.xml + components.json (${manifest.count})`,
+);
