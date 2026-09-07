@@ -13,10 +13,12 @@ import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
 import { AuthorsGuide } from "@/ingot-docs/guides/AuthorsGuide";
 import { ChangesGuide } from "@/ingot-docs/guides/ChangesGuide";
 import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
+import { DesignersGuide } from "@/ingot-docs/guides/DesignersGuide";
 import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
+import { LayoutsGuide } from "@/ingot-docs/guides/LayoutsGuide";
 import { TokensGuide } from "@/ingot-docs/guides/TokensGuide";
 import { PublicPagesGuide } from "@/ingot-docs/guides/PublicPagesGuide";
 import { ShellGuide } from "@/ingot-docs/guides/ShellGuide";
@@ -86,7 +88,7 @@ import { IngotToolbarDoc } from "@/ingot-docs/pages/IngotToolbarDoc";
 import { IngotTooltipDoc } from "@/ingot-docs/pages/IngotTooltipDoc";
 import { IngotTopNavDoc } from "@/ingot-docs/pages/IngotTopNavDoc";
 import { IngotUserMenuDoc } from "@/ingot-docs/pages/IngotUserMenuDoc";
-import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
+import type { IngotDocMeta, IngotGuideMeta } from "@/ingot-docs/types";
 
 /**
  * Pages that are NOT about a component — the intro, Translations, and the
@@ -113,7 +115,7 @@ import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
  * reorder groups — it prints them in this order and inserts a heading at
  * every change. A scattered order would therefore produce a group twice.
  */
-export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
+export const INGOT_GUIDE_PAGES: readonly IngotGuideMeta[] = [
   IntroGuide,
   BasicsGuide,
   // The palette as data, right after the page that explains what a token
@@ -124,7 +126,15 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   // menu, so it stands before Icons, not after them.
   ComponentsGuide,
   IconsGuide,
+  // The handover to a design tool. It stands after tokens, components and
+  // icons because those are the three things it hands over — a reader who
+  // has not seen them has nothing to take.
+  DesignersGuide,
   ShellGuide,
+  // Whole screens, right after the blocks they are assembled from: the
+  // page before this one says what a toolbar is, this one says what a
+  // list page looks like when it is finished.
+  LayoutsGuide,
   // Marketing blocks of the public web. The blocks THEMSELVES have had
   // their own component pages since the move into the kit; this guide is
   // about their composition — which rules the page holds rather than the
@@ -146,7 +156,7 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   AuthorsGuide,
 ];
 
-export const INGOT_DOC_PAGES: readonly IngotDocPage[] = [
+export const INGOT_DOC_PAGES: readonly IngotDocMeta[] = [
   // Alphabetical by the name the page shows — that is, without the
   // prefix: Badge, Breadcrumbs, Button… The menu is an index of some
   // thirty items and an index is searched alphabetically, not by the

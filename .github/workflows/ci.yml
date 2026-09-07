@@ -80,6 +80,66 @@ jobs:
         # record the kit's version and go stale at every release.
         run: npm install --no-audit --no-fund && npm run build
 
+  # The palette against the design library.
+  #
+  # CLAUDE.md says the handoff wins when the two disagree, unless a written
+  # reason stands beside the difference — and nothing has ever measured
+  # that sentence. A colour that moves on one side turns up on a screen
+  # months later, when nobody can say which side moved.
+  #
+  # It SKIPS, quietly and green, until `FIGMA_TOKEN` and `FIGMA_FILE_KEY`
+  # exist. A job that goes red because a secret was never added is a job
+  # somebody switches off in the first week, and then the check is gone for
+  # the day it would have mattered. The same reasoning as the reference
+  # consumer, which skips on a pull request that cannot break it.
+  #
+  # Reporting only, like Lighthouse started out. Making it block is a
+  # decision for after somebody has watched it for a while.
+  figma-tokens:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare the palette with the design library
+        run: node scripts/figma_variables.mjs
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+          FIGMA_DIFF_OUT: figma-diff.md
+      # Only when there IS a difference: a bot that says "all good" on
+      # every pull request is a bot whose comments stop being read, and
+      # then the one that matters is not read either.
+      - name: Say so on the pull request
+        if: github.event_name == 'pull_request' && hashFiles('figma-diff.md') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("node:fs");
+            const body = fs.readFileSync("figma-diff.md", "utf-8");
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const existing = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100,
+            });
+            const mine = existing.data.find(
+              (comment) =>
+                comment.user.type === "Bot" &&
+                comment.body.startsWith("### Tokeny proti Figmě"),
+            );
+            if (mine) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: mine.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
   # Lighthouse on the built doc web.
   #
   # Two tickets carried a Lighthouse number in their acceptance and nobody
@@ -99,7 +159,11 @@ jobs:
   # a threshold that blocks the first unrelated pull request and then gets
   # switched off.
   lighthouse:
-    if: github.event_name == 'pull_request'
+    # Not on a push to main: the number is for comparing a change against
+    # the branch it wants to join. `workflow_dispatch` is allowed because a
+    # push does not always produce a run -- when it does not, the only way
+    # to get the figure for a commit is to ask for it by hand.
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -129,8 +193,13 @@ jobs:
             node scripts/lighthouse-summary.mjs
             echo LIGHTHOUSE_EOF
           } >> "$GITHUB_OUTPUT"
-      - name: Say so on the pull request
+      # Also in the run's own summary, so a manual run has somewhere to put
+      # the figures -- there is no pull request to comment on.
+      - name: Say so in the run summary
         if: always()
+        run: node scripts/lighthouse-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Say so on the pull request
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -156,9 +225,16 @@ jobs:
             }
         env:
           BODY: ${{ steps.summary.outputs.body }}
+      # The full reports, for the day a score drops and the table is not
+      # enough to say why.
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse
           path: .lighthouseci
+          # The directory's name starts with a dot, and this action skips
+          # hidden files unless told otherwise -- so every run so far
+          # uploaded nothing and said "No files were found" in a log line
+          # nobody reads.
+          include-hidden-files: true
           if-no-files-found: ignore

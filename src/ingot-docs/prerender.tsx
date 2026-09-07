@@ -20,13 +20,16 @@
  * never a copy of it — a second telling of the content is exactly the
  * drift this repository deleted its hand-written spec documents over.
  */
+import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { IngotCode, IngotList, IngotPageHeader, IngotSection } from "@/ingot";
 import { CHROME } from "@/ingot-docs/chrome";
 import { headFor, type PageHead } from "@/ingot-docs/head";
 import type { DocLang } from "@/ingot-docs/lang";
+import { componentManifest, type ComponentManifest } from "@/ingot-docs/manifest";
 import { ALL_ROUTES, type DocsLocation, type DocsPage } from "@/ingot-docs/routes";
+import type { IngotDocBody, IngotGuideBody } from "@/ingot-docs/types";
 
 export interface PrerenderedRoute {
   /** ``/komponenty/table`` — where the file goes and what the sitemap lists. */
@@ -39,6 +42,16 @@ export interface PrerenderedRoute {
    */
   head: PageHead;
   html: string;
+  /**
+   * Which page this is, so the build can name the chunk that carries its
+   * body: ``component:IngotTable``, ``guide:zaklady``.
+   *
+   * The prerendered file preloads that chunk. Without it the browser
+   * cannot even ASK for the body until the entry has parsed and run, which
+   * on a throttled connection is a second round trip a reader watches as a
+   * skeleton where the text already was.
+   */
+  page: string;
 }
 
 /**
@@ -51,13 +64,23 @@ export interface PrerenderedRoute {
  * to look; with bare tags they would get unstyled text on a white ground.
  * The same rule the rest of the doc web follows, for the same reason.
  */
-function Body({ page, lang }: { page: DocsPage; lang: DocLang }): JSX.Element {
+function Body({
+  page,
+  docBody,
+  lang,
+}: {
+  page: DocsPage;
+  /** The half of the page that is loaded when a reader opens it. */
+  docBody: IngotDocBody | IngotGuideBody;
+  lang: DocLang;
+}): JSX.Element {
   if (page.kind === "guide") {
+    const prose = docBody as IngotGuideBody;
     return (
       <>
         {page.guide.sections.map((section) => (
           <IngotSection key={section.id} id={section.id} title={section.title[lang]}>
-            {section.body[lang]}
+            {prose[section.id][lang]}
           </IngotSection>
         ))}
       </>
@@ -65,18 +88,19 @@ function Body({ page, lang }: { page: DocsPage; lang: DocLang }): JSX.Element {
   }
 
   const doc = page.doc;
+  const body = docBody as IngotDocBody;
   return (
     <>
       <IngotSection title={CHROME.useWhen[lang]}>
         <IngotList items={doc.useWhen[lang]} />
       </IngotSection>
       <IngotSection title={CHROME.avoidWhen[lang]}>
-        <IngotList items={doc.avoidWhen[lang]} />
+        <IngotList items={body.avoidWhen[lang]} />
       </IngotSection>
       <IngotSection title={CHROME.props[lang]}>
         <IngotList
           variant="plain"
-          items={doc.props.map((prop) => (
+          items={body.props.map((prop) => (
             <>
               <IngotCode>{prop.name}</IngotCode>: <IngotCode>{prop.type}</IngotCode> —{" "}
               {prop.note[lang]}
@@ -97,12 +121,22 @@ function Body({ page, lang }: { page: DocsPage; lang: DocLang }): JSX.Element {
  * the summary, which are still more than the site had before, and says so
  * on stderr so the gap is visible rather than silent.
  */
-export function renderRoute({ page, lang }: DocsLocation): PrerenderedRoute {
+export async function renderRoute({
+  page,
+  lang,
+}: DocsLocation): Promise<PrerenderedRoute> {
   const head = headFor(page, lang);
+
+  // The body is a dynamic import now, so this step is asynchronous — a
+  // crawler still gets the whole page, it is just fetched here instead of
+  // sitting in the module graph the browser downloads.
+  const docBody = (
+    await (page.kind === "component" ? page.doc.body() : page.guide.body())
+  ).default;
 
   let body = "";
   try {
-    body = renderToStaticMarkup(<Body page={page} lang={lang} />);
+    body = renderToStaticMarkup(<Body page={page} docBody={docBody} lang={lang} />);
   } catch (error) {
     console.error(`[prerender] ${head.path}: body skipped — ${String(error)}`);
   }
@@ -111,9 +145,48 @@ export function renderRoute({ page, lang }: DocsLocation): PrerenderedRoute {
     <IngotPageHeader title={head.heading} description={head.description} />,
   );
 
-  return { path: head.path, lang, head, html: heading + body };
+  return {
+    path: head.path,
+    lang,
+    head,
+    html: heading + body,
+    page:
+      page.kind === "component"
+        ? `component:${page.doc.name}`
+        : `guide:${page.guide.slug}`,
+  };
 }
 
-export function renderAllRoutes(): PrerenderedRoute[] {
-  return ALL_ROUTES.map(renderRoute);
+export function renderAllRoutes(): Promise<PrerenderedRoute[]> {
+  return Promise.all(ALL_ROUTES.map(renderRoute));
+}
+
+/**
+ * A `ReactNode` as the sentence a reader sees.
+ *
+ * The registry's prose is JSX — a sentence with an `IngotCode` or a link
+ * inside it — and a file meant for another tool wants the sentence, not
+ * the markup. Rendering and then stripping is the only way that stays
+ * honest: walking the node tree by hand would need a case for every
+ * element the prose is allowed to use, and would silently drop the next
+ * one somebody reaches for.
+ */
+function toText(node: ReactNode): string {
+  return renderToStaticMarkup(<>{node}</>)
+    .replace(/<[^>]+>/g, "")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#x27;", "'")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** The doc-page registry as data — see `manifest.ts`. */
+export function buildComponentManifest(meta: {
+  kit: string;
+  generated: string;
+}): Promise<ComponentManifest> {
+  return componentManifest(toText, meta);
 }

@@ -1,0 +1,28 @@
+# Line endings are the repository's decision, not the checkout's.
+#
+# Without this file a Windows checkout gets CRLF (git's `core.autocrlf`
+# does it on the way out), while Prettier is configured for LF — so
+# `npm run check` reports EVERY file as unformatted on Windows. A command
+# that answers "no" whether or not anything is wrong is a command whose
+# answer stops being read, and the next real formatting mistake then shows
+# up in CI instead. That happened twice before this file existed.
+#
+# `text=auto eol=lf`: git decides what is text, and text is checked out
+# with LF everywhere. What is stored has always been LF; only the checkout
+# changes.
+* text=auto eol=lf
+
+# Binaries git must not touch. Detection is good but not perfect, and a
+# font or an icon ZIP that gets "normalised" is a corrupt file.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+*.pdf binary

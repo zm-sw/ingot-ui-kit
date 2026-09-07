@@ -16,8 +16,10 @@
  * - ``src/ingot/tokens.generated.ts`` — the same values as data, so the
  *   Tailwind preset and the doc web read the palette instead of repeating
  *   it.
- * - ``dist/tokens.figma.json`` (with ``--figma``) — a flat map for Figma
- *   Variables, written next to the built doc web.
+ * - ``dist/tokens.figma.json`` (with ``--figma``) — the palette as Figma
+ *   Variables: collections and modes, written next to the built doc web.
+ * - ``dist/tokens.json`` (with ``--figma``) — the source itself. It is
+ *   already DTCG, and the tools that read DTCG need no converter at all.
  *
  * Run it with ``npm run tokens``. The ``ingot-tokens-fresh`` guard runs the
  * same code in memory and fails when a generated file no longer matches the
@@ -175,40 +177,207 @@ export const INGOT_RADIUS: Record<string, string> = ${JSON.stringify(
     null,
     2,
   )};
+
+/**
+ * The type scale, by step. The Tailwind preset builds its \`fontSize\`
+ * entries from this instead of declaring the numbers itself — which is how
+ * the scale used to stay out of every export the kit writes.
+ */
+export const INGOT_TYPE_SCALE: Record<
+  string,
+  {
+    fontSize: string;
+    lineHeight: string;
+    letterSpacing?: string;
+    fontWeight?: string;
+  }
+> = ${JSON.stringify(
+    Object.fromEntries(
+      Object.entries(tokens.type)
+        .filter(([name, token]) => name !== "$description" && isToken(token))
+        .map(([name, token]) => [name, token.$value]),
+    ),
+    null,
+    2,
+  )};
 `;
 }
 
 /**
- * A flat map for Figma Variables: one entry per token, both themes side by
- * side. Figma's own importers read a flat shape; the nesting that makes the
- * source readable makes the import harder.
+ * Every group of ``tokens.json`` the Figma export covers.
+ *
+ * A list rather than "whatever the builder happens to read", because the
+ * guard compares it against the source's own keys: a group added to
+ * ``tokens.json`` and not to the export is a decision, and it has to be
+ * made here rather than discovered by a designer who cannot find the
+ * shadows.
  */
-export function buildFigma(tokens) {
-  const out = {};
+export const FIGMA_GROUPS = [
+  "light",
+  "dark",
+  "accent",
+  "space",
+  "radius",
+  "layout",
+  "focus",
+  "shadow",
+  "font",
+  "type",
+  "motion",
+];
+
+/**
+ * A CSS value as a Figma variable value.
+ *
+ * ``4px`` and ``1.06`` are numbers to Figma; ``-0.025em``, a font stack and
+ * a cubic-bezier are not, and forcing them would lose what they say. The
+ * rule is mechanical on purpose — a list of which token is which kind
+ * would be a second thing to keep in step with the source.
+ */
+function figmaValue(value) {
+  const text = String(value).trim();
+  const number = /^-?\d+(?:\.\d+)?(?:px)?$/.exec(text);
+  if (number) return { type: "FLOAT", value: Number.parseFloat(text) };
+  return { type: "STRING", value: text };
+}
+
+/**
+ * Follows ``var(--x)`` to the value it names, within one theme.
+ *
+ * The four accent ROLES (``--accent``, ``--accent-ink``, ``--accent-bg``,
+ * ``--accent-border``) are declared as aliases of the default family, and
+ * the first export wrote that alias out literally: eight entries whose
+ * "colour" was the string ``var(--blue-accent)``. No importer reads that —
+ * it either refuses the file or skips those entries, and skipping is the
+ * worse half, because the palette then looks complete and has no accent.
+ */
+function resolveColor(value, table, seen = new Set()) {
+  const alias = /^var\(--([\w-]+)\)$/.exec(String(value).trim());
+  if (!alias) return String(value).trim();
+  const name = alias[1];
+  if (seen.has(name)) throw new Error(`tokens: --${name} aliases itself`);
+  const target = table[name];
+  if (!isToken(target)) throw new Error(`tokens: var(--${name}) names no token`);
+  return resolveColor(target.$value, table, new Set([...seen, name]));
+}
+
+/** True when a colour token is an alias of another token rather than a value. */
+const isAlias = (token) => /^var\(--[\w-]+\)$/.test(String(token.$value).trim());
+
+/**
+ * The palette as Figma Variables — collections and modes, not a flat map.
+ *
+ * The first export was one object per token with ``light`` and ``dark``
+ * beside each other. That is not the shape Figma has: a variable holds one
+ * value PER MODE, and a mode is a column of a collection. Flattening the
+ * two themes into one entry therefore left every importer to guess, and
+ * flattening the five accent families into their names lost the fact that
+ * they are one axis with five positions.
+ *
+ * So: five collections, each with the modes it actually varies over.
+ * ``accent`` is the interesting one — it varies over the family AND the
+ * theme, which is two axes and one collection, so its ten modes are named
+ * ``blue/light`` … ``slate/dark``. That is exactly the ten combinations the
+ * doc web can switch between, and a designer picks one the same way.
+ */
+export function buildFigma(tokens, meta = {}) {
+  const themeModes = ["light", "dark"];
+
+  // The four roles live in the accent collection; here they would be a
+  // second, frozen copy of the default family under a name that promises
+  // to follow the picker.
+  const themeColors = {};
   for (const [name, token] of Object.entries(tokens.light)) {
-    if (!isToken(token)) continue;
-    out[`color/${name}`] = {
-      type: "color",
-      light: token.$value,
-      dark: tokens.dark[name]?.$value,
+    if (!isToken(token) || isAlias(token)) continue;
+    themeColors[`color/${name}`] = {
+      type: "COLOR",
+      values: {
+        light: resolveColor(token.$value, tokens.light),
+        dark: resolveColor(tokens.dark[name].$value, tokens.dark),
+      },
     };
   }
-  for (const family of ACCENT_ORDER) {
-    for (const [name, token] of Object.entries(tokens.accent[family].light)) {
-      out[`accent/${family}/${name}`] = {
-        type: "color",
-        light: token.$value,
-        dark: tokens.accent[family].dark[name]?.$value,
-      };
+  for (const name of Object.keys(tokens.shadow.light)) {
+    themeColors[`effect/shadow-${name}`] = {
+      type: "STRING",
+      values: {
+        light: tokens.shadow.light[name].$value,
+        dark: tokens.shadow.dark[name].$value,
+      },
+    };
+  }
+
+  const accentModes = ACCENT_ORDER.flatMap((family) =>
+    themeModes.map((theme) => `${family}/${theme}`),
+  );
+  const accentVars = {};
+  for (const role of Object.keys(tokens.accent[ACCENT_ORDER[0]].light)) {
+    accentVars[`color/${role}`] = {
+      type: "COLOR",
+      values: Object.fromEntries(
+        ACCENT_ORDER.flatMap((family) =>
+          themeModes.map((theme) => [
+            `${family}/${theme}`,
+            // The default family is itself written as aliases of the
+            // ``blue-*`` tokens, so this resolves against the theme it
+            // belongs to rather than assuming a literal.
+            resolveColor(tokens.accent[family][theme][role].$value, tokens[theme]),
+          ]),
+        ),
+      ),
+    };
+  }
+
+  const single = (entries) =>
+    Object.fromEntries(
+      entries.map(([name, value]) => {
+        const { type, value: resolved } = figmaValue(value);
+        return [name, { type, values: { value: resolved } }];
+      }),
+    );
+
+  const flat = (group, prefix) =>
+    Object.entries(tokens[group])
+      .filter(([name, token]) => name !== "$description" && isToken(token))
+      .map(([name, token]) => [`${prefix}/${name}`, token.$value]);
+
+  // Each step becomes four variables rather than one composite: Figma has
+  // no typography variable, and a text style is assembled from exactly
+  // these four numbers.
+  const typeVars = [];
+  for (const [step, token] of Object.entries(tokens.type)) {
+    if (!isToken(token)) continue;
+    for (const [property, value] of Object.entries(token.$value)) {
+      typeVars.push([`type/${step}/${property}`, value]);
     }
   }
-  for (const [name, token] of Object.entries(tokens.space)) {
-    if (isToken(token)) out[`space/${name}`] = { type: "number", value: token.$value };
-  }
-  for (const [name, token] of Object.entries(tokens.radius)) {
-    if (isToken(token)) out[`radius/${name}`] = { type: "number", value: token.$value };
-  }
-  return `${JSON.stringify(out, null, 2)}\n`;
+
+  return `${JSON.stringify(
+    {
+      kit: meta.kit ?? null,
+      generated: meta.generated ?? null,
+      collections: {
+        theme: { modes: themeModes, variables: themeColors },
+        accent: { modes: accentModes, variables: accentVars },
+        scale: {
+          modes: ["value"],
+          variables: single([
+            ...flat("space", "space"),
+            ...flat("radius", "radius"),
+            ...flat("layout", "layout"),
+            ...flat("focus", "focus"),
+          ]),
+        },
+        type: { modes: ["value"], variables: single(typeVars) },
+        motion: {
+          modes: ["value"],
+          variables: single([...flat("font", "font"), ...flat("motion", "motion")]),
+        },
+      },
+    },
+    null,
+    2,
+  )}\n`;
 }
 
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"))) {
@@ -218,8 +387,15 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "
   console.log("tokens: wrote tokens.generated.css and tokens.generated.ts");
 
   if (process.argv.includes("--figma")) {
+    const { version } = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8"));
+    const meta = { kit: version, generated: new Date().toISOString().slice(0, 10) };
     mkdirSync(join(ROOT, "dist"), { recursive: true });
-    writeFileSync(join(ROOT, "dist/tokens.figma.json"), buildFigma(tokens));
-    console.log("tokens: wrote dist/tokens.figma.json");
+    writeFileSync(join(ROOT, "dist/tokens.figma.json"), buildFigma(tokens, meta));
+    // The source itself, beside the site. It is already DTCG, which
+    // Tokens Studio and the design-token plugins read directly — and a
+    // consumer with neither React nor Tailwind had no other way to share
+    // the palette at all.
+    writeFileSync(join(ROOT, "dist/tokens.json"), readFileSync(SOURCE));
+    console.log("tokens: wrote dist/tokens.figma.json and dist/tokens.json");
   }
 }

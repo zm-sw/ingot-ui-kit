@@ -61,8 +61,10 @@ describe("the grid", () => {
     for (const [columns, below, expected] of [
       [2, "md", "md:grid-cols-2"],
       [3, "md", "md:grid-cols-3"],
+      [4, "md", "md:grid-cols-4"],
       [2, "lg", "lg:grid-cols-2"],
       [3, "lg", "lg:grid-cols-3"],
+      [4, "lg", "lg:grid-cols-4"],
     ] as const) {
       const { unmount } = render(
         <IngotColumns columns={columns} collapseBelow={below} testId="grid">
@@ -72,6 +74,56 @@ describe("the grid", () => {
       expect(screen.getByTestId("grid").className).toContain(expected);
       unmount();
     }
+  });
+
+  // Four columns going straight to one wastes half a tablet, and going
+  // straight to four makes each of them about 160 px wide.
+  it.each([
+    [3, true],
+    [4, true],
+    [2, false],
+  ] as const)("gives %s columns an intermediate step: %s", (columns, stepped) => {
+    render(
+      <IngotColumns columns={columns} testId="grid">
+        <p>a</p>
+      </IngotColumns>,
+    );
+    expect(screen.getByTestId("grid").className.includes("sm:grid-cols-2")).toBe(
+      stepped,
+    );
+  });
+
+  // A count answers "how many across"; tiles answer "how narrow may one
+  // get" and let the row hold as many as fit.
+  it("lays tiles by their narrowest width instead of by a count", () => {
+    render(
+      <IngotColumns minItemWidth={196} columns={3} testId="grid">
+        <p>a</p>
+      </IngotColumns>,
+    );
+    const grid = screen.getByTestId("grid");
+    expect(grid.style.gridTemplateColumns).toBe(
+      "repeat(auto-fill, minmax(196px, 1fr))",
+    );
+    // A caller that asked for tiles asked for tiles: the count is not also
+    // applied, or the two would fight at every breakpoint.
+    expect(grid.className).not.toContain("grid-cols-3");
+  });
+
+  // 471 grids in an application built on this kit used a gap that is not on
+  // the space scale at all. A scale that can be missed by two pixels is not
+  // a scale, so the prop takes steps rather than numbers.
+  it.each([
+    [3, "gap-3"],
+    [4, "gap-4"],
+    [5, "gap-5"],
+  ] as const)("puts %s of the space scale between cells", (gap, expected) => {
+    render(
+      <IngotColumns gap={gap} testId="grid">
+        <p>a</p>
+      </IngotColumns>,
+    );
+    expect(screen.getByTestId("grid").className).toContain(expected);
   });
 
   it("keeps the gap out of the caller's hands", () => {

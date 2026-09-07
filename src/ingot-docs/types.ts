@@ -47,8 +47,18 @@ export interface IngotGuideSection {
   /** Anchor in the right column. Not translated — it is a link target. */
   id: string;
   title: Localized<string>;
-  body: Localized<ReactNode>;
 }
+
+/**
+ * A guide's prose, by section id.
+ *
+ * Split out of the guide for the same reason a component page is: the
+ * fourteen guides are 276 kB of source, and a reader opens one of them.
+ * The section IDS and TITLES stay in the metadata — the menu on the right
+ * and the search index read them on every page — and only what stands
+ * under a title is loaded when the guide is opened.
+ */
+export type IngotGuideBody = Record<string, Localized<ReactNode>>;
 
 /**
  * Group in the left menu.
@@ -65,7 +75,7 @@ export interface IngotGuideSection {
  */
 export type IngotGuideGroup = "system" | "app" | "rules" | "authors";
 
-export interface IngotGuidePage {
+export interface IngotGuideMeta {
   /** The part of the hash after ``#/`` — ``uvod``, ``preklady``. Not
    *  translated: it is a route, and a translated slug would break shared links. */
   slug: string;
@@ -80,6 +90,7 @@ export interface IngotGuidePage {
   /** One sentence under the heading. */
   summary: Localized<string>;
   sections: readonly IngotGuideSection[];
+  body: () => Promise<{ default: IngotGuideBody }>;
 }
 
 export interface IngotPropRow {
@@ -110,7 +121,19 @@ export interface IngotExtraPropGroup {
   props: readonly IngotPropRow[];
 }
 
-export interface IngotDocPage {
+/**
+ * A doc page, split in two by what the reader has already asked for.
+ *
+ * The registry imports the METADATA of all sixty-four pages, because the
+ * menu, the search index, the sitemap and every guard need it before the
+ * reader has chosen anything. The BODY — when to use it, the props table,
+ * accessibility, the limits — is loaded when the page opens.
+ *
+ * Measured before the split: the metadata of all pages is 64 kB of source
+ * and the bodies are 458 kB. The entry chunk was carrying all of it, so
+ * every reader downloaded sixty-three pages they did not open.
+ */
+export interface IngotDocMeta {
   /**
    * Export name from ``@/ingot``. The guard reads it from the registry and
    * from here — a mismatch fails the gate, so the menu and the guard
@@ -234,8 +257,28 @@ export interface IngotDocPage {
   /**
    * When to reach for the primitive. Situations, not features — the reader
    * decides by what they are building, not by what the component can do.
+   *
+   * Body content that lives in the metadata on purpose: the search index
+   * reads it, and the search index is loaded on every page. Moving it into
+   * the body would mean either a search that can no longer find a
+   * component by the situation it is for — half of what the search is good
+   * at — or a generated index file nobody maintains.
    */
   useWhen: Localized<readonly ReactNode[]>;
+  /**
+   * Loads the rest of the page.
+   *
+   * A loader, not the object: this is the half that is 458 kB across the
+   * kit, and a reader who opened one page has no use for the other
+   * sixty-three. The shape is what a dynamic `import()` returns, so the
+   * page hands it straight to `React.lazy`'s cousin — `use()` in the
+   * shell, `await` in the prerender.
+   */
+  body: () => Promise<{ default: IngotDocBody }>;
+}
+
+/** The half of a doc page that only its own reader needs. */
+export interface IngotDocBody {
   /**
    * When NOT to reach for it, and what to use instead. This half is the
    * more valuable one: a primitive used outside its domain is harder to

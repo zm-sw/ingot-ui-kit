@@ -149,25 +149,42 @@ describe("the side index on a narrow screen", () => {
 });
 
 describe("the shapes that have no index", () => {
-  it("keeps the reading width for a screen that is read", () => {
+  /** The class list of the block the content sits in. */
+  function shapeOf(width?: "full" | "wide" | "reading" | "card"): string {
     viewport(true);
     render(
-      <IngotPageLayout width="reading" testId="layout">
+      <IngotPageLayout width={width} testId="layout">
         <p>obsah</p>
       </IngotPageLayout>,
     );
-    expect(screen.getByText("obsah").parentElement?.className).toContain("max-w-3xl");
+    return screen.getByText("obsah").parentElement?.className ?? "";
+  }
+
+  // Every width is a token, so the page says what it IS and the number
+  // lives in one place. An application that reaches for the nearest
+  // Tailwind step instead ends up with nine widths and no decision.
+  it.each([
+    ["reading", "max-w-page-reading"],
+    ["wide", "max-w-page-wide"],
+    ["card", "max-w-page-card"],
+  ] as const)("draws %s at the width its token names", (width, expected) => {
+    expect(shapeOf(width)).toContain(expected);
   });
 
   it("lets a list or a table have the whole width", () => {
-    viewport(true);
-    render(
-      <IngotPageLayout testId="layout">
-        <p>obsah</p>
-      </IngotPageLayout>,
-    );
-    expect(screen.getByText("obsah").parentElement?.className).not.toContain(
-      "max-w-3xl",
-    );
+    expect(shapeOf()).not.toContain("max-w-page");
+  });
+
+  // A box the width of a business card, parked at the left edge of a
+  // 1440px screen, reads as a page that failed to load the rest of itself.
+  // The others start where every other block on the page starts.
+  it.each([
+    ["card", true],
+    ["reading", false],
+    ["wide", false],
+    [undefined, false],
+  ] as const)("centres %s: %s", (width, centred) => {
+    const shape = shapeOf(width);
+    expect(shape.includes("mx-auto")).toBe(centred);
   });
 });

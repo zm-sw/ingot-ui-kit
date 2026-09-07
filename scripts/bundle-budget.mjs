@@ -26,19 +26,39 @@ const DIST = join(process.cwd(), "dist", "assets");
 /**
  * The chunk the page actually loads first, named in index.html.
  *
- * It grows with every doc page, because the registry imports all of them
- * eagerly — the demos are lazy, the prose is not. Three primitives landing
- * in one batch is what pushed it past 800. Raised to 820 rather than to a
- * round number with room to spare, so the next batch is a decision again.
+ * It used to grow with every doc page, because the registry imported all
+ * of them whole. Now it carries only what every page needs — the menu, the
+ * search index, the badges — and the prose of a page arrives when that
+ * page is opened: 865 kB became 337.5.
  *
- * The real answer is to split the page bodies out of the entry, which is
- * its own piece of work; until then this number is the thing that keeps
- * asking for it.
+ * What is left in it is React, the primitives the site's own chrome is
+ * built from, and the metadata of 64 pages and 16 guides. Of that
+ * metadata, the biggest single piece is "when to use it", which stays here
+ * on purpose: the search reads it, and being able to find a component by
+ * the situation it is for is half of what the search is good at. Buying
+ * those last kilobytes back means a generated search index with its own
+ * freshness guard — machinery that costs more than it saves.
+ *
+ * The number went the other way once while this change was in flight: the
+ * guide that hands the system over to a design tool needed 15 kB more,
+ * because one guide loading on demand while the other fourteen did not
+ * would have been an inconsistency rather than a fix. Now they all do.
  */
-const ENTRY_KB = 870;
-/** Every JavaScript chunk together, including the ones loaded on demand. */
-const TOTAL_JS_KB = 1110;
-/** One stylesheet, loaded before the first paint. */
+const ENTRY_KB = 360;
+/**
+ * Every JavaScript chunk together, including the ones loaded on demand.
+ *
+ * This one went UP when the pages were split, by about 25 kB: eighty small
+ * chunks carry eighty preambles that one big chunk carried once. That is
+ * the trade being made — nobody downloads all of them, and the reader who
+ * opens one page now downloads a third of what they did.
+ *
+ * Raised again by 20 for the page-layouts guide, which is four whole
+ * screens' worth of live demo. It lands in its own chunk and only a reader
+ * who opens that guide pays for it — which is exactly the shape this
+ * budget was raised to allow.
+ */
+const TOTAL_JS_KB = 1180;
 const CSS_KB = 90;
 
 const kb = (bytes) => Math.round((bytes / 1024) * 10) / 10;
