@@ -15,7 +15,16 @@
     "",
     "Three addresses, because they are three different shapes: the entry",
     "point, a component page with a live demo, and a guide that is mostly",
-    "prose and one long table."
+    "prose and one long table.",
+    "",
+    "THREE RUNS, not one. A single run on a shared runner moved a page by",
+    "ten points between two commits that could not account for it, which is",
+    "worse than no number: it invites a hunt for a regression that is only",
+    "the runner having a busy minute. Lighthouse reports the median run, so",
+    "three is the smallest count that has one. It costs about two extra",
+    "minutes and buys a figure that can be compared with the last one --",
+    "and this check becomes required, so a number that swings by ten would",
+    "block pull requests at random."
   ],
   "ci": {
     "collect": {
@@ -24,7 +33,7 @@
         "http://localhost:4173/komponenty/table",
         "http://localhost:4173/pruvodce/tokeny"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "formFactor": "mobile",

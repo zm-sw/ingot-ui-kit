@@ -22,7 +22,7 @@
 import { INGOT_DOC_PAGES, INGOT_GUIDE_PAGES } from "@/ingot-docs/registry";
 import type { DocLang } from "@/ingot-docs/lang";
 import { displayName } from "@/ingot-docs/naming";
-import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
+import type { IngotDocMeta, IngotGuideMeta } from "@/ingot-docs/types";
 
 /**
  * What is currently shown. The doc web has two kinds of pages and tells
@@ -31,7 +31,7 @@ import type { IngotDocPage, IngotGuidePage } from "@/ingot-docs/types";
  * be half empty.
  */
 export type DocsPage =
-  { kind: "guide"; guide: IngotGuidePage } | { kind: "component"; doc: IngotDocPage };
+  { kind: "guide"; guide: IngotGuideMeta } | { kind: "component"; doc: IngotDocMeta };
 
 export const GUIDE_SEGMENT = "pruvodce";
 export const COMPONENT_SEGMENT = "komponenty";

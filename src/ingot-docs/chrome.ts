@@ -52,6 +52,8 @@ export interface ChromeStrings {
   demoLoading: Localized<string>;
   /** The embed panel was asked for a component the kit does not have. */
   embedUnknown: Localized<string>;
+  /** Stands in for a section whose text is still on its way. */
+  pageLoading: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -201,4 +203,5 @@ export const CHROME: ChromeStrings = {
     cs: "Tuhle komponentu kit nezná.",
     en: "The kit does not have this component.",
   },
+  pageLoading: { cs: "Načítá se obsah stránky…", en: "Loading the page…" },
 };

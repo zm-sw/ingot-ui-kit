@@ -99,7 +99,11 @@ jobs:
   # a threshold that blocks the first unrelated pull request and then gets
   # switched off.
   lighthouse:
-    if: github.event_name == 'pull_request'
+    # Not on a push to main: the number is for comparing a change against
+    # the branch it wants to join. `workflow_dispatch` is allowed because a
+    # push does not always produce a run -- when it does not, the only way
+    # to get the figure for a commit is to ask for it by hand.
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -129,8 +133,13 @@ jobs:
             node scripts/lighthouse-summary.mjs
             echo LIGHTHOUSE_EOF
           } >> "$GITHUB_OUTPUT"
-      - name: Say so on the pull request
+      # Also in the run's own summary, so a manual run has somewhere to put
+      # the figures -- there is no pull request to comment on.
+      - name: Say so in the run summary
         if: always()
+        run: node scripts/lighthouse-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Say so on the pull request
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -156,9 +165,16 @@ jobs:
             }
         env:
           BODY: ${{ steps.summary.outputs.body }}
+      # The full reports, for the day a score drops and the table is not
+      # enough to say why.
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse
           path: .lighthouseci
+          # The directory's name starts with a dot, and this action skips
+          # hidden files unless told otherwise -- so every run so far
+          # uploaded nothing and said "No files were found" in a log line
+          # nobody reads.
+          include-hidden-files: true
           if-no-files-found: ignore

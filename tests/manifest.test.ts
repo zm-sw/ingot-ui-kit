@@ -14,7 +14,10 @@ import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
 // matters here is that every sentence arrives as a string.
 const toText = (node: unknown): string => (typeof node === "string" ? node : "[prose]");
 
-const manifest = componentManifest(toText, { kit: "0.0.0", generated: "2026-01-01" });
+const manifest = await componentManifest(toText, {
+  kit: "0.0.0",
+  generated: "2026-01-01",
+});
 
 describe("component manifest", () => {
   it("describes every doc page and nothing else", () => {

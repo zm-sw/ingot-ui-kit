@@ -26,7 +26,7 @@ import { SITE_ORIGIN } from "@/ingot-docs/head";
 import { displayName } from "@/ingot-docs/naming";
 import { INGOT_DOC_PAGES } from "@/ingot-docs/registry";
 import { pathOf } from "@/ingot-docs/routes";
-import type { IngotDocPage, IngotPropRow } from "@/ingot-docs/types";
+import type { IngotDocMeta, IngotPropRow } from "@/ingot-docs/types";
 
 /** Turns a `ReactNode` into the plain sentence a reader sees. */
 export type NodeToText = (node: ReactNode) => string;
@@ -57,9 +57,9 @@ export interface ManifestComponent {
   display: string;
   /** The selector the element goes by in a design. The join key. */
   tag: string;
-  status: IngotDocPage["status"];
+  status: IngotDocMeta["status"];
   version: string;
-  deprecated?: IngotDocPage["deprecated"];
+  deprecated?: IngotDocMeta["deprecated"];
   /** Tokens a change to which shows on this component everywhere. */
   tokens: readonly string[];
   /** One sentence on what `className` may do here, per language. */
@@ -131,7 +131,19 @@ function localizedText(
   return localized((lang) => nodes[lang].map(toText));
 }
 
-function component(doc: IngotDocPage, toText: NodeToText): ManifestComponent {
+/**
+ * One component's entry.
+ *
+ * Asynchronous because half of what the manifest describes -- the props,
+ * the accessibility notes, when not to use it -- is loaded when a reader
+ * opens the page rather than sitting in the entry chunk. The manifest is
+ * written by the build, where an await costs nothing.
+ */
+async function component(
+  doc: IngotDocMeta,
+  toText: NodeToText,
+): Promise<ManifestComponent> {
+  const body = (await doc.body()).default;
   return {
     name: doc.name,
     display: displayName(doc.name),
@@ -142,12 +154,12 @@ function component(doc: IngotDocPage, toText: NodeToText): ManifestComponent {
     tokens: doc.tokens,
     classNameNote: doc.classNameNote,
     summary: doc.summary,
-    avoidWhen: localizedText(doc.avoidWhen, toText),
-    a11y: localizedText(doc.a11y, toText),
-    props: doc.props.map(prop),
-    ...(doc.extraProps
+    avoidWhen: localizedText(body.avoidWhen, toText),
+    a11y: localizedText(body.a11y, toText),
+    props: body.props.map(prop),
+    ...(body.extraProps
       ? {
-          extraProps: doc.extraProps.map((group) => ({
+          extraProps: body.extraProps.map((group) => ({
             name: group.name,
             props: group.props.map(prop),
           })),
@@ -167,14 +179,14 @@ function component(doc: IngotDocPage, toText: NodeToText): ManifestComponent {
  * server renderer pulled into the client bundle for four sentences would
  * be a poor trade. The build passes the renderer it already has.
  */
-export function componentManifest(
+export async function componentManifest(
   toText: NodeToText,
   meta: { kit: string; generated: string },
-): ComponentManifest {
+): Promise<ComponentManifest> {
   return {
     kit: meta.kit,
     generated: meta.generated,
     count: INGOT_DOC_PAGES.length,
-    components: INGOT_DOC_PAGES.map((doc) => component(doc, toText)),
+    components: await Promise.all(INGOT_DOC_PAGES.map((doc) => component(doc, toText))),
   };
 }

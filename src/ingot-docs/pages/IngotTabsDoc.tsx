@@ -1,5 +1,5 @@
 import { IngotCode } from "@/ingot";
-import type { IngotDocPage } from "@/ingot-docs/types";
+import type { IngotDocMeta } from "@/ingot-docs/types";
 
 // Reference wiring of the value to the URL. The kit deliberately has no
 // router, so this is the caller's business — the snippet is here so every
@@ -19,7 +19,7 @@ const demo = () =>
   }));
 const demoSource = () => import("@/ingot-docs/demos/IngotTabsDemo?raw");
 
-export const IngotTabsDoc: IngotDocPage = {
+export const IngotTabsDoc: IngotDocMeta = {
   name: "IngotTabs",
   status: "beta",
   // 1.1 (KAN-945) — the count is drawn by IngotCountPill instead of by a
@@ -76,170 +76,5 @@ export const IngotTabsDoc: IngotDocPage = {
       </>,
     ],
   },
-  avoidWhen: {
-    cs: [
-      <>Kroky procesu, které mají pořadí a dokončení — to je steps pattern, ne taby.</>,
-      <>
-        Filtrování téhož seznamu („Vše / Aktivní / Archiv“) — to jsou chipy; tab slibuje
-        jiný pohled, ne jiný výřez.
-      </>,
-      <>Navigace mezi různými záznamy nebo stránkami — na to je menu, ne taby.</>,
-    ],
-    en: [
-      <>
-        Process steps with an order and completion — that is a steps pattern, not tabs.
-      </>,
-      <>
-        Filtering the same list ("All / Active / Archived") — those are chips; a tab
-        promises a different view, not a different slice.
-      </>,
-      <>Navigation between different records or pages — that is a menu, not tabs.</>,
-    ],
-  },
-  props: [
-    {
-      name: "items",
-      type: "IngotTabItem[]",
-      required: true,
-      note: {
-        cs: "Pohledy: klíč, přeložený popisek a nepovinný počet záznamů.",
-        en: "The views: a key, a translated label and an optional record count.",
-      },
-    },
-    {
-      name: "value",
-      type: "string",
-      required: true,
-      note: {
-        cs: "Klíč aktivního pohledu. Řízené zvenčí — typicky z URL volajícího.",
-        en: "Key of the active view. Controlled from outside — typically the caller's URL.",
-      },
-    },
-    {
-      name: "onChange",
-      type: "(key: string) => void",
-      required: true,
-      note: {
-        cs: "Přepnutí pohledu. Nemění scroll pozici stránky.",
-        en: "Switches the view. Does not change the page's scroll position.",
-      },
-    },
-    {
-      name: "children",
-      type: "ReactNode",
-      required: false,
-      note: {
-        cs: "Obsah aktivního pohledu — vykreslí se jako tabpanel svázaný s aktivním tabem.",
-        en: "Content of the active view — rendered as a tabpanel tied to the active tab.",
-      },
-    },
-    {
-      name: "label",
-      type: "string",
-      required: false,
-      note: {
-        cs: "Přeložený aria-label seznamu tabů.",
-        en: "Translated aria-label of the tab list.",
-      },
-    },
-    {
-      name: "testId",
-      type: "string",
-      required: false,
-      note: {
-        cs: "data-testid tablistu; tab dostane `${testId}-tab-${key}`.",
-        en: "data-testid of the tablist; a tab gets `${testId}-tab-${key}`.",
-      },
-    },
-  ],
-  extraProps: [
-    {
-      name: "IngotTabItem",
-      note: {
-        cs: (
-          <>
-            Prvek pole <IngotCode>items</IngotCode>.
-          </>
-        ),
-        en: (
-          <>
-            An element of the <IngotCode>items</IngotCode> array.
-          </>
-        ),
-      },
-      props: [
-        {
-          name: "key",
-          type: "string",
-          required: true,
-          note: {
-            cs: "Klíč pohledu — hodnota pro value/onChange a URL volajícího.",
-            en: "Key of the view — the value for value/onChange and the caller's URL.",
-          },
-        },
-        {
-          name: "label",
-          type: "string",
-          required: true,
-          note: {
-            cs: "Popisek na 1–2 slova, dodaný přeložený.",
-            en: "A 1–2 word label, supplied translated.",
-          },
-        },
-        {
-          name: "count",
-          type: "number",
-          required: false,
-          note: {
-            cs: "Počet záznamů v pohledu — vykreslí se mono vedle popisku.",
-            en: "Record count of the view — rendered in mono next to the label.",
-          },
-        },
-      ],
-    },
-  ],
-  a11y: {
-    cs: [
-      <>
-        Role drží komponenta sama: <IngotCode>role=&quot;tablist&quot;</IngotCode>,{" "}
-        <IngotCode>role=&quot;tab&quot;</IngotCode> s{" "}
-        <IngotCode>aria-selected</IngotCode> a{" "}
-        <IngotCode>role=&quot;tabpanel&quot;</IngotCode> svázaný s aktivním tabem.
-      </>,
-      <>
-        Roving tabindex: Tab zastaví jen na aktivním tabu, šipky (a Home/End) přepínají
-        mezi pohledy — fokus se přesouvá bez posunu stránky.
-      </>,
-      <>Aktivní tab je poznat i bez barvy: podtržení a tučnost.</>,
-    ],
-    en: [
-      <>
-        The component holds the roles itself:{" "}
-        <IngotCode>role=&quot;tablist&quot;</IngotCode>,{" "}
-        <IngotCode>role=&quot;tab&quot;</IngotCode> with{" "}
-        <IngotCode>aria-selected</IngotCode> and{" "}
-        <IngotCode>role=&quot;tabpanel&quot;</IngotCode> tied to the active tab.
-      </>,
-      <>
-        A roving tabindex: Tab stops only on the active tab, arrow keys (and Home/End)
-        switch views — focus moves without scrolling the page.
-      </>,
-      <>The active tab is recognizable without color: underline and bold.</>,
-    ],
-  },
-  i18n: {
-    cs: [
-      <>
-        Popisky v <IngotCode>items</IngotCode> a <IngotCode>label</IngotCode> dodává
-        volající už přeložené — Ingot překlady nemá.
-      </>,
-    ],
-    en: [
-      <>
-        The labels in <IngotCode>items</IngotCode> and <IngotCode>label</IngotCode>{" "}
-        arrive from the caller already translated — the Ingot has no translations of its
-        own.
-      </>,
-    ],
-  },
+  body: () => import("@/ingot-docs/pages/IngotTabsDoc.body"),
 };

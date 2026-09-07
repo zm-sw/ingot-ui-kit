@@ -154,7 +154,10 @@ describe("DocsApp", () => {
 
   it.each(INGOT_DOC_PAGES.map((page) => [page.name, page] as const))(
     "%s has at least one item in every language and every required section",
-    (_name, page) => {
+    async (_name, page) => {
+      // The body is loaded, not read off the page: a doc page carries its
+      // metadata and imports the rest when a reader opens it.
+      const body = (await page.body()).default;
       // Record<DocLang, …> enforces that the KEY exists. Not that there is
       // something behind it — and an empty section is exactly the half
       // truth that got the spec headers deleted in this repo.
@@ -173,14 +176,14 @@ describe("DocsApp", () => {
       for (const lang of DOC_LANGS) {
         expect(page.summary[lang].trim().length).toBeGreaterThan(0);
         expect(page.useWhen[lang].length).toBeGreaterThan(0);
-        expect(page.avoidWhen[lang].length).toBeGreaterThan(0);
-        expect(page.a11y[lang].length).toBeGreaterThan(0);
-        expect(page.i18n[lang].length).toBeGreaterThan(0);
-        if (page.limits) expect(page.limits[lang].length).toBeGreaterThan(0);
-        for (const row of page.props) {
+        expect(body.avoidWhen[lang].length).toBeGreaterThan(0);
+        expect(body.a11y[lang].length).toBeGreaterThan(0);
+        expect(body.i18n[lang].length).toBeGreaterThan(0);
+        if (body.limits) expect(body.limits[lang].length).toBeGreaterThan(0);
+        for (const row of body.props) {
           expect(row.note[lang]).toBeTruthy();
         }
-        for (const group of page.extraProps ?? []) {
+        for (const group of body.extraProps ?? []) {
           expect(group.note[lang]).toBeTruthy();
           for (const row of group.props) expect(row.note[lang]).toBeTruthy();
         }
@@ -190,22 +193,31 @@ describe("DocsApp", () => {
 
   it.each(INGOT_GUIDE_PAGES.map((guide) => [guide.slug, guide] as const))(
     "guide %s has text in every language",
-    (_slug, guide) => {
+    async (_slug, guide) => {
+      const prose = (await guide.body()).default;
       for (const lang of DOC_LANGS) {
         expect(guide.title[lang].trim().length).toBeGreaterThan(0);
         expect(guide.summary[lang].trim().length).toBeGreaterThan(0);
         expect(guide.sections.length).toBeGreaterThan(0);
         for (const section of guide.sections) {
           expect(section.title[lang].trim().length).toBeGreaterThan(0);
-          expect(section.body[lang]).toBeTruthy();
+          // Every title in the metadata has prose behind it: a heading in
+          // the right column that leads to an empty section is worse than
+          // no heading at all.
+          expect(prose[section.id][lang]).toBeTruthy();
         }
       }
     },
   );
 
-  it("renders sections with content and links to them from the right column", () => {
+  it("renders sections with content and links to them from the right column", async () => {
     goto(componentPath("IngotTable"));
     render(<DocsApp />);
+
+    // `limits` lives in the page body, which arrives a tick after the
+    // metadata — it is the one section that appears rather than being
+    // there from the first frame, so it is the one to wait for.
+    await screen.findByRole("heading", { level: 2, name: CHROME.limits.cs });
 
     for (const title of [
       CHROME.demo.cs,
@@ -799,11 +811,12 @@ describe("DocsApp", () => {
     ).toBeInTheDocument();
   });
 
-  it("the Basics page shows all five families", () => {
+  it("the Basics page shows all five families", async () => {
     goto(guidePath("zaklady"));
     render(<DocsApp />);
 
-    const table = screen.getByTestId("docs-accent-families");
+    // The prose of a guide is loaded when the guide is opened.
+    const table = await screen.findByTestId("docs-accent-families");
     // The rows are generated from ACCENT_CHOICES — a family added to the kit
     // shows up on the page without anyone having to remember it.
     expect(table.querySelectorAll("tbody tr").length).toBe(ACCENT_CHOICES.length);
