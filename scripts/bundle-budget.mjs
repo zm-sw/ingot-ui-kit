@@ -52,8 +52,13 @@ const ENTRY_KB = 360;
  * chunks carry eighty preambles that one big chunk carried once. That is
  * the trade being made — nobody downloads all of them, and the reader who
  * opens one page now downloads a third of what they did.
+ *
+ * Raised again by 20 for the page-layouts guide, which is four whole
+ * screens' worth of live demo. It lands in its own chunk and only a reader
+ * who opens that guide pays for it — which is exactly the shape this
+ * budget was raised to allow.
  */
-const TOTAL_JS_KB = 1160;
+const TOTAL_JS_KB = 1180;
 const CSS_KB = 90;
 
 const kb = (bytes) => Math.round((bytes / 1024) * 10) / 10;
