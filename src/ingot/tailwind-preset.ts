@@ -186,6 +186,13 @@ export default {
       // stop being the same width.
       maxWidth: {
         frame: "var(--frame, 1440px)",
+        // The three shapes a page's content can have inside that frame.
+        // They are here rather than as `max-w-3xl` and friends for the
+        // reason above: the nearest Tailwind step is a number somebody
+        // reached for, not a width anybody decided.
+        "page-card": "var(--page-card, 448px)",
+        "page-reading": "var(--page-reading, 768px)",
+        "page-wide": "var(--page-wide, 1024px)",
       },
       // The standing side index. Same reasoning as the frame: a number
       // written into each screen is a number that stops agreeing with the

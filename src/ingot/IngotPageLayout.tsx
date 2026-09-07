@@ -12,15 +12,33 @@ import { IngotDisclosure } from "./IngotDisclosure";
  * **vertical rhythm of blocks** (header → metrics → toolbar → table) and
  * the **shape of the content**. (Owner's decision, 2026-09-02, point 05.)
  *
- * Three shapes, by what the screen is:
+ * Four widths, by what the screen IS — never by how wide it looks right:
  *
  * * ``full`` — the frame's full width. Lists and tables; a column bitten
  *   off a table is a column missing from it.
- * * ``reading`` — a limited width for screens that are read: long
- *   settings, legal texts, a detail without tables. A line across the
- *   whole monitor is not read but skimmed.
- * * ``aside`` with a column on the left — a screen with its own index
- *   (``IngotSideNav``): the index stands, the content scrolls.
+ * * ``wide`` — read, but not a form: a record's detail with its facts in
+ *   two columns, a summary with panels. Wider than a reading column,
+ *   narrower than the frame, because a block stretched to 1440 px stops
+ *   reading as one object.
+ * * ``reading`` — a column that is read or filled in: a long setting, a
+ *   form, a text. A line across the whole monitor is not read but skimmed.
+ * * ``card`` — a whole screen that is one small box: signing in,
+ *   confirming, a module with nothing in it yet. This one CENTRES itself;
+ *   the others start where every other block on the page starts. A box
+ *   parked at the left edge of a wide monitor reads as a page that failed
+ *   to load the rest of itself, and centring a reading column instead
+ *   would move the text away from the heading above it.
+ *
+ * and ``aside`` with a column on the left — a screen with its own index
+ * (``IngotSideNav``): the index stands, the content scrolls.
+ *
+ * The four exist because the alternative was measured: an application
+ * built on this kit drew its own page frame 183 times in NINE widths,
+ * from ``max-w-md`` to ``max-w-7xl``. Nine numbers are not nine
+ * decisions — they are one decision ("how wide is this page") taken
+ * again by eye every time, so two screens with the same content end up
+ * different widths and nobody can say which is right. Every one of those
+ * nine falls into one of the four names above.
  *
  * A card grid and a two-column detail deliberately have no shape here:
  * that is the inside of a block (``IngotColumns``), not the page frame.
@@ -64,8 +82,12 @@ type AsideProps =
   | { aside?: never; asideLabel?: never };
 
 export type IngotPageLayoutProps = {
-  /** ``full`` for tables and lists · ``reading`` for screens that are read. */
-  width?: "full" | "reading";
+  /**
+   * ``full`` for tables and lists · ``wide`` for a detail that is read ·
+   * ``reading`` for a form or a text · ``card`` for a screen that is one
+   * small centred box.
+   */
+  width?: "full" | "wide" | "reading" | "card";
   children: ReactNode;
   testId?: string;
 } & AsideProps;
@@ -111,7 +133,16 @@ export function IngotPageLayout({
     // `min-w-0` is not decoration: a flex child defaults to the width of
     // its content, so without it a wide table pushes the column past the
     // row instead of scrolling inside it.
-    <div className={cx("min-w-0 flex-1 space-y-6", width === "reading" && "max-w-3xl")}>
+    <div
+      className={cx(
+        "min-w-0 flex-1 space-y-6",
+        width === "wide" && "max-w-page-wide",
+        width === "reading" && "max-w-page-reading",
+        // `card` is the one width that also places itself: see the note
+        // above about a box at the left edge of a wide screen.
+        width === "card" && "mx-auto max-w-page-card",
+      )}
+    >
       {children}
     </div>
   );
