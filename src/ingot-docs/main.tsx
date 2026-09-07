@@ -18,15 +18,24 @@ import ReactDOM from "react-dom/client";
 import "@/styles/globals.css";
 import { loadBody } from "@/ingot-docs/bodies";
 import { DocsApp } from "@/ingot-docs/DocsApp";
+import { EmbedApp, isEmbedPath } from "@/ingot-docs/EmbedApp";
 import { locationFromPath } from "@/ingot-docs/routes";
 
 const rootEl = document.getElementById("root");
 if (!rootEl) throw new Error("#root not found");
 
-const start = (): void => {
-  ReactDOM.createRoot(rootEl).render(<DocsApp />);
-};
+if (isEmbedPath(window.location.pathname)) {
+  // `/embed/button` is one demo and no chrome — the address a design tool
+  // puts in a panel. It forks ahead of everything else because both steps
+  // below are about a PAGE: the shell is the chrome an embed exists to
+  // leave out, and there is no prerendered body here to wait for.
+  ReactDOM.createRoot(rootEl).render(<EmbedApp />);
+} else {
+  const start = (): void => {
+    ReactDOM.createRoot(rootEl).render(<DocsApp />);
+  };
 
-const here = locationFromPath(window.location.pathname);
-if (here === null) start();
-else void loadBody(here.page).then(start, start);
+  const here = locationFromPath(window.location.pathname);
+  if (here === null) start();
+  else void loadBody(here.page).then(start, start);
+}
