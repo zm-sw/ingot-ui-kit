@@ -59,8 +59,8 @@ const SOURCES: readonly SourceRow[] = [
     what: { cs: "Jakou má co hodnotu", en: "What a value is" },
     wins: { cs: "Soubor tokenů", en: "The token file" },
     why: {
-      cs: "Barvy, mezery, rádiusy, stíny, pohyb i typografická škála. Ze stejného souboru se generuje stylopis, utility i export do Figmy — jiná hodnota než ta odsud v produktu neexistuje.",
-      en: "Colours, spacing, radii, shadows, motion and the type scale. The stylesheet, the utilities and the Figma export are all generated from it — no other value exists in the product.",
+      cs: "Barvy, mezery, rádiusy, stíny, pohyb i typografická škála. Ze stejného souboru se generuje stylopis i utility — jiná hodnota než ta odsud v produktu neexistuje.",
+      en: "Colours, spacing, radii, shadows, motion and the type scale. The stylesheet and the utilities are both generated from it — no other value exists in the product.",
     },
   },
   {
@@ -196,8 +196,8 @@ function Naming({ lang }: { lang: DocLang }): JSX.Element {
   const rows = useNamingRows();
   const columns: readonly IngotColumn<NamingRow>[] = [
     {
-      key: "figma",
-      header: cs ? "Ve Figmě" : "In Figma",
+      key: "design",
+      header: cs ? "V návrhu" : "In the design",
       cell: (row) => <IngotCode>{row.doc.tag}</IngotCode>,
     },
     {
@@ -234,8 +234,8 @@ function Naming({ lang }: { lang: DocLang }): JSX.Element {
     <div className="flex flex-col gap-4">
       <p className="text-sm text-ink-2">
         {cs
-          ? "Jméno komponenty ve Figmě je selektor, pod kterým prvek stojí v návrhu. Vlastnost je jméno vlastnosti komponenty, hodnota je jedna z jejího výčtu. Mezi návrhem a kódem se tak nic nepřekládá — a právě proto, že se nepřekládá, se to nemůže rozejít."
-          : "A component's name in Figma is the selector the element goes by in the design. A property is the name of the component's property, a value one member of its set. Nothing is translated between design and code — and because nothing is translated, nothing can drift."}
+          ? "V návrhu prvek stojí pod selektorem, v kódu pod jménem exportu. Vlastnost je jméno vlastnosti komponenty, hodnota je jedna z jejího výčtu. Mezi návrhem a kódem se tak nic nepřekládá — a právě proto, že se nepřekládá, se to nemůže rozejít."
+          : "In a design the element goes by its selector, in code by its export name. A property is the name of the component's property, a value one member of its set. Nothing is translated between design and code — and because nothing is translated, nothing can drift."}
       </p>
       {rows === null ? (
         <IngotSkeleton
@@ -256,13 +256,14 @@ function Naming({ lang }: { lang: DocLang }): JSX.Element {
           cs
             ? [
                 <>
-                  Tokeny se ve Figmě jmenují jako ve stylopisu —{" "}
+                  Token se v návrhu jmenuje jako ve stylopisu —{" "}
                   <IngotCode>surface-2</IngotCode>, ne „Background / Secondary“. Sdílený
                   slovník mezi designérem a vývojářem je celý smysl systému.
                 </>,
                 <>
-                  Akcent má vlastní kolekci s deseti režimy: pět rodin krát světlý a
-                  tmavý motiv. Rodina se nevybírá barvou, ale režimem.
+                  Akcent je jedna rodina čtyř tokenů, ne čtyři barvy. Rodiny je pět a
+                  každá má vlastní světlé i tmavé hodnoty — deset kombinací, mezi
+                  kterými se v návrhu přepíná stejně jako v aplikaci.
                 </>,
                 <>
                   Ikona nese jméno z kitu — <IngotCode>arrow-right</IngotCode>, ne
@@ -272,15 +273,16 @@ function Naming({ lang }: { lang: DocLang }): JSX.Element {
               ]
             : [
                 <>
-                  Tokens are named in Figma as they are in the stylesheet —{" "}
+                  A token is named in a design as it is in the stylesheet —{" "}
                   <IngotCode>surface-2</IngotCode>, not &quot;Background /
                   Secondary&quot;. A shared vocabulary between designer and developer is
                   the whole point of the system.
                 </>,
                 <>
-                  The accent has a collection of its own with ten modes: five families
-                  times the light and dark themes. A family is not picked as a colour
-                  but as a mode.
+                  The accent is one family of four tokens, not four colours. There are
+                  five families and each has its own light and dark values — ten
+                  combinations, switched in a design the way the application switches
+                  them.
                 </>,
                 <>
                   An icon carries the kit&apos;s name —{" "}
@@ -300,23 +302,15 @@ interface FileRow {
   what: { cs: string; en: string };
 }
 
-/** Everything the build writes for a design tool, in one place. */
+/** Everything the build writes for a reader outside the code, in one place. */
 function files(iconCount: number): readonly FileRow[] {
   return [
     {
-      href: "/tokens.figma.json",
-      label: { cs: "Proměnné", en: "Variables" },
-      what: {
-        cs: "Paleta, škála, typografie a pohyb jako kolekce a režimy. Motiv má dva režimy, akcent deset.",
-        en: "The palette, the scales, the type and the motion as collections and modes. The theme has two modes, the accent ten.",
-      },
-    },
-    {
       href: "/tokens.json",
-      label: { cs: "Zdroj tokenů", en: "Token source" },
+      label: { cs: "Tokeny", en: "Tokens" },
       what: {
-        cs: "Tentýž obsah ve standardním formátu návrhových tokenů — pro nástroje, které ho čtou přímo, bez převodníku.",
-        en: "The same content in the standard design-token format — for the tools that read it directly, with no converter.",
+        cs: "Celá paleta, škály, typografie i pohyb ve standardním formátu návrhových tokenů — tentýž soubor, ze kterého se generuje stylopis.",
+        en: "The whole palette, the scales, the type and the motion in the standard design-token format — the same file the stylesheet is generated from.",
       },
     },
     {
@@ -331,8 +325,8 @@ function files(iconCount: number): readonly FileRow[] {
       href: "/components.json",
       label: { cs: "Komponenty", en: "Components" },
       what: {
-        cs: "Seznam primitiv se selektorem, stavem, verzí, tokeny a výčty vlastností. Z něj se knihovna staví a proti němu se kontroluje.",
-        en: "The primitives with their selector, status, version, tokens and property sets. A library is built from it and checked against it.",
+        cs: "Seznam primitiv se selektorem, stavem, verzí, tokeny a výčty vlastností. Odpovídá na to, co primitivum umí, aniž by se otevřel kód.",
+        en: "The primitives with their selector, status, version, tokens and property sets. It answers what a primitive can do without opening the code.",
       },
     },
   ];
@@ -387,8 +381,8 @@ function Badges({ lang }: { lang: DocLang }): JSX.Element {
     <div className="flex flex-col gap-4">
       <p className="text-sm text-ink-2">
         {cs
-          ? "Odznak vedle názvu komponenty říká vývojáři, jestli se na API smí spolehnout. Pro knihovnu ve Figmě znamená něco trochu jiného — jestli se na ni smí spolehnout obrazovka."
-          : "The badge beside a component's name tells a developer whether the API can be relied on. For a design library it means something slightly different — whether a screen can be relied on."}
+          ? "Odznak vedle názvu komponenty říká vývojáři, jestli se na API smí spolehnout. Pro návrh znamená něco trochu jiného — jestli se na tu komponentu smí spolehnout obrazovka."
+          : "The badge beside a component's name tells a developer whether the API can be relied on. In a design it means something slightly different — whether a screen can be built on that component yet."}
       </p>
       <IngotList
         variant="plain"
@@ -397,12 +391,12 @@ function Badges({ lang }: { lang: DocLang }): JSX.Element {
             ? [
                 <>
                   <IngotBadge tone="ok">Stabilní</IngotBadge> — tvar se nemění bez
-                  ohlášení. Komponenta se smí vložit do knihovny a stavět se z ní.
+                  ohlášení. Z komponenty se smí stavět obrazovka.
                 </>,
                 <>
                   <IngotBadge tone="warn">Beta</IngotBadge> — tvar se ještě hledá.
-                  Kreslit se z ní smí, ale počítej s tím, že se změní; do sdílené
-                  knihovny patří až po povýšení.
+                  Kreslit se z ní smí, ale počítej s tím, že se změní; obrazovka, která
+                  na ní stojí, se bude překreslovat.
                 </>,
                 <>
                   <IngotBadge tone="danger">Zastaralé</IngotBadge> — má nástupce a v
@@ -413,7 +407,7 @@ function Badges({ lang }: { lang: DocLang }): JSX.Element {
             : [
                 <>
                   <IngotBadge tone="ok">Stable</IngotBadge> — the shape does not change
-                  without notice. The component may go into the library and be built on.
+                  without notice. The component may go into a screen and be built on.
                 </>,
                 <>
                   <IngotBadge tone="warn">Beta</IngotBadge> — the shape is still being
@@ -430,7 +424,7 @@ function Badges({ lang }: { lang: DocLang }): JSX.Element {
       />
       <p className="text-sm text-ink-2">
         {cs
-          ? "Vedle odznaku stojí verze primitiva. Soubor s komponentami nese verzi celého kitu, takže knihovna umí poznat, že je pozadu — a proti čemu."
+          ? "Vedle odznaku stojí verze primitiva. Soubor s komponentami nese verzi celého kitu, takže jde poznat, proti které verzi byl návrh kreslený."
           : "The primitive's version stands beside the badge. The components file carries the version of the whole kit, so a library can tell that it is behind — and behind what."}
       </p>
     </div>
