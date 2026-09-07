@@ -95,6 +95,7 @@ import {
   type DocsPage,
 } from "@/ingot-docs/routes";
 import pkg from "../../package.json";
+import { bodyOf, keyOf, loadBody, type PageBody } from "@/ingot-docs/bodies";
 import type {
   IngotDocBody,
   IngotDocMeta,
@@ -432,23 +433,13 @@ const STATUS_LABEL = {
  * cannot link to them into a void.
  */
 /**
- * Loads a page's body, and remembers it.
+ * The body of the page on screen, once it is here.
  *
- * The body is the half that is 393 kB across the kit, so it arrives when a
- * reader opens the page rather than when they open the site. The cache is
- * module-level: paging back and forth between two components should not
- * re-fetch either of them, and a module already in the browser's memory
- * resolves in the same tick.
+ * The cache and the loading live in ``bodies.ts``, because the entry point
+ * primes them before the first render — see the note there. What is left
+ * here is the part that is React's: notice when the page changes, and ask
+ * for the new one.
  */
-type PageBody = IngotDocBody | IngotGuideBody;
-
-const BODIES = new Map<string, PageBody>();
-
-/** What a page is called in the cache — a component name or a guide slug. */
-function keyOf(page: DocsPage): string {
-  return page.kind === "component" ? page.doc.name : `guide:${page.guide.slug}`;
-}
-
 function usePageBody(page: DocsPage): PageBody | null {
   const key = keyOf(page);
   // The key travels WITH the body: the previous page's body is not this
@@ -457,24 +448,22 @@ function usePageBody(page: DocsPage): PageBody | null {
   const [loaded, setLoaded] = useState<{ key: string; body: PageBody } | null>(null);
 
   useEffect(() => {
-    if (BODIES.has(key)) return;
+    if (bodyOf(page)) return;
     let cancelled = false;
     // `cancelled` is the usual guard for a reader who turns two pages
     // quickly: without it the slower import lands last and the page shows
     // another component's props table.
-    const load = page.kind === "component" ? page.doc.body : page.guide.body;
-    void load().then((module) => {
-      BODIES.set(key, module.default);
-      if (!cancelled) setLoaded({ key, body: module.default });
+    void loadBody(page).then((body) => {
+      if (!cancelled) setLoaded({ key, body });
     });
     return () => {
       cancelled = true;
     };
   }, [page, key]);
 
-  // The cache is read during render, not copied into state: a page opened
-  // a second time has its body already and must not flash a skeleton.
-  return BODIES.get(key) ?? (loaded?.key === key ? loaded.body : null);
+  // The cache is read during render, not copied into state: a page that is
+  // already here must not flash a skeleton on the way to showing it.
+  return bodyOf(page) ?? (loaded?.key === key ? loaded.body : null);
 }
 
 /** Stands in for a section whose text has not arrived yet. */
