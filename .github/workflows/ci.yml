@@ -165,9 +165,16 @@ jobs:
             }
         env:
           BODY: ${{ steps.summary.outputs.body }}
+      # The full reports, for the day a score drops and the table is not
+      # enough to say why.
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse
           path: .lighthouseci
+          # The directory's name starts with a dot, and this action skips
+          # hidden files unless told otherwise -- so every run so far
+          # uploaded nothing and said "No files were found" in a log line
+          # nobody reads.
+          include-hidden-files: true
           if-no-files-found: ignore
