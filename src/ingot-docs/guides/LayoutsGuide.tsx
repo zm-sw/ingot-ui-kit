@@ -14,6 +14,10 @@ export const LayoutsGuide: IngotGuideMeta = {
       title: { cs: "Šířka stránky", en: "The width of a page" },
     },
     {
+      id: "mrizka",
+      title: { cs: "Mřížka uvnitř bloku", en: "The grid inside a block" },
+    },
+    {
       id: "seznam",
       title: { cs: "Seznam", en: "The list" },
     },

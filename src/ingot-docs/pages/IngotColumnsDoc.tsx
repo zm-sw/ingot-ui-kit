@@ -9,9 +9,12 @@ const demoSource = () => import("@/ingot-docs/demos/IngotColumnsDemo?raw");
 export const IngotColumnsDoc: IngotDocMeta = {
   name: "IngotColumns",
   status: "beta",
-  version: "1.0",
+  // 1.1 (KAN-986) — four columns, tiles by minimum width, and the gap as a
+  // step of the space scale. Nothing to edit: the defaults render exactly
+  // what they rendered.
+  version: "1.1",
   tag: ".columns",
-  tokens: ["--s-4"],
+  tokens: ["--s-3", "--s-4", "--s-5"],
   classNameNote: {
     cs: "Bere `className`, ale jen na umístění bloku — kde na stránce stojí. Ne na šířku sloupců ani na mezeru mezi nimi: přesně kvůli tomu, že si je každá obrazovka určovala sama, tohle primitivum vzniklo.",
     en: "Takes `className`, but only for placing the block — where on the page it stands. Not for the width of the columns or the gap between them: that each screen decided those for itself is exactly why this primitive exists.",

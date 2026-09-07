@@ -187,6 +187,71 @@ function Widths({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+function Grid({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  const cell =
+    "rounded-md border border-border bg-surface px-3 py-2 text-xs text-ink-2";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Šířka je rám stránky; tohle je vnitřek bloku. Dvě různá rozhodnutí, a plete se to snadno: mřížka nemá vědět, jak široká je stránka, na které stojí."
+          : "The width is the page's frame; this is the inside of a block. Two different decisions, and easy to confuse: a grid must not know how wide the page it stands on is."}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>columns</IngotCode> 2, 3 nebo 4 — kolik jich je, jakmile je
+                  na ně místo. Tři a čtyři jdou dolů přes dva, ne rovnou na jeden.
+                </>,
+                <>
+                  <IngotCode>minItemWidth</IngotCode> pro dlaždice: řekne se nejužší
+                  buňka a řádek jich pojme, kolik se vejde.
+                </>,
+                <>
+                  <IngotCode>gap</IngotCode> je krok škály prostoru, ne číslo. Mezera,
+                  kterou jde minout o dva pixely, přestává být škálou.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>columns</IngotCode> 2, 3 or 4 — how many there are once
+                  there is room. Three and four step down through two rather than
+                  straight to one.
+                </>,
+                <>
+                  <IngotCode>minItemWidth</IngotCode> for tiles: name the narrowest cell
+                  and the row holds as many as fit.
+                </>,
+                <>
+                  <IngotCode>gap</IngotCode> is a step of the space scale, not a number.
+                  A gap that can be missed by two pixels stops being a scale.
+                </>,
+              ]
+        }
+      />
+      <div className={`${STAGE} space-y-4`}>
+        <IngotColumns columns={4}>
+          {[1, 2, 3, 4].map((n) => (
+            <p key={n} className={cell}>
+              {cs ? `Sloupec ${n}` : `Column ${n}`}
+            </p>
+          ))}
+        </IngotColumns>
+        <IngotColumns minItemWidth={160} gap={3}>
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <p key={n} className={cell}>
+              {cs ? `Dlaždice ${n}` : `Tile ${n}`}
+            </p>
+          ))}
+        </IngotColumns>
+      </div>
+    </div>
+  );
+}
+
 function ListScreen({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   const [query, setQuery] = useState("");
@@ -546,6 +611,7 @@ function EmptyModule({ lang }: { lang: DocLang }): JSX.Element {
 
 const body: IngotGuideBody = {
   sirka: { cs: <Widths lang="cs" />, en: <Widths lang="en" /> },
+  mrizka: { cs: <Grid lang="cs" />, en: <Grid lang="en" /> },
   seznam: { cs: <ListScreen lang="cs" />, en: <ListScreen lang="en" /> },
   detail: { cs: <DetailScreen lang="cs" />, en: <DetailScreen lang="en" /> },
   nastaveni: { cs: <SettingsScreen lang="cs" />, en: <SettingsScreen lang="en" /> },

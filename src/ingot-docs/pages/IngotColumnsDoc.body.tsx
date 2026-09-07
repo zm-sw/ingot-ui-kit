@@ -48,11 +48,29 @@ const body: IngotDocBody = {
     },
     {
       name: "columns",
-      type: "2 | 3",
+      type: "2 | 3 | 4",
       required: false,
       note: {
-        cs: "Kolik sloupců, jakmile je na ně místo. Výchozí 2.",
-        en: "How many columns, once there is room for them. Defaults to 2.",
+        cs: "Kolik sloupců, jakmile je na ně místo. Výchozí 2. Tři a čtyři jdou dolů přes mezikrok: dva sloupce od `sm`, plný počet od `collapseBelow`.",
+        en: "How many columns, once there is room for them. Defaults to 2. Three and four take a step on the way down: two columns from `sm`, the full count from `collapseBelow`.",
+      },
+    },
+    {
+      name: "gap",
+      type: "3 | 4 | 5",
+      required: false,
+      note: {
+        cs: "Krok škály prostoru mezi buňkami — `--s-3`, `--s-4` (výchozí), `--s-5`. Ne libovolné číslo: mezera, kterou lze minout o dva pixely, přestává být škálou.",
+        en: "The step of the space scale between cells — `--s-3`, `--s-4` (default), `--s-5`. Not an arbitrary number: a gap that can be missed by two pixels stops being a scale.",
+      },
+    },
+    {
+      name: "minItemWidth",
+      type: "number",
+      required: false,
+      note: {
+        cs: "Dlaždice místo počtu: nejužší, jak smí být jedna buňka (v px), a řádek jich pojme, kolik se vejde. Má přednost před `columns` — kdo si řekl o dlaždice, ten si o ně řekl.",
+        en: "Tiles instead of a count: the narrowest one cell may be, in pixels, and the row holds as many as fit. It wins over `columns` — a caller that asked for tiles asked for tiles.",
       },
     },
     {
