@@ -93,8 +93,8 @@ describe("addresses", () => {
 describe("what a crawler is given", () => {
   it.each(
     ALL_ROUTES.slice(0, 8).map((route) => [pathOf(route.page, route.lang), route]),
-  )("%s carries its own title and a description", (_path, route) => {
-    const rendered = renderRoute(route);
+  )("%s carries its own title and a description", async (_path, route) => {
+    const rendered = await renderRoute(route);
     expect(rendered.head.title.length).toBeGreaterThan(0);
     expect(rendered.head.description.length).toBeGreaterThan(20);
     // The heading is drawn by the kit's page header, like everywhere else
@@ -102,9 +102,12 @@ describe("what a crawler is given", () => {
     expect(rendered.html).toMatch(new RegExp(`<h1[^>]*>${rendered.head.heading}</h1>`));
   });
 
-  it("renders a component page's own content, not a shell", () => {
+  it("renders a component page's own content, not a shell", async () => {
     const doc = INGOT_DOC_PAGES.find((entry) => entry.name === "IngotTable")!;
-    const rendered = renderRoute({ page: { kind: "component", doc }, lang: "cs" });
+    const rendered = await renderRoute({
+      page: { kind: "component", doc },
+      lang: "cs",
+    });
     expect(rendered.html).toMatch(/<h1[^>]*>Table<\/h1>/);
     // When to use it, when not to, and the props: the three things a reader
     // arriving from a search result actually came for.
@@ -114,17 +117,17 @@ describe("what a crawler is given", () => {
     expect(rendered.html).toContain("columns");
   });
 
-  it("renders a guide's prose", () => {
+  it("renders a guide's prose", async () => {
     const guide = INGOT_GUIDE_PAGES.find((entry) => entry.slug === "preklady")!;
-    const rendered = renderRoute({ page: { kind: "guide", guide }, lang: "en" });
+    const rendered = await renderRoute({ page: { kind: "guide", guide }, lang: "en" });
     expect(rendered.html.length).toBeGreaterThan(500);
     for (const section of guide.sections) {
       expect(rendered.html).toContain(section.title.en);
     }
   });
 
-  it("points each language at the other one", () => {
-    const rendered = renderRoute(ALL_ROUTES[0]);
+  it("points each language at the other one", async () => {
+    const rendered = await renderRoute(ALL_ROUTES[0]);
     // Both languages, this one included — a crawler that finds only one of
     // the pair still learns the other exists.
     expect(rendered.head.alternates.map((alt) => alt.lang).sort()).toEqual([

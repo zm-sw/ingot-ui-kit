@@ -50,6 +50,8 @@ export interface ChromeStrings {
   searchKindComponent: Localized<string>;
   sinceVersion: Localized<string>;
   demoLoading: Localized<string>;
+  /** Stands in for a section whose text is still on its way. */
+  pageLoading: Localized<string>;
   propName: Localized<string>;
   propType: Localized<string>;
   propRequired: Localized<string>;
@@ -195,4 +197,5 @@ export const CHROME: ChromeStrings = {
   searchKindComponent: { cs: "Komponenta", en: "Component" },
   sinceVersion: { cs: "od", en: "since" },
   demoLoading: { cs: "Načítá se ukázka…", en: "Loading the demo…" },
+  pageLoading: { cs: "Načítá se obsah stránky…", en: "Loading the page…" },
 };
