@@ -247,3 +247,62 @@ export const INGOT_RADIUS: Record<string, string> = {
   "md": "10px",
   "lg": "14px"
 };
+
+/**
+ * The type scale, by step. The Tailwind preset builds its `fontSize`
+ * entries from this instead of declaring the numbers itself — which is how
+ * the scale used to stay out of every export the kit writes.
+ */
+export const INGOT_TYPE_SCALE: Record<
+  string,
+  {
+    fontSize: string;
+    lineHeight: string;
+    letterSpacing?: string;
+    fontWeight?: string;
+  }
+> = {
+  "display": {
+    "fontSize": "clamp(40px, 5.4vw, 64px)",
+    "lineHeight": "1.02",
+    "letterSpacing": "-0.03em",
+    "fontWeight": "600"
+  },
+  "h1": {
+    "fontSize": "40px",
+    "lineHeight": "1.06",
+    "letterSpacing": "-0.025em",
+    "fontWeight": "600"
+  },
+  "h2": {
+    "fontSize": "26px",
+    "lineHeight": "1.18",
+    "letterSpacing": "-0.02em",
+    "fontWeight": "600"
+  },
+  "h3": {
+    "fontSize": "18px",
+    "lineHeight": "1.3",
+    "letterSpacing": "-0.01em",
+    "fontWeight": "600"
+  },
+  "lede": {
+    "fontSize": "17px",
+    "lineHeight": "1.55",
+    "letterSpacing": "-0.005em"
+  },
+  "body": {
+    "fontSize": "14.5px",
+    "lineHeight": "1.6"
+  },
+  "small": {
+    "fontSize": "13px",
+    "lineHeight": "1.55"
+  },
+  "eyebrow": {
+    "fontSize": "11px",
+    "lineHeight": "1.4",
+    "letterSpacing": "0.08em",
+    "fontWeight": "500"
+  }
+};
