@@ -126,6 +126,17 @@ describe("what a crawler is given", () => {
     }
   });
 
+  it("names the page, so the build can preload the chunk with its body", async () => {
+    const doc = INGOT_DOC_PAGES.find((entry) => entry.name === "IngotTable")!;
+    const guide = INGOT_GUIDE_PAGES.find((entry) => entry.slug === "preklady")!;
+    expect(
+      (await renderRoute({ page: { kind: "component", doc }, lang: "cs" })).page,
+    ).toBe("component:IngotTable");
+    expect(
+      (await renderRoute({ page: { kind: "guide", guide }, lang: "cs" })).page,
+    ).toBe("guide:preklady");
+  });
+
   it("points each language at the other one", async () => {
     const rendered = await renderRoute(ALL_ROUTES[0]);
     // Both languages, this one included — a crawler that finds only one of

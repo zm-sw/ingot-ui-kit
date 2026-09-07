@@ -48,6 +48,10 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    // The prerender step reads it to find the chunk that carries a page's
+    // body, so the file for that page can preload it. Matching chunks by
+    // filename instead would be a guess about how rollup names things.
+    manifest: true,
     rollupOptions: {
       output: {
         // The Forgmatic layer in its own chunk. It is forty-three glyphs
