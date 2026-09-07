@@ -2,4 +2,10 @@
 User-agent: *
 Allow: /
 
+# Except one address: /embed/<component> is a single live demo with no
+# heading, no explanation and no menu — the shape a design tool puts in a
+# panel. Indexed, it would compete with the page that explains the same
+# component, and win nothing for the reader who landed on it.
+Disallow: /embed/
+
 Sitemap: https://ingot.forgmatic.com/sitemap.xml
