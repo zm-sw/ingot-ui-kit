@@ -13,6 +13,7 @@ import { BasicsGuide } from "@/ingot-docs/guides/BasicsGuide";
 import { AuthorsGuide } from "@/ingot-docs/guides/AuthorsGuide";
 import { ChangesGuide } from "@/ingot-docs/guides/ChangesGuide";
 import { ComponentsGuide } from "@/ingot-docs/guides/ComponentsGuide";
+import { DesignersGuide } from "@/ingot-docs/guides/DesignersGuide";
 import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
@@ -124,6 +125,10 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuidePage[] = [
   // menu, so it stands before Icons, not after them.
   ComponentsGuide,
   IconsGuide,
+  // The handover to a design tool. It stands after tokens, components and
+  // icons because those are the three things it hands over — a reader who
+  // has not seen them has nothing to take.
+  DesignersGuide,
   ShellGuide,
   // Marketing blocks of the public web. The blocks THEMSELVES have had
   // their own component pages since the move into the kit; this guide is
