@@ -5,8 +5,8 @@ export const DesignersGuide: IngotGuideMeta = {
   group: "system",
   title: { cs: "Pro designéry", en: "For designers" },
   summary: {
-    cs: "Co je zdroj pravdy, jak se co jmenuje na obou stranách, které soubory si stáhnout do návrhového nástroje a co odznak slibuje knihovně.",
-    en: "What the source of truth is, what a thing is called on each side, which files to take into a design tool, and what the badge promises a library.",
+    cs: "Co je zdroj pravdy, jak se co jmenuje na obou stranách, které soubory si vzít do návrhového nástroje a co odznak slibuje obrazovce.",
+    en: "What the source of truth is, what a thing is called on each side, which files to take into a design tool, and what the badge promises a screen.",
   },
   sections: [
     {
