@@ -9,7 +9,7 @@
  * Reads the reports `@lhci/cli` wrote into `.lighthouseci` and prints
  * markdown on stdout. The workflow posts that as a pull request comment.
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const DIR = ".lighthouseci";
@@ -17,14 +17,25 @@ const DIR = ".lighthouseci";
 /** The thresholds the ticket set. Warnings for now — see the workflow. */
 const TARGET = { performance: 90, seo: 95, accessibility: 95 };
 
+/**
+ * One report per address: the median run, not all three.
+ *
+ * Each address is measured three times, because one run on a shared
+ * runner is a number that moves on its own. Lighthouse marks the median
+ * of the three in `manifest.json`; that is the one worth reporting, and
+ * printing all three would be a table where every address appears three
+ * times with three different answers.
+ */
 function reports() {
-  let files;
+  let manifest;
   try {
-    files = readdirSync(DIR).filter((name) => /^lhr-.*\.json$/.test(name));
+    manifest = JSON.parse(readFileSync(join(DIR, "manifest.json"), "utf-8"));
   } catch {
     return [];
   }
-  return files.map((name) => JSON.parse(readFileSync(join(DIR, name), "utf-8")));
+  return manifest
+    .filter((entry) => entry.isRepresentativeRun)
+    .map((entry) => JSON.parse(readFileSync(entry.jsonPath, "utf-8")));
 }
 
 const rows = reports()
@@ -55,6 +66,7 @@ const lines = [
   "",
   "Mobile, 4G throttling, against the built site served locally — so these",
   "read lower than the live site, which is served compressed from a CDN.",
+  "Median of three runs per address.",
   "",
   "| Address | Performance | Accessibility | Best practices | SEO |",
   "| --- | --- | --- | --- | --- |",
