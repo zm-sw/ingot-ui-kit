@@ -42,6 +42,16 @@ export interface PrerenderedRoute {
    */
   head: PageHead;
   html: string;
+  /**
+   * Which page this is, so the build can name the chunk that carries its
+   * body: ``component:IngotTable``, ``guide:zaklady``.
+   *
+   * The prerendered file preloads that chunk. Without it the browser
+   * cannot even ASK for the body until the entry has parsed and run, which
+   * on a throttled connection is a second round trip a reader watches as a
+   * skeleton where the text already was.
+   */
+  page: string;
 }
 
 /**
@@ -135,7 +145,16 @@ export async function renderRoute({
     <IngotPageHeader title={head.heading} description={head.description} />,
   );
 
-  return { path: head.path, lang, head, html: heading + body };
+  return {
+    path: head.path,
+    lang,
+    head,
+    html: heading + body,
+    page:
+      page.kind === "component"
+        ? `component:${page.doc.name}`
+        : `guide:${page.guide.slug}`,
+  };
 }
 
 export function renderAllRoutes(): Promise<PrerenderedRoute[]> {

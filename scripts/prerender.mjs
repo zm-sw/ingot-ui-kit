@@ -16,7 +16,7 @@
  * The route list comes from the same module the application routes with,
  * so the sitemap cannot promise a page the site does not have.
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 import { buildComponentManifest, renderAllRoutes } from "../dist-ssr/prerender.js";
@@ -24,6 +24,47 @@ import { buildComponentManifest, renderAllRoutes } from "../dist-ssr/prerender.j
 const DIST = "dist";
 
 const template = readFileSync(join(DIST, "index.html"), "utf-8");
+
+/**
+ * Which built chunk carries which page's body.
+ *
+ * A page's prose is imported when the page is opened. On a prerendered
+ * file that would mean: fetch the HTML, fetch and run the entry, and only
+ * then ask for the body — three round trips before the text a reader can
+ * already see stops being replaced by a skeleton. A `modulepreload` in the
+ * file itself starts the fetch with the entry instead of after it.
+ *
+ * The map is built from the sources: each page declares the module it
+ * loads (`body: () => import("@/ingot-docs/…")`), and vite's manifest says
+ * which file that module ended up in. A page whose module cannot be found
+ * simply gets no preload — a slower page, not a broken one.
+ */
+function bodyChunks() {
+  const manifest = JSON.parse(
+    readFileSync(join(DIST, ".vite", "manifest.json"), "utf-8"),
+  );
+  const chunks = new Map();
+  for (const [dir, kind] of [
+    ["src/ingot-docs/pages", "component"],
+    ["src/ingot-docs/guides", "guide"],
+  ]) {
+    for (const file of readdirSync(dir)) {
+      if (!file.endsWith(".tsx") || file.endsWith(".body.tsx")) continue;
+      const source = readFileSync(join(dir, file), "utf-8");
+      const key =
+        kind === "component"
+          ? source.match(/^ {2}name: "([^"]+)"/m)?.[1]
+          : source.match(/^ {2}slug: "([^"]+)"/m)?.[1];
+      const module = source.match(/body: \(\) => import\("@\/([^"]+)"\)/)?.[1];
+      if (!key || !module) continue;
+      const entry = manifest[`src/${module}.tsx`];
+      if (entry) chunks.set(`${kind}:${key}`, entry.file);
+    }
+  }
+  return chunks;
+}
+
+const CHUNKS = bodyChunks();
 
 /** Text that is about to sit inside an HTML attribute or element. */
 function escape(text) {
@@ -58,6 +99,12 @@ function head(route) {
   ].join("\n    ");
 }
 
+/** The one chunk this address is certain to need, and nothing else. */
+function preload(route) {
+  const chunk = CHUNKS.get(route.page);
+  return chunk ? `  <link rel="modulepreload" href="/${chunk}" />\n  ` : "";
+}
+
 function pageHtml(route) {
   return (
     template
@@ -66,6 +113,7 @@ function pageHtml(route) {
       .replace('<html lang="cs">', `<html lang="${route.lang}">`)
       .replace("<title>Ingot UI Kit</title>", head(route))
       .replace('<div id="root"></div>', `<div id="root">${route.html}</div>`)
+      .replace("</head>", `${preload(route)}</head>`)
   );
 }
 
@@ -123,7 +171,16 @@ const manifest = await buildComponentManifest({
   kit: version,
   generated: new Date().toISOString().slice(0, 10),
 });
-writeFileSync(join(DIST, "components.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+writeFileSync(
+  join(DIST, "components.json"),
+  `${JSON.stringify(manifest, null, 2)}
+`,
+);
+
+// The manifest vite writes is a build artefact, not part of the site: it
+// exists so the preload above could name a chunk, and serving it would
+// publish the shape of the build to anyone who asks for the path.
+rmSync(join(DIST, ".vite"), { recursive: true, force: true });
 
 console.log(
   `prerender: ${routes.length} page(s) + sitemap.xml + components.json (${manifest.count})`,
