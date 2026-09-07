@@ -9,6 +9,10 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.0.3 — 2026-09-07
+
+Automatic release from the doc page registry (v2.0.2 → v2.0.3).
+
 ## v2.0.2 — 2026-09-07
 
 Automatic release from the doc page registry (v2.0.1 → v2.0.2).
