@@ -863,8 +863,8 @@ function WholeScreen({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   <IngotCode>IngotPageLayout</IngotCode> — svislý rytmus bloků a tvar
                   obsahu: <IngotCode>full</IngotCode> pro seznamy,{" "}
-                  <IngotCode>wide</IngotCode> pro detail,{" "}
-                  <IngotCode>aside</IngotCode> pro obrazovku s vlastním rejstříkem.
+                  <IngotCode>wide</IngotCode> pro detail, <IngotCode>aside</IngotCode>{" "}
+                  pro obrazovku s vlastním rejstříkem.
                 </>,
                 <>
                   Bloky v závazném pořadí: drobečky, hlavička,{" "}
