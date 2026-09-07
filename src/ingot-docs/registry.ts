@@ -18,6 +18,7 @@ import { DomainLayerGuide } from "@/ingot-docs/guides/DomainLayerGuide";
 import { FormatsGuide } from "@/ingot-docs/guides/FormatsGuide";
 import { IconsGuide } from "@/ingot-docs/guides/IconsGuide";
 import { IntroGuide } from "@/ingot-docs/guides/IntroGuide";
+import { LayoutsGuide } from "@/ingot-docs/guides/LayoutsGuide";
 import { TokensGuide } from "@/ingot-docs/guides/TokensGuide";
 import { PublicPagesGuide } from "@/ingot-docs/guides/PublicPagesGuide";
 import { ShellGuide } from "@/ingot-docs/guides/ShellGuide";
@@ -130,6 +131,10 @@ export const INGOT_GUIDE_PAGES: readonly IngotGuideMeta[] = [
   // has not seen them has nothing to take.
   DesignersGuide,
   ShellGuide,
+  // Whole screens, right after the blocks they are assembled from: the
+  // page before this one says what a toolbar is, this one says what a
+  // list page looks like when it is finished.
+  LayoutsGuide,
   // Marketing blocks of the public web. The blocks THEMSELVES have had
   // their own component pages since the move into the kit; this guide is
   // about their composition — which rules the page holds rather than the

@@ -863,7 +863,7 @@ function WholeScreen({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   <IngotCode>IngotPageLayout</IngotCode> — svislý rytmus bloků a tvar
                   obsahu: <IngotCode>full</IngotCode> pro seznamy,{" "}
-                  <IngotCode>reading</IngotCode> pro detail,{" "}
+                  <IngotCode>wide</IngotCode> pro detail,{" "}
                   <IngotCode>aside</IngotCode> pro obrazovku s vlastním rejstříkem.
                 </>,
                 <>
@@ -894,7 +894,7 @@ function WholeScreen({ lang }: { lang: DocLang }): JSX.Element {
                 <>
                   <IngotCode>IngotPageLayout</IngotCode> — the vertical rhythm of the
                   blocks and the shape of the content: <IngotCode>full</IngotCode> for
-                  lists, <IngotCode>reading</IngotCode> for a detail,{" "}
+                  lists, <IngotCode>wide</IngotCode> for a detail,{" "}
                   <IngotCode>aside</IngotCode> for a screen with its own index.
                 </>,
                 <>
