@@ -46,8 +46,8 @@ export const ROLE_THRESHOLD: Record<TokenRole, number | null> = {
  * sit below its threshold.
  *
  * A list rather than a flag in `tokens.json`: the reason is prose about
- * how components use the colour, and the token file is data the Figma
- * export reads. Keeping the sentences here means the test and the page
+ * how components use the colour, and the token file is data that
+ * generators read. Keeping the sentences here means the test and the page
  * quote the same one.
  */
 export const DECORATIVE: Record<string, { cs: string; en: string }> = {

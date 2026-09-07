@@ -669,8 +669,7 @@ const normalise = (text) => text.split("\r\n").join("\n");
 
 async function guardIngotTokensFresh() {
   const guard = "ingot-tokens-fresh";
-  const { readTokens, buildCss, buildModule, buildFigma, FIGMA_GROUPS } =
-    await import("./build-tokens.mjs");
+  const { readTokens, buildCss, buildModule } = await import("./build-tokens.mjs");
   const tokens = readTokens(join(ROOT, "src/ingot/tokens.json"));
 
   const stale = [];
@@ -702,24 +701,7 @@ async function guardIngotTokensFresh() {
   );
   const dangling = [...offered].filter((name) => !declared.has(name));
 
-  // A group in the source that the Figma export does not cover is a layer
-  // a designer cannot get hold of — which is exactly how the type scale
-  // stayed invisible while it lived in the Tailwind preset. And a value
-  // that is still a `var()` when it reaches the export is worse than a
-  // missing one: an importer skips it silently, so the palette arrives
-  // looking complete and without its accent.
-  const groups = Object.keys(tokens).filter((name) => name !== "$description");
-  const uncovered = groups.filter((name) => !FIGMA_GROUPS.includes(name));
-  const orphaned = FIGMA_GROUPS.filter((name) => !groups.includes(name));
-  const unresolved = buildFigma(tokens).includes("var(");
-
-  if (
-    stale.length ||
-    dangling.length ||
-    uncovered.length ||
-    orphaned.length ||
-    unresolved
-  ) {
+  if (stale.length || dangling.length) {
     fail(guard, [
       ...(stale.length
         ? [
@@ -734,34 +716,11 @@ async function guardIngotTokensFresh() {
             ...dangling.map((name) => `  --${name}`),
           ]
         : []),
-      ...(uncovered.length
-        ? [
-            `${uncovered.length} token group(s) reach no Figma export:`,
-            ...uncovered.map((name) => `  ${name}`),
-            "Add them to buildFigma() and to FIGMA_GROUPS in build-tokens.mjs.",
-            "A layer that stays out of the export is a layer a designer",
-            "cannot get hold of, and nothing else says so.",
-          ]
-        : []),
-      ...(orphaned.length
-        ? [
-            `${orphaned.length} group(s) the export claims are not in the source:`,
-            ...orphaned.map((name) => `  ${name}`),
-          ]
-        : []),
-      ...(unresolved
-        ? [
-            "The Figma export still carries a var() where a value belongs.",
-            "An importer skips such an entry without a word, so the palette",
-            "arrives looking complete and missing exactly that token.",
-          ]
-        : []),
     ]);
   } else {
     ok(
       guard,
-      `tokens.json drives ${declared.size} colour(s), the generated files match ` +
-        `and all ${groups.length} group(s) reach the Figma export` +
+      `tokens.json drives ${declared.size} colour(s) and the generated files match` +
         (unreachable.length
           ? `; ${unreachable.length} declared but not offered as a utility`
           : ""),
