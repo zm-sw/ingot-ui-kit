@@ -80,6 +80,66 @@ jobs:
         # record the kit's version and go stale at every release.
         run: npm install --no-audit --no-fund && npm run build
 
+  # The palette against the design library.
+  #
+  # CLAUDE.md says the handoff wins when the two disagree, unless a written
+  # reason stands beside the difference — and nothing has ever measured
+  # that sentence. A colour that moves on one side turns up on a screen
+  # months later, when nobody can say which side moved.
+  #
+  # It SKIPS, quietly and green, until `FIGMA_TOKEN` and `FIGMA_FILE_KEY`
+  # exist. A job that goes red because a secret was never added is a job
+  # somebody switches off in the first week, and then the check is gone for
+  # the day it would have mattered. The same reasoning as the reference
+  # consumer, which skips on a pull request that cannot break it.
+  #
+  # Reporting only, like Lighthouse started out. Making it block is a
+  # decision for after somebody has watched it for a while.
+  figma-tokens:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare the palette with the design library
+        run: node scripts/figma_variables.mjs
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+          FIGMA_DIFF_OUT: figma-diff.md
+      # Only when there IS a difference: a bot that says "all good" on
+      # every pull request is a bot whose comments stop being read, and
+      # then the one that matters is not read either.
+      - name: Say so on the pull request
+        if: github.event_name == 'pull_request' && hashFiles('figma-diff.md') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("node:fs");
+            const body = fs.readFileSync("figma-diff.md", "utf-8");
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const existing = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100,
+            });
+            const mine = existing.data.find(
+              (comment) =>
+                comment.user.type === "Bot" &&
+                comment.body.startsWith("### Tokeny proti Figmě"),
+            );
+            if (mine) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: mine.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
   # Lighthouse on the built doc web.
   #
   # Two tickets carried a Lighthouse number in their acceptance and nobody
