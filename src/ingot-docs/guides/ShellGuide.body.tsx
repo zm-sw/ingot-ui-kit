@@ -120,6 +120,73 @@ function ShellFrame({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * Mobile viewport — the two things a consumer's own document has to get
+ * right for the frame to reach the edges of a phone.
+ *
+ * The kit cannot set either of them: `viewport-fit=cover` lives in the
+ * consuming application's `<head>`, and no component may write there.
+ * So the guide says it, once, where the frame is described.
+ */
+function MobileViewport({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-3 text-sm text-ink-2">
+      <p>
+        {cs
+          ? "Rám měří výšku v jednotce dvh, ne vh. Na iOS Safari je vh výška okna se zataženými lištami prohlížeče — s vysunutou spodní lištou tedy obrazovka končí pod dolní hranou a dialog si s sebou vezme i patičku s hlavní akcí. dvh sleduje lišty, jak přijíždějí a odjíždějí."
+          : "The frame measures height in dvh, not vh. On iOS Safari vh is the height of the window with the browser chrome retracted — with the bottom bar out the screen therefore ends below the lower edge, and a dialog takes its footer, the one holding the primary action, down with it. dvh follows the chrome as it comes and goes."}
+      </p>
+      <p>
+        {cs
+          ? "Bezpečné zóny drží kit sám: horní lišta odsazuje shora, akční lišta zdola a panel na straně, ze které vyjíždí. Zapnout je ale musí konzument — bez viewport-fit=cover vrací env() nulu a odsazení nikde nevznikne:"
+          : "The safe areas are held by the kit itself: the top bar pads above, the action bar below, and the panel on the side it slides in from. Switching them on is the consumer's job, though — without viewport-fit=cover, env() returns zero and no padding appears anywhere:"}
+      </p>
+      <IngotCode block>
+        {
+          '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
+        }
+      </IngotCode>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  Bez toho řádku se nezmění nic — ani na telefonu, ani na desktopu. Není
+                  to volba vzhledu, je to zapnutí měření.
+                </>,
+                <>
+                  S ním sahá pozadí horní lišty pod výřez a akční lišta se v režimu
+                  spuštěném z plochy nekryje s indikátorem domů. Řádek lišty i akce
+                  zůstanou nad nimi.
+                </>,
+                <>
+                  Na Androidu a na desktopu jsou zóny nulové, takže tam je výsledek na
+                  pixel stejný jako předtím.
+                </>,
+              ]
+            : [
+                <>
+                  Without that line nothing changes — not on a phone, not on the
+                  desktop. It is not a choice about looks, it switches the measurement
+                  on.
+                </>,
+                <>
+                  With it the top bar's surface reaches under the notch, and in a window
+                  launched from the home screen the action bar no longer sits under the
+                  home indicator. The bar's row and the actions stay above them.
+                </>,
+                <>
+                  On Android and on the desktop the insets are zero, so the result there
+                  is the same to the pixel as before.
+                </>,
+              ]
+        }
+      />
+    </div>
+  );
+}
+
 function SectionMenu({ lang }: { lang: DocLang }): JSX.Element {
   const cs = lang === "cs";
   return (
@@ -928,6 +995,10 @@ function WholeScreen({ lang }: { lang: DocLang }): JSX.Element {
 const body: IngotGuideBody = {
   "cela-obrazovka": { cs: <WholeScreen lang="cs" />, en: <WholeScreen lang="en" /> },
   ram: { cs: <ShellFrame lang="cs" />, en: <ShellFrame lang="en" /> },
+  "mobilni-viewport": {
+    cs: <MobileViewport lang="cs" />,
+    en: <MobileViewport lang="en" />,
+  },
   "menu-sekce": { cs: <SectionMenu lang="cs" />, en: <SectionMenu lang="en" /> },
   "menu-uctu": { cs: <AccountMenu lang="cs" />, en: <AccountMenu lang="en" /> },
   hlavicka: { cs: <PageHead lang="cs" />, en: <PageHead lang="en" /> },

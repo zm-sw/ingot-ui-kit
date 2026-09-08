@@ -2,7 +2,14 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- `viewport-fit=cover` is what switches `env(safe-area-inset-*)` on.
+         Without it every inset reads zero, so the kit's own safe-area
+         padding in the top bar, the action bar and the drawer would do
+         nothing on a notched phone. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#0c0a09" />
     <!-- The favicon is the mark cropped from the logo, not a drawing of its
          own. Two variants because the mark is an outline and in the dark:

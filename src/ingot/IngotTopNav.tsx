@@ -248,7 +248,16 @@ export function IngotTopNav({
         }
       }}
     >
-      <div className="border-b border-border bg-surface">
+      <div
+        className="border-b border-border bg-surface"
+        // The bar is the topmost thing on the screen, so in standalone
+        // (Add to Home Screen) it is what the status bar and the notch land
+        // on. The inset is padding on the SURFACE, not on the row: the
+        // background has to reach up under the notch, only the row must
+        // stay below it. Without `viewport-fit=cover` in the consumer's
+        // meta viewport `env()` is zero, so nothing moves anywhere else.
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      >
         <div className={cx("flex items-center gap-1 px-4 py-2.5", contentClassName)}>
         {menuButton}
         <div className="mr-3 flex items-center gap-2.5 text-base font-semibold tracking-[-0.02em] text-ink">

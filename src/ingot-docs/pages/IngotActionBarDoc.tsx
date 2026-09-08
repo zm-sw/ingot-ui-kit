@@ -9,7 +9,7 @@ const demoSource = () => import("@/ingot-docs/demos/IngotActionBarDemo?raw");
 export const IngotActionBarDoc: IngotDocMeta = {
   name: "IngotActionBar",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".actionbar",
   tokens: ["--surface", "--border", "--ink-3", "--warn", "--s-3", "--s-4"],
   classNameNote: {

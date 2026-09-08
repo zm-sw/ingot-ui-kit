@@ -10,7 +10,7 @@ const demoSource = () => import("@/ingot-docs/demos/IngotAppFrameDemo?raw");
 export const IngotAppFrameDoc: IngotDocMeta = {
   name: "IngotAppFrame",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".appframe",
   tokens: ["--bg", "--frame", "--s-4", "--s-5"],
   classNameNote: {

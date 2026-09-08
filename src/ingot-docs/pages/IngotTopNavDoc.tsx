@@ -29,7 +29,7 @@ export const IngotTopNavDoc: IngotDocMeta = {
   // tokens now, instead of being left to the browser.
   // 2.12 (KAN-960) - the account's circle is `IngotAvatar` rather than a
   // span drawn here; it renders the same and is now one shape kit-wide.
-  version: "2.12",
+  version: "2.13",
   tag: ".topnav",
   tokens: [
     "--surface",
