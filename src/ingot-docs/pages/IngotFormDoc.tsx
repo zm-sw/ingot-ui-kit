@@ -16,7 +16,7 @@ export const IngotFormDoc: IngotDocMeta = {
   // identity reset passes the record id it already has.
   // 2.2 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "2.2",
+  version: "2.3",
   tag: ".form",
   tokens: ["--ink-2", "--ink-3", "--ink-4", "--accent"],
   classNameNote: {

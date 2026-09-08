@@ -424,6 +424,130 @@ function Checklist({ lang }: { lang: DocLang }): JSX.Element {
   );
 }
 
+/**
+ * The touch target. Deliberately no live demo: the whole point is that
+ * nothing is visible, and a stage showing "look, the same button" teaches
+ * less than the sentence does.
+ */
+function TouchTarget({ lang }: { lang: DocLang }): JSX.Element {
+  const cs = lang === "cs";
+  return (
+    <div className="space-y-4 text-sm text-ink-2">
+      <p>
+        {cs ? (
+          <>
+            Tlačítko má 34 px, ikonové 28 a zaškrtávátko 16. Prstem se to na telefonu
+            netrefuje, a nejhůř dopadají řádkové akce v tabulce a zavírací křížky. WCAG
+            2.5.5 i pravidla Applu chtějí 44 × 44 px.
+          </>
+        ) : (
+          <>
+            A button is 34 px, an icon button 28, a checkbox 16. On a phone those are
+            missed, and the ones missed most are a table&apos;s row actions and the
+            close crosses. WCAG 2.5.5 and Apple&apos;s own rules both ask for 44 × 44
+            px.
+          </>
+        )}
+      </p>
+      <p>
+        {cs ? (
+          <>
+            Prvky se ale nezvětšují. Větší tlačítko na dotyku by posunulo layout a
+            rozbilo linku 34 px, na které stojí filtr bar — a změněná výška je major.
+            Roste tedy jen <strong>dotyková plocha</strong>: průhledný{" "}
+            <IngotCode>::before</IngotCode> se záporným insetem, aktivní pouze pod{" "}
+            <IngotCode>pointer: coarse</IngotCode>. Nic se nekreslí, nic se
+            nepřepočítává a na myši neplatí ani jedna deklarace.
+          </>
+        ) : (
+          <>
+            The controls themselves do not grow. A larger button on touch would push the
+            layout around and break the 34 px line the filter bar stands on — and a
+            changed height is a major bump. What grows is the <strong>hit area</strong>:
+            a transparent <IngotCode>::before</IngotCode> with a negative inset, live
+            only under <IngotCode>pointer: coarse</IngotCode>. Nothing is drawn, nothing
+            reflows, and on a mouse not one declaration applies.
+          </>
+        )}
+      </p>
+      <IngotList
+        items={
+          cs
+            ? [
+                <>
+                  <IngotCode>touch-target</IngotCode> roste do obou os. Pro prvek, který
+                  má kolem sebe místo — tlačítko, přepínač.
+                </>,
+                <>
+                  <IngotCode>touch-target-y</IngotCode> roste jen nahoru a dolů. Pro
+                  prvky stojící vedle sebe: řádkové akce mají mezeru 2 px, takže plocha
+                  do stran by sahala přes souseda a klepnutí by dostal ten, kdo je v DOM
+                  později. Na řádku, kde je Upravit vedle Smazat, to není zaokrouhlovací
+                  chyba.
+                </>,
+                <>
+                  <IngotCode>touch-row</IngotCode> místo toho zvedne celý řádek na 44
+                  px. Pro zaškrtávátko a přepínač volby: <IngotCode>::before</IngotCode>{" "}
+                  na nahrazovaném prvku žádný box nevytvoří, takže{" "}
+                  <IngotCode>input</IngotCode> plochu nést neumí — a naskládané volby
+                  jsou 6 px od sebe, kde by stejně zakryla sousedovi popisek. Popisek
+                  obaluje prvek i text, takže cílem je celý řádek.
+                </>,
+              ]
+            : [
+                <>
+                  <IngotCode>touch-target</IngotCode> grows in both axes. For a control
+                  with room around it — a button, a switch.
+                </>,
+                <>
+                  <IngotCode>touch-target-y</IngotCode> grows only upward and downward.
+                  For controls standing shoulder to shoulder: row actions sit 2 px
+                  apart, so a sideways area would reach across the neighbour and the tap
+                  would go to whichever is later in the DOM. On a row holding Edit next
+                  to Delete, that is not a rounding error.
+                </>,
+                <>
+                  <IngotCode>touch-row</IngotCode> raises the whole row to 44 px
+                  instead. For a checkbox and a radio option:{" "}
+                  <IngotCode>::before</IngotCode> generates no box on a replaced
+                  element, so an <IngotCode>input</IngotCode> cannot carry an area at
+                  all — and stacked options sit 6 px apart, where it would cover the
+                  neighbour&apos;s label anyway. The label wraps the control and its
+                  text, so the whole row is the target.
+                </>,
+              ]
+        }
+      />
+      <p>
+        {cs
+          ? "Utility jsou v presetu balíčku, ne ve stylech dokumentačního webu — jinak by je konzument nedostal a třídy v komponentách by u něj nekreslily nic."
+          : "The utilities live in the package preset rather than in the documentation site's own stylesheet — otherwise a consumer would not get them and the classes the components carry would draw nothing."}
+      </p>
+      <p>
+        {cs ? (
+          <>
+            Jedna mez, kterou je potřeba znát: plocha přesahuje prvek, takže ji{" "}
+            <IngotCode>overflow: hidden</IngotCode> na kterémkoli předkovi ustřihne
+            zpátky na jeho hranu. Změřeno na kartě s{" "}
+            <IngotCode>overflow-hidden</IngotCode>: prvek dostal zpátky svou původní
+            výšku. Když má obal ořez, musí prvku místo udělat obal — plocha si ho vzít
+            neumí.
+          </>
+        ) : (
+          <>
+            One limit worth knowing: the area reaches outside the element, so{" "}
+            <IngotCode>overflow: hidden</IngotCode> on any ancestor cuts it back to that
+            ancestor&apos;s edge. Measured on a card carrying{" "}
+            <IngotCode>overflow-hidden</IngotCode>: the control was left with the height
+            it started with. Where the wrapper clips, the room has to come from the
+            wrapper — the hit area cannot take it.
+          </>
+        )}
+      </p>
+    </div>
+  );
+}
+
 const body: IngotGuideBody = {
   "pravidla-a11y": {
     cs: <Rules lang="cs" />,
@@ -436,6 +560,10 @@ const body: IngotGuideBody = {
   "fokus-a-klavesnice": {
     cs: <FocusAndKeys lang="cs" />,
     en: <FocusAndKeys lang="en" />,
+  },
+  "dotykova-plocha": {
+    cs: <TouchTarget lang="cs" />,
+    en: <TouchTarget lang="en" />,
   },
   semantika: {
     cs: <Semantics lang="cs" />,

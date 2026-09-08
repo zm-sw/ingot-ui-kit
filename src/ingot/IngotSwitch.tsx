@@ -65,6 +65,8 @@ export const IngotSwitch = forwardRef<
         className={cx(
           "relative h-5 w-9 shrink-0 rounded-full transition-colors",
           "focus-ring",
+          // The track is 20 x 36; on a finger the hit area is 44 x 44.
+          "touch-target",
           "disabled:cursor-not-allowed disabled:opacity-50",
           checked ? "bg-accent" : "bg-border-strong",
         )}

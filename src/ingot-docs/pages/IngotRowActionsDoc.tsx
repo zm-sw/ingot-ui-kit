@@ -17,7 +17,7 @@ export const IngotRowActionsDoc: IngotDocMeta = {
   // tokens now, instead of being left to the browser.
   // 1.4 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: the type narrows the shared one instead of repeating its members.
-  version: "1.4",
+  version: "1.5",
   tag: ".rowactions",
   tokens: [
     "--surface-2",

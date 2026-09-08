@@ -22,6 +22,10 @@ export const A11yGuide: IngotGuideMeta = {
       title: { cs: "Fokus a klávesnice", en: "Focus and keyboard" },
     },
     {
+      id: "dotykova-plocha",
+      title: { cs: "Dotyková plocha", en: "The touch target" },
+    },
+    {
       id: "semantika",
       title: {
         cs: "Sémantika a asistivní technologie",
