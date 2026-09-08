@@ -9,6 +9,12 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.0.4 — 2026-09-08
+
+Automatic release from the doc page registry (v2.0.3 → v2.0.4).
+
+- Changed components: Button, IngotActionBar, IngotAppFrame, IngotCheckbox, IngotChip, IngotConfirm, IngotDrawer, IngotForm, IngotMarketingCta, IngotModal, IngotPageHint, IngotPagination, IngotRadioGroup, IngotRowActions, IngotStepCard, IngotSwitch, IngotTabs, IngotToast, IngotTopNav.
+
 ## v2.0.3 — 2026-09-07
 
 Automatic release from the doc page registry (v2.0.2 → v2.0.3).
