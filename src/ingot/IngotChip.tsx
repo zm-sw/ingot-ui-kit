@@ -95,7 +95,9 @@ export function IngotChip(props: IngotChipProps): JSX.Element {
           // The name says which chip goes, not just "remove": eight chips
           // would otherwise offer eight buttons under one name.
           aria-label={props.removeLabel}
-          className="-mr-1 grid h-4 w-4 shrink-0 place-items-center rounded-full text-ink-3 hover:bg-border hover:text-ink focus-ring disabled:cursor-not-allowed"
+          // Vertical only: the cross sits at the chip's right edge, and a
+          // sideways hit area would hang over the chip beside it.
+          className="-mr-1 grid h-4 w-4 shrink-0 touch-target-y place-items-center rounded-full text-ink-3 hover:bg-border hover:text-ink focus-ring disabled:cursor-not-allowed"
           data-testid={testId ? `${testId}-remove` : undefined}
         >
           <IngotIcon name="close" size={12} />

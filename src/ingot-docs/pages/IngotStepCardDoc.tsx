@@ -18,7 +18,7 @@ export const IngotStepCardDoc: IngotDocMeta = {
   // kit: the type narrows the shared one instead of repeating its members.
   // 1.6 (KAN-963) - --border-strong darkens to reach the 3:1 the
   // accessibility page promises for a control's outline.
-  version: "1.6",
+  version: "1.7",
   tag: ".stepcard",
   tokens: [
     "--surface",

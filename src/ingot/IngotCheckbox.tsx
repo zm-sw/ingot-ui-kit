@@ -72,7 +72,10 @@ export const IngotCheckbox = forwardRef<
   return (
     <label
       className={cx(
-        "flex items-center gap-2 text-sm",
+        // The row, not the box: `::before` generates nothing on a replaced
+        // element, so a 16 px `<input>` cannot carry a hit area of its own.
+        // The label wraps box and text, so the whole 44 px row toggles.
+        "flex touch-row items-center gap-2 text-sm",
         disabled ? "cursor-not-allowed text-ink-4" : "text-ink-2",
         className,
       )}

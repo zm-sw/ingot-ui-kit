@@ -27,7 +27,7 @@ export const IngotTabsDoc: IngotDocMeta = {
   // count are one element with one definition.
   // 1.2 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.2",
+  version: "1.3",
   tag: ".tabs",
   tokens: ["--border", "--ink", "--ink-3", "--surface-2", "--font-mono"],
   classNameNote: {

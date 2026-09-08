@@ -23,7 +23,7 @@ export const IngotToastDoc: IngotDocMeta = {
   // kit: a tone was renamed: `default` is now `neutral`.
   // 2.1 (KAN-963) - --border-strong darkens to reach the 3:1 the
   // accessibility page promises for a control's outline.
-  version: "2.1",
+  version: "2.2",
   tag: ".toast",
   tokens: ["--bg", "--border-strong", "--ink", "--danger", "--r-lg", "--shadow-lg"],
   classNameNote: {

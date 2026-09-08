@@ -9,7 +9,7 @@ const demoSource = () => import("@/ingot-docs/demos/IngotPaginationDemo?raw");
 export const IngotPaginationDoc: IngotDocMeta = {
   name: "IngotPagination",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".pager",
   tokens: ["--ink-3"],
   classNameNote: {

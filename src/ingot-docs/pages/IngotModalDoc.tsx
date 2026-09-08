@@ -19,7 +19,7 @@ export const IngotModalDoc: IngotDocMeta = {
   // kit: the type narrows the shared one instead of repeating its members.
   // 1.7 (KAN-966) - the overlay captures the opener in an effect rather than while
   // rendering; focus returns to the same element.
-  version: "1.8",
+  version: "1.9",
   tag: ".modal",
   tokens: [
     "--surface",

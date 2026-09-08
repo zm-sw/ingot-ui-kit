@@ -9,7 +9,7 @@ const demoSource = () => import("@/ingot-docs/demos/IngotMarketingCtaDemo?raw");
 export const IngotMarketingCtaDoc: IngotDocMeta = {
   name: "IngotMarketingCta",
   status: "beta",
-  version: "1.0",
+  version: "1.1",
   tag: ".cta",
   tokens: ["--ink", "--bg", "--accent", "--accent-ink"],
   classNameNote: {
