@@ -18,6 +18,10 @@ export const ShellGuide: IngotGuideMeta = {
       title: { cs: "Rám aplikace", en: "The application frame" },
     },
     {
+      id: "mobilni-viewport",
+      title: { cs: "Mobilní viewport", en: "The mobile viewport" },
+    },
+    {
       id: "menu-sekce",
       title: { cs: "Menu sekce", en: "The section menu" },
     },

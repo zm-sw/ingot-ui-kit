@@ -91,7 +91,10 @@ export function IngotRadioGroup({
             <div key={option.value}>
               <label
                 className={cx(
-                  "flex items-center gap-2.5 text-sm",
+                  // Same as the checkbox: the row grows, not the circle.
+                  // Options sit 6 px apart, so a hit area hanging out of
+                  // one would cover the next one's label.
+                  "flex touch-row items-center gap-2.5 text-sm",
                   optionDisabled
                     ? "cursor-not-allowed text-ink-4"
                     : "cursor-pointer text-ink-2",

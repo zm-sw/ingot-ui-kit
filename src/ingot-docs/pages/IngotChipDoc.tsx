@@ -14,7 +14,7 @@ export const IngotChipDoc: IngotDocMeta = {
   // tokens now, instead of being left to the browser.
   // 1.2 (KAN-963) - --border-strong darkens to reach the 3:1 the
   // accessibility page promises for a control's outline.
-  version: "1.2",
+  version: "1.3",
   tag: ".chip",
   tokens: [
     "--surface",

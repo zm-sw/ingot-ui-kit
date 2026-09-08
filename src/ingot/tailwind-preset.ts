@@ -327,5 +327,62 @@ export default {
         },
       });
     },
+    /**
+     * The touch target, as three utilities.
+     *
+     * `Button size="md"` is 34 px, `IconButton` defaults to 28, a checkbox
+     * is 16. Apple's HIG and WCAG 2.5.5 both ask for 44 x 44 on a finger,
+     * and on a 390 px phone the row actions of a table and the close
+     * crosses are exactly the controls people miss.
+     *
+     * **The visual size does not move.** Growing the controls under
+     * `pointer: coarse` would push the layout around and break the 34 px
+     * line the filter bar stands on (see `inputChrome.ts`), and a height
+     * that changes is a major bump. So what grows is the HIT AREA: a
+     * transparent `::before` with a negative inset. Nothing is drawn,
+     * nothing reflows, and on a mouse (`pointer: fine`) not one
+     * declaration below applies.
+     *
+     * Three of them, because a control has three geometries:
+     *
+     * - `touch-target` grows in BOTH axes. For a control with room around
+     *   it — a button, a switch.
+     * - `touch-target-y` grows only DOWNWARD and UPWARD. For controls
+     *   standing shoulder to shoulder: row actions sit at `gap-0.5`, which
+     *   is 2 px, so a sideways halo would reach across its neighbour and
+     *   the tap would go to whichever is later in the DOM. On a row that
+     *   holds Edit next to Delete, that is not a rounding error.
+     * - `touch-row` raises the ROW to 44 px instead. For a checkbox or a
+     *   radio: `::before` does not generate a box on a replaced element,
+     *   so an `<input>` cannot carry a halo at all — and stacked options
+     *   sit 6 px apart, where a halo would cover the neighbour's label
+     *   anyway. The `<label>` wraps the control and its text, so the whole
+     *   44 px row is the target.
+     *
+     * `min(…, 0px)` is what keeps the inset from turning inward: in
+     * `inset`, a percentage resolves against the element's own box — its
+     * height for top/bottom, its WIDTH for left/right — so on a button
+     * wider than 44 px the bare formula would pull the sides in and shrink
+     * the target to 44 px wide. The clamp makes the utility only ever add.
+     */
+    ({ addUtilities }: PluginAPI) => {
+      // Half of what the element is missing, and never less than nothing.
+      const grow = "min(calc((100% - 44px) / 2), 0px)";
+      const halo = { content: '""', position: "absolute" } as const;
+      addUtilities({
+        "@media (pointer: coarse)": {
+          ".touch-target, .touch-target-y": { position: "relative" },
+          ".touch-target::before": { ...halo, inset: grow },
+          ".touch-target-y::before": {
+            ...halo,
+            top: grow,
+            bottom: grow,
+            left: "0",
+            right: "0",
+          },
+          ".touch-row": { minHeight: "44px" },
+        },
+      });
+    },
   ],
 } satisfies Partial<Config>;

@@ -30,8 +30,12 @@ import {
  *   z-index only counts inside the nearest stacking context — a modal
  *   opened from a sticky matrix cell hid under the sticky cells of the
  *   rows below it.
- * - **`max-h-[90vh]` + the panel's own scroll** with a sticky header, so
- *   long content does not scroll the page under the overlay.
+ * - **`max-h-[90dvh]` + the panel's own scroll** with a sticky header, so
+ *   long content does not scroll the page under the overlay. The unit is
+ *   `dvh` rather than `vh` because on iOS Safari `vh` is measured with the
+ *   browser chrome retracted: with the bar out, a panel at `90vh` reaches
+ *   past the bottom edge and takes its sticky footer — the one holding
+ *   Save — with it.
  *
  * ## Accessibility bar (owner's decision, 2026-08-25)
  *
@@ -140,7 +144,7 @@ export function IngotModal({
         aria-describedby={subtitle === undefined ? undefined : subtitleId}
         tabIndex={-1}
         style={{ maxWidth: width }}
-        className="max-h-[90vh] w-full animate-ingot-scale-in overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none motion-reduce:animate-none"
+        className="max-h-[90dvh] w-full animate-ingot-scale-in overflow-auto rounded-lg border border-border bg-surface shadow-lg outline-none motion-reduce:animate-none"
         data-testid={testId ? `${testId}-panel` : undefined}
       >
         <OverlayHeader

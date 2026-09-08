@@ -151,7 +151,8 @@ function ToastCard({ item }: { item: ToastItem }): JSX.Element {
         type="button"
         aria-label={labels.toastClose}
         onClick={() => dismiss(id)}
-        className="-mr-1 shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-ring-inset"
+        // Vertical only — the undo action stands beside it.
+        className="-mr-1 shrink-0 touch-target-y rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-ring-inset"
         data-testid="ingot-toast-close"
       >
         <IngotIcon name="close" size={14} />

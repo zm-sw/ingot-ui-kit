@@ -57,8 +57,21 @@ const ENTRY_KB = 360;
  * screens' worth of live demo. It lands in its own chunk and only a reader
  * who opens that guide pays for it — which is exactly the shape this
  * budget was raised to allow.
+ *
+ * Raised by 20 again for the mobile work. The accessibility guide gained
+ * the touch-target section (+4.8 kB) and the shell guide the dynamic
+ * viewport and the safe areas (+2.5 kB); the components themselves added
+ * 124 B between them. Both guides are on-demand chunks, and the entry
+ * chunk went DOWN 1.6 kB in the same change — the first load got cheaper
+ * while the total grew, which is once more the shape this budget allows.
+ *
+ * The room left is 20 kB rather than the 7 kB of the previous raise,
+ * because the same tree measures about 2 kB apart on Node 22 and Node 24.
+ * The old margin was thin enough that CI and a developer's machine
+ * disagreed on whether the build passed — a budget that answers
+ * differently depending on who asks teaches people to ignore it.
  */
-const TOTAL_JS_KB = 1180;
+const TOTAL_JS_KB = 1200;
 const CSS_KB = 90;
 
 const kb = (bytes) => Math.round((bytes / 1024) * 10) / 10;

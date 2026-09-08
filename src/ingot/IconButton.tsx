@@ -57,6 +57,10 @@ export const IconButton = forwardRef<
       className={cx(
         "grid shrink-0 place-items-center rounded transition-colors",
         "focus-ring",
+        // Vertical only: `IngotRowActions` sets these 2 px apart, so a
+        // sideways hit area would reach over the neighbour and Edit would
+        // fire Delete.
+        "touch-target-y",
         "disabled:cursor-not-allowed disabled:opacity-50",
         SIZE[size],
         TONE[tone],

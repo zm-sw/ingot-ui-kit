@@ -150,6 +150,10 @@ export const Button = forwardRef<
   const classes = cx(
     "relative inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:cursor-not-allowed",
     "focus-ring",
+    // 34 px on a finger is a miss waiting to happen. The hit area grows to
+    // 44 on a touch screen; the button's own size does not move, so the
+    // filter bar's 34 px line still holds.
+    "touch-target",
     VARIANT[variant],
     iconOnly ? SIZE_ICON_ONLY[size] : SIZE[size],
     className,

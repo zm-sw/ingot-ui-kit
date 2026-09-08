@@ -11,7 +11,7 @@ export const IngotRadioGroupDoc: IngotDocMeta = {
   status: "beta",
   // 1.1 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "1.1",
+  version: "1.2",
   tag: ".radiogroup",
   tokens: ["--accent", "--ink", "--ink-2", "--ink-3", "--ink-4", "--danger"],
   classNameNote: {
