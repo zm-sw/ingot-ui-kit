@@ -59,10 +59,15 @@ export function IngotAppFrame({
   testId?: string;
 }): JSX.Element {
   return (
-    // `min-h-screen` and the page colour belong here rather than to a
-    // global stylesheet: a consumer mounts the kit inside its own document
-    // and must not have to discover which of our rules it needs to copy.
-    <div className="min-h-screen bg-bg" data-testid={testId}>
+    // The height and the page colour belong here rather than to a global
+    // stylesheet: a consumer mounts the kit inside its own document and
+    // must not have to discover which of our rules it needs to copy.
+    //
+    // `100dvh`, not `100vh`: on iOS Safari `vh` is the height the window
+    // has with the browser chrome RETRACTED, so with the bar out the frame
+    // measures more than the reader can see and the page ends below the
+    // screen. `dvh` follows the chrome as it comes and goes.
+    <div className="min-h-[100dvh] bg-bg" data-testid={testId}>
       {bar !== undefined && (
         // z-30 sits under the overlays (modal, drawer, toast) and above
         // everything a page draws — a bar that a popover disappears behind

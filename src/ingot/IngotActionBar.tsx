@@ -79,9 +79,16 @@ export function IngotActionBar({
       // its contents back on the content's own left and right edges.
       className={cx(
         "sticky bottom-0 z-20 -mx-4 mt-6 flex flex-wrap items-center justify-between gap-3",
-        "border-t border-border bg-surface/95 px-4 py-3 backdrop-blur md:-mx-6 md:px-6",
+        "border-t border-border bg-surface/95 px-4 pt-3 backdrop-blur md:-mx-6 md:px-6",
         className,
       )}
+      // The bar rides the bottom edge, which in standalone (Add to Home
+      // Screen) is where the home indicator sits — over the primary action.
+      // The inset is ADDED to the bar's own padding rather than replacing
+      // it, so where there is no inset the bar keeps its `py-3`. Without
+      // `viewport-fit=cover` in the consumer's meta viewport `env()` is
+      // zero and nothing moves.
+      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}
       data-testid={testId}
     >
       <div className="flex items-center gap-3">{secondary}</div>

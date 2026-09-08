@@ -131,7 +131,18 @@ export function IngotDrawer({
         aria-labelledby={titleId}
         aria-describedby={subtitle === undefined ? undefined : subtitleId}
         tabIndex={-1}
-        style={{ width: Math.min(width, MAX_DRAWER_WIDTH) }}
+        // The panel stands against the edge it slid in from, which in
+        // landscape on a notched phone is where the notch is. The inset is
+        // padding on the panel, so its surface still reaches the edge of
+        // the screen — only the content moves out from under the notch.
+        // Heights are left alone: `fixed inset-0` + `h-full` already
+        // follows the layout viewport. Without `viewport-fit=cover` in the
+        // consumer's meta viewport `env()` is zero and nothing moves.
+        style={{
+          width: Math.min(width, MAX_DRAWER_WIDTH),
+          paddingLeft: side === "left" ? "env(safe-area-inset-left, 0px)" : undefined,
+          paddingRight: side === "right" ? "env(safe-area-inset-right, 0px)" : undefined,
+        }}
         className={cx(
           "flex h-full max-w-full flex-col border-border bg-surface shadow-lg outline-none motion-reduce:animate-none",
           // The panel slides in from the edge it belongs to; coming from
