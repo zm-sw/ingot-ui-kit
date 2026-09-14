@@ -1,4 +1,4 @@
-import { useId, type JSX, type ReactNode } from "react";
+import { Fragment, useId, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotCheckboxControl } from "./IngotCheckbox";
@@ -34,6 +34,11 @@ import { IngotCheckboxControl } from "./IngotCheckbox";
  *   addition to the spec — recorded on the doc page too.
  * - **`density`** `default | compact` — compact pulls cell padding down
  *   to 8px for screens where rows per screen are counted.
+ * - **Row detail** (`rowDetail`). A full-width row directly under a row,
+ *   for a record whose detail belongs next to it in the list rather than
+ *   on a screen of its own. Controlled like selection: the caller decides
+ *   which rows are open, the table only draws the row and computes its
+ *   `colSpan`.
  *
  * Pagination is **not in the table, not even in v2** — it is a separate
  * `IngotPagination` and the caller owns the page state, like selection and
@@ -98,6 +103,7 @@ export function IngotTable<Row>({
   rowKey,
   rowTestId,
   rowClassName,
+  rowDetail,
   loading = false,
   loadingLabel,
   empty,
@@ -132,6 +138,17 @@ export function IngotTable<Row>({
    * value would not depend on the column.
    */
   rowClassName?: (row: Row) => string | undefined;
+  /**
+   * Detail of a row, drawn in a full-width row directly under it.
+   *
+   * Return `null` or `undefined` for a row that is closed — the table
+   * holds no "expanded" state of its own, for the same reason it holds no
+   * selection: the caller owns the toggle (a button in a cell, carrying
+   * `aria-expanded`) and whatever else opens with it. The detail cell's
+   * `colSpan` is computed like the empty row's, so a column added later
+   * cannot leave the detail narrower than the row above it.
+   */
+  rowDetail?: (row: Row) => ReactNode;
   /** Waiting for data; the table gets `aria-busy` and one `role="status"` row. */
   loading?: boolean;
   /** Translated "Loading…". Required whenever `loading` can happen. */
@@ -350,9 +367,11 @@ export function IngotTable<Row>({
             // Called ONCE per row: it is the caller's function and a second
             // call might well answer differently.
             const extra = rowClassName?.(row);
+            // Same rule as rowClassName: one call per row.
+            const detail = rowDetail?.(row);
             return (
+              <Fragment key={key}>
               <tr
-                key={key}
                 className={cx("border-b border-border", selected && "bg-accent-bg", extra)}
                 aria-selected={selectable ? selected : undefined}
                 data-testid={rowTestId?.(row)}
@@ -383,6 +402,17 @@ export function IngotTable<Row>({
                   <td className={cx(cellPad, "text-right")}>{actions(row)}</td>
                 )}
               </tr>
+              {detail != null && (
+                <tr
+                  className="border-b border-border"
+                  data-testid={rowTestId ? `${rowTestId(row)}-detail` : undefined}
+                >
+                  <td colSpan={span} className="p-0">
+                    {detail}
+                  </td>
+                </tr>
+              )}
+              </Fragment>
             );
           })
         )}
