@@ -423,6 +423,53 @@ describe("IngotTable sorting (KAN-654)", () => {
   });
 });
 
+describe("IngotTable row detail (KAN-1311)", () => {
+  it("draws the detail directly under its own row", () => {
+    const { container } = renderPropTable({
+      rowDetail: (row: PropRow) => (row.id === "a" ? <p>Detail Alpha</p> : null),
+    });
+
+    const bodyRows = [...container.querySelectorAll("tbody > tr")];
+    expect(bodyRows.map((tr) => tr.getAttribute("data-testid"))).toEqual([
+      "row-a",
+      "row-a-detail",
+      "row-b",
+    ]);
+    expect(screen.getByTestId("row-a-detail")).toHaveTextContent("Detail Alpha");
+  });
+
+  it("draws no detail row where the caller returns nothing", () => {
+    renderPropTable({ rowDetail: () => undefined });
+
+    expect(screen.queryByTestId("row-a-detail")).toBeNull();
+    expect(screen.queryByTestId("row-b-detail")).toBeNull();
+  });
+
+  it("the detail spans every column, selection and actions included", () => {
+    renderPropTable({
+      rowDetail: (row: PropRow) => (row.id === "b" ? <span>Detail Bravo</span> : null),
+      actions: () => <button type="button">act</button>,
+      actionsLabel: "Actions",
+      selectedKeys: new Set<string>(),
+      onSelectedKeysChange: () => {},
+    });
+
+    // One data column + checkbox + actions. A constant here would pass for
+    // one table shape and silently break the next.
+    expect(screen.getByText("Detail Bravo").closest("td")).toHaveAttribute(
+      "colSpan",
+      "3",
+    );
+  });
+
+  it("asks for each row's detail once", () => {
+    const rowDetail = vi.fn(() => null);
+    renderPropTable({ rowDetail });
+
+    expect(rowDetail).toHaveBeenCalledTimes(PROP_ROWS.length);
+  });
+});
+
 describe("IngotTable density (KAN-654)", () => {
   it("the default density keeps the padding of the first version", () => {
     renderPropTable();
