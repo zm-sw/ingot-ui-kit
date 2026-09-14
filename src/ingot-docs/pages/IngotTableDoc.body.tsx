@@ -204,6 +204,15 @@ const body: IngotDocBody = {
       },
     },
     {
+      name: "rowDetail",
+      type: "(row: Row) => ReactNode",
+      required: false,
+      note: {
+        cs: "Detail řádku v řádku přes celou šířku přímo pod ním; null = zavřený. Co je otevřené, drží volající — tlačítko s aria-expanded patří do buňky.",
+        en: "A row's detail in a full-width row directly under it; null = closed. The caller owns what is open — the toggle with aria-expanded belongs in a cell.",
+      },
+    },
+    {
       name: "className",
       type: "string",
       required: false,

@@ -15,7 +15,9 @@ export const IngotTableDoc: IngotDocMeta = {
   // tokens now, instead of being left to the browser.
   // 1.3 (KAN-958) - the table always sits in a sideways scroll box, so a
   // wide one no longer pushes the whole document sideways.
-  version: "1.3",
+  // 1.4 (KAN-1311) - optional `rowDetail`: a full-width row under a row,
+  // controlled by the caller; nothing changes for existing callers.
+  version: "1.4",
   tag: ".table-wrap",
   tokens: [
     "--surface-2",
