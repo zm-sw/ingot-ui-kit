@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v2.0.5",
+      "date": "2026-09-14",
+      "notes": "Automatic release from the doc page registry (v2.0.4 → v2.0.5).\nChanged components: IngotTable."
+    },
+    {
       "tag": "v2.0.4",
       "date": "2026-09-08",
       "notes": "Automatic release from the doc page registry (v2.0.3 → v2.0.4).\nChanged components: Button, IngotActionBar, IngotAppFrame, IngotCheckbox, IngotChip, IngotConfirm, IngotDrawer, IngotForm, IngotMarketingCta, IngotModal, IngotPageHint, IngotPagination, IngotRadioGroup, IngotRowActions, IngotStepCard, IngotSwitch, IngotTabs, IngotToast, IngotTopNav."
