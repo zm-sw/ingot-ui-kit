@@ -175,6 +175,15 @@ const body: IngotDocBody = {
           },
         },
         {
+          name: "art",
+          type: "ReactNode",
+          required: false,
+          note: {
+            cs: "Kresba v náhledovém sloupci, dokud je položka v náhledu. Bez ní platí art celého menu — hodí se, když část sekce má vlastní obrázek.",
+            en: "The drawing in the preview column while the item is previewed. Without it the whole menu's art applies — useful when a part of the section has its own picture.",
+          },
+        },
+        {
           name: "count",
           type: "number",
           required: false,
