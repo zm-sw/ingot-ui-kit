@@ -37,6 +37,11 @@ export interface IngotMegaMenuItem {
   description?: string;
   /** Icon before the label. Decorative — the label carries the meaning. */
   icon?: ReactNode;
+  /**
+   * Drawing in the preview column while this item is previewed; without it
+   * the menu's ``art``. Lets a part of the section carry its own picture.
+   */
+  art?: ReactNode;
   /** Record count on the right. Mono, because it is a number to compare. */
   count?: number;
   /** The currently open item. */
@@ -110,6 +115,7 @@ export function IngotMegaMenu({
   const preview =
     flat.find((item) => item.href === previewHref) ?? flat[0] ?? null;
   const twoColumns = flat.length > SINGLE_COLUMN_MAX;
+  const previewArt = preview?.art ?? art;
 
   return (
     // ``left-0`` relative to the wrapper of ITS section (IngotTopNav
@@ -200,8 +206,13 @@ export function IngotMegaMenu({
           className="w-56 shrink-0 border-l border-border py-1.5 pl-4"
           data-testid={testId ? `${testId}-preview` : undefined}
         >
-          {art}
-          <p className={cx("text-[13px] font-medium text-ink", art !== undefined && "mt-2")}>
+          {previewArt}
+          <p
+            className={cx(
+              "text-[13px] font-medium text-ink",
+              previewArt !== undefined && "mt-2",
+            )}
+          >
             {preview.label}
           </p>
           {preview.description && (

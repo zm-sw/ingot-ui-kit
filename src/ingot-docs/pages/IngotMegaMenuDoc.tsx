@@ -17,7 +17,9 @@ export const IngotMegaMenuDoc: IngotDocMeta = {
   // 2.7 (KAN-849) — the panel fades in, from the kit's motion tokens; motion-reduce turns the movement off.
   // 2.8 (KAN-953) - the focus ring is drawn from the kit's own
   // tokens now, instead of being left to the browser.
-  version: "2.8",
+  // 2.9 - art on the item: the preview column draws the previewed item's
+  // own picture, falling back to the menu's art.
+  version: "2.9",
   tag: ".megamenu",
   tokens: [
     "--surface",
