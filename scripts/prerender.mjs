@@ -26,7 +26,7 @@ const DIST = "dist";
 const template = readFileSync(join(DIST, "index.html"), "utf-8");
 
 /**
- * Which built chunk carries which page's body.
+ * Which built chunks carry which page's body (and a component's demo).
  *
  * A page's prose is imported when the page is opened. On a prerendered
  * file that would mean: fetch the HTML, fetch and run the entry, and only
@@ -57,8 +57,16 @@ function bodyChunks() {
           : source.match(/^ {2}slug: "([^"]+)"/m)?.[1];
       const module = source.match(/body: \(\) => import\("@\/([^"]+)"\)/)?.[1];
       if (!key || !module) continue;
+      const files = [];
       const entry = manifest[`src/${module}.tsx`];
-      if (entry) chunks.set(`${kind}:${key}`, entry.file);
+      if (entry) files.push(entry.file);
+      // KAN-985: a component page's live demo is loaded before the
+      // application boots too (`openingDemo.ts`), so its chunk is preloaded
+      // with the body's: one parallel fetch instead of another round trip.
+      const demo = source.match(/const demo = \(\) =>\s*import\("@\/([^"]+)"\)/)?.[1];
+      const demoEntry = demo ? manifest[`src/${demo}.tsx`] : undefined;
+      if (demoEntry) files.push(demoEntry.file);
+      if (files.length > 0) chunks.set(`${kind}:${key}`, files);
     }
   }
   return chunks;
@@ -99,10 +107,10 @@ function head(route) {
   ].join("\n    ");
 }
 
-/** The one chunk this address is certain to need, and nothing else. */
+/** The chunks this address is certain to need (its body, a component's demo), and nothing else. */
 function preload(route) {
-  const chunk = CHUNKS.get(route.page);
-  return chunk ? `  <link rel="modulepreload" href="/${chunk}" />\n  ` : "";
+  const files = CHUNKS.get(route.page) ?? [];
+  return files.map((file) => `  <link rel="modulepreload" href="/${file}" />\n  `).join("");
 }
 
 function pageHtml(route) {
