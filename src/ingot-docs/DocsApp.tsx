@@ -96,6 +96,7 @@ import {
 } from "@/ingot-docs/routes";
 import pkg from "../../package.json";
 import { bodyOf, keyOf, loadBody, type PageBody } from "@/ingot-docs/bodies";
+import { openingDemoOf } from "@/ingot-docs/openingDemo";
 import type {
   IngotDocBody,
   IngotDocMeta,
@@ -353,7 +354,9 @@ function DemoWithSource({
                 }
               >
                 {(() => {
-                  const Demo = DEMOS.get(page.name);
+                  // The page the reader opened has its demo already —
+                  // no skeleton, so nothing under it jumps (KAN-985).
+                  const Demo = openingDemoOf(page) ?? DEMOS.get(page.name);
                   return Demo ? <Demo lang={lang} /> : null;
                 })()}
               </Suspense>
