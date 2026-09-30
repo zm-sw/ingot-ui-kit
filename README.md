@@ -59,10 +59,13 @@ which a git pin cannot give you:
 @forgmatic:registry=https://npm.pkg.github.com
 ```
 
-Publishing is off by default. It is the one step of the release that
-cannot be taken back, so it happens only when the repository variable
-`INGOT_PUBLISH` is set to `true`; until then every release still tags and
-still cuts its GitHub release, and the tag is the pin.
+Publishing is the one step of the release that cannot be taken back, so
+it happens only when the repository variable `INGOT_PUBLISH` is `true` —
+which it is. The package is public and carries a provenance attestation
+of the workflow that built it. A publish that fails still leaves the tag
+and the GitHub release in place, but it fails the release job: until
+KAN-964 the error was swallowed and five releases in a row "succeeded"
+without ever reaching the registry.
 
 ## Is the package enough to build with?
 
