@@ -110,7 +110,9 @@ function head(route) {
 /** The chunks this address is certain to need (its body, a component's demo), and nothing else. */
 function preload(route) {
   const files = CHUNKS.get(route.page) ?? [];
-  return files.map((file) => `  <link rel="modulepreload" href="/${file}" />\n  `).join("");
+  return files
+    .map((file) => `  <link rel="modulepreload" href="/${file}" />\n  `)
+    .join("");
 }
 
 function pageHtml(route) {
