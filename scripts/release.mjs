@@ -181,9 +181,15 @@ function gh(...args) {
  * whoever already installed it. So the first publish is a decision
  * somebody makes by setting the variable, not a side effect of merging.
  *
- * Failure here is deliberately not fatal. The tag and the GitHub release
- * are the record of what shipped; a registry that was down must not leave
- * the repository looking as though the version never happened.
+ * Failure here does not undo anything: the tag and the GitHub release are
+ * the record of what shipped and they are already out, so a registry that
+ * was down must not leave the repository looking as though the version
+ * never happened. But it DOES turn the job red. Until KAN-964 the error
+ * was swallowed and the job stayed green: from v2.0.2 to v2.0.6 every
+ * publish failed (npm refused provenance for a "restricted" package) and
+ * nobody saw it, because a green release reads as a published one.
+ * Re-running the job takes the "only the tag and release are missing"
+ * path above and tries the publish again.
  */
 function publishToRegistry(version) {
   if (process.env.INGOT_PUBLISH !== "true") {
@@ -205,10 +211,11 @@ function publishToRegistry(version) {
     );
     execFileSync("npm", ["publish", "--provenance"], { stdio: "inherit" });
     console.log(`v${version} published to GitHub Packages`);
-  } catch {
-    console.log(
-      `v${version} could not be published to the registry -> the tag still holds`,
+  } catch (error) {
+    console.error(
+      `v${version} could not be published to the registry -> the tag still holds, the job fails: ${error?.message ?? error}`,
     );
+    process.exitCode = 1;
   }
 }
 
@@ -230,7 +237,8 @@ if (pkg.version === next) {
   console.log(`package.json už je na v${next} -> dotahuje se jen tag a release`);
   publish(next, notes);
   publishToRegistry(next);
-  process.exit(0);
+  // Not exit(0): that would override the exit code a failed publish set.
+  process.exit();
 }
 
 // main accepts no direct push, so the bump arrives like every other change

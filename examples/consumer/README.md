@@ -52,3 +52,20 @@ Skutečný konzument místo `vendor/ingot` píše do `package.json` tag:
 ```
 
 Tag, ne commit. Proč, je na veřejném webu v průvodci Pravidla použití.
+
+Druhá cesta je registr GitHub Packages — semver rozsah a integrity hash,
+které git pin dát neumí. Vedle `package.json` patří `.npmrc`:
+
+```
+@forgmatic:registry=https://npm.pkg.github.com
+```
+
+a do `package.json` rozsah místo tagu:
+
+```json
+"@forgmatic/ingot": "^2.0.0"
+```
+
+npm z GitHub Packages chce token i pro veřejný balíček (`read:packages`),
+v CI stačí `//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}` v témže
+`.npmrc`.

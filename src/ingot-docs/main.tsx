@@ -11,7 +11,8 @@
  * with a skeleton and put it back a heartbeat later. The file preloads
  * that chunk (see `scripts/prerender.mjs`), so by this point it is
  * usually already here — and if it never comes, the application boots
- * anyway rather than leaving a page that cannot be clicked.
+ * anyway rather than leaving a page that cannot be clicked. A component
+ * page waits for its live demo the same way (KAN-985, `openingDemo.ts`).
  */
 import ReactDOM from "react-dom/client";
 
@@ -19,6 +20,7 @@ import "@/styles/globals.css";
 import { loadBody } from "@/ingot-docs/bodies";
 import { DocsApp } from "@/ingot-docs/DocsApp";
 import { EmbedApp, isEmbedPath } from "@/ingot-docs/EmbedApp";
+import { loadOpeningDemo } from "@/ingot-docs/openingDemo";
 import { locationFromPath } from "@/ingot-docs/routes";
 
 const rootEl = document.getElementById("root");
@@ -37,5 +39,12 @@ if (isEmbedPath(window.location.pathname)) {
 
   const here = locationFromPath(window.location.pathname);
   if (here === null) start();
-  else void loadBody(here.page).then(start, start);
+  else {
+    // The demo too, for the same reason as the body — see `openingDemo.ts`.
+    const page = here.page;
+    void Promise.all([
+      loadBody(page),
+      page.kind === "component" ? loadOpeningDemo(page.doc) : undefined,
+    ]).then(start, start);
+  }
 }

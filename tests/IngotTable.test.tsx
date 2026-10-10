@@ -471,11 +471,11 @@ describe("IngotTable row detail (KAN-1311)", () => {
 });
 
 describe("IngotTable density (KAN-654)", () => {
-  it("the default density keeps the padding of the first version", () => {
+  it("the default density is the roomier v3 padding", () => {
     renderPropTable();
 
     const cell = screen.getByTestId("row-a").querySelector("td")!;
-    expect(cell.className).toContain("px-3 py-2");
+    expect(cell.className).toContain("px-4 py-3");
   });
 
   it("compact pulls the cell padding down to 8px", () => {
@@ -594,5 +594,116 @@ describe("a table wider than the screen (KAN-958)", () => {
       selectRowLabel: () => "Vybrat řádek",
     });
     expect(screen.getByTestId("wide-scroll").className).toContain("overflow-x-auto");
+  });
+});
+
+describe("IngotTable v3 header", () => {
+  it("draws the header as an eyebrow on the second surface", () => {
+    const { container } = renderTable();
+
+    const head = container.querySelector("thead")!;
+    expect(head.className).toContain("font-mono");
+    expect(head.className).toContain("uppercase");
+    expect(head.className).toContain("bg-surface-2");
+  });
+});
+
+describe("IngotTable groups", () => {
+  const GROUPED: Row[] = [
+    { id: "a", name: "Koncept", count: 1 },
+    { id: "b", name: "Čeká", count: 2 },
+    { id: "c", name: "Čeká", count: 3 },
+  ];
+
+  function renderGrouped(
+    groupHeader = (key: string, rows: readonly Row[]) => `${key} ${rows.length}`,
+  ) {
+    return render(
+      <IngotTable<Row>
+        columns={COLUMNS}
+        rows={GROUPED}
+        rowKey={(row) => row.id}
+        groupBy={(row) => row.name}
+        groupHeader={groupHeader}
+        testId="grouped"
+      />,
+    );
+  }
+
+  it("gives each run of one key its own tbody with a rowgroup header", () => {
+    const { container } = renderGrouped();
+
+    const bodies = container.querySelectorAll("tbody");
+    expect(bodies).toHaveLength(2);
+    const heads = screen.getAllByRole("rowheader");
+    expect(heads.map((th) => th.textContent)).toEqual(["Koncept 1", "Čeká 2"]);
+    for (const th of heads) {
+      expect(th).toHaveAttribute("scope", "rowgroup");
+      expect(th).toHaveAttribute("colSpan", String(COLUMNS.length));
+    }
+  });
+
+  it("passes the group's own rows to the header", () => {
+    const groupHeader = vi.fn((key: string) => key);
+    renderGrouped(groupHeader);
+
+    expect(groupHeader).toHaveBeenCalledWith("Čeká", [GROUPED[1], GROUPED[2]]);
+  });
+
+  it("keeps the row index counting across groups", () => {
+    render(
+      <IngotTable<Row>
+        columns={[{ key: "n", header: "#", cell: (_row, index) => `#${index + 1}` }]}
+        rows={GROUPED}
+        rowKey={(row) => row.id}
+        groupBy={(row) => row.name}
+        groupHeader={(key) => key}
+      />,
+    );
+
+    expect(screen.getByText("#3")).toBeInTheDocument();
+  });
+
+  it("does not group without groupHeader", () => {
+    const { container } = render(
+      <IngotTable<Row>
+        columns={COLUMNS}
+        rows={GROUPED}
+        rowKey={(row) => row.id}
+        groupBy={(row) => row.name}
+      />,
+    );
+
+    expect(container.querySelectorAll("tbody")).toHaveLength(1);
+  });
+});
+
+describe("IngotTable frame", () => {
+  it("is not drawn without toolbar or footer", () => {
+    renderTable();
+
+    expect(screen.queryByTestId("probe-frame")).toBeNull();
+  });
+
+  it("puts toolbar, table and footer in one frame", () => {
+    renderTable({
+      toolbar: <span>filtry</span>,
+      footer: "2 z 2",
+      footerEnd: <nav aria-label="Stránkování">pager</nav>,
+    });
+
+    const frame = screen.getByTestId("probe-frame");
+    expect(within(frame).getByText("filtry")).toBeInTheDocument();
+    expect(within(frame).getByRole("table")).toBeInTheDocument();
+    expect(within(frame).getByText("2 z 2")).toBeInTheDocument();
+    expect(
+      within(frame).getByRole("navigation", { name: "Stránkování" }),
+    ).toBeInTheDocument();
+  });
+
+  it("a footer alone turns the frame on", () => {
+    renderTable({ footer: "2 z 2" });
+
+    expect(screen.getByTestId("probe-frame")).toBeInTheDocument();
   });
 });
