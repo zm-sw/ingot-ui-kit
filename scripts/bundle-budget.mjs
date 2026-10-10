@@ -43,8 +43,16 @@ const DIST = join(process.cwd(), "dist", "assets");
  * guide that hands the system over to a design tool needed 15 kB more,
  * because one guide loading on demand while the other fourteen did not
  * would have been an inconsistency rather than a fix. Now they all do.
+ *
+ * Raised by 15 for the table's column layout and keyboard walking
+ * (measured against dev: 342.5 -> 357.5 kB). The doc pages' own property
+ * tables are IngotTable, so the table lives in this chunk, and with it now
+ * the picker, the column menu and the resize handle. Loading those on
+ * demand was the alternative and it is the worse one: every application
+ * that arranges a table would see its header buttons pop in a moment after
+ * the rows. The margin stays where it was.
  */
-const ENTRY_KB = 360;
+const ENTRY_KB = 375;
 /**
  * Every JavaScript chunk together, including the ones loaded on demand.
  *
@@ -71,7 +79,10 @@ const ENTRY_KB = 360;
  * disagreed on whether the build passed — a budget that answers
  * differently depending on who asks teaches people to ignore it.
  */
-const TOTAL_JS_KB = 1200;
+//
+// Raised by 25 with the entry chunk above, for the same table change
+// (measured against dev: 1180.1 -> 1201.3 kB) plus the usual margin.
+const TOTAL_JS_KB = 1225;
 const CSS_KB = 90;
 
 const kb = (bytes) => Math.round((bytes / 1024) * 10) / 10;

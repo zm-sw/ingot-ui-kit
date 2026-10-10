@@ -4,9 +4,13 @@ import {
   Button,
   IngotBadge,
   IngotEmptyState,
+  IngotPagination,
+  IngotSearchInput,
+  IngotSelect,
   IngotTable,
   type IngotColumn,
   type IngotSort,
+  type IngotTableLayout,
 } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 
@@ -38,6 +42,17 @@ const TEXT: Localized<Record<string, string>> = {
     select: "Vybrat",
     selected: "Vybráno:",
     clear: "Zrušit výběr",
+    search: "Hledat",
+    searchPlaceholder: "Hledat v zakázkách…",
+    stateFilter: "Stav",
+    stateAll: "Všechny stavy",
+    shown: "zakázek",
+    of: "z",
+    prev: "Předchozí",
+    next: "Další",
+    page: "Strana",
+    pagination: "Stránkování",
+    emptyFiltered: "Filtru nic neodpovídá",
     inProduction: "Ve výrobě",
     queued: "Ve frontě",
     late: "Po termínu",
@@ -66,6 +81,17 @@ const TEXT: Localized<Record<string, string>> = {
     select: "Select",
     selected: "Selected:",
     clear: "Clear the selection",
+    search: "Search",
+    searchPlaceholder: "Search orders…",
+    stateFilter: "State",
+    stateAll: "All states",
+    shown: "orders",
+    of: "of",
+    prev: "Previous",
+    next: "Next",
+    page: "Page",
+    pagination: "Pagination",
+    emptyFiltered: "Nothing matches the filter",
     inProduction: "In production",
     queued: "Queued",
     late: "Overdue",
@@ -117,7 +143,41 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
       price: 91200,
       operator: t.operatorC,
     },
+    {
+      id: "d",
+      code: "ZAK-2026-0186",
+      customer: t.customerA,
+      product: t.productC,
+      state: t.inProduction,
+      due: "20. 9. 2026",
+      count: 16,
+      price: 33800,
+      operator: t.operatorB,
+    },
+    {
+      id: "e",
+      code: "ZAK-2026-0187",
+      customer: t.customerC,
+      product: t.productA,
+      state: t.queued,
+      due: "25. 9. 2026",
+      count: 60,
+      price: 25200,
+      operator: t.operatorA,
+    },
+    {
+      id: "f",
+      code: "ZAK-2026-0181",
+      customer: t.customerB,
+      product: t.productB,
+      state: t.late,
+      due: "5. 9. 2026",
+      count: 12,
+      price: 6900,
+      operator: t.operatorC,
+    },
   ];
+  const stateOrder = [t.late, t.inProduction, t.queued];
 
   const tone = (state: string) => {
     if (state === t.late) return "danger" as const;
@@ -125,10 +185,17 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
     return "neutral" as const;
   };
 
+  const [query, setQuery] = useState("");
+  const [stateFilter, setStateFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [layout, setLayout] = useState<IngotTableLayout>({});
+  const [opened, setOpened] = useState<string | null>(null);
+
   const columns: readonly IngotColumn<DemoRow>[] = [
     { key: "order", header: "#", cell: (_row, index) => `#${index + 1}` },
     {
       key: "code",
+      hideable: false,
       header: t.code,
       cell: (row) => row.code,
       cellClassName: "whitespace-nowrap font-mono",
@@ -151,6 +218,21 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
       key: "state",
       header: t.state,
       cell: (row) => <IngotBadge tone={tone(row.state)}>{row.state}</IngotBadge>,
+      filter: (
+        <IngotSelect
+          value={stateFilter}
+          onChange={(next) => {
+            setStateFilter(next);
+            setPage(1);
+          }}
+          label={t.stateFilter}
+          options={[
+            { value: "", label: t.stateAll },
+            ...stateOrder.map((state) => ({ value: state, label: state })),
+          ]}
+        />
+      ),
+      filterActive: stateFilter !== "",
     },
     {
       key: "due",
@@ -178,7 +260,20 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
   const [sort, setSort] = useState<IngotSort>({ key: "code", dir: "asc" });
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
 
-  const rows = [...rowsData].sort((a, b) => {
+  const pageSize = 4;
+
+  const needle = query.trim().toLowerCase();
+  const filtered = rowsData.filter(
+    (row) =>
+      (stateFilter === "" || row.state === stateFilter) &&
+      (needle === "" ||
+        row.code.toLowerCase().includes(needle) ||
+        row.customer.toLowerCase().includes(needle)),
+  );
+
+  const sorted = [...filtered].sort((a, b) => {
+    const group = stateOrder.indexOf(a.state) - stateOrder.indexOf(b.state);
+    if (group !== 0) return group;
     const flip = sort.dir === "asc" ? 1 : -1;
     if (sort.key === "count") return (a.count - b.count) * flip;
     if (sort.key === "price") return (a.price - b.price) * flip;
@@ -188,13 +283,19 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
     return a.code.localeCompare(b.code, lang) * flip;
   });
 
+  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const current = Math.min(page, pageCount);
+  const rows = sorted.slice((current - 1) * pageSize, current * pageSize);
+
   return (
     <IngotTable
       columns={columns}
       rows={rows}
       rowKey={(row) => row.id}
       caption={t.caption}
-      empty={<IngotEmptyState title={t.empty} />}
+      empty={
+        <IngotEmptyState title={rowsData.length === 0 ? t.empty : t.emptyFiltered} />
+      }
       sort={sort}
       onSortChange={setSort}
       selectedKeys={selected}
@@ -211,6 +312,46 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
           </Button>
         </>
       }
+      groupBy={(row) => row.state}
+      groupHeader={(key, groupRows) => `${key} ${groupRows.length}`}
+      toolbar={
+        <>
+          <IngotSearchInput
+            value={query}
+            onChange={(next) => {
+              setQuery(next);
+              setPage(1);
+            }}
+            label={t.search}
+            placeholder={t.searchPlaceholder}
+            className="basis-64"
+          />
+        </>
+      }
+      footer={`${filtered.length} ${t.of} ${rowsData.length} ${t.shown}`}
+      footerEnd={
+        <IngotPagination
+          page={current}
+          pageCount={pageCount}
+          onPageChange={setPage}
+          prevLabel={t.prev}
+          nextLabel={t.next}
+          status={`${t.page} ${current} / ${pageCount}`}
+          label={t.pagination}
+        />
+      }
+      keyboard
+      onRowOpen={(row) => setOpened(opened === row.id ? null : row.id)}
+      rowDetail={(row) =>
+        opened === row.id ? (
+          <p className="px-4 py-3 text-sm text-ink-3">
+            {row.product} · {row.operator}
+          </p>
+        ) : null
+      }
+      layout={layout}
+      onLayoutChange={setLayout}
+      onLayoutReset={() => setLayout({})}
       testId="docs-table"
     />
   );
