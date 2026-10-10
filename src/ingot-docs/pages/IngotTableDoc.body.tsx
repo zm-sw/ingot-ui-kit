@@ -240,6 +240,51 @@ const body: IngotDocBody = {
       },
     },
     {
+      name: "layout",
+      type: "IngotTableLayout",
+      required: false,
+      note: {
+        cs: "Jak si uživatel sloupce uspořádal: pořadí, skryté sloupce, šířky. Čte se obranně — rozložení uložené pro starší sadu sloupců tabulku nerozbije.",
+        en: "How the user arranged the columns: order, hidden columns, widths. Read defensively — a layout stored for an older set of columns cannot break the table.",
+      },
+    },
+    {
+      name: "onLayoutChange",
+      type: "(layout: IngotTableLayout) => void",
+      required: false,
+      note: {
+        cs: "Zapne uspořádávání: výběr sloupců na konci záhlaví, menu u každého sloupce, změnu šířky a přetahování hlaviček. Uložit rozložení je věc volajícího.",
+        en: "Turns on arranging: the column picker at the end of the header, a menu on every column, resizing and dragging headers. Storing the layout is the caller's.",
+      },
+    },
+    {
+      name: "onLayoutReset",
+      type: "() => void",
+      required: false,
+      note: {
+        cs: "Ukáže ve výběru sloupců „Obnovit výchozí“ — volající zahodí uložené rozložení.",
+        en: "Shows “Reset to default” in the column picker — the caller drops the stored layout.",
+      },
+    },
+    {
+      name: "keyboard",
+      type: "boolean",
+      required: false,
+      note: {
+        cs: "Chůze po řádcích klávesnicí, když má fokus posuvná schránka: J/K pohyb, X výběr, Enter otevřít. S patičkou vypíše zkratky. Se stickyHeader nefunguje.",
+        en: "Walking the rows with the keyboard while the scroll box has focus: J/K move, X select, Enter open. With a footer it prints the shortcuts. Does nothing with stickyHeader.",
+      },
+    },
+    {
+      name: "onRowOpen",
+      type: "(row: Row) => void",
+      required: false,
+      note: {
+        cs: "Enter na aktivním řádku.",
+        en: "Enter on the active row.",
+      },
+    },
+    {
       name: "rowClassName",
       type: "(row: Row) => string | undefined",
       required: false,
@@ -355,6 +400,42 @@ const body: IngotDocBody = {
             en: "The header becomes a button. Ignored without sort + onSortChange on the table.",
           },
         },
+        {
+          name: "label",
+          type: "string",
+          required: false,
+          note: {
+            cs: "Jméno sloupce jako text pro výběr sloupců a menu sloupce — potřeba, jen když header není řetězec.",
+            en: "The column's name as text, for the column picker and the column menu — needed only when header is not a string.",
+          },
+        },
+        {
+          name: "hideable",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "false nechá sloupec vidět, ať uživatelské rozložení říká cokoli — sloupec, který záznam pojmenovává.",
+            en: "false keeps the column visible whatever the user's layout says — the column that names the record.",
+          },
+        },
+        {
+          name: "filter",
+          type: "ReactNode",
+          required: false,
+          note: {
+            cs: "Filtr sloupce, otevíraný z jeho menu — ovládací prvek volajícího napojený na jeho stav filtru. Tabulka sama nefiltruje.",
+            en: "The column's filter, opened from its menu — the caller's control wired to the caller's filter state. The table does not filter.",
+          },
+        },
+        {
+          name: "filterActive",
+          type: "boolean",
+          required: false,
+          note: {
+            cs: "Filtr právě zužuje řádky — tlačítko menu nese tečku.",
+            en: "The filter currently narrows the rows — the menu button carries a dot.",
+          },
+        },
       ],
     },
   ],
@@ -394,6 +475,12 @@ const body: IngotDocBody = {
       <>
         <IngotCode>caption</IngotCode> se vykresluje mimo obraz: čte ho odečítač, aniž
         by nad tabulkou přibyl nadpis, který návrh nepočítal.
+      </>,
+      <>
+        Všechno, co jde myší, jde i klávesnicí: přesun sloupce má v menu sloupce položky
+        „doleva / doprava“, úchyt šířky je zaměřitelný oddělovač, který se posouvá
+        šipkami, a řádky se procházejí z posuvné schránky klávesami J/K s{" "}
+        <IngotCode>aria-activedescendant</IngotCode>.
       </>,
       <>
         Seřazený sloupec nese <IngotCode>aria-sort</IngotCode> a řaditelná hlavička je
@@ -439,6 +526,12 @@ const body: IngotDocBody = {
       <>
         <IngotCode>caption</IngotCode> is rendered off-screen: a screen reader reads it
         without adding a heading above the table that the design did not plan for.
+      </>,
+      <>
+        Whatever the mouse can do, the keyboard can: moving a column has “left / right”
+        items in the column menu, the resize handle is a focusable separator moved with
+        the arrow keys, and rows are walked from the scroll box with J/K and{" "}
+        <IngotCode>aria-activedescendant</IngotCode>.
       </>,
       <>
         The sorted column carries <IngotCode>aria-sort</IngotCode> and a sortable header
@@ -509,10 +602,10 @@ const body: IngotDocBody = {
         svisle, roluje i vodorovně.
       </>,
       <>
-        <strong>Na úzké obrazovce se posouvá, sloupce se neschovávají.</strong> Byla to
-        volba, ne opomenutí. Skrytý sloupec znamená, že data existují a čtenář je nevidí
-        — a nemá jak si o ně říct; navíc by to byl druhý způsob ovládání uvnitř tabulky,
-        která už má výběr řádků a akce. Posun do strany ukáže všechno a je to to, co od
+        <strong>Na úzké obrazovce se posouvá, sloupce se samy neschovávají.</strong>{" "}
+        Skrýt sloupec smí jen uživatel, výběrem sloupců — a pak ví, že tam je a jak si
+        ho vrátit. Sloupec, který by zmizel sám podle šířky obrazovky, by čtenáři
+        zatajil data, o kterých neví. Posun do strany ukáže všechno a je to to, co od
         široké tabulky na telefonu člověk čeká.
       </>,
       <>
@@ -550,10 +643,10 @@ const body: IngotDocBody = {
         scrolls vertically scrolls horizontally too.
       </>,
       <>
-        <strong>On a narrow screen it scrolls; columns are not hidden.</strong> That was
-        a choice, not an omission. A hidden column means the data exists and the reader
-        cannot see it — with no way to ask for it — and it would be a second way of
-        operating a table that already has row selection and row actions. Scrolling
+        <strong>On a narrow screen it scrolls; columns do not hide themselves.</strong>{" "}
+        Only the user hides a column, through the column picker — and then knows it is
+        there and how to get it back. A column that vanished by itself with the screen
+        width would keep from the reader data they do not know exists. Scrolling
         sideways shows everything, and it is what a person expects from a wide table on
         a phone.
       </>,

@@ -11,7 +11,9 @@ export const IngotProviderDoc: IngotDocMeta = {
   name: "IngotProvider",
   status: "beta",
   // 1.1 (KAN-845) — toastClose, the label of the toast's close button.
-  version: "1.1",
+  // 1.2 (KAN-1999) - the table's labels: column picker, column menu,
+  // resize handle and the footer's shortcut words.
+  version: "1.2",
   tag: ".provider",
   // Empty on purpose: the provider renders nothing, so no token change
   // reaches it. The doc web prints that as a sentence instead of a list.

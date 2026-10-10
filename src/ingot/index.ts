@@ -125,7 +125,12 @@ export {
   MAX_MODAL_LAYER,
 } from "./modalLayer";
 export { IngotConfirm, useConfirmVeto } from "./IngotConfirm";
-export { IngotTable, type IngotColumn, type IngotSort } from "./IngotTable";
+export {
+  IngotTable,
+  type IngotColumn,
+  type IngotSort,
+  type IngotTableLayout,
+} from "./IngotTable";
 export { IngotEmptyState } from "./IngotEmptyState";
 // --- the list screen around the table ---------------------------------
 //

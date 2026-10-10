@@ -19,8 +19,9 @@ export const IngotTableDoc: IngotDocMeta = {
   // controlled by the caller; nothing changes for existing callers.
   // 1.5 (KAN-1999) - v3 look: the header is an eyebrow on --surface-2 and
   // the default cell padding is roomier; optional frame (toolbar, footer,
-  // footerEnd) and row groups (groupBy + groupHeader). No call site has to
-  // change.
+  // footerEnd) and row groups (groupBy + groupHeader); the user's column
+  // layout (picker, column menu, resize, header drag) and keyboard walking
+  // of the rows. No call site has to change.
   version: "1.5",
   tag: ".table-wrap",
   tokens: [

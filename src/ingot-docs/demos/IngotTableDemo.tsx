@@ -10,6 +10,7 @@ import {
   IngotTable,
   type IngotColumn,
   type IngotSort,
+  type IngotTableLayout,
 } from "@/ingot";
 import type { DocLang, Localized } from "@/ingot-docs/lang";
 
@@ -184,10 +185,17 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
     return "neutral" as const;
   };
 
+  const [query, setQuery] = useState("");
+  const [stateFilter, setStateFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [layout, setLayout] = useState<IngotTableLayout>({});
+  const [opened, setOpened] = useState<string | null>(null);
+
   const columns: readonly IngotColumn<DemoRow>[] = [
     { key: "order", header: "#", cell: (_row, index) => `#${index + 1}` },
     {
       key: "code",
+      hideable: false,
       header: t.code,
       cell: (row) => row.code,
       cellClassName: "whitespace-nowrap font-mono",
@@ -210,6 +218,21 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
       key: "state",
       header: t.state,
       cell: (row) => <IngotBadge tone={tone(row.state)}>{row.state}</IngotBadge>,
+      filter: (
+        <IngotSelect
+          value={stateFilter}
+          onChange={(next) => {
+            setStateFilter(next);
+            setPage(1);
+          }}
+          label={t.stateFilter}
+          options={[
+            { value: "", label: t.stateAll },
+            ...stateOrder.map((state) => ({ value: state, label: state })),
+          ]}
+        />
+      ),
+      filterActive: stateFilter !== "",
     },
     {
       key: "due",
@@ -237,9 +260,6 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
   const [sort, setSort] = useState<IngotSort>({ key: "code", dir: "asc" });
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
 
-  const [query, setQuery] = useState("");
-  const [stateFilter, setStateFilter] = useState("");
-  const [page, setPage] = useState(1);
   const pageSize = 4;
 
   const needle = query.trim().toLowerCase();
@@ -306,18 +326,6 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
             placeholder={t.searchPlaceholder}
             className="basis-64"
           />
-          <IngotSelect
-            value={stateFilter}
-            onChange={(next) => {
-              setStateFilter(next);
-              setPage(1);
-            }}
-            label={t.stateFilter}
-            options={[
-              { value: "", label: t.stateAll },
-              ...stateOrder.map((state) => ({ value: state, label: state })),
-            ]}
-          />
         </>
       }
       footer={`${filtered.length} ${t.of} ${rowsData.length} ${t.shown}`}
@@ -332,6 +340,18 @@ export function Demo({ lang }: { lang: DocLang }): JSX.Element {
           label={t.pagination}
         />
       }
+      keyboard
+      onRowOpen={(row) => setOpened(opened === row.id ? null : row.id)}
+      rowDetail={(row) =>
+        opened === row.id ? (
+          <p className="px-4 py-3 text-sm text-ink-3">
+            {row.product} · {row.operator}
+          </p>
+        ) : null
+      }
+      layout={layout}
+      onLayoutChange={setLayout}
+      onLayoutReset={() => setLayout({})}
       testId="docs-table"
     />
   );
