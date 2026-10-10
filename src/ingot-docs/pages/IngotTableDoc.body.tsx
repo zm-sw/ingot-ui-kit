@@ -195,6 +195,51 @@ const body: IngotDocBody = {
       },
     },
     {
+      name: "toolbar",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Filtry nad tabulkou, uvnitř jejího rámečku. Zapne rámeček.",
+        en: "Filters above the table, inside its frame. Turns the frame on.",
+      },
+    },
+    {
+      name: "footer",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Začátek patičky — typicky počet („36 z 36 článků“). Zapne rámeček.",
+        en: "Start of the footer — typically the count (“36 of 36 articles”). Turns the frame on.",
+      },
+    },
+    {
+      name: "footerEnd",
+      type: "ReactNode",
+      required: false,
+      note: {
+        cs: "Konec patičky — typicky IngotPagination. Zapne rámeček.",
+        en: "End of the footer — typically IngotPagination. Turns the frame on.",
+      },
+    },
+    {
+      name: "groupBy",
+      type: "(row: Row) => string",
+      required: false,
+      note: {
+        cs: "Klíč skupiny řádku. Po sobě jdoucí řádky se stejným klíčem dostanou společný řádek sekce; pořadí určuje rows, tabulka nepřeskupuje.",
+        en: "A row's group key. Consecutive rows with the same key share one section row; the order of rows decides, the table does not regroup.",
+      },
+    },
+    {
+      name: "groupHeader",
+      type: "(key: string, rows: readonly Row[]) => ReactNode",
+      required: false,
+      note: {
+        cs: "Obsah řádku sekce — přeložený název a počet skládá volající. Bez něj se neseskupuje.",
+        en: "Content of the section row — the caller composes the translated name and count. Without it nothing is grouped.",
+      },
+    },
+    {
       name: "rowClassName",
       type: "(row: Row) => string | undefined",
       required: false,
@@ -478,7 +523,8 @@ const body: IngotDocBody = {
       <>
         <strong>Stránkování.</strong> Není prop tabulky — je to samostatné{" "}
         <IngotCode>IngotPagination</IngotCode> a stav stránky drží volající, stejně jako
-        výběr a řazení.
+        výběr a řazení. Tabulka mu jen dá místo: <IngotCode>footerEnd</IngotCode> ho
+        posadí do patičky vedle počtu.
       </>,
       <>
         <strong>Virtualizace.</strong> Vykreslí se všechny řádky, které dostane.
@@ -519,7 +565,8 @@ const body: IngotDocBody = {
       <>
         <strong>Pagination.</strong> Not a table prop — it is the separate{" "}
         <IngotCode>IngotPagination</IngotCode>, and the caller owns the page state, just
-        like selection and sorting.
+        like selection and sorting. The table only gives it a place:{" "}
+        <IngotCode>footerEnd</IngotCode> sets it in the footer next to the count.
       </>,
       <>
         <strong>Virtualisation.</strong> Every row it is given is rendered.

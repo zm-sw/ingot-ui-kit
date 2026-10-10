@@ -2,6 +2,7 @@ import { Fragment, useId, type JSX, type ReactNode } from "react";
 
 import { cx } from "./cx";
 import { IngotCheckboxControl } from "./IngotCheckbox";
+import { eyebrowClass } from "./IngotEyebrow";
 
 /**
  * Table — columns as data.
@@ -43,6 +44,22 @@ import { IngotCheckboxControl } from "./IngotCheckbox";
  * Pagination is **not in the table, not even in v2** — it is a separate
  * `IngotPagination` and the caller owns the page state, like selection and
  * sort. One owner of state = no tug of war.
+ *
+ * ## v3 — the look of a list screen
+ *
+ * - **The header is an eyebrow**: mono, uppercase, letter-spaced, on
+ *   `--surface-2`, so the column names read as labels and not as data.
+ * - **The frame** (`toolbar` + `footer` / `footerEnd`). A list screen is
+ *   filters above, rows, and a count with a pager below — written by hand
+ *   on every screen until now, each with its own margins. With any of the
+ *   slots the table draws one bordered card around all of them; without
+ *   them it stays the bare table it always was, so a table already inside
+ *   a card does not get a second border.
+ * - **Groups** (`groupBy` + `groupHeader`). Consecutive rows with the same
+ *   group key get a section row above them ("Drafts 1"). The table does not
+ *   reorder rows — grouping, like sorting, is the order of `rows` — it only
+ *   notices where the key changes. Each group is its own `<tbody>`, so a
+ *   screen reader hears the section as a row group, not as one more record.
  *
  * ## What the table fixes structurally, not by agreement
  *
@@ -120,6 +137,11 @@ export function IngotTable<Row>({
   selectAllLabel,
   selectRowLabel,
   bulkbar,
+  toolbar,
+  footer,
+  footerEnd,
+  groupBy,
+  groupHeader,
   testId,
 }: {
   columns: readonly IngotColumn<Row>[];
@@ -215,6 +237,31 @@ export function IngotTable<Row>({
    * composed by the caller — only the caller can translate them.
    */
   bulkbar?: ReactNode;
+  /**
+   * Filters above the table, inside its frame — typically the children of
+   * an `IngotToolbar` (search, selects, a segmented switch). Turns the
+   * frame on.
+   */
+  toolbar?: ReactNode;
+  /**
+   * Start of the footer, inside the frame — typically the count
+   * ("36 of 36 articles"), composed and translated by the caller. Turns
+   * the frame on.
+   */
+  footer?: ReactNode;
+  /** End of the footer — typically an `IngotPagination`. Turns the frame on. */
+  footerEnd?: ReactNode;
+  /**
+   * Group key of a row. Consecutive rows with the same key form one group
+   * under one section row; the order of `rows` decides, the table does
+   * not regroup. Requires `groupHeader`.
+   */
+  groupBy?: (row: Row) => string;
+  /**
+   * Content of a group's section row — the caller composes the translated
+   * label and count ("Drafts 1"). Gets the group's key and its rows.
+   */
+  groupHeader?: (key: string, rows: readonly Row[]) => ReactNode;
   testId?: string;
 }): JSX.Element {
   const selectable = selectedKeys != null && onSelectedKeysChange != null;
@@ -222,10 +269,10 @@ export function IngotTable<Row>({
   // A hand-written `colSpan={8}` is exactly what drifts when a column is added.
   const span = columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0);
 
-  const cellPad = density === "compact" ? "p-2" : "px-3 py-2";
+  const cellPad = density === "compact" ? "p-2" : "px-4 py-3";
   // The checkbox column is deliberately narrow — `w-0` + padding, so it
   // does not steal room from the data columns.
-  const checkPad = density === "compact" ? "w-0 p-2" : "w-0 px-3 py-2";
+  const checkPad = density === "compact" ? "w-0 p-2" : "w-0 px-4 py-3";
 
   const allKeys = selectable ? rows.map((row) => rowKey(row)) : [];
   const allSelected =
@@ -257,6 +304,75 @@ export function IngotTable<Row>({
     });
   }
 
+  // Consecutive runs of one group key, each row with its position in
+  // `rows` — `cell(row, index)` keeps counting across groups.
+  const groups =
+    groupBy != null && groupHeader != null
+      ? rows.reduce<{ key: string; rows: { row: Row; index: number }[] }[]>(
+          (acc, row, index) => {
+            const key = groupBy(row);
+            const last = acc[acc.length - 1];
+            if (last != null && last.key === key) last.rows.push({ row, index });
+            else acc.push({ key, rows: [{ row, index }] });
+            return acc;
+          },
+          [],
+        )
+      : null;
+
+  function renderRow(row: Row, index: number): JSX.Element {
+    const key = rowKey(row);
+    const selected = selectable && selectedKeys.has(key);
+    // Called ONCE per row: it is the caller's function and a second
+    // call might well answer differently.
+    const extra = rowClassName?.(row);
+    // Same rule as rowClassName: one call per row.
+    const detail = rowDetail?.(row);
+    return (
+      <Fragment key={key}>
+        <tr
+          className={cx("border-b border-border", selected && "bg-accent-bg", extra)}
+          aria-selected={selectable ? selected : undefined}
+          data-testid={rowTestId?.(row)}
+        >
+          {selectable && (
+            <td className={checkPad}>
+              <IngotCheckboxControl
+                className="block"
+                checked={selected}
+                onChange={() => toggleRow(key)}
+                aria-label={selectRowLabel?.(row)}
+              />
+            </td>
+          )}
+          {columns.map((col) => (
+            <td
+              key={col.key}
+              className={cx(
+                cellPad,
+                col.align === "end" && "text-right tabular-nums",
+                col.cellClassName,
+              )}
+            >
+              {col.cell(row, index)}
+            </td>
+          ))}
+          {actions && <td className={cx(cellPad, "text-right")}>{actions(row)}</td>}
+        </tr>
+        {detail != null && (
+          <tr
+            className="border-b border-border"
+            data-testid={rowTestId ? `${rowTestId(row)}-detail` : undefined}
+          >
+            <td colSpan={span} className="p-0">
+              {detail}
+            </td>
+          </tr>
+        )}
+      </Fragment>
+    );
+  }
+
   const captionId = useId();
 
   const table = (
@@ -271,13 +387,14 @@ export function IngotTable<Row>({
         </caption>
       )}
       <thead
-        className={
-          stickyHeader
-            ? // `bg-surface-2` is not cosmetic: without an opaque background
-              // the scrolling rows show through the sticky header.
-              "sticky top-0 z-10 border-b border-border bg-surface-2 text-xs uppercase text-ink-3"
-            : "border-b border-border text-xs uppercase text-ink-3"
-        }
+        className={cx(
+          // `bg-surface-2` is not only the look: under a sticky header an
+          // opaque background is what stops the scrolling rows showing
+          // through.
+          "border-b border-border bg-surface-2",
+          eyebrowClass(),
+          stickyHeader && "sticky top-0 z-10",
+        )}
       >
         <tr>
           {selectable && (
@@ -344,8 +461,8 @@ export function IngotTable<Row>({
           )}
         </tr>
       </thead>
-      <tbody>
-        {loading ? (
+      {loading ? (
+        <tbody>
           <tr>
             <td colSpan={span} className="px-3 py-8 text-center text-sm text-ink-3">
               {/* Not an empty body with a spinner: a screen reader must hear
@@ -354,69 +471,29 @@ export function IngotTable<Row>({
               <span role="status">{loadingLabel}</span>
             </td>
           </tr>
-        ) : rows.length === 0 ? (
+        </tbody>
+      ) : rows.length === 0 ? (
+        <tbody>
           <tr>
             <td colSpan={span} className="p-0">
               {empty}
             </td>
           </tr>
-        ) : (
-          rows.map((row, index) => {
-            const key = rowKey(row);
-            const selected = selectable && selectedKeys.has(key);
-            // Called ONCE per row: it is the caller's function and a second
-            // call might well answer differently.
-            const extra = rowClassName?.(row);
-            // Same rule as rowClassName: one call per row.
-            const detail = rowDetail?.(row);
-            return (
-              <Fragment key={key}>
-              <tr
-                className={cx("border-b border-border", selected && "bg-accent-bg", extra)}
-                aria-selected={selectable ? selected : undefined}
-                data-testid={rowTestId?.(row)}
-              >
-                {selectable && (
-                  <td className={checkPad}>
-                    <IngotCheckboxControl
-                      className="block"
-                      checked={selected}
-                      onChange={() => toggleRow(key)}
-                      aria-label={selectRowLabel?.(row)}
-                    />
-                  </td>
-                )}
-                {columns.map((col) => (
-                  <td
-                    key={col.key}
-                    className={cx(
-                      cellPad,
-                      col.align === "end" && "text-right tabular-nums",
-                      col.cellClassName,
-                    )}
-                  >
-                    {col.cell(row, index)}
-                  </td>
-                ))}
-                {actions && (
-                  <td className={cx(cellPad, "text-right")}>{actions(row)}</td>
-                )}
-              </tr>
-              {detail != null && (
-                <tr
-                  className="border-b border-border"
-                  data-testid={rowTestId ? `${rowTestId(row)}-detail` : undefined}
-                >
-                  <td colSpan={span} className="p-0">
-                    {detail}
-                  </td>
-                </tr>
-              )}
-              </Fragment>
-            );
-          })
-        )}
-      </tbody>
+        </tbody>
+      ) : groups == null ? (
+        <tbody>{rows.map((row, index) => renderRow(row, index))}</tbody>
+      ) : (
+        groups.map((group) => (
+          <tbody key={group.key} data-testid={testId ? `${testId}-group-${group.key}` : undefined}>
+            <tr className="border-b border-border bg-surface-2">
+              <th scope="rowgroup" colSpan={span} className={cx("px-4 py-2 text-left", eyebrowClass())}>
+                {groupHeader?.(group.key, group.rows.map((item) => item.row))}
+              </th>
+            </tr>
+            {group.rows.map((item) => renderRow(item.row, item.index))}
+          </tbody>
+        ))
+      )}
     </table>
   );
 
@@ -460,19 +537,54 @@ export function IngotTable<Row>({
     </div>
   );
 
-  if (!selectable) return scroller;
+  const bulk =
+    selectable && selectedKeys.size > 0 && bulkbar != null ? (
+      <div
+        role="status"
+        className="mb-2 flex flex-wrap items-center gap-2 rounded-md border border-accent-border bg-accent-bg px-3 py-2 text-sm text-ink"
+      >
+        {bulkbar}
+      </div>
+    ) : null;
 
+  const framed = toolbar != null || footer != null || footerEnd != null;
+
+  if (!framed) {
+    if (!selectable) return scroller;
+    return (
+      <div>
+        {bulk}
+        {scroller}
+      </div>
+    );
+  }
+
+  // The frame: one card around filters, rows and footer. `overflow-hidden`
+  // clips the header's background to the card's rounded corners.
   return (
-    <div>
-      {selectedKeys.size > 0 && bulkbar != null && (
-        <div
-          role="status"
-          className="mb-2 flex flex-wrap items-center gap-2 rounded-md border border-accent-border bg-accent-bg px-3 py-2 text-sm text-ink"
-        >
-          {bulkbar}
-        </div>
-      )}
-      {scroller}
+    <div data-testid={testId ? `${testId}-frame` : undefined}>
+      {bulk}
+      <div className="overflow-hidden rounded-md border border-border bg-surface">
+        {toolbar != null && (
+          <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
+            {toolbar}
+          </div>
+        )}
+        {scroller}
+        {(footer != null || footerEnd != null) && (
+          // `-mt-px` lets the footer's top border sit on the last row's
+          // bottom border instead of doubling it.
+          <div className="-mt-px flex flex-wrap items-center gap-3 border-t border-border px-4 py-3 text-sm text-ink-3">
+            {footer}
+            {footerEnd != null && (
+              // `IngotPagination` keeps its own top margin for the place it
+              // was made for (under a bare table); inside the footer the
+              // footer's padding is the spacing, so the margin goes.
+              <div className="ml-auto flex items-center gap-3 [&>nav]:mt-0">{footerEnd}</div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
