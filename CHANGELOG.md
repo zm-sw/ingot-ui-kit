@@ -9,6 +9,12 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.0.8 — 2026-11-13
+
+Automatic release from the doc page registry (v2.0.7 → v2.0.8).
+
+- Changed components: IngotIcon, IngotMenu.
+
 ## v1.1.1 — 2026-09-04
 
 Automatic release from the doc page registry (v1.1.0 → v1.1.1).

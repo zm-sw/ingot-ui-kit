@@ -1,6 +1,56 @@
 {
   "releases": [
     {
+      "tag": "v2.0.8",
+      "date": "2026-11-13",
+      "notes": "Automatic release from the doc page registry (v2.0.7 → v2.0.8).\nChanged components: IngotIcon, IngotMenu."
+    },
+    {
+      "tag": "v2.0.7",
+      "date": "2026-10-10",
+      "notes": "Automatic release from the doc page registry (v2.0.6 → v2.0.7).\nChanged components: IngotProvider, IngotTable."
+    },
+    {
+      "tag": "v2.0.6",
+      "date": "2026-09-17",
+      "notes": "Automatic release from the doc page registry (v2.0.5 → v2.0.6).\nChanged components: IngotMegaMenu."
+    },
+    {
+      "tag": "v2.0.5",
+      "date": "2026-09-14",
+      "notes": "Automatic release from the doc page registry (v2.0.4 → v2.0.5).\nChanged components: IngotTable."
+    },
+    {
+      "tag": "v2.0.4",
+      "date": "2026-09-08",
+      "notes": "Automatic release from the doc page registry (v2.0.3 → v2.0.4).\nChanged components: Button, IngotActionBar, IngotAppFrame, IngotCheckbox, IngotChip, IngotConfirm, IngotDrawer, IngotForm, IngotMarketingCta, IngotModal, IngotPageHint, IngotPagination, IngotRadioGroup, IngotRowActions, IngotStepCard, IngotSwitch, IngotTabs, IngotToast, IngotTopNav."
+    },
+    {
+      "tag": "v2.0.3",
+      "date": "2026-09-07",
+      "notes": "Automatic release from the doc page registry (v2.0.2 → v2.0.3)."
+    },
+    {
+      "tag": "v2.0.2",
+      "date": "2026-09-07",
+      "notes": "Automatic release from the doc page registry (v2.0.1 → v2.0.2).\nChanged components: IngotColumns, IngotEyebrow, IngotPageLayout."
+    },
+    {
+      "tag": "v2.0.1",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v2.0.0 → v2.0.1).\nChanged components: Button, Card, IngotAccentSwatches, IngotChip, IngotConfirm, IngotDrawer, IngotField, IngotFieldInput, IngotModal, IngotOptionCard, IngotPopover, IngotSearchInput, IngotSelect, IngotStepCard, IngotSwitch, IngotToast, IngotTooltip."
+    },
+    {
+      "tag": "v2.0.0",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v1.3.0 → v2.0.0).\nNew primitives: IngotActionBar, IngotAppFrame, IngotAvatar, IngotColumns, IngotDescriptionList, IngotSkeleton, IngotSpinner.\nMajor bump: Card, IngotCallout, IngotMenu, IngotPageLayout, IngotToast.\nChanged components: Button, Card, IngotAccentSwatches, IngotBadge, IngotBreadcrumbs, IngotCallout, IngotCheckbox, IngotChip, IngotConfirm, IngotDisclosure, IngotDrawer, IngotEyebrow, IngotField, IngotFieldInput, IngotForm, IngotMarketingFaq, IngotMegaMenu, IngotMenu, IngotMetrics, IngotModal, IngotOptionCard, IngotPageHint, IngotPageLayout, IngotRadioGroup, IngotRowActions, IngotSearchInput, IngotSegmented, IngotSelect, IngotSideNav, IngotStepCard, IngotSwitch, IngotTable, IngotTabs, IngotToast, IngotTopNav.\nKit epoch raised by a release!: commit."
+    },
+    {
+      "tag": "v1.3.0",
+      "date": "2026-09-06",
+      "notes": "Automatic release from the doc page registry (v1.2.0 → v1.3.0).\nNew primitives: IngotChip, IngotCountPill.\nChanged components: IngotBadge, IngotField, IngotSearchInput, IngotSegmented, IngotTabs."
+    },
+    {
       "tag": "v1.2.0",
       "date": "2026-09-06",
       "notes": "Automatic release from the doc page registry (v1.1.1 → v1.2.0).\nNew primitives: IngotAccentSwatches, IngotCallout, IngotEyebrow, IngotMarketingComparison, IngotMarketingCta, IngotMarketingFaq, IngotMarketingPricing, IngotMarketingSectionHead, IngotMarketingSegments, IngotMarketingSteps, IngotMarketingTri, IngotMenu, IngotPopover, IngotProvider, IngotRadioGroup, IngotSegmented, IngotSwitch, IngotTooltip.\nMajor bump: IngotFieldInput, IngotForm.\nChanged components: Button, IngotBreadcrumbs, IngotCheckbox, IngotConfirm, IngotDisclosure, IngotDrawer, IngotField, IngotFieldInput, IngotForm, IngotIcon, IngotList, IngotMegaMenu, IngotMetrics, IngotModal, IngotOpIcon, IngotPageHint, IngotRowActions, IngotSearchInput, IngotSelect, IngotSideNav, IngotStepCard, IngotTable, IngotToast, IngotTopNav."
@@ -96,6 +146,15 @@
     "IngotRadioGroup": "v1.2.0",
     "IngotSegmented": "v1.2.0",
     "IngotSwitch": "v1.2.0",
-    "IngotTooltip": "v1.2.0"
+    "IngotTooltip": "v1.2.0",
+    "IngotChip": "v1.3.0",
+    "IngotCountPill": "v1.3.0",
+    "IngotActionBar": "v2.0.0",
+    "IngotAppFrame": "v2.0.0",
+    "IngotAvatar": "v2.0.0",
+    "IngotColumns": "v2.0.0",
+    "IngotDescriptionList": "v2.0.0",
+    "IngotSkeleton": "v2.0.0",
+    "IngotSpinner": "v2.0.0"
   }
 }
