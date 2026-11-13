@@ -14,6 +14,69 @@ version.
 Automatic release from the doc page registry (v2.0.7 → v2.0.8).
 
 - Changed components: IngotIcon, IngotMenu.
+## v2.0.7 — 2026-10-10
+
+Automatic release from the doc page registry (v2.0.6 → v2.0.7).
+
+- Changed components: IngotProvider, IngotTable.
+
+## v2.0.6 — 2026-09-17
+
+Automatic release from the doc page registry (v2.0.5 → v2.0.6).
+
+- Changed components: IngotMegaMenu.
+
+## v2.0.5 — 2026-09-14
+
+Automatic release from the doc page registry (v2.0.4 → v2.0.5).
+
+- Changed components: IngotTable.
+
+## v2.0.4 — 2026-09-08
+
+Automatic release from the doc page registry (v2.0.3 → v2.0.4).
+
+- Changed components: Button, IngotActionBar, IngotAppFrame, IngotCheckbox, IngotChip, IngotConfirm, IngotDrawer, IngotForm, IngotMarketingCta, IngotModal, IngotPageHint, IngotPagination, IngotRadioGroup, IngotRowActions, IngotStepCard, IngotSwitch, IngotTabs, IngotToast, IngotTopNav.
+
+## v2.0.3 — 2026-09-07
+
+Automatic release from the doc page registry (v2.0.2 → v2.0.3).
+
+## v2.0.2 — 2026-09-07
+
+Automatic release from the doc page registry (v2.0.1 → v2.0.2).
+
+- Changed components: IngotColumns, IngotEyebrow, IngotPageLayout.
+
+## v2.0.1 — 2026-09-06
+
+Automatic release from the doc page registry (v2.0.0 → v2.0.1).
+
+- Changed components: Button, Card, IngotAccentSwatches, IngotChip, IngotConfirm, IngotDrawer, IngotField, IngotFieldInput, IngotModal, IngotOptionCard, IngotPopover, IngotSearchInput, IngotSelect, IngotStepCard, IngotSwitch, IngotToast, IngotTooltip.
+
+## v2.0.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.3.0 → v2.0.0).
+
+- New primitives: IngotActionBar, IngotAppFrame, IngotAvatar, IngotColumns, IngotDescriptionList, IngotSkeleton, IngotSpinner.
+- Major bump: Card, IngotCallout, IngotMenu, IngotPageLayout, IngotToast.
+- Changed components: Button, Card, IngotAccentSwatches, IngotBadge, IngotBreadcrumbs, IngotCallout, IngotCheckbox, IngotChip, IngotConfirm, IngotDisclosure, IngotDrawer, IngotEyebrow, IngotField, IngotFieldInput, IngotForm, IngotMarketingFaq, IngotMegaMenu, IngotMenu, IngotMetrics, IngotModal, IngotOptionCard, IngotPageHint, IngotPageLayout, IngotRadioGroup, IngotRowActions, IngotSearchInput, IngotSegmented, IngotSelect, IngotSideNav, IngotStepCard, IngotSwitch, IngotTable, IngotTabs, IngotToast, IngotTopNav.
+- Kit epoch raised by a release!: commit.
+
+## v1.3.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.2.0 → v1.3.0).
+
+- New primitives: IngotChip, IngotCountPill.
+- Changed components: IngotBadge, IngotField, IngotSearchInput, IngotSegmented, IngotTabs.
+
+## v1.2.0 — 2026-09-06
+
+Automatic release from the doc page registry (v1.1.1 → v1.2.0).
+
+- New primitives: IngotAccentSwatches, IngotCallout, IngotEyebrow, IngotMarketingComparison, IngotMarketingCta, IngotMarketingFaq, IngotMarketingPricing, IngotMarketingSectionHead, IngotMarketingSegments, IngotMarketingSteps, IngotMarketingTri, IngotMenu, IngotPopover, IngotProvider, IngotRadioGroup, IngotSegmented, IngotSwitch, IngotTooltip.
+- Major bump: IngotFieldInput, IngotForm.
+- Changed components: Button, IngotBreadcrumbs, IngotCheckbox, IngotConfirm, IngotDisclosure, IngotDrawer, IngotField, IngotFieldInput, IngotForm, IngotIcon, IngotList, IngotMegaMenu, IngotMetrics, IngotModal, IngotOpIcon, IngotPageHint, IngotRowActions, IngotSearchInput, IngotSelect, IngotSideNav, IngotStepCard, IngotTable, IngotToast, IngotTopNav.
 
 ## v1.1.1 — 2026-09-04
 
