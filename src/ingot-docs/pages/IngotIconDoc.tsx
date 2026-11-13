@@ -20,7 +20,11 @@ export const IngotIconDoc: IngotDocMeta = {
   // one only by colour. The promise "there is and will be no fill in the
   // set" therefore softened to a narrow exception rather than being dropped
   // — the rewritten Limits section holds it. Callers touch nothing.
-  version: "1.4",
+  //
+  // 1.5 — ``gear`` arrived: a settings menu hung off an icon-only button
+  // had nothing but ``sliders``, which reads as filters rather than
+  // settings. Callers touch nothing.
+  version: "1.5",
   tag: "[data-icon]",
   tokens: ["currentColor"],
   classNameNote: {
