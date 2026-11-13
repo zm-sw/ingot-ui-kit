@@ -14,6 +14,7 @@ version.
 Automatic release from the doc page registry (v2.0.7 → v2.0.8).
 
 - Changed components: IngotIcon, IngotMenu.
+
 ## v2.0.7 — 2026-10-10
 
 Automatic release from the doc page registry (v2.0.6 → v2.0.7).
