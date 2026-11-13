@@ -155,4 +155,37 @@ describe("IngotMenu", () => {
     const menu = open();
     expect(within(menu).getAllByRole("separator")).toHaveLength(1);
   });
+
+  it("named groups become labelled groups, and arrows walk across them", () => {
+    render(
+      <Harness
+        items={[
+          { key: "part", label: "Nový díl", group: "Díl", onSelect: vi.fn() },
+          { key: "stock", label: "Ze skladu", group: "Díl", onSelect: vi.fn() },
+          { key: "cad", label: "Z CAD sestavy", group: "Kusovník", onSelect: vi.fn() },
+        ]}
+      />,
+    );
+    const menu = open();
+
+    const groups = within(menu).getAllByRole("group");
+    expect(groups.map((group) => group.getAttribute("aria-label"))).toEqual([
+      "Díl",
+      "Kusovník",
+    ]);
+    expect(within(groups[0]!).getAllByRole("menuitem")).toHaveLength(2);
+
+    // A group boundary is not a wall: the arrows keep walking.
+    fireEvent.keyDown(menu, { key: "ArrowDown" });
+    fireEvent.keyDown(menu, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(
+      within(menu).getByRole("menuitem", { name: "Z CAD sestavy" }),
+    );
+  });
+
+  it("without a group the items stay one flat list", () => {
+    render(<Harness items={ITEMS} />);
+    const menu = open();
+    expect(within(menu).queryAllByRole("group")).toHaveLength(0);
+  });
 });

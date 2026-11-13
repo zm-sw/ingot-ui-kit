@@ -14,7 +14,10 @@ export const IngotMenuDoc: IngotDocMeta = {
   // tokens now, instead of being left to the browser.
   // 2.0 (KAN-962) - one vocabulary for `size` and `tone` across the
   // kit: an item's tone was renamed: `default` is now `neutral`.
-  version: "2.0",
+  // 2.1 — an item may name its `group`: consecutive items with the same
+  // name get an eyebrow above them and a labelled `role="group"`, so a
+  // long create menu reads as sections. Callers touch nothing.
+  version: "2.1",
   tag: ".menu",
   tokens: [
     "--surface",
@@ -32,8 +35,8 @@ export const IngotMenuDoc: IngotDocMeta = {
     en: "Takes `className`, but for layout only — typically the menu's width. The rows, tones and spacing stay with the primitive.",
   },
   summary: {
-    cs: "Seznam akcí v popoveru: role menu, šipky, Home/End, psaní podle prvních písmen, oddělovače a tón danger.",
-    en: "A list of actions in a popover: the menu roles, arrows, Home/End, type-ahead, separators and the danger tone.",
+    cs: "Seznam akcí v popoveru: role menu, šipky, Home/End, psaní podle prvních písmen, oddělovače, skupiny s nadpisem a tón danger.",
+    en: "A list of actions in a popover: the menu roles, arrows, Home/End, type-ahead, separators, named groups and the danger tone.",
   },
   demo,
   demoSource,

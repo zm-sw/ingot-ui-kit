@@ -3,6 +3,7 @@ import { useEffect, useRef, type JSX, type RefObject } from "react";
 import { cx } from "./cx";
 import type { IngotTone } from "./vocabulary";
 import { IngotIcon, type IngotIconName } from "./IngotIcon";
+import { eyebrowClass } from "./IngotEyebrow";
 import { IngotPopover } from "./IngotPopover";
 import { menuRowClass } from "./menuRow";
 import type { IngotPlacement } from "./placement";
@@ -45,6 +46,17 @@ export interface IngotMenuItem {
   tone?: Extract<IngotTone, "neutral" | "danger">;
   /** Draws a divider above this item; a group boundary, not decoration. */
   separatorBefore?: boolean;
+  /**
+   * Translated name of the group this item belongs to ("Part", "Bill of
+   * materials"). Consecutive items carrying the same name form one group:
+   * the menu draws its name as an eyebrow above them and wraps them in a
+   * `role="group"` labelled by it, so a screen reader announces the
+   * section rather than a run of unrelated actions.
+   *
+   * The menu does NOT reorder items — the order of `items` decides, like
+   * everywhere else in the kit; it only notices where the name changes.
+   */
+  group?: string;
   testId?: string;
 }
 
@@ -114,6 +126,62 @@ export function IngotMenu({
     match?.focus();
   };
 
+  /**
+   * Consecutive items with the same `group` as one run. A run without a
+   * group keeps the flat shape the menu has always had, so a caller that
+   * never passes `group` renders byte for byte what it did before.
+   */
+  function groupRuns(
+    list: readonly IngotMenuItem[],
+  ): { group: string | undefined; items: IngotMenuItem[] }[] {
+    const runs: { group: string | undefined; items: IngotMenuItem[] }[] = [];
+    for (const item of list) {
+      const last = runs[runs.length - 1];
+      if (last !== undefined && last.group === item.group) last.items.push(item);
+      else runs.push({ group: item.group, items: [item] });
+    }
+    return runs;
+  }
+
+  function renderItem(item: IngotMenuItem): JSX.Element {
+    return (
+      <div key={item.key} className="contents">
+        {item.separatorBefore === true && (
+          <hr className="my-1 border-t border-border" />
+        )}
+        <button
+          type="button"
+          role="menuitem"
+          aria-disabled={item.disabled === true ? true : undefined}
+          // A disabled item keeps its place in the tab order of the menu
+          // it belongs to, so arrows skip it but a screen reader can
+          // still find it and say it is unavailable.
+          tabIndex={-1}
+          onClick={() => {
+            if (item.disabled === true) return;
+            item.onSelect();
+            onClose();
+            anchorRef.current?.focus();
+          }}
+          className={cx(
+            "flex items-center gap-2 rounded px-2 py-1.5 text-left text-sm",
+            menuRowClass({ surface: "panel" }),
+            item.tone === "danger" && "text-danger hover:bg-danger-bg",
+            item.disabled === true && "cursor-not-allowed text-ink-4 hover:bg-transparent",
+          )}
+          data-testid={item.testId}
+        >
+          {item.icon !== undefined && (
+            <span className="shrink-0 text-ink-4">
+              <IngotIcon name={item.icon} size={15} />
+            </span>
+          )}
+          {item.label}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <IngotPopover
       open={open}
@@ -163,42 +231,31 @@ export function IngotMenu({
         }}
         className="flex flex-col"
       >
-        {items.map((item) => (
-          <div key={item.key} className="contents">
-            {item.separatorBefore === true && (
-              <hr className="my-1 border-t border-border" />
-            )}
-            <button
-              type="button"
-              role="menuitem"
-              aria-disabled={item.disabled === true ? true : undefined}
-              // A disabled item keeps its place in the tab order of the menu
-              // it belongs to, so arrows skip it but a screen reader can
-              // still find it and say it is unavailable.
-              tabIndex={-1}
-              onClick={() => {
-                if (item.disabled === true) return;
-                item.onSelect();
-                onClose();
-                anchorRef.current?.focus();
-              }}
-              className={cx(
-                "flex items-center gap-2 rounded px-2 py-1.5 text-left text-sm",
-                menuRowClass({ surface: "panel" }),
-                item.tone === "danger" && "text-danger hover:bg-danger-bg",
-                item.disabled === true && "cursor-not-allowed text-ink-4 hover:bg-transparent",
-              )}
-              data-testid={item.testId}
+        {groupRuns(items).map((run) =>
+          run.group === undefined ? (
+            <div key={run.items[0]?.key} className="contents">
+              {run.items.map(renderItem)}
+            </div>
+          ) : (
+            <div
+              key={run.items[0]?.key}
+              role="group"
+              aria-label={run.group}
+              className="flex flex-col"
             >
-              {item.icon !== undefined && (
-                <span className="shrink-0 text-ink-4">
-                  <IngotIcon name={item.icon} size={15} />
-                </span>
-              )}
-              {item.label}
-            </button>
-          </div>
-        ))}
+              <span
+                aria-hidden="true"
+                className={cx(
+                  eyebrowClass({ size: "sm", tone: "muted" }),
+                  "px-2 pb-1 pt-1.5",
+                )}
+              >
+                {run.group}
+              </span>
+              {run.items.map(renderItem)}
+            </div>
+          ),
+        )}
       </div>
     </IngotPopover>
   );

@@ -1,6 +1,11 @@
 {
   "releases": [
     {
+      "tag": "v2.0.8",
+      "date": "2026-11-13",
+      "notes": "Automatic release from the doc page registry (v2.0.7 → v2.0.8).\nChanged components: IngotIcon, IngotMenu."
+    },
+    {
       "tag": "v2.0.7",
       "date": "2026-10-10",
       "notes": "Automatic release from the doc page registry (v2.0.6 → v2.0.7).\nChanged components: IngotProvider, IngotTable."
