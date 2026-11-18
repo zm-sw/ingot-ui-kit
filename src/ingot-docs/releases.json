@@ -1,9 +1,14 @@
 {
   "releases": [
     {
+      "tag": "v2.1.0",
+      "date": "2026-11-18",
+      "notes": "Automatic release from the doc page registry (v2.0.8 → v2.1.0).\nNew primitives: IngotCombobox."
+    },
+    {
       "tag": "v2.0.8",
       "date": "2026-11-13",
-      "notes": "Automatic release from the doc page registry (v2.0.7 → v2.0.8).\nChanged components: IngotIcon, IngotMenu."
+      "notes": "Automatic release from the doc page registry (v2.0.7 -> v2.0.8).\nChanged components: IngotIcon, IngotMenu.\n\nCut by hand: GitHub Actions is locked on a billing issue, so release.yml could not run."
     },
     {
       "tag": "v2.0.7",
@@ -155,6 +160,7 @@
     "IngotColumns": "v2.0.0",
     "IngotDescriptionList": "v2.0.0",
     "IngotSkeleton": "v2.0.0",
-    "IngotSpinner": "v2.0.0"
+    "IngotSpinner": "v2.0.0",
+    "IngotCombobox": "v2.1.0"
   }
 }
