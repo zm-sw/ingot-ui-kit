@@ -9,6 +9,12 @@ thing in the repository nobody can verify.
 The kit is installed from a tag; see the README for why a commit SHA is not a
 version.
 
+## v2.1.0 — 2026-11-18
+
+Automatic release from the doc page registry (v2.0.8 → v2.1.0).
+
+- New primitives: IngotCombobox.
+
 ## v2.0.8 — 2026-11-13
 
 Automatic release from the doc page registry (v2.0.7 → v2.0.8).
