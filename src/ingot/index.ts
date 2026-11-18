@@ -196,6 +196,15 @@ export { IngotRowActions, type IngotRowAction } from "./IngotRowActions";
 // Owner's decision, 2026-09-02: filter atoms (point 06), the page content
 // frame (05) and the named exception to principle 02 (08).
 export { IngotSelect, type IngotSelectOption } from "./IngotSelect";
+// Picking one value out of MANY by typing. IngotSelect says outright that
+// search inside it belongs to a component of its own; this is it. The
+// product had written it once already, outside the kit, which is the second
+// truth the kit exists to prevent.
+export {
+  IngotCombobox,
+  INGOT_COMBOBOX_MAX_RENDERED,
+  type IngotComboboxOption,
+} from "./IngotCombobox";
 export { IngotCheckbox } from "./IngotCheckbox";
 export { IngotSearchInput } from "./IngotSearchInput";
 export { IngotPageLayout } from "./IngotPageLayout";
