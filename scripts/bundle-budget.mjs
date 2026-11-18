@@ -82,7 +82,15 @@ const ENTRY_KB = 375;
 //
 // Raised by 25 with the entry chunk above, for the same table change
 // (measured against dev: 1180.1 -> 1201.3 kB) plus the usual margin.
-const TOTAL_JS_KB = 1225;
+//
+// Raised by 20 for the search picker and its doc page (measured against
+// main: 1224.9 -> 1226.3 kB). The entry chunk did not move — the page and
+// its demo are on-demand chunks like every other page — so this is the
+// total growing while the first load stays where it was, which is the
+// shape this budget was raised to allow. The room left is 20 kB rather
+// than the 2 kB the change needs, for the Node 22 / Node 24 spread
+// described above.
+const TOTAL_JS_KB = 1245;
 const CSS_KB = 90;
 
 const kb = (bytes) => Math.round((bytes / 1024) * 10) / 10;

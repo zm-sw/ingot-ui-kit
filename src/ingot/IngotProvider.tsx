@@ -63,6 +63,16 @@ export interface IngotLabels {
   tableFilter: string;
   /** Name of the column's resize handle. */
   tableResize: string;
+  /** aria-label of the combobox's clear button. */
+  comboboxClear: string;
+  /** The combobox's list when the query matches nothing. */
+  comboboxNoMatches: string;
+  /**
+   * The combobox's last row when the list was cut. ``{count}`` is replaced
+   * by how many rows are drawn — a placeholder rather than a number,
+   * because the word order around it differs by language.
+   */
+  comboboxTruncated: string;
   /** Footer hint words next to the key caps: J K, X, Enter. */
   tableKeysMove: string;
   tableKeysSelect: string;
@@ -93,6 +103,9 @@ export const INGOT_LABELS: Record<IngotLang, IngotLabels> = {
     tableKeysMove: "move",
     tableKeysSelect: "select",
     tableKeysOpen: "open",
+    comboboxClear: "Clear",
+    comboboxNoMatches: "No matches",
+    comboboxTruncated: "Showing the first {count} — narrow the search.",
   },
   cs: {
     toastUndo: "Zpět",
@@ -117,6 +130,9 @@ export const INGOT_LABELS: Record<IngotLang, IngotLabels> = {
     tableKeysMove: "pohyb",
     tableKeysSelect: "výběr",
     tableKeysOpen: "otevřít",
+    comboboxClear: "Vymazat",
+    comboboxNoMatches: "Žádné shody",
+    comboboxTruncated: "Zobrazeno prvních {count} — zužte hledání.",
   },
 };
 
